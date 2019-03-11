@@ -1,0 +1,32 @@
+{
+    "name": "ilinme/www.byhealth.net",
+    "description": "linme network boyi health",
+    "type": "project",
+    "keywords": [
+        "ilinme",
+        "buffge"
+    ],
+    "homepage": "https://www.ilinme.com/",
+    "license": "Apache-2.0",
+    "authors": [
+        {
+            "name": "buffge",
+            "email": "admin@buffge.com"
+        }
+    ],
+    "require": {
+        "php": ">=7.3.0",
+        "topthink/framework": "5.1.*"
+    },
+    "autoload": {
+        "psr-4": {
+            "app\\": "app"
+        }
+    },
+    "extra": {
+        "think-path": "thinkphp"
+    },
+    "config": {
+        "preferred-install": "dist"
+    }
+}
