@@ -1,9 +1,12 @@
 /.idea
 /.vscode
-/vendor
+/vendor/*
+!/vendor/buffge
 *.log
 thinkphp
 .env
 /runtime
 /composer.lock
 /config
+/dev
+
