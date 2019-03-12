@@ -8,5 +8,5 @@ thinkphp
 /runtime
 /composer.lock
 /config
-/dev
+dev
 

@@ -23,3 +23,23 @@ Route::miss('index/index/index');
 Route::rule('/', 'index/index/index');
 # test
 Route::rule('/test', 'index/index/test');
+
+Route::group('app', function () {
+    #构建
+    Route::get('build', 'admin/app/build');
+});
+# 上传图片
+Route::post('/uploadImg$', 'index/common/uploadImg');
+# antd 组件的上传图片
+Route::post('/antdUploadImg', 'index/common/uploadImg');
+# 获取区域
+Route::get('/getRegion$', 'index/common/getRegion');
+# 开发时 导出常量
+Route::get('/exportConstant', 'index/common/exportConstant');
+
+Route::group('user', function () {
+    # 请求发送验证手机号码短信
+    Route::post('sendVerifyPhoneSms', 'index/user/sendVerifyPhoneSms');
+    # 验证手机号码
+    Route::post('verifyPhone', 'index/user/verifyPhone');
+});

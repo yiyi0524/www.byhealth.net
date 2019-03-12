@@ -96,9 +96,11 @@ class Driver
     {
         if ( is_null($this->template) ) {
             $errMsg = "系统配置错误 ,未找到阿里云短信模板配置";
+            return false;
         }
         if ( !key_exists($templateCode, $this->template) ) {
             $errMsg = "模板代码{$templateCode}不存在";
+            return false;
         }
         $data = $this->template[$templateCode];
         foreach ($data['param'] as $v) {

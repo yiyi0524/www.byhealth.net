@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-
+import { Route, Switch } from 'react-router-dom';
+import LookingForDoctors from '../LookingForDoctors';
 export default class Home extends Component<any, {}> {
   constructor(props: any) {
     super(props)
@@ -11,8 +12,10 @@ export default class Home extends Component<any, {}> {
     };
   }
   render() {
-    return <div>
-      this is index
-    </div>
+    return (
+      <Switch>
+        <Route path="/" exact component={LookingForDoctors} />
+        <Route path="/hospital/department" exact component={LookingForDoctors} />
+      </Switch>)
   }
 }

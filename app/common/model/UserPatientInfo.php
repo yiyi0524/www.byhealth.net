@@ -10,9 +10,15 @@ namespace app\common\model;
 
 use bdk\app\common\model\Base as BdkModel;
 
-class 请修改此类名 extends BdkModel
+/**
+ * 患者用户信息
+ * Class UserPatientInfo
+ * @package app\common\model
+ */
+class UserPatientInfo extends BdkModel
 {
     protected $field = [
         'id', 'ctime', 'utime', 'dtime',
+        'age_year', 'age_month',
     ];
 }
