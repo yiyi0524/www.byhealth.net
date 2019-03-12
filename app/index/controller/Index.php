@@ -1,10 +1,21 @@
 <?php
+
 namespace app\index\controller;
 
-class Index
+use bdk\app\common\controller\Base;
+use think\facade\Request;
+
+class Index extends Base
 {
     public function index()
     {
-        return "Hello World!";
+        if ( Request::isOptions() ) {
+            return;
+        }
+        return $this->fetch();
+    }
+
+    public function test()
+    {
     }
 }
