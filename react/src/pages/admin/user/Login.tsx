@@ -12,7 +12,6 @@ import {
   message
 } from "antd";
 import { Redirect, RouteComponentProps } from "react-router-dom";
-import moment from "moment";
 import { Dispatch } from "redux";
 import { LocalStorage as storage } from "jsbdk";
 import { FormComponentProps } from "antd/lib/form/Form";
@@ -126,8 +125,7 @@ class Login extends Component<
             storage.set("nick", json.data.nick, 15 * 60);
             this.props.login({
               uid: json.data.uid,
-              nick: json.data.nick,
-              lastSessionTime: moment().format("YYYY-MM-DD HH:mm:ss")
+              nick: json.data.nick
             });
           });
         })
