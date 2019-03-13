@@ -36,10 +36,29 @@ Route::post('/antdUploadImg', 'index/common/uploadImg');
 Route::get('/getRegion$', 'index/common/getRegion');
 # 开发时 导出常量
 Route::get('/exportConstant', 'index/common/exportConstant');
-
+## 用户组
 Route::group('user', function () {
     # 请求发送验证手机号码短信
     Route::post('sendVerifyPhoneSms', 'index/user/sendVerifyPhoneSms');
     # 验证手机号码
     Route::post('verifyPhone', 'index/user/verifyPhone');
+    # 用户登录
+    Route::post('login', 'index/user/login');
+    # 发送注册验证码到邮箱
+    Route::get('/sendRegisterMail', 'index/common/sendRegisterMail');
 });
+# 发送登录验证码
+Route::get('/getVerifyCode', 'index/common/getVerifyCode');
+
+
+## 管理员组
+Route::group('admin', function () {
+    Route::post('/', 'admin/index/index');
+    Route::post('login', 'admin/user/login');
+});
+
+Route::post('/editUserInfo', 'index/user/editInfo');
+Route::get('/getUserInfo$', 'index/user/info');
+Route::post('/editUserInfo$', 'index/user/editInfo');
+Route::post('/modifyPwd$', 'index/user/modifyPwd');
+Route::get('/logout$', 'index/user/logout');

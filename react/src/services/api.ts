@@ -25,12 +25,17 @@ const updateSessionTime = async () => {
     storage.set('nick', storage.get('nick'), 15 * 60)
   }
 }
-interface RequestParam {
+export interface RequestParam {
   url: string,
   body?: any,
   query?: any,
   data?: any,
   method?: string,
+}
+export interface GetListParam {
+  page?: number,
+  limit?: number,
+  filter?: object,
 }
 export async function request({ url, body = {}, method = 'POST' }: RequestParam) {
   updateSessionTime();

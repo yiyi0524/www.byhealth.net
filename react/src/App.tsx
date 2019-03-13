@@ -5,14 +5,16 @@ import {
 import IndexHome from './pages/index/Home';
 import Page404 from './pages/common/Page404';
 import AdminIndex from "./pages/admin/Index";
+import AdminLogin from "./pages/admin/user/Login";
 import AdminAuthRoute from "./utils/AdminAuth";
-
+import "./assets/sass/common.scss";
 class App extends Component {
   render() {
     return (
       <Router>
         <Switch>
           <Route path="/" exact component={IndexHome} />
+          <Route path="/admin/login" exact component={AdminLogin} />
           <AdminAuthRoute path="/admin" exact component={AdminIndex} />
           <Route component={Page404} />
         </Switch>
@@ -20,5 +22,4 @@ class App extends Component {
     );
   }
 }
-
 export default App;

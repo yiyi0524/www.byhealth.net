@@ -39,6 +39,7 @@
     "react-app-rewired": "^2.1.0",
     "react-scripts": "^2.1.8",
     "redux-devtools-extension": "^2.13.8",
+    "typesafe-actions": "^3.2.1",
     "typescript": "3.3.3333"
   },
   "eslintConfig": {

@@ -1,0 +1,56 @@
+@import './global.scss';
+:global .flex {
+    display: flex;
+    &.center {
+        justify-content: center;
+    }
+    &.v-center {
+        align-items: center;
+    }
+    &.wrap {
+        flex-wrap: wrap;
+    }
+}
+
+/* For demo */
+
+.ant-carousel .slick-slide {
+    text-align: center;
+    height: 160px;
+    line-height: 160px;
+    background: #364d79;
+    overflow: hidden;
+}
+
+.ant-carousel .slick-slide h3 {
+    color: $mainWhiteColor;
+}
+
+.separate-line {
+    margin: 0 8px;
+    display: inline-block;
+    height: .9em;
+    width: 1px;
+    background: $mainBoxBgColor;
+    vertical-align: middle;
+    position: relative;
+    top: -.06em;
+}
+
+//aliIcon
+.icon {
+    width: 1em;
+    height: 1em;
+    vertical-align: -0.15em;
+    fill: currentColor;
+    overflow: hidden;
+}
+
+body {
+    font-family: "微软雅黑";
+}
+
+input:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0px 1000px $mainWhiteColor inset !important;
+    -webkit-text-fill-color: $textColor !important;
+}

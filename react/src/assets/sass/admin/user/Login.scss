@@ -1,0 +1,166 @@
+@import '../../global.scss';
+//手机
+@media (max-width: 750px) {
+    :local .login {
+        .tabs {
+            .form {
+                .autoLogin {
+                    width: 70%;
+                    text-align: left;
+                }
+            }
+        }
+        :global .ant-col-xs-20 {
+            width: 83.33333333%;
+        }
+    }
+}
+
+:local .login {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: auto;
+    background: $mainHoverBgColor;
+    background-image: url(https://gw.alipayobjects.com/zos/rmsportal/TVYTbAXWheQpRcWDaDMu.svg);
+    background-repeat: no-repeat;
+    background-position: center 110px;
+    background-size: 100%;
+    padding-top: 50px;
+    .loginBox {
+        height: 1600px;
+    }
+    .logo {
+        width: 200px;
+        max-height: 80px;
+        margin: 15px auto 0;
+        overflow: hidden;
+        .logoImg {
+            width: 100%;
+        }
+    }
+    .title {
+        font-size: 14px;
+        color: $mainTextColor;
+        margin: 15px 0 30px;
+    }
+    .tabs {
+        margin-top: 30px;
+        :global .ant-tabs-bar {
+            border-bottom: none;
+        }
+        .form {
+            .tooltip {
+                color: $mainBorderColor;
+                margin-left: 5px;
+            }
+            .autoLogin {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                width: 100%;
+                .autoLoginTitle {
+                    flex: 1;
+                    text-align: left;
+                }
+                .forgetPassword {
+                    width: 150px;
+                    text-align: right;
+                }
+            }
+            .verificationCode {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                .verificationCodeInput {
+                    flex: 1,
+                }
+                .verificationCodeBtn {
+                    width: 120px;
+                    text-align: center;
+                    margin-left: 10px;
+                }
+            }
+            .verificationCodePic {
+                display: flex;
+                align-items: center;
+                .input {
+                    flex: 1;
+                }
+                .img {
+                    margin-left: 10px;
+                    width: 120px;
+                    height: 40px;
+                    cursor: pointer;
+                }
+            }
+            .autoLogin {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                .checkBox {
+                    flex: 1;
+                    text-align: left;
+                }
+                .checkBoxForget {
+                    width: 120px;
+                    text-align: right;
+                }
+            }
+        }
+    }
+    .submit {
+        position: relative;
+        .btn {
+            width: 100%;
+        }
+        .otherLoginStyle {
+            height: 45px;
+            line-height: 45px;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            margin-top: 15px;
+            justify-content: space-between;
+            .iconBox {
+                display: flex;
+                flex: 1;
+            }
+            .icon {
+                color: $mainWhiteColor;
+                background: $mainBoxBgColor;
+                border-radius: 50%;
+                width: 25px;
+                height: 25px;
+                display: block;
+                line-height: 29px;
+                text-align: center;
+                font-size: 17px;
+                margin-left: 10px;
+                -webkit-transition: all .2s linear;
+                transition: all .2s linear;
+                &:hover {
+                    color: $mainSelectBgColor;
+                    background: $mainWhiteColor;
+                }
+            }
+        }
+    }
+    .footer {
+        margin-bottom: 30px;
+        font-size: 14px;
+        color: $mainTextBlackColor;
+    }
+    @media (min-width: 576px) {
+        :global .ant-col-sm-offset-10 {
+            margin-left: 39.666667%;
+        }
+        :global .ant-col-offset-10 {
+            margin-left: 39.666667%;
+        }
+        :global .ant-form-item-with-help {
+            margin-bottom: 25px;
+        }
+    }
+}
