@@ -1,13 +1,11 @@
-import React, { Component } from 'react';
-import {
-  BrowserRouter as Router, Switch, Route,
-} from 'react-router-dom';
-import IndexHome from './pages/index/Home';
-import Page404 from './pages/common/Page404';
-import AdminIndex from "./pages/admin/Index";
-import AdminLogin from "./pages/admin/user/Login";
-import AdminAuthRoute from "./utils/AdminAuth";
-import "./assets/sass/common.scss";
+import React, { Component } from "react";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import IndexHome from "@pages/index/Home";
+import Page404 from "@pages/common/Page404";
+import AdminIndex from "@pages/admin/Index";
+import AdminLogin from "@pages/admin/user/Login";
+import AdminAuthRoute from "@utils/AdminAuth";
+import "@sass/common.scss";
 class App extends Component {
   render() {
     return (

@@ -9,8 +9,6 @@
     "eject": "react-scripts eject"
   },
   "dependencies": {
-    "@types/react-redux": "^7.0.3",
-    "@types/redux-devtools-extension": "^2.13.2",
     "antd": "^3.15.0",
     "antd-mobile": "^2.2.9",
     "bizcharts": "^3.4.3",
@@ -25,6 +23,8 @@
     "redux": "^4.0.1"
   },
   "devDependencies": {
+    "@types/react-redux": "^7.0.3",
+    "@types/redux-devtools-extension": "^2.13.2",
     "@types/antd": "^1.0.0",
     "@types/classnames": "^2.2.7",
     "@types/jest": "24.0.11",
@@ -39,7 +39,6 @@
     "react-app-rewired": "^2.1.0",
     "react-scripts": "^2.1.8",
     "redux-devtools-extension": "^2.13.8",
-    "typesafe-actions": "^3.2.1",
     "typescript": "3.3.3333"
   },
   "eslintConfig": {

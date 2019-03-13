@@ -6,52 +6,26 @@
       "dom.iterable",
       "esnext"
     ],
-    //生成map文件
     "sourceMap": true,
-    //是否允许编译js文件
     "allowJs": true,
-    //遇到jsx文件 保存jsx 不编译为js 供后续使用(如babel)
     "jsx": "preserve",
-    //以node 模式来寻找包 比如import A from 'A'
-    // 首先找A.js 然后再查找A目录下的 package.json 里面的main
     "moduleResolution": "node",
-    //??
     "noImplicitReturns": true,
-    // 包含--noImplicitAny, --noImplicitThis, --alwaysStrict, --strictBindCallApply,
-    // --strictNullChecks, --strictFunctionTypes和--strictPropertyInitialization
     "strict": true,
-    //当this表达式的值为any类型的时候 报错
     "noImplicitThis": true,
-    // 在表达式和声明上有隐含的any类型时报错。
     "noImplicitAny": true,
-    //null和undefined值不包含在任何类型里，只允许用它们自己和any来赋值
     "strictNullChecks": true,
-    //?? "suppressImplicitAnyIndexErrors":true,
-    // 当有未使用的变量 报错
     "noUnusedLocals": true,
-    // 当有未使用的参数报错
     "noUnusedParameters": true,
-    //生成对应的d.ts 文件
-    // "declaration": true,
-    // 生成的d.ts文件的路径
-    // "declarationDir": "typeing",
-    // 允许从没有设置默认导出的模块中默认导入
     "allowSyntheticDefaultImports": true,
-    // 启用实验性的ES装饰器。
     "experimentalDecorators": true,
-    ///上面是别人推荐的
-    //忽略所有的声明文件（*.d.ts）的类型检查。
     "skipLibCheck": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "module": "esnext",
-    //允许导入json模块
     "resolveJsonModule": true,
-    //??
     "isolatedModules": true,
-    //不生成输出文件
     "noEmit": true,
-    // 输出目录
     "outDir": "build"
   },
   "include": [
@@ -59,5 +33,6 @@
   ],
   "exclude": [
     ".history"
-  ]
+  ],
+  "extends": "./tsconfig.paths.json"
 }

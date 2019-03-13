@@ -1,8 +1,11 @@
-import { createStore, combineReducers, } from 'redux';
-import adminReducer, { AdminState } from '../reducers/admin';
-import { composeWithDevTools } from 'redux-devtools-extension';
+import { createStore, combineReducers } from "redux";
+import { composeWithDevTools } from "redux-devtools-extension";
+
+import adminReducer, { AdminState } from "../reducers/admin";
 export interface AppState {
-  admin: AdminState,
+  admin: AdminState;
 }
-export default createStore(combineReducers({ admin: adminReducer }),
-  composeWithDevTools())
+export default createStore(
+  combineReducers({ admin: adminReducer }),
+  composeWithDevTools()
+);
