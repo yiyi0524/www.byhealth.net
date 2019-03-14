@@ -1,0 +1,21 @@
+@import "../../global.scss";
+:global .flex {
+  display: flex;
+  &.center {
+    justify-content: center;
+  }
+  &.v-center {
+    align-items: center;
+  }
+  &.wrap {
+    flex-wrap: wrap;
+  }
+}
+:local .symptomName {
+  border: 1px solid $symptomNameBorderColor;
+  padding: 5px;
+  margin-right: 20px;
+  margin-bottom: 15px;
+  border-radius: 5px;
+  color: $symptomNameColor;
+}

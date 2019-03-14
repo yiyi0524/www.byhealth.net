@@ -11,12 +11,22 @@
         flex-wrap: wrap;
     }
 }
-:local .departmentName{
-    color:$departmentNameColor;
+:local .departmentTitleBox{
+    align-items: center;
     .titleArrow{
+        margin:10px;
         width:0;
-        border:10px solid $departmentNameColor;
+        border:4px solid $departmentNameColor;
         border-color:transparent;
         border-left-color:$departmentNameColor;
     }
+    .departmentName{
+        color: $departmentNameColor;
+    }
+}
+:local .symptomList{
+    flex-direction:row;
+    align-items: center;
+    flex-wrap:wrap;
+    margin:10px 20px;
 }

@@ -75,6 +75,7 @@ export default {
   index: {
     hospital: {
       departmentDetail: require("@sass/index/hospital/departmentDetail.scss"),
+      symptomName: require("@sass/index/hospital/symptomName.scss"),
     }
     //   home: require("@sass/index/user/Home.scss"),
     //   user: {
