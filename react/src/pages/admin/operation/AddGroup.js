@@ -37,8 +37,8 @@ class AddOperationApiGroup extends Component {
     return JSON.parse(JSON.stringify(data));
   }
   init = async _ => {
-    let operationGroupListPromise = operationApi.getGroupList(),
-      operationListPromise = operationApi.getOperationList(),
+    let operationGroupListPromise = operationApi.getGroupList({ page: -1, limit: -1 }),
+      operationListPromise = operationApi.getOperationList({ page: -1, limit: -1 }),
       operationGroupList = (await operationGroupListPromise).data.list,
       operationList = (await operationListPromise).data.list;
     let idMapOperationGroup = new Map(), idMapOperation = new Map();

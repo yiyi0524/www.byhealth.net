@@ -6,3 +6,4 @@
 
 export const BASE_URL = "https://www.byhealth.net";
 export const antdUploadImgAction = BASE_URL + "/antdUploadImg";
+export const SESSION_EXPIRE = 150 * 60;

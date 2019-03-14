@@ -55,6 +55,7 @@ Route::get('/getVerifyCode', 'index/common/getVerifyCode');
 Route::group('admin', function () {
     Route::post('/', 'admin/index/index');
     Route::post('login', 'admin/user/login');
+    Route::get('getUserList', 'admin/user/list');
 });
 
 Route::post('/editUserInfo', 'index/user/editInfo');

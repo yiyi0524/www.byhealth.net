@@ -35,7 +35,7 @@ class AddOperation extends React.Component<FormComponentProps> {
         description: fieldsValue.description || "",
       }
       operationApi.addOperation(data).then(_ => {
-        message.success('添加成功', 1);
+        message.success('添加成功', 1, this.props.form.resetFields);
       }).catch(err => {
         message.error('添加失败,失败原因: ' + err.msg, 3);
       })

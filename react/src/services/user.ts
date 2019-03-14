@@ -51,7 +51,7 @@ export async function getList({
   filter = {}
 }: GetListParam) {
   return bget({
-    url: "/userList",
+    url: "admin/getUserList",
     query: {
       page,
       limit,
@@ -59,6 +59,7 @@ export async function getList({
     }
   });
 }
+
 export interface RegisterParam {
   uname: string;
   pwd: string;
@@ -345,6 +346,15 @@ export async function addUser({
     }
   });
 }
+//删除多个用户
+export async function deleteUsers(idArr: number[]) {
+  return bpost({
+    url: '/deleteUsers',
+    data: {
+      idArr,
+    },
+  })
+}
 
 export default {
   sendVerifyPhoneSms,
@@ -353,5 +363,6 @@ export default {
   logout,
   adminLogin,
   userLogin,
-  getList
+  getList,
+  deleteUsers,
 };

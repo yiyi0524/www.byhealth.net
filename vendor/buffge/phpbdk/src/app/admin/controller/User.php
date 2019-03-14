@@ -105,7 +105,7 @@ class User extends Base
                     $map[] = ['account|nick|phone|email', 'like', '%' . trim($filter['search']) . '%'];
                 }
             }
-            $field = ['id', 'account', 'nick', 'avatar', 'phone', 'email', 'gender', 'ctime'];
+            $field = ['id', 'account', 'nick', 'avatar_pic_id', 'phone', 'email', 'gender', 'ctime'];
             $order = ['ctime' => 'desc'];
             [$userList, $count] = UserModel::getList($page, $limit, UserModel::NEED_COUNT, $map, $field, $order);
             $resList = [];
@@ -118,7 +118,7 @@ class User extends Base
                     'email'   => $userItem->email,
                     'gender'  => $userItem->gender,
                     'isAdmin' => $userItem->isAdminUser(),
-                    'avatar'  => $userItem->avatarModel()->field(['id', 'url', 'ctime', 'title'])->find(),
+                    'avatar'  => $userItem->avatar()->field(['id', 'url', 'ctime', 'title'])->find(),
                     'address' => $userItem->address,
                     'ctime'   => $userItem->ctime,
                 ];
@@ -171,7 +171,7 @@ class User extends Base
         try {
             $addData        = $validData;
             $addData['pwd'] = $userService->buildHashPwd($addData['pwd']);
-            unset($addData['rePwd'],$addData['isAdmin']);
+            unset($addData['rePwd'], $addData['isAdmin']);
             UserModel::startTrans();
             [$addSuccess, $insertId] = UserModel::addItem($addData, UserModel::NEED_INSERT_ID);
             if ( $addSuccess ) {

@@ -1,8 +1,12 @@
 import { menuList } from '../config/menuList';
-import { BASE_URL, antdUploadImgAction, } from "../config/prod";
+import { BASE_URL, antdUploadImgAction, SESSION_EXPIRE, } from "../config/prod";
 import { request as BuffReq, LocalStorage as storage } from 'jsbdk';
 import qs from 'qs';
-
+export interface Picture {
+  id: number,
+  title: string,
+  url: string,
+}
 export const getMenuList = () => {
   return menuList;
 }
@@ -13,16 +17,16 @@ const updateSessionTime = async () => {
   const adminIsLogin = storage.get('adminIsLogin')
   const userIsLogin = storage.get('userIsLogin')
   if (adminIsLogin === true) {
-    storage.set('adminIsLogin', true, 15 * 60)
+    storage.set('adminIsLogin', true, SESSION_EXPIRE)
   }
   if (userIsLogin === true) {
-    storage.set('userIsLogin', true, 15 * 60)
+    storage.set('userIsLogin', true, SESSION_EXPIRE)
   }
   if (storage.has('uid') && (userIsLogin || adminIsLogin)) {
-    storage.set('uid', storage.get('uid'), 15 * 60)
+    storage.set('uid', storage.get('uid'), SESSION_EXPIRE)
   }
   if (storage.has('nick') && (userIsLogin || adminIsLogin)) {
-    storage.set('nick', storage.get('nick'), 15 * 60)
+    storage.set('nick', storage.get('nick'), SESSION_EXPIRE)
   }
 }
 export interface RequestParam {
