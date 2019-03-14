@@ -1,0 +1,104 @@
+@import "../global.scss";
+:local .header {
+    height: 64px;
+    background: #fff !important;
+    box-shadow: 0 1px 4px $mainBoxShadowColor;
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    &:global(.ant-layout-header) {
+        border-bottom: 1px solid $mainBgColor;
+        padding: 0;
+    }
+    .home {
+        font-size: 20px;
+        margin-left: 15px;
+        color: $mainTextColor;
+    }
+    .right-tools {
+        float: right;
+        height: 100%;
+        overflow: hidden;
+        .search,
+        .question,
+        .bell,
+        .global,
+        .person-info {
+            padding: 0 12px;
+            cursor: pointer;
+            display: flex;
+            transition: all 0.3s;
+            height: 100%;
+            align-items: center;
+        }
+        .question,
+        .bell,
+        .person-info,
+        .global {
+            &:hover {
+                background: $mainHoverBgColor;
+            }
+        }
+        .search {
+            display: flex;
+            .input {
+                border: none;
+                outline: none;
+                border-bottom: 1px solid $mainBorderColor;
+                padding: 0;
+                font-size: 14;
+                color: $mainTextColor;
+                border-radius: 0;
+                box-shadow: none !important;
+            }
+        }
+        .search .icon,
+        .question .icon,
+        .bell .icon,
+        .global .icon {
+            padding: 4px;
+            font-size: 16px;
+        }
+        .search-input {
+            width: 150px;
+            margin-right: 10px;
+            -webkit-transition: width .3s, margin-left .3s;
+            transition: all .3s;
+        }
+        .search-input-hidden {
+            width: 0;
+            -webkit-transition: width .3s, margin-left .3s;
+            transition: all .3s;
+        }
+        .person-info {
+            img.avatar {
+                width: 24px;
+                height: 24px;
+            }
+            .uname {
+                margin-left: 5px;
+            }
+        }
+    }
+}
+
+:local .menu-fold {
+    font-size: 20px;
+    cursor: pointer;
+    transition: all 0.3s, padding 0s;
+    padding: 0 20px;
+    &:hover {
+        background: rgba(0, 0, 0, 0.025);
+    }
+}
+
+:local .right-tools-dropdown-item {
+    min-width: 120px;
+    .icon {
+        margin: 0 10px 0 0px;
+    }
+}
+
+:global .ant-layout-header {
+    padding: 0 10px;
+}

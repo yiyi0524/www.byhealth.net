@@ -1,11 +1,11 @@
-// import { menuList } from '../config/menuList';
+import { menuList } from '../config/menuList';
 import { BASE_URL, antdUploadImgAction, } from "../config/prod";
 import { request as BuffReq, LocalStorage as storage } from 'jsbdk';
 import qs from 'qs';
 
-// export const getMenuList = ()=> {
-//   return menuList;
-// }
+export const getMenuList = () => {
+  return menuList;
+}
 export const getUploadImgUrl = () => {
   return antdUploadImgAction;
 }

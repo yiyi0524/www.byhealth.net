@@ -11341,11 +11341,6 @@ typedarray@^0.0.6:
   resolved "http://registry.npm.taobao.org/typedarray/download/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
   integrity sha1-hnrHTjhkGHsdPUfZlqeOxciDB3c=
 
-typesafe-actions@^3.2.1:
-  version "3.2.1"
-  resolved "http://registry.npm.taobao.org/typesafe-actions/download/typesafe-actions-3.2.1.tgz#833623a4079eda5dbcb775113f6dcf02b71c03f8"
-  integrity sha1-gzYjpAee2l28t3URP23PArccA/g=
-
 typescript@3.3.3333:
   version "3.3.3333"
   resolved "http://registry.npm.taobao.org/typescript/download/typescript-3.3.3333.tgz#171b2c5af66c59e9431199117a3bcadc66fdcfd6"

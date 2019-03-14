@@ -1,27 +1,27 @@
 export default {
-  // common: {
-  //   content: require('@sass/common/content.scss'),
-  //   header: require('@sass/common/header.scss'),
-  //   sidebar: require('@sass/common/sidebar.scss'),
-  //   basicForm: require('@sass/admin/BasicForm.scss'),
-  //   workPlace: require('@sass/admin/workplace.scss'),
-  // },
+  common: {
+    content: require('@sass/common/content.scss'),
+    header: require('@sass/common/header.scss'),
+    sidebar: require('@sass/common/sidebar.scss'),
+    basicForm: require('@sass/admin/BasicForm.scss'),
+    workPlace: require('@sass/admin/workplace.scss'),
+  },
   admin: {
     user: {
       // addUser: require('@sass/admin/user/Add.scss'),
-      login: require("@sass/admin/user/Login.scss")
-      // list: require('@sass/admin/user/List.scss'),
+      login: require("@sass/admin/user/Login.scss"),
+      list: require('@sass/admin/user/List.scss'),
       // information: require('@sass/admin/user/Information.scss'),
-    }
-    //   operation: {
-    //     list: require('@sass/admin/operation/List.scss'),
-    //     add: require('@sass/admin/operation/Add.scss'),
-    //     groupList: require('@sass/admin/operation/GroupList.scss'),
-    //     addGroup: require('@sass/admin/operation/AddGroup.scss'),
-    //   },
-    //   settings: {
-    //     base: require("@sass/admin/settings/base.scss"),
-    //   },
+    },
+    operation: {
+      list: require('@sass/admin/operation/List.scss'),
+      add: require('@sass/admin/operation/Add.scss'),
+      groupList: require('@sass/admin/operation/GroupList.scss'),
+      addGroup: require('@sass/admin/operation/AddGroup.scss'),
+    },
+    settings: {
+      base: require("@sass/admin/settings/base.scss"),
+    },
     //   school: {
     //     specialityList: require('@sass/admin/school/SpecialityList.scss'),
     //     collegeList: require('@sass/admin/school/CollegeList.scss'),
@@ -73,6 +73,9 @@ export default {
 
   // 前端
   index: {
+    hospital: {
+      departmentDetail: require("@sass/index/hospital/departmentDetail.scss"),
+    }
     //   home: require("@sass/index/user/Home.scss"),
     //   user: {
     //     apply: {

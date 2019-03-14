@@ -1,0 +1,22 @@
+@import '../../global.scss';
+:global .flex {
+    display: flex;
+    &.center {
+        justify-content: center;
+    }
+    &.v-center {
+        align-items: center;
+    }
+    &.wrap {
+        flex-wrap: wrap;
+    }
+}
+:local .departmentName{
+    color:$departmentNameColor;
+    .titleArrow{
+        width:0;
+        border:10px solid $departmentNameColor;
+        border-color:transparent;
+        border-left-color:$departmentNameColor;
+    }
+}

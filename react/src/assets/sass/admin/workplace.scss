@@ -1,0 +1,171 @@
+@import '../global.scss';
+:local .content {
+    display: flex;
+    padding: 15px;
+    .left {
+        width: (100% / 3)*2;
+        .leftTop {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            .card {
+                width: 49.5%;
+                margin-bottom: 1%;
+            }
+            .card:nth-child(3n) {
+                margin-right: 1%;
+            }
+            .card:first-child {
+                margin-right: 1%;
+            }
+            .list {
+                width: 100%;
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: flex-start;
+                .item {
+                    width: 23%;
+                    height: 90px;
+                    margin: 0 (8% / 8);
+                    margin-bottom: 15px;
+                    text-decoration: none;
+                    .imgBox {
+                        height: 60px;
+                        line-height: 60px;
+                        background: $mainHoverBgColor;
+                        -webkit-transition: all .2s linear;
+                        transition: all .2s linear;
+                        font-size: 20px;
+                        color: $mainTextBlackColor;
+                        &:hover {
+                            background: $mainBoxBgColor;
+                        }
+                    }
+                    .itemTitle {
+                        height: 30px;
+                        line-height: 30px;
+                        font-size: 14px;
+                        color: $mainTextBlackColor;
+                    }
+                }
+                .statistics {
+                    width: 48%;
+                    margin: 0 (4% / 4);
+                    margin-bottom: 2%;
+                    text-decoration: none;
+                    background: $mainHoverBgColor;
+                    -webkit-transition: all .2s linear;
+                    transition: all .2s linear;
+                    height: 90px;
+                    &:hover {
+                        background: $mainBoxBgColor;
+                    }
+                    .statisticsTitle {
+                        height: 40px;
+                        line-height: 40px;
+                        font-size: 14px;
+                        color: $mainTextBlackColor;
+                    }
+                    .statisticsCount {
+                        height: 50px;
+                        line-height: 50px;
+                        font-size: 30px;
+                        font-weight: 300;
+                        color: $mainSelectBgColor;
+                    }
+                }
+            }
+        }
+        .leftBottom {
+            .leftBottomBox {
+                width: 100%;
+                .title {
+                    font-size: 14px;
+                    color: $mainTextColor;
+                    text-align: left;
+                }
+                canvas {
+                    width: 1040px !important;
+                }
+            }
+        }
+    }
+    .right {
+        width: (100% / 3);
+        margin-left: (100%-(100% / 3))/100;
+        .card {
+            width: 100%;
+            margin-bottom: 2%;
+            .progress {
+                margin-right: 25px;
+            }
+        }
+        .dashboardBox {
+            display: flex;
+            height: 200px;
+            overflow: hidden;
+            .dashboard {
+                position: relative;
+                width: 50%;
+                p {
+                    font-size: 16px !important;
+                    &:first-child {
+                        margin-top: 15px !important;
+                    }
+                }
+            }
+        }
+    }
+}
+
+.ant-carousel {
+    .slick-dots {
+        li button {
+            background: $mainTextBlackColor !important;
+            width: 35px !important;
+        }
+        li.slick-active button {
+            background: $mainTextColor !important;
+            width: 25px !important;
+        }
+    }
+}
+
+.ant-progress-circle {
+    .ant-progress-text {
+        font-size: 12px;
+        color: $mainTextColor;
+    }
+}
+
+:local .leftTop {
+    :global .ant-carousel {
+        .slick-slide {
+            background: $mainWhiteColor !important;
+            height: 220px !important;
+            line-height: 1 !important;
+            h3 {
+                color: $mainTextBlackColor !important;
+            }
+        }
+    }
+}
+
+:local .leftBottom {
+    :global .ant-carousel {
+        .slick-slide {
+            background: $mainWhiteColor !important;
+            height: 400px !important;
+            line-height: 1 !important;
+            h3 {
+                color: $mainTextBlackColor !important;
+            }
+        }
+    }
+}
+
+:local .right {
+    :global .ant-table-thead {
+        display: none;
+    }
+}

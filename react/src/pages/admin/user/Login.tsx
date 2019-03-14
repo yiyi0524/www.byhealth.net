@@ -56,7 +56,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
 class Login extends Component<
   Props & RouteComponentProps & FormComponentProps,
   State
-> {
+  > {
   constructor(props: any) {
     super(props);
     this.state = {
@@ -433,6 +433,7 @@ class Login extends Component<
     );
   }
 }
+
 export default connect(
   mapStateToProps,
   mapDispatchToProps

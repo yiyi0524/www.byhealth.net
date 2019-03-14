@@ -13,7 +13,7 @@ class App extends Component {
         <Switch>
           <Route path="/" exact component={IndexHome} />
           <Route path="/admin/login" exact component={AdminLogin} />
-          <AdminAuthRoute path="/admin" exact component={AdminIndex} />
+          <AdminAuthRoute path="/admin" component={AdminIndex} />
           <Route component={Page404} />
         </Switch>
       </Router>

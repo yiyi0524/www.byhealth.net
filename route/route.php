@@ -62,3 +62,17 @@ Route::get('/getUserInfo$', 'index/user/info');
 Route::post('/editUserInfo$', 'index/user/editInfo');
 Route::post('/modifyPwd$', 'index/user/modifyPwd');
 Route::get('/logout$', 'index/user/logout');
+
+Route::get('/operationList', 'admin/operation/list');
+Route::get('/operationDetail', 'admin/operation/detail');
+Route::post('/addOperation', 'admin/operation/add');
+Route::post('/editOperation', 'admin/operation/edit');
+Route::post('/deleteOperation', 'admin/operation/delete');
+
+Route::get('/operationGroupList', 'admin/operation_group/list');
+Route::get('/operationGroupDetail', 'admin/operation_group/detail');
+Route::post('/addOperationGroup', 'admin/operation_group/add');
+Route::post('/editOperationGroup', 'admin/operation_group/edit');
+Route::post('/deleteOperationGroup', 'admin/operation_group/delete');
+
+

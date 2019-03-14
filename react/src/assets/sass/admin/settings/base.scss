@@ -1,0 +1,149 @@
+@import '../../../sass/global.scss';
+:local .base {
+    .baseBox {
+        display: flex;
+        justify-content: space-between;
+        background: $mainWhiteColor;
+        margin: 15px;
+        padding: 15px 0;
+        .left {
+            width: 225px;
+        }
+        .right {
+            border-left: 1px solid $mainBorderColor;
+            flex: 1;
+            padding-left: 40px;
+            .title {
+                font-size: 20px;
+                color: $mainTextBlackColor;
+                margin-bottom: 12px;
+            }
+        }
+    }
+    .hidden {
+        display: none;
+    }
+    .form {
+        width: 310px;
+        :global .ant-form-item-label {
+            text-align: left;
+            :global .ant-form-item-required:before {
+                content: "";
+            }
+        }
+        .tooltip {
+            color: $mainBorderColor;
+            margin-left: 5px;
+        }
+        .autoLogin {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            .autoLoginTitle {
+                flex: 1;
+                text-align: left;
+            }
+            .forgetPassword {
+                width: 150px;
+                text-align: right;
+            }
+        }
+        .verificationCode {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            .verificationCodeInput {
+                flex: 1,
+            }
+            .verificationCodeBtn {
+                width: 150px;
+                text-align: right;
+            }
+        }
+        .verificationCodePic {
+            display: flex;
+            align-items: center;
+            .input {
+                flex: 1;
+            }
+            .img {
+                margin-left: 10px;
+                width: 120px;
+                height: 40px;
+                cursor: pointer;
+            }
+        }
+        .autoLogin {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            .checkBox {
+                flex: 1;
+                text-align: left;
+            }
+            .checkBoxForget {
+                width: 120px;
+                text-align: right;
+            }
+        }
+    } //安全设置
+    .security {
+        .loading {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            width: 100%;
+            height: 100%;
+        }
+        .box {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-right: 50px;
+            border-bottom: 1px solid $mainBottomColor;
+            padding: 15px 0;
+            .securityLeft {
+                font-size: 14px;
+                flex: 1;
+                .securityTitle {
+                    color: $textColor;
+                    margin-bottom: 5px;
+                }
+                .securityDetail {
+                    color: $textGrayColor;
+                }
+                .green {
+                    color: $mainGreen;
+                }
+            }
+            .securityRight {
+                margin-right: 10px;
+            }
+            .securityIcon {
+                width: 48px;
+                margin-right: 16px;
+                height: 48px;
+                line-height: 48px;
+                .icon {
+                    font-size: 48px;
+                }
+            }
+            .securityDing {
+                width: 46px;
+                margin-right: 18px;
+                height: 48px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                background: $mainSelectBgColor;
+                border-radius: 2px;
+                .icon {
+                    font-size: 36px;
+                }
+            }
+        }
+    }
+}

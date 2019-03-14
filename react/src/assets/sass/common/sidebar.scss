@@ -1,0 +1,40 @@
+@import "../global.scss";
+:local .sidebar {
+    overflow: auto;
+    height: 100vh;
+    position: fixed;
+    left: 0;
+    z-index: 2;
+}
+
+:local .logo {
+    height: 50px;
+    padding: 10px 0;
+    overflow: hidden;
+    width: 148px;
+    margin: 10px auto;
+    background-color: $mainSidebarBgColor;
+    .img {
+        width: 100%;
+    }
+}
+
+//collasped
+:local .collapsedLogo {
+    // height: 50px;
+    padding: 10px 5px;
+    overflow: hidden;
+    width: 80px;
+    margin: 10px auto;
+    background-color: $mainSidebarBgColor;
+    .collapsed-img {
+        width: 100%;
+    }
+}
+
+:local .menu-icon {
+    min-width: 14px;
+    margin-right: 10px;
+    font-size: 14px;
+    transition: 'font-size 0.15s cubic-bezier(0.215, 0.61, 0.355, 1), margin 0.3s cubic-bezier(0.645, 0.045, 0.355, 1)'
+}

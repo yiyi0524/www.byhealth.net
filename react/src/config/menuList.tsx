@@ -28,8 +28,9 @@ if (process.env.REACT_APP_BUILD_TIME) {
   console.log(`构建时间: ${process.env.REACT_APP_BUILD_TIME}`);
   buildTime = moment(process.env.REACT_APP_BUILD_TIME).format("MM-DD HH:mm");
 }
-const developer = {
-  icon: ["paper-clip", "dev"],
+const developer: MenuItem = {
+  // icon: ["paper-clip", "dev"],
+  icon: "paper-clip",
   title: `开发者 ${buildTime || ""}`,
   child: [
     {
@@ -107,8 +108,8 @@ const developer = {
     }
   ]
 };
-const user = {
-  icon: ["user", "user"],
+const user: MenuItem = {
+  icon: "user",
   href: "",
   title: "用户管理",
   child: [
@@ -124,7 +125,13 @@ const user = {
     }
   ]
 };
-export const menuList = [
+export interface MenuItem {
+  icon?: string,
+  href?: string,
+  title: string,
+  child: MenuItem[] | null
+}
+export const menuList: MenuItem[] = [
   // test,
   /**
    * 开发者

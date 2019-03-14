@@ -1,0 +1,46 @@
+@import '../../../sass/global.scss';
+:local .userList {
+    .title {
+        font-size: 14px;
+        height: 55px;
+        text-align: left;
+        line-height: 55px;
+        border-bottom: 1px solid $mainBoxShadowColor;
+        margin-bottom: 15px;
+        background: $mainWhiteColor;
+        padding: 0 30px;
+    }
+    .filters {
+        padding: 15px;
+        margin: 15px 15px 0;
+        background: $mainWhiteColor;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        .search {
+            width: 450px;
+            font-size: 14px;
+            color: $mainWhiteColor;
+        }
+        .selectDate {
+            width: 450px;
+        }
+        .item {
+            .drown {
+                margin-left: 15px;
+            }
+            .itemAdd {
+                color: $mainWhiteColor;
+                margin-left: 3px;
+            }
+        }
+    }
+    .table {
+        background: $mainWhiteColor;
+        padding: 15px;
+        margin: 0 15px 15px;
+        .btn {
+            margin: 0 5px;
+        }
+    }
+}

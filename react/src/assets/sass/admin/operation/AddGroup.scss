@@ -1,0 +1,100 @@
+@import '../../../sass/global.scss';
+:local .permission {
+    .title {
+        font-size: 14px;
+        height: 55px;
+        text-align: left;
+        line-height: 55px;
+        border-bottom: 1px solid $mainBoxShadowColor;
+        margin-bottom: 15px;
+        background: $mainWhiteColor;
+        padding: 0 30px;
+    }
+    .form {
+        margin: 0 15px;
+        background: $mainWhiteColor;
+        padding: 30px 15px;
+        .tooltip {
+            color: $mainBorderColor;
+            margin-left: 5px;
+        }
+        .autoLogin {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            .autoLoginTitle {
+                flex: 1;
+                text-align: left;
+            }
+            .forgetPassword {
+                width: 150px;
+                text-align: right;
+            }
+        }
+        .verificationCode {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            .verificationCodeInput {
+                flex: 1,
+            }
+            .verificationCodeBtn {
+                width: 150px;
+                text-align: right;
+            }
+        }
+        .verificationCodePic {
+            display: flex;
+            align-items: center;
+            .input {
+                flex: 1;
+            }
+            .img {
+                margin-left: 10px;
+                width: 120px;
+                height: 40px;
+                cursor: pointer;
+            }
+        }
+        .autoLogin {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            .checkBox {
+                flex: 1;
+                text-align: left;
+            }
+            .checkBoxForget {
+                width: 120px;
+                text-align: right;
+            }
+        }
+        .operationGroupItem {
+            .ogiTitle {
+                background: $mainHoverBgColor;
+                padding-left: 15px;
+            }
+            .ogiCheckBox {
+                padding-left: 15px;
+            }
+            .operationList {
+                padding-left: 15px;
+                margin-bottom: 30px;
+                margin-top: 10px;
+                label {
+                    margin-left: 8px;
+                    width: 255px;
+                }
+            }
+        }
+        .operationMethodList {
+            display: flex;
+            flex-wrap: wrap;
+            .operationMethodItem {
+                width: 240px;
+                margin-left: 23px;
+            }
+        }
+    }
+}
