@@ -1,2 +1,0 @@
-# phpbdk
-php dev kit 
