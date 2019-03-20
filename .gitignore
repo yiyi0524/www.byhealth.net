@@ -62,3 +62,5 @@ buck-out/
 ### buff
 .history/
 __tests__
+nbproject/
+.expo/
