@@ -1,4 +1,6 @@
 export default {
-  PersonCenter: "PersonCenter",
   Home: "Home",
+  AdvisoryIndex: "AdvisoryIndex",
+  AddressBookIndex: "AddressBookIndex",
+  PersonalCenter: "PersonalCenter",
 };

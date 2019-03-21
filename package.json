@@ -10,6 +10,7 @@
     "reset-cache": "./node_modules/react-native/scripts/packager.sh start --resetCache"
   },
   "dependencies": {
+    "@ant-design/react-native": "^3.1.5",
     "@types/qs": "^6.5.2",
     "@types/react-redux": "^7.0.5",
     "@types/redux": "^3.6.0",

@@ -1,8 +1,10 @@
+
+import home from "@styles/home";
+import global from "@/assets/styles/global";
 export default {
-  home: require("@styles/home"),
-  common: {
-    bottomNav: require("@/assets/styles/common/BottomNav"),
-  },
+  home,
+  global,
+  common: {},
   index: {},
   admin: {},
 };

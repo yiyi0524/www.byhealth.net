@@ -1,54 +1,90 @@
 import React from "react";
-import { Image } from "react-native";
+import { Image, StyleSheet } from "react-native";
 import {
-  createBottomTabNavigator,
-  createStackNavigator,
+  createBottomTabNavigator, createStackNavigator,
   getActiveChildNavigationOptions,
 } from "react-navigation";
 import Home from "@pages/Home";
-import PersonalCenter from "@pages/user/Index";
+import PersonalCenter from "@pages/personal_center/Index";
+import AdvisoryIndex from "@pages/advisory/Index";
+import AddressBookIndex from "@pages/address_book/Index";
 import pathMap from "./pathMap";
-import gStyle from "@utils/style";
 import gImg from "@utils/img";
-const bottomNavStyle = gStyle.common.bottomNav;
+import sColor from "@styles/color";
+const style = StyleSheet.create({
+  icon: {
+    width: 30,
+    height: 30,
+    resizeMode: "center",
+  },
+})
 const TabNav = createBottomTabNavigator(
   {
     [pathMap.Home]: {
       screen: Home,
       headerMode: "none",
-      navigationOptions: ({}) => ({
+      navigationOptions: ({ }) => ({
         title: "首页",
-        tabBarIcon: () => {
-          return <Image style={bottomNavStyle.home} source={gImg.common.home} />;
+        tabBarIcon: ({ focused }: { focused: boolean }) => {
+          return <Image style={style.icon}
+            source={focused ? gImg.common.homeActive : gImg.common.home} />;
         },
       }),
       tabBarOnPress: (obj: any) => {
         if (obj.navigation.state.params && obj.navigation.state.params.init) {
-          obj.navigation.state.params.init(); //查询数据
+          obj.navigation.state.params.init();
         }
-        obj.navigation.navigate(obj.navigation.state.routeName); //跳转
+        obj.navigation.navigate(obj.navigation.state.routeName);
       },
     },
-    [pathMap.PersonCenter]: {
-      screen: PersonalCenter,
+    [pathMap.AdvisoryIndex]: {
+      screen: AdvisoryIndex,
       headerMode: "none",
-      navigationOptions: ({}) => ({
-        title: "我的",
-        headerTitleStyle: {
-          color: "#fff",
-          textAlign: "center",
-          justifyContent: "center",
-          alignItems: "center",
-          flex: 1,
-          fontSize: 14,
-        },
-        headerStyle: {
-          backgroundColor: "#f53f68",
-          elevation: 0,
-        },
+      navigationOptions: ({ }) => ({
+        title: "咨询",
         tabBarIcon: ({ focused }: { focused: boolean }) => {
           return (
-            <Image
+            <Image style={style.icon}
+              source={focused ? gImg.common.advisoryActive : gImg.common.advisory}
+            />
+          );
+        },
+        tabBarOnPress: (obj: any) => {
+          obj.navigation.navigate(obj.navigation.state.routeName);
+          if (obj.navigation.state.params && obj.navigation.state.params.init) {
+            obj.navigation.state.params.init();
+          }
+        },
+      }),
+    },
+    [pathMap.AddressBookIndex]: {
+      screen: AddressBookIndex,
+      headerMode: "none",
+      navigationOptions: ({ }) => ({
+        title: "通讯录",
+        tabBarIcon: ({ focused }: { focused: boolean }) => {
+          return (
+            <Image style={style.icon}
+              source={focused ? gImg.common.addressBookActive : gImg.common.addressBook}
+            />
+          );
+        },
+        tabBarOnPress: (obj: any) => {
+          obj.navigation.navigate(obj.navigation.state.routeName);
+          if (obj.navigation.state.params && obj.navigation.state.params.init) {
+            obj.navigation.state.params.init();
+          }
+        },
+      }),
+    },
+    [pathMap.PersonalCenter]: {
+      screen: PersonalCenter,
+      headerMode: "none",
+      navigationOptions: ({ }) => ({
+        title: "我的",
+        tabBarIcon: ({ focused }: { focused: boolean }) => {
+          return (
+            <Image style={style.icon}
               source={focused ? gImg.common.personalCenterActive : gImg.common.personalCenter}
             />
           );
@@ -69,23 +105,21 @@ const TabNav = createBottomTabNavigator(
     swipeEnabled: true,
     animationEnabled: true,
     tabBarOptions: {
-      activeTintColor: "#e92b32", // 选中时tab的label/icon的颜色
-      inactiveTintColor: "#c9c9c9", // 未选中的颜色
+      activeTintColor: sColor.mainRed,
+      inactiveTintColor: sColor.bottonNavColor,
       showLabel: true,
       showIcon: true,
       style: {
-        backgroundColor: "#fff",
+        backgroundColor: sColor.white,
         height: 50,
-        borderTopColor: "#eee",
+        borderTopColor: sColor.colorEee,
       },
       tabStyle: {
-        // TabBar内单独tab的样式
         height: 50,
         paddingTop: 5,
         paddingBottom: 5,
       },
       labelStyle: {
-        // TabBar内单独tab的文字样式
         fontSize: 10,
       },
     },
@@ -96,7 +130,7 @@ TabNav.navigationOptions = ({ navigation, screenProps }: any) => {
   return {
     title: childOptions.title,
     headerTitleStyle: {
-      color: "#fff",
+      color: sColor.white,
       textAlign: "center",
       justifyContent: "center",
       alignItems: "center",
@@ -104,9 +138,10 @@ TabNav.navigationOptions = ({ navigation, screenProps }: any) => {
       fontSize: 14,
     },
     headerStyle: {
-      backgroundColor: "#f53f68",
+      height: 50,
+      backgroundColor: sColor.mainRed,
       elevation: 0,
-      borderBottomColor: "#f53f68",
+      borderBottomColor: sColor.mainRed,
     },
   };
 };
