@@ -1,6 +1,9 @@
 import { LocalStorage as storage, request as BuffReq } from "jsbdk";
+import { Dimensions } from "react-native";
 import { BASE_URL } from "@config/api";
 import qs from "qs";
+export const windowWidth = Dimensions.get("window").width;
+export const windowHeight = Dimensions.get("window").height;
 export interface RequestParam {
   url: string;
   body?: any;

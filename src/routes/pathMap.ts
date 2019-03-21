@@ -1,4 +1,9 @@
 export default {
-  PersonCenter: "PersonCenter",
+  Test: "Test",
   Home: "Home",
+  AdvisoryIndex: "AdvisoryIndex",
+  AddressBookIndex: "AddressBookIndex",
+  PersonalCenter: "PersonalCenter",
+  Login: "Login",
+  Register: "Register",
 };
