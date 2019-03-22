@@ -79,5 +79,8 @@ export default StyleSheet.create({
     fontSize28: {
         fontSize: 28,
     },
+    hidden: {
+        display: "none",
+    },
 
 })

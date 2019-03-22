@@ -7,7 +7,9 @@ export default {
     white: "#fff",
     colorEee: "#eee",
     colorCcc: "#ccc",
+    colorDdd: "#ddd",
     color333: "#333",
     color666: "#666",
     color888: "#888",
+    color999: "#999",
 }

@@ -1,7 +1,18 @@
 import { StyleSheet, PixelRatio } from "react-native";
 import sColor from "@styles/color";
 import { windowWidth } from "@api/api";
+import { windowHeight } from "@/utils/utils";
 export default StyleSheet.create({
+  loading: {
+    width: windowWidth,
+    height: windowHeight,
+    backgroundColor: sColor.white,
+    justifyContent: "center",
+    flex: 1,
+  },
+  loadingTitle: {
+    textAlign: "center",
+  },
   main: {
     backgroundColor: sColor.white,
   },
@@ -10,8 +21,6 @@ export default StyleSheet.create({
     paddingRight: 15,
     paddingTop: 10,
     paddingBottom: 15,
-    // borderBottomWidth: 1 / PixelRatio.get(),
-    // borderBottomColor: sColor.colorEee,
   },
   headerAvatarCircle: {
     width: 60,
@@ -65,6 +74,7 @@ export default StyleSheet.create({
     paddingRight: 15,
     borderRadius: 5,
     backgroundColor: sColor.mainYellow,
+    marginBottom: 15,
   },
   verifiedTitle: {
     paddingLeft: 3,
@@ -90,12 +100,60 @@ export default StyleSheet.create({
     height: 80,
   },
   categoryItemPic: {
-    width: 45,
-    height: 45,
+    width: 30,
+    height: 40,
     resizeMode: "center",
   },
   categoryItemTitle: {
     textAlign: "center",
     color: sColor.mainBlack,
+  },
+  /**
+   * banner
+   */
+  bannerList: {
+    backgroundColor: sColor.mainBgColor,
+    padding: 15,
+  },
+  scrollPaddingRight: {
+    width: 15,
+  },
+  bannerItem: {
+    width: 140,
+    height: 80,
+    marginRight: 15,
+    backgroundColor: sColor.white,
+    borderRadius: 5,
+    borderWidth: 1 / PixelRatio.get(),
+    borderColor: sColor.colorCcc,
+    overflow: "hidden",
+  },
+  bannerImg: {
+    width: 140,
+    height: 80,
+    resizeMode: "cover",
+  },
+  /**
+   * 设置
+   */
+  settingList: {
+    paddingLeft: 15,
+    paddingRight: 15,
+  },
+  settingItem: {
+    height: 45,
+    lineHeight: 45,
+    borderBottomWidth: 1 / PixelRatio.get(),
+    borderBottomColor: sColor.colorDdd,
+  },
+  settingTitle: {
+    color: sColor.mainBlack,
+  },
+  settingDescription: {
+    color: sColor.color888,
+    marginRight: 10,
+  },
+  settingIcon: {
+    color: sColor.color888,
   },
 });

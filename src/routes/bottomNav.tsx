@@ -1,5 +1,5 @@
 import React from "react";
-import { Image, StyleSheet } from "react-native";
+import { Image, StyleSheet, PixelRatio } from "react-native";
 import {
   createBottomTabNavigator, createStackNavigator,
   getActiveChildNavigationOptions,
@@ -12,7 +12,6 @@ import Home from "@pages/Home";
 import PersonalCenter from "@pages/personal_center/Index";
 import AdvisoryIndex from "@pages/advisory/Index";
 import AddressBookIndex from "@pages/address_book/Index";
-import Register from "@pages/user/Register";
 const style = StyleSheet.create({
   icon: {
     width: 30,
@@ -26,7 +25,7 @@ const TabNav = createBottomTabNavigator(
       screen: Home,
       headerMode: "none",
       navigationOptions: ({ }) => ({
-        title: "首页",
+        title: "医馆",
         tabBarIcon: ({ focused }: { focused: boolean }) => {
           return <Image style={style.icon}
             source={focused ? gImg.common.homeActive : gImg.common.home} />;
@@ -132,18 +131,19 @@ TabNav.navigationOptions = ({ navigation, screenProps }: any) => {
   return {
     title: childOptions.title,
     headerTitleStyle: {
-      color: sColor.white,
+      color: sColor.mainBlack,
       textAlign: "center",
       justifyContent: "center",
       alignItems: "center",
       flex: 1,
-      fontSize: 14,
+      fontSize: 15,
     },
     headerStyle: {
       height: 50,
-      backgroundColor: sColor.mainRed,
+      backgroundColor: sColor.white,
       elevation: 0,
-      borderBottomColor: sColor.mainRed,
+      borderBottomColor: sColor.colorEee,
+      borderBottomWidth: 1 / PixelRatio.get(),
     },
   };
 };
@@ -154,9 +154,6 @@ const StacksOverTabs = createStackNavigator({
   },
   [pathMap.Test]: {
     screen: Test,
-  },
-  [pathMap.Register]: {
-    screen: Register,
   },
 });
 export default StacksOverTabs;

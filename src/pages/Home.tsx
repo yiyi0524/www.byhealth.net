@@ -1,21 +1,23 @@
-import * as userAction from "@/redux/actions/user";
 import { AppState } from "@/redux/stores/store";
-import gStyle from "@utils/style";
 import React, { Component } from "react";
-import {
-  ScrollView, Text, View, Image, TouchableOpacity,
-} from "react-native";
-import { Icon, } from "@ant-design/react-native";
-import gImg from "@utils/img";
-import { connect } from "react-redux";
+import * as userAction from "@/redux/actions/user";
 import { Dispatch } from "redux";
-import pathMap from "@/routes/pathMap";
+import { connect } from "react-redux";
+import {
+  ScrollView, Text, View, Image, TouchableOpacity, RefreshControl,
+} from "react-native";
+import { Icon, Toast, } from "@ant-design/react-native";
+import gImg from "@utils/img";
+import gStyle from "@utils/style";
 const style = gStyle.home;
 const globalStyle = gStyle.global;
 interface Props {
   navigation: any,
 }
-interface State { }
+interface State {
+  refreshing: boolean,
+  hasLoad: boolean,
+}
 export interface ShortcutItem {
   icon: any,
   title: string,
@@ -35,6 +37,46 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
     },
   };
 };
+const bannerList = [
+  {
+    img: gImg.home.banner_0,
+    link: "",
+  },
+  {
+    img: gImg.home.banner_1,
+    link: "",
+  },
+  {
+    img: gImg.home.banner_2,
+    link: "",
+  },
+  {
+    img: gImg.home.banner_3,
+    link: "",
+  },
+]
+const settingList = [
+  {
+    name: "复诊及诊后咨询",
+    description: "未开启在线复诊",
+    link: "",
+  },
+  {
+    name: "处方及服务配置",
+    description: "",
+    link: "",
+  },
+  {
+    name: "自定义问诊单设置",
+    description: "已开启自动发送",
+    link: "",
+  },
+  {
+    name: "欢迎语设置",
+    description: "已开启自动发送",
+    link: "",
+  },
+]
 @connect(
   mapStateToProps,
   mapDispatchToProps,
@@ -49,54 +91,74 @@ State
     this.state = this.getInitState();
     this.shortcutList = [
       {
-        icon: gImg.common.home,
+        icon: gImg.home.uploadPrescription,
         title: "邀请患者",
         link: "",
       },
       {
-        icon: gImg.common.personalCenter,
-        title: "邀请患者",
-        link: "",
-      },
-      {
-        icon: gImg.common.home,
+        icon: gImg.home.uploadPrescription,
         title: "选择患者",
         link: "",
       },
       {
-        icon: gImg.common.home,
+        icon: gImg.home.uploadPrescription,
         title: "上传处方",
         link: "",
       },
       {
-        icon: gImg.common.home,
+        icon: gImg.home.prescriptionTemplate,
         title: "处方模板",
         link: "",
       },
       {
-        icon: gImg.common.home,
-        title: "发起随访",
-        link: "",
-      },
-      {
-        icon: gImg.common.home,
-        title: "编辑公告",
-        link: "",
-      },
-      {
-        icon: gImg.common.home,
-        title: "换教文章",
+        icon: gImg.home.uploadPrescription,
+        title: "坐诊信息",
         link: "",
       },
     ];
   }
   getInitState = (): State => {
-    return {};
+    return {
+      refreshing: false,
+      hasLoad: false,
+    };
   };
+  async componentDidMount() {
+    await this.init();
+  }
+  init = () => {
+    setTimeout(() => {
+      this.setState({
+        hasLoad: true,
+      })
+    }, 1000)
+  }
+  onRefresh = () => {
+    this.setState({ refreshing: true });
+    Promise.all([
+      this.init(),
+      new Promise(s => setTimeout(s, 500)),
+    ]).then(_ => {
+      this.setState({ refreshing: false });
+    }).catch(err => {
+      Toast.fail("刷新失败,错误信息: " + err.msg);
+    });
+  }
   render() {
+    if (!this.state.hasLoad) {
+      return (<View style={style.loading}>
+        <Text style={[style.loadingTitle, globalStyle.fontSize14, globalStyle.fontStyle]}>
+          加载中...</Text>
+      </View>);
+    }
     return (
       <>
-        <ScrollView style={style.main}>
+        <ScrollView style={style.main} refreshControl={
+          <RefreshControl
+            refreshing={this.state.refreshing}
+            onRefresh={this.onRefresh}
+          />
+        }>
           {/* 头部 */}
           <View style={[style.header, globalStyle.flex, globalStyle.justifyContentSpaceBetween,
           globalStyle.alignItemsCenter]}>
@@ -144,6 +206,31 @@ State
                 <Text style={[style.categoryItemTitle, globalStyle.fontSize14]}>
                   {item.title}</Text>
               </TouchableOpacity>)
+            })}
+          </View>
+          {/* banner */}
+          <ScrollView style={[style.bannerList, globalStyle.flex]} horizontal={true}
+            showsHorizontalScrollIndicator={false}>
+            {bannerList.map((v: any, k: number) => {
+              return (<TouchableOpacity key={k} style={style.bannerItem} activeOpacity={0.8}
+                onPress={() => this.props.navigation.push(v.link)}>
+                <Image style={style.bannerImg} source={v.img}></Image>
+              </TouchableOpacity>);
+            })}
+            <View style={style.scrollPaddingRight}></View>
+          </ScrollView>
+          {/* 设置列表 */}
+          <View style={style.settingList}>
+            {settingList.map((v: any, k: number) => {
+              return (<TouchableOpacity key={k} style={[style.settingItem, globalStyle.flex,
+              globalStyle.justifyContentSpaceBetween, globalStyle.alignItemsCenter]}>
+                <Text style={[style.settingTitle, globalStyle.fontSize15, globalStyle.fontStyle]}
+                  numberOfLines={1}>{v.name}</Text>
+                <View style={[globalStyle.flex, globalStyle.alignItemsCenter]}>
+                  <Text style={[style.settingDescription, globalStyle.fontSize15, globalStyle.fontStyle]}>{v.description}</Text>
+                  <Icon name="right" style={[style.settingIcon, globalStyle.fontSize14]}></Icon>
+                </View>
+              </TouchableOpacity>);
             })}
           </View>
         </ScrollView>

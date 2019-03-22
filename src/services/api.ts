@@ -207,6 +207,33 @@ export function updateGetuiCid(cid: string) {
 //   });
 // }
 
+/**
+ * 获取省市区
+ */
+export function getRegion() {
+  return bget({
+    url: "/common/getRegion",
+  });
+}
+/**
+ * 获取医疗机构
+ */
+export function getMedicalInstitutions(cityId: any) {
+  return bpost({
+    url: "/common/getMedicalInstitutions",
+    data: {
+      cityId,
+    }
+  });
+}
+/**
+ * 获取消息列表
+ */
+export function getInformationList() {
+  return bget({
+    url: "/information/getInformationList",
+  });
+}
 export default {
   bget,
   bpost,
@@ -220,4 +247,7 @@ export default {
   buildAliPayOrderInfo,
   buildWxPayOrderInfo,
   updateGetuiCid,
+  getRegion,
+  getMedicalInstitutions,
+  getInformationList,
 };
