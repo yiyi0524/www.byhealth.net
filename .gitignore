@@ -63,5 +63,6 @@ buck-out/
 .history/
 __tests__
 nbproject/
+/nbproject/private/private.xml
 .expo/
 juiceNote
