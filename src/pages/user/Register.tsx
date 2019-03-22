@@ -5,9 +5,6 @@ import React, { Component } from "react";
 import {
   TouchableOpacity, View, Text,
 } from "react-native";
-import {
-  Tabs, InputItem, Checkbox, Toast,
-} from '@ant-design/react-native';
 import sColor from "@styles/color";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
