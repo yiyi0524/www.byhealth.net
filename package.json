@@ -11,10 +11,13 @@
   },
   "dependencies": {
     "@ant-design/react-native": "^3.1.5",
+    "@react-native-community/async-storage": "^1.2.1",
+    "@types/moment": "^2.13.0",
     "@types/qs": "^6.5.2",
     "@types/react-redux": "^7.0.5",
     "@types/redux": "^3.6.0",
     "jsbdk": "git://github.com/buffge/jsbdk.git#master",
+    "moment": "^2.24.0",
     "qs": "^6.6.0",
     "react": "16.8.3",
     "react-native": "0.59.1",

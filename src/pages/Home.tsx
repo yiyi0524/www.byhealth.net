@@ -3,25 +3,25 @@ import React, { Component } from "react";
 import * as userAction from "@/redux/actions/user";
 import { Dispatch } from "redux";
 import { connect } from "react-redux";
-import {
-  ScrollView, Text, View, Image, TouchableOpacity, RefreshControl,
-} from "react-native";
-import { Icon, Toast, } from "@ant-design/react-native";
+import { ScrollView, Text, View, Image, TouchableOpacity, RefreshControl } from "react-native";
+import { Icon, Toast } from "@ant-design/react-native";
 import gImg from "@utils/img";
 import gStyle from "@utils/style";
+import api from "@api/api";
+import pathMap from "@/routes/pathMap";
 const style = gStyle.home;
 const globalStyle = gStyle.global;
 interface Props {
-  navigation: any,
+  navigation: any;
 }
 interface State {
-  refreshing: boolean,
-  hasLoad: boolean,
+  refreshing: boolean;
+  hasLoad: boolean;
 }
 export interface ShortcutItem {
-  icon: any,
-  title: string,
-  link: any,
+  icon: any;
+  title: string;
+  link: any;
 }
 const mapStateToProps = (state: AppState) => {
   return {
@@ -54,7 +54,7 @@ const bannerList = [
     img: gImg.home.banner_3,
     link: "",
   },
-]
+];
 const settingList = [
   {
     name: "复诊及诊后咨询",
@@ -76,7 +76,7 @@ const settingList = [
     description: "已开启自动发送",
     link: "",
   },
-]
+];
 @connect(
   mapStateToProps,
   mapDispatchToProps,
@@ -91,12 +91,12 @@ State
     this.state = this.getInitState();
     this.shortcutList = [
       {
-        icon: gImg.home.uploadPrescription,
+        icon: gImg.home.invite,
         title: "邀请患者",
         link: "",
       },
       {
-        icon: gImg.home.uploadPrescription,
+        icon: gImg.home.select,
         title: "选择患者",
         link: "",
       },
@@ -111,7 +111,7 @@ State
         link: "",
       },
       {
-        icon: gImg.home.uploadPrescription,
+        icon: gImg.home.sittingInformation,
         title: "坐诊信息",
         link: "",
       },
@@ -123,114 +123,189 @@ State
       hasLoad: false,
     };
   };
-  async componentDidMount() {
-    await this.init();
+  componentDidMount() {
+    this.init();
   }
-  init = () => {
-    setTimeout(() => {
-      this.setState({
-        hasLoad: true,
-      })
-    }, 1000)
-  }
+  init = async () => {
+    let isLogin = false;
+    try {
+      isLogin = await api.isLogin();
+    } catch (err) {
+      console.log(err);
+    }
+    this.setState({
+      hasLoad: true,
+    });
+    if (!isLogin) {
+      this.props.navigation.navigate(pathMap.Login);
+    }
+  };
   onRefresh = () => {
     this.setState({ refreshing: true });
-    Promise.all([
-      this.init(),
-      new Promise(s => setTimeout(s, 500)),
-    ]).then(_ => {
-      this.setState({ refreshing: false });
-    }).catch(err => {
-      Toast.fail("刷新失败,错误信息: " + err.msg);
-    });
-  }
+    Promise.all([this.init(), new Promise(s => setTimeout(s, 170))])
+      .then(_ => {
+        this.setState({ refreshing: false });
+      })
+      .catch(err => {
+        Toast.fail("刷新失败,错误信息: " + err.msg);
+      });
+  };
   render() {
     if (!this.state.hasLoad) {
-      return (<View style={style.loading}>
-        <Text style={[style.loadingTitle, globalStyle.fontSize14, globalStyle.fontStyle]}>
-          加载中...</Text>
-      </View>);
+      return (
+        <View style={style.loading}>
+          <Text style={[style.loadingTitle, globalStyle.fontSize14, globalStyle.fontStyle]}>
+            加载中...
+          </Text>
+        </View>
+      );
     }
     return (
       <>
-        <ScrollView style={style.main} refreshControl={
-          <RefreshControl
-            refreshing={this.state.refreshing}
-            onRefresh={this.onRefresh}
-          />
-        }>
+        <ScrollView
+          style={style.main}
+          refreshControl={
+            <RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh} />
+          }>
           {/* 头部 */}
-          <View style={[style.header, globalStyle.flex, globalStyle.justifyContentSpaceBetween,
-          globalStyle.alignItemsCenter]}>
-            <View style={[style.headerAvatarCircle, globalStyle.flex, globalStyle.alignItemsCenter]}>
-              <Image source={gImg.common.defaultAvatar} style={style.headerAvatar}></Image>
+          <View
+            style={[
+              style.header,
+              globalStyle.flex,
+              globalStyle.justifyContentSpaceBetween,
+              globalStyle.alignItemsCenter,
+            ]}>
+            <View
+              style={[style.headerAvatarCircle, globalStyle.flex, globalStyle.alignItemsCenter]}>
+              <Image source={gImg.common.defaultAvatar} style={style.headerAvatar} />
             </View>
             <View style={style.headerTitle}>
-              <Text style={[style.headerName, globalStyle.fontSize16, globalStyle.fontStyle]}
+              <Text
+                style={[style.headerName, globalStyle.fontSize16, globalStyle.fontStyle]}
                 numberOfLines={1}>
-                吴大伟的医馆</Text>
+                吴大伟的医馆
+              </Text>
               <View style={[globalStyle.flex, globalStyle.alignItemsCenter]}>
-                <Text style={[style.headerVerifiedTitle, globalStyle.fontStyle,
-                globalStyle.fontSize12]}>  医疗资质未认证</Text>
-                <TouchableOpacity style={[style.headerMedicalQualification, globalStyle.flex,
-                globalStyle.alignItemsCenter]}>
-                  <Text style={[style.headerMedicalQualificationTitle, globalStyle.fontStyle,
-                  globalStyle.fontSize12]}> 去认证</Text>
-                  <Icon name="right" style={[style.headerMedicalQualificationIcon,
-                  globalStyle.fontSize12]}></Icon>
+                <Text
+                  style={[
+                    style.headerVerifiedTitle,
+                    globalStyle.fontStyle,
+                    globalStyle.fontSize12,
+                  ]}>
+                  {" "}
+                  医疗资质未认证
+                </Text>
+                <TouchableOpacity
+                  style={[
+                    style.headerMedicalQualification,
+                    globalStyle.flex,
+                    globalStyle.alignItemsCenter,
+                  ]}>
+                  <Text
+                    style={[
+                      style.headerMedicalQualificationTitle,
+                      globalStyle.fontStyle,
+                      globalStyle.fontSize12,
+                    ]}>
+                    {" "}
+                    去认证
+                  </Text>
+                  <Icon
+                    name="right"
+                    style={[style.headerMedicalQualificationIcon, globalStyle.fontSize12]}
+                  />
                 </TouchableOpacity>
               </View>
             </View>
             <TouchableOpacity style={style.headerHelp}>
-              <Text style={[globalStyle.fontSize14, globalStyle.fontStyle, style.headerHelpTitle]}>帮助</Text>
+              <Text style={[globalStyle.fontSize14, globalStyle.fontStyle, style.headerHelpTitle]}>
+                帮助
+              </Text>
             </TouchableOpacity>
           </View>
           {/* 认证 */}
-          <TouchableOpacity style={[style.verified, globalStyle.flex,
-          globalStyle.alignItemsCenter, globalStyle.justifyContentSpaceBetween]}>
+          <TouchableOpacity
+            style={[style.verified, globalStyle.flex, globalStyle.alignItemsCenter,
+            globalStyle.justifyContentSpaceBetween,]} onPress={() => {
+              this.props.navigation.push(pathMap.RealNameAuth)
+            }}>
             <View style={[globalStyle.flex, globalStyle.alignItemsCenter]}>
               <Text style={[style.verifiedTitle, globalStyle.fontStyle, globalStyle.fontSize12]}>
-                认证</Text>
-              <Text style={[style.verifiedDescription, globalStyle.fontStyle, globalStyle.fontSize12]}>
-                您还未实名认证, 点此认证</Text>
+                认证
+              </Text>
+              <Text
+                style={[style.verifiedDescription, globalStyle.fontStyle, globalStyle.fontSize12]}>
+                您还未认证, 点此认证
+              </Text>
             </View>
-            <Icon name="right" style={[style.verifiedIcon, globalStyle.fontSize14]}></Icon>
+            <Icon name="right" style={[style.verifiedIcon, globalStyle.fontSize14]} />
           </TouchableOpacity>
           {/* 分类 */}
           <View style={[style.categoryList, globalStyle.flex, globalStyle.flexWrap]}>
             {this.shortcutList.map((item: any, k: any) => {
-              return (<TouchableOpacity key={k} style={style.categoryItem} onPress={() => {
-                this.props.navigation.push(item.link)
-              }}>
-                <Image style={style.categoryItemPic} source={item.icon}></Image>
-                <Text style={[style.categoryItemTitle, globalStyle.fontSize14]}>
-                  {item.title}</Text>
-              </TouchableOpacity>)
+              return (
+                <TouchableOpacity
+                  key={k}
+                  style={style.categoryItem}
+                  onPress={() => {
+                    this.props.navigation.push(item.link);
+                  }}>
+                  <Image style={style.categoryItemPic} source={item.icon} />
+                  <Text style={[style.categoryItemTitle, globalStyle.fontSize14]}>
+                    {item.title}
+                  </Text>
+                </TouchableOpacity>
+              );
             })}
           </View>
           {/* banner */}
-          <ScrollView style={[style.bannerList, globalStyle.flex]} horizontal={true}
+          <ScrollView
+            style={[style.bannerList, globalStyle.flex]}
+            horizontal={true}
             showsHorizontalScrollIndicator={false}>
             {bannerList.map((v: any, k: number) => {
-              return (<TouchableOpacity key={k} style={style.bannerItem} activeOpacity={0.8}
-                onPress={() => this.props.navigation.push(v.link)}>
-                <Image style={style.bannerImg} source={v.img}></Image>
-              </TouchableOpacity>);
+              return (
+                <TouchableOpacity
+                  key={k}
+                  style={style.bannerItem}
+                  activeOpacity={0.8}
+                  onPress={() => this.props.navigation.push(v.link)}>
+                  <Image style={style.bannerImg} source={v.img} />
+                </TouchableOpacity>
+              );
             })}
-            <View style={style.scrollPaddingRight}></View>
+            <View style={style.scrollPaddingRight} />
           </ScrollView>
           {/* 设置列表 */}
           <View style={style.settingList}>
             {settingList.map((v: any, k: number) => {
-              return (<TouchableOpacity key={k} style={[style.settingItem, globalStyle.flex,
-              globalStyle.justifyContentSpaceBetween, globalStyle.alignItemsCenter]}>
-                <Text style={[style.settingTitle, globalStyle.fontSize15, globalStyle.fontStyle]}
-                  numberOfLines={1}>{v.name}</Text>
-                <View style={[globalStyle.flex, globalStyle.alignItemsCenter]}>
-                  <Text style={[style.settingDescription, globalStyle.fontSize15, globalStyle.fontStyle]}>{v.description}</Text>
-                  <Icon name="right" style={[style.settingIcon, globalStyle.fontSize14]}></Icon>
-                </View>
-              </TouchableOpacity>);
+              return (
+                <TouchableOpacity
+                  key={k}
+                  style={[
+                    style.settingItem,
+                    globalStyle.flex,
+                    globalStyle.justifyContentSpaceBetween,
+                    globalStyle.alignItemsCenter,
+                  ]}>
+                  <Text
+                    style={[style.settingTitle, globalStyle.fontSize15, globalStyle.fontStyle]}
+                    numberOfLines={1}>
+                    {v.name}
+                  </Text>
+                  <View style={[globalStyle.flex, globalStyle.alignItemsCenter]}>
+                    <Text
+                      style={[
+                        style.settingDescription,
+                        globalStyle.fontSize15,
+                        globalStyle.fontStyle,
+                      ]}>
+                      {v.description}
+                    </Text>
+                    <Icon name="right" style={[style.settingIcon, globalStyle.fontSize14]} />
+                  </View>
+                </TouchableOpacity>
+              );
             })}
           </View>
         </ScrollView>

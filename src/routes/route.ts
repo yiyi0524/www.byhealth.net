@@ -1,12 +1,9 @@
 import { Platform } from "react-native";
 import bottomNav from "./bottomNav";
+import { StackNavigatorConfig, NavigationRouteConfigMap } from "react-navigation";
 import Login from "@pages/user/Login";
 import Register from "@pages/user/Register";
-import { StackNavigatorConfig } from "react-navigation";
-import { NavigationRouteConfigMap } from "react-navigation";
-//todo 判断是否登录,如果登录initialRouteName = "Index";
-//todo             如果没有登录initialRouteName = "Login"
-let initialRouteName = "Login";
+import ForgetPwd from "@pages/user/ForgetPwd";
 const config: [NavigationRouteConfigMap, StackNavigatorConfig] = [
   {
     Index: {
@@ -18,9 +15,12 @@ const config: [NavigationRouteConfigMap, StackNavigatorConfig] = [
     Register: {
       screen: Register,
     },
+    ForgetPwd: {
+      screen: ForgetPwd,
+    },
   },
   {
-    initialRouteName: initialRouteName,
+    initialRouteName: "Index",
     headerMode: "none",
     mode: Platform.OS === "ios" ? "modal" : "card",
   },

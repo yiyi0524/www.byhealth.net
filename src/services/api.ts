@@ -1,6 +1,7 @@
-import { LocalStorage as storage, request as BuffReq } from "jsbdk";
+import { request as BuffReq } from "jsbdk";
 import { Dimensions } from "react-native";
 import { BASE_URL } from "@config/api";
+import storage from "@utils/storage";
 import qs from "qs";
 export const windowWidth = Dimensions.get("window").width;
 export const windowHeight = Dimensions.get("window").height;
@@ -34,10 +35,10 @@ export async function isLogin() {
   if (!session) {
     return false;
   }
-  let isLogin = await new Promise(s => {
+  let isLogin: boolean = await new Promise(s => {
     try {
       bpost({
-        url: "/isLogin",
+        url: "/api/isLogin",
         headers: {
           session,
         },
@@ -59,7 +60,7 @@ export interface AccountLoginParam {
  */
 export async function accountLogin({ account, pwd }: AccountLoginParam) {
   return bpost({
-    url: "/api/user/accountLogin",
+    url: "/api/accountLogin",
     data: { account, pwd },
   });
 }
@@ -73,7 +74,7 @@ export interface PhoneLoginParam {
  */
 export async function phoneLogin({ phone, code, codeUuid }: PhoneLoginParam) {
   return bpost({
-    url: "/api/user/accountLogin",
+    url: "/api/phoneLogin",
     data: { phone, code, codeUuid },
   });
 }
@@ -82,7 +83,7 @@ export async function phoneLogin({ phone, code, codeUuid }: PhoneLoginParam) {
  */
 export async function logout() {
   return bget({
-    url: "/user/logout",
+    url: "/api/logout",
   });
 }
 
@@ -91,9 +92,43 @@ export async function logout() {
  */
 export function sendPhoneRegisterVerifyCode({ phone }: { phone: string }) {
   return bpost({
-    url: "/user/register/sendPhoneRegisterVerifyCode",
+    url: "/api/sendPhoneRegisterVerifyCode",
     data: {
       phone,
+    },
+  });
+}
+export interface registerParam {
+  smsUuid: string;
+  verifyCode: string;
+  name: string;
+  phone: string;
+  countyCid: string;
+  hospitalId?: number;
+  hospitalName?: string;
+}
+/**
+ * 注册
+ */
+export function register({
+  smsUuid,
+  verifyCode,
+  name,
+  phone,
+  countyCid,
+  hospitalId,
+  hospitalName,
+}: registerParam) {
+  return bpost({
+    url: "/api/register",
+    data: {
+      smsUuid,
+      verifyCode,
+      name,
+      phone,
+      countyCid,
+      hospitalId,
+      hospitalName,
     },
   });
 }
@@ -102,7 +137,7 @@ export function sendPhoneRegisterVerifyCode({ phone }: { phone: string }) {
  */
 export function getLoginPhoneVerifyCode({ phone }: { phone: string }) {
   return bpost({
-    url: "/user/login/getLoginPhoneVerifyCode",
+    url: "/api/getLoginPhoneVerifyCode",
     data: {
       phone,
     },
@@ -113,30 +148,60 @@ export function getLoginPhoneVerifyCode({ phone }: { phone: string }) {
  */
 export function getForgetPwdPhoneVerifyCode({ phone }: { phone: string }) {
   return bpost({
-    url: "/user/getForgetPwdPhoneVerifyCode",
+    url: "/api/getForgetPwdPhoneVerifyCode",
     data: {
       phone,
     },
   });
 }
-// /**
-//  * 检查忘记密码手机验证码是否正确
-//  */
-// export function checkforGetPwdVerifyCode(phone, uuid, code) {
-//   return request("/user/checkforGetPwdVerifyCode", { phone, uuid, code });
-// }
-// /**
-//  * 已登录修改密码
-//  */
-// export function modifyPwd(oriPwd, pwd, rePwd) {
-//   return request("/user/modifyPwd", { oriPwd, pwd, rePwd });
-// }
 /**
-//  * 手机验证码修改密码
-//  */
-// export function modifyPwdWithPhoneCode(phone, uuid, code, pwd, rePwd) {
-//   return request("/user/modifyPwdWithPhoneVerifyCode", { phone, uuid, code, pwd, rePwd });
-// }
+ * 检查忘记密码手机验证码是否正确
+ */
+export function checkforGetPwdVerifyCode({
+  phone,
+  uuid,
+  code,
+}: {
+  phone: string;
+  uuid: string;
+  code: string;
+}) {
+  return bpost({
+    url: "/api/checkForgetPwdVerifyCode",
+    data: {
+      phone,
+      uuid,
+      code,
+    },
+  });
+}
+/**
+ * 已登录修改密码
+ */
+export function modifyPwd({ oriPwd, pwd, rePwd }: { oriPwd: string; pwd: string; rePwd: string }) {
+  return bpost({ url: "/api/modifyPwd", data: { oriPwd, pwd, rePwd } });
+}
+/**
+ * 手机验证码修改密码
+ */
+export function modifyPwdWithPhoneCode({
+  phone,
+  uuid,
+  code,
+  pwd,
+  rePwd,
+}: {
+  phone: string;
+  uuid: string;
+  code: string;
+  pwd: string;
+  rePwd: string;
+}) {
+  return bpost({
+    url: "/api/modifyPwdWithPhoneVerifyCode",
+    data: { phone, uuid, code, pwd, rePwd },
+  });
+}
 export interface AliPayOrderInfo {
   body: string;
   subject: string;
@@ -194,7 +259,7 @@ export function updateGetuiCid(cid: string) {
 //   formData.append("name", "idCard");
 //   formData.append("idCard", {
 //     uri: file.url,
-//     name: "idcard.jpg",
+//     name: "idCard.jpg",
 //     type: "image/jpeg",
 //   });
 //   return buffFetch({
@@ -212,7 +277,7 @@ export function updateGetuiCid(cid: string) {
  */
 export function getRegion() {
   return bget({
-    url: "/common/getRegion",
+    url: "/getRegion",
   });
 }
 /**
@@ -223,7 +288,7 @@ export function getMedicalInstitutions(cityId: any) {
     url: "/common/getMedicalInstitutions",
     data: {
       cityId,
-    }
+    },
   });
 }
 /**
@@ -238,6 +303,7 @@ export default {
   bget,
   bpost,
   isLogin,
+  register,
   accountLogin,
   phoneLogin,
   logout,

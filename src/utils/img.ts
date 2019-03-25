@@ -17,6 +17,9 @@ export default {
   home: {
     prescriptionTemplate: require("@img/home/moban.png"),
     uploadPrescription: require("@img/home/shangchuan.png"),
+    sittingInformation: require("@img/home/xinxi.png"),
+    select: require("@img/home/xuanze.png"),
+    invite: require("@img/home/yaoqing.png"),
     banner_0: require("@img/home/banner_0.png"),
     banner_1: require("@img/home/banner_1.png"),
     banner_2: require("@img/home/banner_2.png"),

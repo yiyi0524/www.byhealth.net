@@ -1,38 +1,44 @@
 import global from "@/assets/styles/global";
 import * as userAction from "@/redux/actions/user";
 import { AppState } from "@/redux/stores/store";
-import { Icon, InputItem, Picker, Toast } from "@ant-design/react-native";
-import api, { registerParam } from "@api/api";
+import { ScrollView, Text, TouchableOpacity, View } from "react-native";
+import {
+  Icon, InputItem, Picker, Toast, ImagePicker,
+} from "@ant-design/react-native";
+import api from "@api/api";
 import hospitalApi from "@api/hospital";
 import pathMap from "@routes/pathMap";
-import gImg from "@utils/img";
 import gStyle from "@utils/style";
 import React, { Component } from "react";
-import { Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { NavigationScreenProp } from "react-navigation";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
-const style = gStyle.user.register;
+import sColor from "@styles/color";
+const style = gStyle.user.realNameAuth;
 interface Props {
   navigation: NavigationScreenProp<State>
 }
 interface State {
   selectHospitalActive: boolean,
-  name: string,
-  phone: string,
+  avatarSelectable: boolean,
+  hasLoad: boolean,
   hospitalName: string,
-  verificationCode: string,
-  verificationCodeUuid: string,
-  verificationCodeMsg: string,
+  name: string,
+  idCardNo: string,
+  profile: string,
+  gender: number,
+  technicalTitle: number,
   page: number,
   limit: number,
-  addressId: any,
+  departmentId: any,
+  adeptSymptomIdList: any,
   hospitalId: any,
   region: any,
   cityId: any,
   regionCidMapAreaName: any,
   filter: any,
   hospitalList: any,
+  avatar: any,
 }
 interface RegionCidMapAreaName extends Record<string, string> { }
 interface CityItem {
@@ -58,31 +64,55 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
   mapStateToProps,
   mapDispatchToProps,
 )
-export default class Register extends Component<
+export default class RealNameAuth extends Component<
 Props & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
 State> {
+  static navigationOptions = {
+    title: '认证',
+    headerStyle: {
+      backgroundColor: sColor.white,
+      height: 45,
+      elevation: 0,
+      borderBottomColor: sColor.colorDdd,
+    },
+    headerTintColor: sColor.color333,
+    headerTitleStyle: {
+      flex: 1,
+      alignItems: 'center',
+      justifyContent: 'center',
+      fontSize: 14,
+      textAlign: 'center',
+    },
+    headerRight: (
+      <Text></Text>
+    ),
+  };
   constructor(props: any) {
     super(props);
     this.state = this.getInitState();
   }
   getInitState = (): State => {
     return {
+      avatarSelectable: true,
       selectHospitalActive: false,
+      hasLoad: false,
       hospitalId: 0,
       page: 0,
       limit: 0,
-      name: "",
-      phone: "",
-      verificationCode: "",
-      verificationCodeUuid: "",
-      verificationCodeMsg: "获取验证码",
       hospitalName: "",
+      name: "",
+      idCardNo: "",
+      profile: "",
+      gender: 0,
+      technicalTitle: 0,
+      departmentId: [],
+      adeptSymptomIdList: [],
       filter: {},
-      addressId: [],
       region: [],
       cityId: [],
       regionCidMapAreaName: [],
       hospitalList: [],
+      avatar: [],
     };
   }
   componentDidMount() {
@@ -101,6 +131,9 @@ State> {
     } catch (err) {
       console.log(err.msg)
     }
+    this.setState({
+      hasLoad: true,
+    })
   }
   getChildCidMapAreaName = (arr: any, regionCidMapAreaName: any) => {
     for (let i = 0, len = arr.length; i < len; i++) {
@@ -146,53 +179,9 @@ State> {
       console.log(err.msg)
     }
   }
-  sendVerificationCode = () => {
-    if (this.state.phone === "") {
-      return Toast.fail('请输入手机号码', 3)
-    }
-    if (!/^1[3456789]\d{9}$/.test(this.state.phone)) {
-      return Toast.fail('请输入正确的手机号码', 3)
-    }
-    api.sendPhoneRegisterVerifyCode({ phone: this.state.phone }).then(json => {
-      Toast.info('发送成功', 1)
-      let timeout = 60;
-      this.setState({
-        verificationCodeMsg: timeout-- + '秒后重新发送'
-      })
-      let timer = setInterval(_ => {
-        this.setState({
-          verificationCodeMsg: timeout-- + '秒后重新发送'
-        })
-      }, 1000)
-      this.setState({
-        verificationCodeUuid: json.data.uuid,
-      })
-      setTimeout(_ => {
-        clearInterval(timer)
-        this.setState({
-          verificationCodeMsg: '获取验证码'
-        })
-      }, timeout * 1000);
-    }).catch(err => {
-      console.log(err)
-      Toast.info('发送失败 错误信息: ' + err.msg, 3);
-    })
-  }
   submit = async () => {
     if (this.state.name === "") {
       return Toast.fail("请输入姓名", 3)
-    }
-    if (this.state.phone === "") {
-      return Toast.fail("请输入手机号码", 3)
-    }
-    if (!/^1[3456789]\d{9}$/.test(this.state.phone)) {
-      return Toast.fail('请输入正确的手机号码', 3)
-    }
-    if (this.state.verificationCodeUuid === "") {
-      return Toast.fail("请获取验证码", 3)
-    }
-    if (this.state.verificationCode === "") {
-      return Toast.fail("请输入验证码", 3)
     }
     if (this.state.cityId.length === 0) {
       return Toast.fail("请选择地区", 3)
@@ -200,20 +189,9 @@ State> {
     if (this.state.hospitalId === 0 && this.state.hospitalName === "") {
       return Toast.fail("请选择医疗机构", 3)
     }
-    const param: registerParam = {
-      smsUuid: this.state.verificationCodeUuid,
-      verifyCode: this.state.verificationCode,
-      name: this.state.name,
-      phone: this.state.phone,
-      countyCid: this.state.cityId[2],
-    }
-    if (this.state.hospitalId !== 0) {
-      param.hospitalId = this.state.hospitalId;
-    } else {
-      param.hospitalName = this.state.hospitalName;
-    }
+
     try {
-      await api.register(param)
+      // await api.register(param)
       Toast.fail("注册成功", 2, () => {
         this.props.navigation.navigate(pathMap.Login)
       })
@@ -221,49 +199,50 @@ State> {
       console.log(err)
       Toast.fail("注册失败, 错误信息: " + err.msg, 3)
     }
-
+  }
+  handleFileChange = (avatar: any) => {
+    let avatarSelectable = avatar.length < 1;
+    this.setState({
+      avatar,
+      avatarSelectable,
+    });
   }
   render() {
+    if (!this.state.hasLoad) {
+      return (<View style={style.loading}>
+        <Text style={[style.loadingTitle, global.fontSize14, global.fontStyle]}>
+          加载中...</Text>
+      </View>);
+    }
     return (
       <>
         <View style={style.main}>
           <ScrollView style={style.content} keyboardShouldPersistTaps="handled">
-            <View style={[style.header, global.flex, global.justifyContentSpaceBetween, global.alignItemsCenter]}>
-              <TouchableOpacity style={style.headerLeft}
-                onPress={() => this.props.navigation.navigate(pathMap.Login)}>
-                <Text style={[style.headerLeftTitle, global.fontStyle, global.fontSize14]}>关闭</Text>
-              </TouchableOpacity>
-              <Text style={[style.headerTitle, global.fontStyle, global.fontSize14]}>注册</Text>
-              <Text style={style.headerLeft}></Text>
-            </View>
-            <View style={style.logo}>
-              <Image style={style.logoImg} source={gImg.common.logo}></Image>
+            <View style={style.Theme}>
+              <Text style={[style.ThemeTitle, global.fontStyle, global.fontSize16]}>
+                补充审核资料</Text>
             </View>
             <View style={style.form}>
+              <View style={[style.formTitle, global.flex, global.alignItemsCenter]}>
+                <Text style={style.formIcon}></Text>
+                <Text style={[style.formThem, global.fontStyle, global.fontSize14]}>请上传
+                  <Text style={[style.formImportant, global.fontStyle, global.fontSize14]}>
+                    正面照片</Text> , 我们将为您制作漂亮的头像</Text>
+              </View>
+              <View style={[style.formItem, style.formAvatar, global.flex, global.alignItemsCenter, global.justifyContentStart]}>
+                <Text>头像</Text>
+                <ImagePicker
+                  selectable={this.state.avatarSelectable}
+                  onChange={this.handleFileChange}
+                  files={this.state.avatar}
+                />
+              </View>
               <View style={style.formItem}>
                 <InputItem clear style={[style.input, global.fontStyle, global.fontSize14]}
                   value={this.state.name} placeholder="姓名"
                   onChange={name => {
                     this.setState({ name, })
                   }} />
-              </View>
-              <View style={style.formItem}>
-                <InputItem clear style={[style.input, global.fontStyle, global.fontSize14]}
-                  value={this.state.phone} placeholder="手机号码" type="number"
-                  onChange={phone => {
-                    this.setState({ phone, })
-                  }} />
-              </View>
-              <View style={style.formItem}>
-                <InputItem style={[style.input, global.fontStyle, global.fontSize14]}
-                  value={this.state.verificationCode} placeholder="验证码"
-                  onChange={verificationCode => {
-                    this.setState({ verificationCode, })
-                  }} />
-                <TouchableOpacity style={style.getVerificationCodeBtn}
-                  onPress={() => { this.sendVerificationCode() }}>
-                  <Text style={[style.verificationCode, global.fontStyle, global.fontSize14]}>{this.state.verificationCodeMsg}</Text>
-                </TouchableOpacity>
               </View>
               <View style={[style.formItem, style.pickerItem, global.flex,
               global.justifyContentSpaceBetween, global.alignItemsCenter]}>

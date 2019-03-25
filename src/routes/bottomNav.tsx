@@ -12,6 +12,7 @@ import Home from "@pages/Home";
 import PersonalCenter from "@pages/personal_center/Index";
 import AdvisoryIndex from "@pages/advisory/Index";
 import AddressBookIndex from "@pages/address_book/Index";
+import RealNameAuth from "@pages/user/RealNameAuth";
 const style = StyleSheet.create({
   icon: {
     width: 30,
@@ -154,6 +155,9 @@ const StacksOverTabs = createStackNavigator({
   },
   [pathMap.Test]: {
     screen: Test,
+  },
+  [pathMap.RealNameAuth]: {
+    screen: RealNameAuth,
   },
 });
 export default StacksOverTabs;

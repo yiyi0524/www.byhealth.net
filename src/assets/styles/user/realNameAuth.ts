@@ -1,7 +1,17 @@
 import { StyleSheet, PixelRatio } from "react-native";
 import sColor from "@styles/color";
-import { windowHeight } from "@api/api";
+import { windowHeight, windowWidth } from "@api/api";
 export default StyleSheet.create({
+  loading: {
+    width: windowWidth,
+    height: windowHeight,
+    backgroundColor: sColor.white,
+    justifyContent: "center",
+    flex: 1,
+  },
+  loadingTitle: {
+    textAlign: "center",
+  },
   main: {
     backgroundColor: sColor.white,
     margin: 0,
@@ -28,18 +38,42 @@ export default StyleSheet.create({
   headerTitle: {
     color: sColor.mainBlack,
   },
-  logo: {
-    alignItems: "center",
+  Theme: {
+
   },
-  logoImg: {
-    width: 160,
-    height: 40,
-    resizeMode: "contain",
-    marginTop: 20,
+  ThemeTitle: {
+    color: sColor.color888,
+    height: 55,
+    lineHeight: 55,
+    flex: 1,
+    textAlign: "center",
+    backgroundColor: sColor.mainBgColor,
   },
   form: {
-    padding: 15,
+    paddingLeft: 15,
     paddingRight: 30,
+  },
+  formTitle: {
+    height: 50,
+    borderBottomWidth: 1 / PixelRatio.get(),
+    borderBottomColor: sColor.colorDdd,
+  },
+  formIcon: {
+    width: 8,
+    height: 25,
+    backgroundColor: sColor.mainRed,
+  },
+  formThem: {
+    color: sColor.color999,
+    marginLeft: 5,
+  },
+  formImportant: {
+    color: sColor.mainRed
+  },
+  formAvatar: {
+    height: 85,
+    position: "relative",
+    justifyContent: "center",
   },
   formItem: {
     height: 55,
@@ -114,7 +148,7 @@ export default StyleSheet.create({
   },
   hospitalSelect: {
     position: "absolute",
-    top: 50,
+    top: 1 / PixelRatio.get(),
     width: "100%",
     backgroundColor: sColor.white,
     height: windowHeight,

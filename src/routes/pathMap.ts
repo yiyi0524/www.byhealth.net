@@ -6,4 +6,6 @@ export default {
   PersonalCenter: "PersonalCenter",
   Login: "Login",
   Register: "Register",
+  ForgetPwd: "ForgetPwd",
+  RealNameAuth: "RealNameAuth",
 };
