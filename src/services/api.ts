@@ -260,14 +260,10 @@ export function uploadImg(file: any) {
   formData.append("file", {
     uri: file.url,
     name: "file.jpg",
+    type: "image/jpeg",
   });
-  return bpost({
-    method: "POST",
-    url: "/uploadImg",
-    body: formData,
-    headers: {
-      "Content-Type": "multipart/form-data",
-    },
+  return BuffReq(BASE_URL, "/uploadImg", formData, "POST", "include", {
+    "Content-Type": "multipart/form-data",
   });
 }
 

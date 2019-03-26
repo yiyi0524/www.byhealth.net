@@ -7,6 +7,7 @@
     "test": "jest",
     "android": "react-native run-android",
     "build-android": "cd android && ./gradlew assembleRelease",
+    "clean": "cd android && ./gradlew clean",
     "reset-cache": "./node_modules/react-native/scripts/packager.sh start --resetCache"
   },
   "dependencies": {
