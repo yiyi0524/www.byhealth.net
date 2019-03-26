@@ -153,8 +153,11 @@ export default class Login extends Component<
         account: this.state.phone,
         pwd: this.state.pwd,
       })
-      .then(() => {
-        Toast.success("登录成功", 1);
+      .then(json => {
+        Toast.success("登录成功", 1, () => {
+          this.props.navigation.navigate(pathMap.Home);
+          storage.set("session", json.data.appSession as string, 3 * 60 * 24);
+        });
       })
       .catch(err => {
         Toast.fail("登录失败: " + err.msg, 2);
