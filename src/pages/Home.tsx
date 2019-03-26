@@ -3,7 +3,9 @@ import React, { Component } from "react";
 import * as userAction from "@/redux/actions/user";
 import { Dispatch } from "redux";
 import { connect } from "react-redux";
-import { ScrollView, Text, View, Image, TouchableOpacity, RefreshControl } from "react-native";
+import {
+  ScrollView, Text, View, Image, TouchableOpacity, RefreshControl,
+} from "react-native";
 import { Icon, Toast } from "@ant-design/react-native";
 import gImg from "@utils/img";
 import gStyle from "@utils/style";
@@ -14,9 +16,18 @@ const globalStyle = gStyle.global;
 interface Props {
   navigation: any;
 }
+interface bannerItem {
+  id: number,
+  url: string,
+  link: string,
+}
 interface State {
   refreshing: boolean;
   hasLoad: boolean;
+  isRealNameAuth: boolean,
+  avatar: string,
+  name: string,
+  bannerList: bannerItem[],
 }
 export interface ShortcutItem {
   icon: any;
@@ -37,24 +48,6 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
     },
   };
 };
-const bannerList = [
-  {
-    img: gImg.home.banner_0,
-    link: "",
-  },
-  {
-    img: gImg.home.banner_1,
-    link: "",
-  },
-  {
-    img: gImg.home.banner_2,
-    link: "",
-  },
-  {
-    img: gImg.home.banner_3,
-    link: "",
-  },
-];
 const settingList = [
   {
     name: "复诊及诊后咨询",
@@ -121,6 +114,10 @@ State
     return {
       refreshing: false,
       hasLoad: false,
+      isRealNameAuth: false,
+      avatar: "",
+      name: "",
+      bannerList: [],
     };
   };
   componentDidMount() {
@@ -130,6 +127,41 @@ State
     let isLogin = false;
     try {
       isLogin = await api.isLogin();
+      // let {data} = await api.getPersonalInfo();
+      let data = {
+        id: 1,
+        name: "吴大伟",
+        avatar: "",
+        isRealNameAuth: false,
+        bannerList: [
+          {
+            id: 1,
+            url: gImg.home.banner_0,
+            link: "",
+          },
+          {
+            id: 2,
+            url: gImg.home.banner_1,
+            link: "",
+          },
+          {
+            id: 3,
+            url: gImg.home.banner_2,
+            link: "",
+          },
+          {
+            id: 4,
+            url: gImg.home.banner_3,
+            link: "",
+          },
+        ],
+      }
+      this.setState({
+        name: data.name,
+        avatar: data.avatar,
+        isRealNameAuth: data.isRealNameAuth,
+        bannerList: data.bannerList,
+      })
     } catch (err) {
       console.log(err);
     }
@@ -137,7 +169,7 @@ State
       hasLoad: true,
     });
     if (!isLogin) {
-      this.props.navigation.navigate(pathMap.Login);
+      // this.props.navigation.navigate(pathMap.Login);
     }
   };
   onRefresh = () => {
@@ -177,39 +209,24 @@ State
             ]}>
             <View
               style={[style.headerAvatarCircle, globalStyle.flex, globalStyle.alignItemsCenter]}>
-              <Image source={gImg.common.defaultAvatar} style={style.headerAvatar} />
+              <Image source={this.state.avatar.indexOf("http") > 0 ?
+                { uri: this.state.avatar } : gImg.common.defaultAvatar}
+                style={style.headerAvatar} />
             </View>
             <View style={style.headerTitle}>
               <Text
                 style={[style.headerName, globalStyle.fontSize16, globalStyle.fontStyle]}
-                numberOfLines={1}>
-                吴大伟的医馆
-              </Text>
+                numberOfLines={1}> {this.state.name === "" ? "未知" : this.state.name}
+                的医馆</Text>
               <View style={[globalStyle.flex, globalStyle.alignItemsCenter]}>
-                <Text
-                  style={[
-                    style.headerVerifiedTitle,
-                    globalStyle.fontStyle,
-                    globalStyle.fontSize12,
-                  ]}>
-                  {" "}
-                  医疗资质未认证
-                </Text>
+                <Text style={[style.headerVerifiedTitle, globalStyle.fontStyle,
+                globalStyle.fontSize12,]}>  医疗资质{this.state.isRealNameAuth ?
+                  "已认证" : "未认证"} </Text>
                 <TouchableOpacity
-                  style={[
-                    style.headerMedicalQualification,
-                    globalStyle.flex,
-                    globalStyle.alignItemsCenter,
-                  ]}>
-                  <Text
-                    style={[
-                      style.headerMedicalQualificationTitle,
-                      globalStyle.fontStyle,
-                      globalStyle.fontSize12,
-                    ]}>
-                    {" "}
-                    去认证
-                  </Text>
+                  style={[this.state.isRealNameAuth ? globalStyle.hidden : style.headerMedicalQualification, globalStyle.flex,
+                  globalStyle.alignItemsCenter,]}>
+                  <Text style={[style.headerMedicalQualificationTitle,
+                  globalStyle.fontStyle, globalStyle.fontSize12,]}>  去认证 </Text>
                   <Icon
                     name="right"
                     style={[style.headerMedicalQualificationIcon, globalStyle.fontSize12]}
@@ -225,16 +242,17 @@ State
           </View>
           {/* 认证 */}
           <TouchableOpacity
-            style={[style.verified, globalStyle.flex, globalStyle.alignItemsCenter,
+            style={[this.state.isRealNameAuth ? globalStyle.hidden : style.verified,
+            globalStyle.flex, globalStyle.alignItemsCenter,
             globalStyle.justifyContentSpaceBetween,]} onPress={() => {
               this.props.navigation.push(pathMap.RealNameAuth)
             }}>
-            <View style={[globalStyle.flex, globalStyle.alignItemsCenter]}>
+            <View style={[style.verifiedTheme, globalStyle.flex,
+            globalStyle.alignItemsCenter]}>
               <Text style={[style.verifiedTitle, globalStyle.fontStyle, globalStyle.fontSize12]}>
                 认证
               </Text>
-              <Text
-                style={[style.verifiedDescription, globalStyle.fontStyle, globalStyle.fontSize12]}>
+              <Text style={[style.verifiedDescription, globalStyle.fontStyle, globalStyle.fontSize12]}>
                 您还未认证, 点此认证
               </Text>
             </View>
@@ -259,18 +277,14 @@ State
             })}
           </View>
           {/* banner */}
-          <ScrollView
+          <ScrollView horizontal={true}
             style={[style.bannerList, globalStyle.flex]}
-            horizontal={true}
             showsHorizontalScrollIndicator={false}>
-            {bannerList.map((v: any, k: number) => {
+            {this.state.bannerList.map((v: any, k: number) => {
               return (
-                <TouchableOpacity
-                  key={k}
-                  style={style.bannerItem}
-                  activeOpacity={0.8}
-                  onPress={() => this.props.navigation.push(v.link)}>
-                  <Image style={style.bannerImg} source={v.img} />
+                <TouchableOpacity key={k} style={style.bannerItem}
+                  activeOpacity={0.8} onPress={() => console.log(v.link)}>
+                  <Image style={style.bannerImg} source={v.url} />
                 </TouchableOpacity>
               );
             })}

@@ -76,6 +76,9 @@ export default StyleSheet.create({
     backgroundColor: sColor.mainYellow,
     marginBottom: 15,
   },
+  verifiedTheme: {
+    marginBottom: 4,
+  },
   verifiedTitle: {
     paddingLeft: 3,
     paddingRight: 3,
@@ -93,6 +96,8 @@ export default StyleSheet.create({
   /**分类 */
   categoryList: {
     padding: 15,
+    borderBottomWidth: 1 / PixelRatio.get(),
+    borderBottomColor: sColor.colorDdd,
   },
   categoryItem: {
     width: (windowWidth - 30) / 4,
@@ -113,7 +118,8 @@ export default StyleSheet.create({
    */
   bannerList: {
     backgroundColor: sColor.mainBgColor,
-    padding: 15,
+    paddingLeft: 15,
+    paddingRight: 15,
   },
   scrollPaddingRight: {
     width: 15,
@@ -127,6 +133,8 @@ export default StyleSheet.create({
     borderWidth: 1 / PixelRatio.get(),
     borderColor: sColor.colorCcc,
     overflow: "hidden",
+    marginTop: 15,
+    marginBottom: 15,
   },
   bannerImg: {
     width: 140,

@@ -21,6 +21,7 @@ export default StyleSheet.create({
   },
   content: {
     flex: 0.9,
+    paddingBottom: 50,
   },
   header: {
     height: 45,
@@ -49,6 +50,15 @@ export default StyleSheet.create({
     textAlign: "center",
     backgroundColor: sColor.mainBgColor,
   },
+  ThemeTitle_2: {
+    color: sColor.color888,
+    height: 90,
+    padding: 15,
+    lineHeight: 30,
+    flex: 1,
+    textAlign: "center",
+    backgroundColor: sColor.mainBgColor,
+  },
   form: {
     paddingLeft: 15,
     paddingRight: 30,
@@ -56,7 +66,9 @@ export default StyleSheet.create({
   formTitle: {
     height: 50,
     borderBottomWidth: 1 / PixelRatio.get(),
+    borderTopWidth: 1 / PixelRatio.get(),
     borderBottomColor: sColor.colorDdd,
+    borderTopColor: sColor.colorDdd,
   },
   formIcon: {
     width: 8,
@@ -71,7 +83,7 @@ export default StyleSheet.create({
     color: sColor.mainRed
   },
   formAvatar: {
-    height: 85,
+    height: 95,
     position: "relative",
     justifyContent: "center",
   },
@@ -79,6 +91,20 @@ export default StyleSheet.create({
     height: 55,
     position: "relative",
     justifyContent: "center",
+  },
+  formItem_2: {
+    paddingTop: 15,
+    paddingBottom: 15,
+  },
+  fromItemTitle: {
+    color: sColor.color999,
+    marginLeft: 15,
+    marginRight: 15,
+  },
+  fromItemTitle_2: {
+    width: 160,
+    color: sColor.colorCcc,
+    marginLeft: 15,
   },
   hospital: {},
   hospitalTitle: {
@@ -196,5 +222,61 @@ export default StyleSheet.create({
   addHospitalBtn: {
     color: sColor.mainRed,
     marginRight: 15,
+  },
+  // 擅长
+  adeptSymptom: {
+    position: "absolute",
+    top: 1 / PixelRatio.get(),
+    width: "100%",
+    backgroundColor: sColor.white,
+    height: windowHeight,
+  },
+  closeAdeptSymptom: {
+    height: 45,
+    lineHeight: 45,
+    backgroundColor: sColor.mainBgColor,
+    color: sColor.mainBlack,
+    paddingLeft: 15,
+    marginTop: -1,
+  },
+  adeptSymptomContent: {
+    padding: 15,
+  },
+  symptomList: {},
+  symptomTitle: {
+    height: 45,
+    lineHeight: 45,
+    color: sColor.color888,
+  },
+  symptomItem: {
+    padding: 12,
+    borderWidth: 1 / PixelRatio.get(),
+    borderColor: sColor.colorDdd,
+    marginLeft: 10,
+    marginBottom: 10,
+    color: sColor.color666,
+    borderRadius: 5,
+  },
+  symptomItemActive: {
+    padding: 12,
+    borderWidth: 1 / PixelRatio.get(),
+    borderColor: sColor.mainRed,
+    marginLeft: 10,
+    marginBottom: 10,
+    backgroundColor: sColor.mainRed,
+    color: sColor.white,
+    borderRadius: 5,
+  },
+  adeptSymptomIdList: {
+    paddingTop: 15,
+    paddingBottom: 15,
+  },
+  adeptSymptomIdItem: {
+    padding: 8,
+    backgroundColor: sColor.mainRed,
+    color: sColor.white,
+    marginLeft: 10,
+    marginBottom: 10,
+    borderRadius: 5,
   },
 });

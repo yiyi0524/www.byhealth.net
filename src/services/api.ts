@@ -254,23 +254,22 @@ export function updateGetuiCid(cid: string) {
 // /**
 //  * 上传图片
 //  */
-// export function uploadImg(file) {
-//   let formData = new FormData();
-//   formData.append("name", "idCard");
-//   formData.append("idCard", {
-//     uri: file.url,
-//     name: "idCard.jpg",
-//     type: "image/jpeg",
-//   });
-//   return buffFetch({
-//     method: "POST",
-//     url: BASE_URL + "/uploadImg",
-//     body: formData,
-//     headers: {
-//       "Content-Type": "multipart/form-data",
-//     },
-//   });
-// }
+export function uploadImg(file: any) {
+  let formData = new FormData();
+  formData.append("name", "file");
+  formData.append("file", {
+    uri: file.url,
+    name: "file.jpg",
+  });
+  return bpost({
+    method: "POST",
+    url: "/uploadImg",
+    body: formData,
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+}
 
 /**
  * 获取省市区
@@ -300,6 +299,7 @@ export function getInformationList() {
   });
 }
 export default {
+  uploadImg,
   bget,
   bpost,
   isLogin,
