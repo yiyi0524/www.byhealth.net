@@ -169,7 +169,7 @@ State
       hasLoad: true,
     });
     if (!isLogin) {
-      // this.props.navigation.navigate(pathMap.Login);
+      this.props.navigation.navigate(pathMap.Login);
     }
   };
   onRefresh = () => {
