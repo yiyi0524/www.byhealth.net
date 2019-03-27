@@ -7,7 +7,7 @@ export interface UserState {
 const initState: UserState = {
   isLogin: false,
   uid: 1,
-  name: "buffge",
+  name: "buffge"
 };
 export interface Action<T> {
   type: string;

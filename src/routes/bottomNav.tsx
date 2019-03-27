@@ -1,8 +1,9 @@
 import React from "react";
 import { Image, StyleSheet, PixelRatio } from "react-native";
 import {
-  createBottomTabNavigator, createStackNavigator,
-  getActiveChildNavigationOptions,
+  createBottomTabNavigator,
+  createStackNavigator,
+  getActiveChildNavigationOptions
 } from "react-navigation";
 import pathMap from "./pathMap";
 import gImg from "@utils/img";
@@ -13,41 +14,49 @@ import PersonalCenter from "@pages/personal_center/Index";
 import AdvisoryIndex from "@pages/advisory/Index";
 import AddressBookIndex from "@pages/address_book/Index";
 import RealNameAuth from "@pages/user/RealNameAuth";
+import AdvisoryChat from "@pages/advisory/Chat";
 const style = StyleSheet.create({
   icon: {
     width: 30,
     height: 30,
-    resizeMode: "center",
-  },
-})
+    resizeMode: "center"
+  }
+});
 const TabNav = createBottomTabNavigator(
   {
     [pathMap.Home]: {
       screen: Home,
       headerMode: "none",
-      navigationOptions: ({ }) => ({
+      navigationOptions: ({}) => ({
         title: "医馆",
         tabBarIcon: ({ focused }: { focused: boolean }) => {
-          return <Image style={style.icon}
-            source={focused ? gImg.common.homeActive : gImg.common.home} />;
-        },
+          return (
+            <Image
+              style={style.icon}
+              source={focused ? gImg.common.homeActive : gImg.common.home}
+            />
+          );
+        }
       }),
       tabBarOnPress: (obj: any) => {
         if (obj.navigation.state.params && obj.navigation.state.params.init) {
           obj.navigation.state.params.init();
         }
         obj.navigation.navigate(obj.navigation.state.routeName);
-      },
+      }
     },
     [pathMap.AdvisoryIndex]: {
       screen: AdvisoryIndex,
       headerMode: "none",
-      navigationOptions: ({ }) => ({
+      navigationOptions: ({}) => ({
         title: "咨询",
         tabBarIcon: ({ focused }: { focused: boolean }) => {
           return (
-            <Image style={style.icon}
-              source={focused ? gImg.common.advisoryActive : gImg.common.advisory}
+            <Image
+              style={style.icon}
+              source={
+                focused ? gImg.common.advisoryActive : gImg.common.advisory
+              }
             />
           );
         },
@@ -56,18 +65,23 @@ const TabNav = createBottomTabNavigator(
           if (obj.navigation.state.params && obj.navigation.state.params.init) {
             obj.navigation.state.params.init();
           }
-        },
-      }),
+        }
+      })
     },
     [pathMap.AddressBookIndex]: {
       screen: AddressBookIndex,
       headerMode: "none",
-      navigationOptions: ({ }) => ({
+      navigationOptions: ({}) => ({
         title: "通讯录",
         tabBarIcon: ({ focused }: { focused: boolean }) => {
           return (
-            <Image style={style.icon}
-              source={focused ? gImg.common.addressBookActive : gImg.common.addressBook}
+            <Image
+              style={style.icon}
+              source={
+                focused
+                  ? gImg.common.addressBookActive
+                  : gImg.common.addressBook
+              }
             />
           );
         },
@@ -76,18 +90,23 @@ const TabNav = createBottomTabNavigator(
           if (obj.navigation.state.params && obj.navigation.state.params.init) {
             obj.navigation.state.params.init();
           }
-        },
-      }),
+        }
+      })
     },
     [pathMap.PersonalCenter]: {
       screen: PersonalCenter,
       headerMode: "none",
-      navigationOptions: ({ }) => ({
+      navigationOptions: ({}) => ({
         title: "我的",
         tabBarIcon: ({ focused }: { focused: boolean }) => {
           return (
-            <Image style={style.icon}
-              source={focused ? gImg.common.personalCenterActive : gImg.common.personalCenter}
+            <Image
+              style={style.icon}
+              source={
+                focused
+                  ? gImg.common.personalCenterActive
+                  : gImg.common.personalCenter
+              }
             />
           );
         },
@@ -96,9 +115,9 @@ const TabNav = createBottomTabNavigator(
           if (obj.navigation.state.params && obj.navigation.state.params.init) {
             obj.navigation.state.params.init(); //查询数据
           }
-        },
-      }),
-    },
+        }
+      })
+    }
   },
   {
     initialRouteName: "Home",
@@ -114,21 +133,35 @@ const TabNav = createBottomTabNavigator(
       style: {
         backgroundColor: sColor.white,
         height: 50,
-        borderTopColor: sColor.colorEee,
+        borderTopColor: sColor.colorEee
       },
       tabStyle: {
         height: 50,
         paddingTop: 5,
-        paddingBottom: 5,
+        paddingBottom: 5
       },
       labelStyle: {
-        fontSize: 10,
-      },
-    },
-  },
+        fontSize: 10
+      }
+    }
+  }
 );
 TabNav.navigationOptions = ({ navigation, screenProps }: any) => {
   const childOptions = getActiveChildNavigationOptions(navigation, screenProps);
+  if (childOptions.title === "医馆") {
+    return {
+      title: childOptions.title,
+      headerTitleStyle: {
+        color: sColor.white
+      },
+      headerStyle: {
+        height: 0,
+        overFlow: "hidden",
+        elevation: 0,
+        borderBottomWidth: 0
+      }
+    };
+  }
   return {
     title: childOptions.title,
     headerTitleStyle: {
@@ -137,27 +170,30 @@ TabNav.navigationOptions = ({ navigation, screenProps }: any) => {
       justifyContent: "center",
       alignItems: "center",
       flex: 1,
-      fontSize: 15,
+      fontSize: 16
     },
     headerStyle: {
       height: 50,
       backgroundColor: sColor.white,
       elevation: 0,
       borderBottomColor: sColor.colorEee,
-      borderBottomWidth: 1 / PixelRatio.get(),
-    },
+      borderBottomWidth: 0
+    }
   };
 };
 
 const StacksOverTabs = createStackNavigator({
   Root: {
-    screen: TabNav,
+    screen: TabNav
   },
   [pathMap.Test]: {
-    screen: Test,
+    screen: Test
   },
   [pathMap.RealNameAuth]: {
-    screen: RealNameAuth,
+    screen: RealNameAuth
   },
+  [pathMap.AdvisoryChat]: {
+    screen: AdvisoryChat
+  }
 });
 export default StacksOverTabs;

@@ -8,21 +8,53 @@ import {
   View,
   Platform,
   PermissionsAndroid,
+  Image
 } from "react-native";
-import { Icon, InputItem, Picker, Toast, ImagePicker } from "@ant-design/react-native";
+import {
+  Icon,
+  InputItem,
+  Picker,
+  Toast,
+  ImagePicker,
+  TextareaItem
+} from "@ant-design/react-native";
 import api from "@api/api";
+import doctorApi, { authParam } from "@api/doctor";
+import { BASE_URL } from "@config/api";
 import hospitalApi from "@api/hospital";
-import pathMap from "@routes/pathMap";
 import gStyle from "@utils/style";
 import React, { Component } from "react";
 import { NavigationScreenProp } from "react-navigation";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import sColor from "@styles/color";
-import { GENDER, GENDER_ZH, TECHNICAL_TITLE, TECHNICAL_TITLE_ZH } from "@api/doctor";
+import gImg from "@utils/img";
+import {
+  GENDER,
+  GENDER_ZH,
+  TECHNICAL_TITLE,
+  TECHNICAL_TITLE_ZH
+} from "@api/doctor";
 const style = gStyle.user.realNameAuth;
 interface Props {
   navigation: NavigationScreenProp<State>;
+}
+interface adeptSymptomIdItem {
+  id: number;
+  name: string;
+}
+interface hospitalItem {
+  id: number;
+  name: string;
+}
+interface picture {
+  name: string;
+  picId: number;
+  url: string;
+}
+interface hospitalDepartmentItem {
+  value: number;
+  label: string;
 }
 interface State {
   selectHospitalActive: boolean;
@@ -32,29 +64,32 @@ interface State {
   qualificationCertificatePicIdSelectable: boolean;
   technicalqualificationCertificatePicIdSelectable: boolean;
   hasLoad: boolean;
+  previewPicFirstActive: boolean;
+  previewPicSecondActive: boolean;
   hospitalName: string;
   name: string;
   idCardNo: string;
   profile: string;
   page: number;
   limit: number;
-  gender: any;
-  technicalTitle: any;
-  departmentId: any;
-  adeptSymptomIdList: any;
-  hospitalId: any;
+  gender: [number];
+  technicalTitle: [number];
+  departmentId: [number];
+  adeptSymptomIdList: adeptSymptomIdItem[];
+  hospitalId: number;
   region: any;
-  cityId: any;
+  cityId: string[];
   regionCidMapAreaName: any;
-  filter: any;
-  hospitalList: any;
-  avatar: any;
-  hospitalDepartment: any; //科室
+  filter: {};
+  hospitalList: hospitalItem[];
+  avatar: picture[];
+  hospitalDepartment: hospitalDepartmentItem[]; //科室
   hospitalDepartmentMap: any;
   hospitalDepartmentSymptom: any; //症状
   practisingCertificatePicIdList: any; //医生执业证书
   qualificationCertificatePicIdList: any; //医生资格证书
-  technicalqualificationCertificatePicIdList: any; //专业技术资格证书9张
+  technicalqualificationCertificatePicIdList: any; //专业技术资格证书10张
+  avatarId: number;
 }
 interface RegionCidMapAreaName extends Record<string, string> {}
 interface CityItem {
@@ -70,22 +105,24 @@ const mapStateToProps = (state: AppState) => {
   return {
     isLogin: state.user.isLogin,
     name: state.user.name,
-    uid: state.user.uid,
+    uid: state.user.uid
   };
 };
 const mapDispatchToProps = (dispatch: Dispatch) => {
   return {
     login: (preload: userAction.UserInfo) => {
       dispatch(userAction.userLogin(preload));
-    },
+    }
   };
 };
 @connect(
   mapStateToProps,
-  mapDispatchToProps,
+  mapDispatchToProps
 )
 export default class RealNameAuth extends Component<
-  Props & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
+  Props &
+    ReturnType<typeof mapStateToProps> &
+    ReturnType<typeof mapDispatchToProps>,
   State
 > {
   static navigationOptions = {
@@ -94,7 +131,7 @@ export default class RealNameAuth extends Component<
       backgroundColor: sColor.white,
       height: 45,
       elevation: 0,
-      borderBottomColor: sColor.colorDdd,
+      borderBottomColor: sColor.colorDdd
     },
     headerTintColor: sColor.color333,
     headerTitleStyle: {
@@ -102,9 +139,9 @@ export default class RealNameAuth extends Component<
       alignItems: "center",
       justifyContent: "center",
       fontSize: 14,
-      textAlign: "center",
+      textAlign: "center"
     },
-    headerRight: <Text />,
+    headerRight: <Text />
   };
   gender: genderItem[] = [];
   technicalTitle: genderItem[] = [];
@@ -113,30 +150,30 @@ export default class RealNameAuth extends Component<
     this.gender = [
       {
         value: GENDER.MAN,
-        label: GENDER_ZH[GENDER.MAN],
+        label: GENDER_ZH[GENDER.MAN]
       },
       {
         value: GENDER.WOMAN,
-        label: GENDER_ZH[GENDER.WOMAN],
-      },
+        label: GENDER_ZH[GENDER.WOMAN]
+      }
     ];
     this.technicalTitle = [
       {
         value: TECHNICAL_TITLE.RESIDENT,
-        label: TECHNICAL_TITLE_ZH[TECHNICAL_TITLE.RESIDENT],
+        label: TECHNICAL_TITLE_ZH[TECHNICAL_TITLE.RESIDENT]
       },
       {
         value: TECHNICAL_TITLE.ATTENDING_DOCTOR,
-        label: TECHNICAL_TITLE_ZH[TECHNICAL_TITLE.ATTENDING_DOCTOR],
+        label: TECHNICAL_TITLE_ZH[TECHNICAL_TITLE.ATTENDING_DOCTOR]
       },
       {
         value: TECHNICAL_TITLE.DEPUTY_CHIEF_PHYSICIAN,
-        label: TECHNICAL_TITLE_ZH[TECHNICAL_TITLE.DEPUTY_CHIEF_PHYSICIAN],
+        label: TECHNICAL_TITLE_ZH[TECHNICAL_TITLE.DEPUTY_CHIEF_PHYSICIAN]
       },
       {
         value: TECHNICAL_TITLE.CHIEF_PHYSICIAN,
-        label: TECHNICAL_TITLE_ZH[TECHNICAL_TITLE.CHIEF_PHYSICIAN],
-      },
+        label: TECHNICAL_TITLE_ZH[TECHNICAL_TITLE.CHIEF_PHYSICIAN]
+      }
     ];
     this.state = this.getInitState();
   }
@@ -149,6 +186,8 @@ export default class RealNameAuth extends Component<
       selectHospitalActive: false,
       selectAdeptSymptomActive: false,
       hasLoad: false,
+      previewPicFirstActive: false,
+      previewPicSecondActive: false,
       hospitalId: 0,
       page: 1,
       limit: -1,
@@ -156,8 +195,8 @@ export default class RealNameAuth extends Component<
       name: "",
       idCardNo: "",
       profile: "",
-      gender: [],
-      technicalTitle: [],
+      gender: [0],
+      technicalTitle: [-1],
       filter: {},
       region: [],
       cityId: [],
@@ -166,12 +205,13 @@ export default class RealNameAuth extends Component<
       avatar: [],
       hospitalDepartment: [], //科室
       hospitalDepartmentMap: [],
-      departmentId: [],
+      departmentId: [-1],
       hospitalDepartmentSymptom: [], //症状
       adeptSymptomIdList: [], //擅长
       practisingCertificatePicIdList: [], //医生执业证书
       qualificationCertificatePicIdList: [], //医生资格证书
       technicalqualificationCertificatePicIdList: [], //专业技术资格证书9张
+      avatarId: 0
     };
   };
   async componentDidMount() {
@@ -186,8 +226,8 @@ export default class RealNameAuth extends Component<
           {
             title: "从外部存储加载照片的权限",
             message: "必须授予权限才能在手机上列出照片供您选择。",
-            buttonPositive: "",
-          },
+            buttonPositive: ""
+          }
         );
         if (granted === PermissionsAndroid.RESULTS.GRANTED) {
         } else {
@@ -205,30 +245,33 @@ export default class RealNameAuth extends Component<
         hospitalDepartmentList = [],
         hospitalDepartmentMap = [];
       let {
-        data: { region: oriRegion },
+        data: { region: oriRegion }
       } = await api.getRegion();
-      regionCidMapAreaName = this.getChildCidMapAreaName(oriRegion, regionCidMapAreaName);
+      regionCidMapAreaName = this.getChildCidMapAreaName(
+        oriRegion,
+        regionCidMapAreaName
+      );
       region = this.generateFormatRegion(oriRegion);
       let {
-        data: { list: hospitalDepartment },
+        data: { list: hospitalDepartment }
       } = await hospitalApi.getDepartmentList({
         page: this.state.page,
         limit: this.state.limit,
-        filter: this.state.filter,
+        filter: this.state.filter
       });
       for (let v of hospitalDepartment) {
         hospitalDepartmentList.push({
           value: v.id,
-          label: v.name,
+          label: v.name
         });
-        hospitalDepartmentMap.push(v.name);
+        hospitalDepartmentMap[v.id] = v.name;
       }
       let {
-        data: { list: hospitalDepartmentSymptom },
+        data: { list: hospitalDepartmentSymptom }
       } = await hospitalApi.getAllSymptomList({
         page: this.state.page,
         limit: this.state.limit,
-        filter: this.state.filter,
+        filter: this.state.filter
       });
       for (let v of hospitalDepartmentSymptom) {
         for (let v1 of v.symptomList) {
@@ -240,13 +283,13 @@ export default class RealNameAuth extends Component<
         regionCidMapAreaName,
         hospitalDepartment: hospitalDepartmentList,
         hospitalDepartmentMap,
-        hospitalDepartmentSymptom,
+        hospitalDepartmentSymptom
       });
     } catch (err) {
       console.log(err.msg);
     }
     this.setState({
-      hasLoad: true,
+      hasLoad: true
     });
   };
   getChildCidMapAreaName = (arr: any, regionCidMapAreaName: any) => {
@@ -268,7 +311,7 @@ export default class RealNameAuth extends Component<
       let item = {
         value: arr[i].cid,
         label: arr[i].areaName,
-        children,
+        children
       };
       cityList.push(item);
     }
@@ -276,20 +319,20 @@ export default class RealNameAuth extends Component<
   };
   chooseCityId = async (cityId: any) => {
     this.setState({
-      cityId,
+      cityId
     });
     try {
       let {
-        data: { list: hospitalList },
+        data: { list: hospitalList }
       } = await hospitalApi.getList({
         page: this.state.page,
         limit: this.state.limit,
         filter: {
-          countyCid: cityId[2],
-        },
+          countyCid: cityId[2]
+        }
       });
       this.setState({
-        hospitalList,
+        hospitalList
       });
     } catch (err) {
       console.log(err.msg);
@@ -308,66 +351,231 @@ export default class RealNameAuth extends Component<
     if (this.state.hospitalId === 0 && this.state.hospitalName === "") {
       return Toast.fail("请选择医疗机构", 3);
     }
-
+    if (this.state.idCardNo === "") {
+      return Toast.fail("请输入身份证号码", 3);
+    }
+    if (this.state.idCardNo === "") {
+      return Toast.fail("请输入身份证号码", 3);
+    }
+    if (!api.idCardIDChecked(this.state.idCardNo)) {
+      return Toast.fail("身份证格式不正确", 3);
+    }
+    if (this.state.gender[0] === 0) {
+      return Toast.fail("请选择性别", 3);
+    }
+    if (this.state.technicalTitle[0] === -1) {
+      return Toast.fail("请选择职称", 3);
+    }
+    if (this.state.departmentId[0] === -1) {
+      return Toast.fail("请选择科室", 3);
+    }
+    if (this.state.adeptSymptomIdList.length === 0) {
+      return Toast.fail("请选择擅长", 3);
+    }
+    if (this.state.practisingCertificatePicIdList.length === 0) {
+      return Toast.fail("请上传医师执业证书", 3);
+    }
+    if (this.state.practisingCertificatePicIdList.length === 1) {
+      return Toast.fail("请上传两张医师执业证书", 3);
+    }
+    if (this.state.qualificationCertificatePicIdList.length === 0) {
+      return Toast.fail("请上传医师资格证书", 3);
+    }
+    if (this.state.qualificationCertificatePicIdList.length === 1) {
+      return Toast.fail("请上传两张医师资格证书", 3);
+    }
+    let adeptSymptomIds: any = [],
+      adeptSymptomIdList = this.state.adeptSymptomIdList;
+    adeptSymptomIds.pop();
+    for (let v of adeptSymptomIdList) {
+      adeptSymptomIds.push(v.id);
+    }
+    let practisingCertificatePicIds: any = [],
+      practisingCertificatePicIdList = this.state
+        .practisingCertificatePicIdList;
+    for (let v of practisingCertificatePicIdList) {
+      practisingCertificatePicIds.push(v.picId);
+    }
+    let qualificationCertificatePicIds: any = [],
+      qualificationCertificatePicIdList = this.state
+        .qualificationCertificatePicIdList;
+    for (let v of qualificationCertificatePicIdList) {
+      qualificationCertificatePicIds.push(v.picId);
+    }
+    let technicalqualificationCertificatePicIds: any = [],
+      technicalQualificationCertificatePicIdList = this.state
+        .technicalqualificationCertificatePicIdList;
+    for (let v of technicalQualificationCertificatePicIdList) {
+      technicalqualificationCertificatePicIds.push(v.picId);
+    }
+    let param: authParam = {
+      avatar: {
+        picId: this.state.avatarId
+      },
+      name: this.state.name,
+      countyCid: this.state.cityId[2],
+      idNo: this.state.idCardNo,
+      gender: this.state.gender[0],
+      technicalTitle: this.state.technicalTitle[0],
+      departmentId: this.state.departmentId[0],
+      adeptSymptomIdList: adeptSymptomIds,
+      profile: this.state.profile,
+      practisingCertificatePicIdList: practisingCertificatePicIds,
+      qualificationCertificatePicIdList: qualificationCertificatePicIds,
+      technicalQualificationCertificatePicIdList: technicalqualificationCertificatePicIds
+    };
+    if (this.state.hospitalId !== 0) {
+      param.hospitalId = this.state.hospitalId;
+    } else {
+      param.hospitalName = this.state.hospitalName;
+    }
     try {
-      // await api.register(param)
-      Toast.fail("注册成功", 2, () => {
-        this.props.navigation.navigate(pathMap.Login);
-      });
+      await doctorApi.doctorAuth(param);
+      Toast.fail("提交成功, 等待审核", 2, () => {});
     } catch (err) {
       console.log(err);
-      Toast.fail("注册失败, 错误信息: " + err.msg, 3);
+      Toast.fail("提交失败, 错误信息: " + err.msg, 3);
     }
   };
-  handleFileChange = (avatar: any) => {
+  handleFileChange = (avatar: any, operationType: string) => {
     let avatarSelectable = avatar.length < 1;
     this.setState({
       avatar,
-      avatarSelectable,
-    });
-  };
-  medicalPracticeCertificateChange = async (
-    practisingCertificatePicIdList: Array<{}>,
-    operationType: string,
-  ) => {
-    let practisingCertificatePicIdSelectable = practisingCertificatePicIdList.length < 2;
-    this.setState({
-      practisingCertificatePicIdList,
-      practisingCertificatePicIdSelectable,
+      avatarSelectable
     });
     if (operationType === "add") {
       api
-        .uploadImg(practisingCertificatePicIdList[practisingCertificatePicIdList.length - 1])
+        .uploadImg(avatar[avatar.length - 1])
         .then(json => {
-          console.log(json);
+          let avatarId = this.state.avatarId,
+            avatar = this.state.avatar;
+          avatar[avatar.length - 1].url = BASE_URL + json.data.url;
+          avatar[avatar.length - 1].picId = json.data.picId;
+          avatarId = json.data.picId;
+          this.setState({
+            avatarId,
+            avatar
+          });
         })
         .catch(err => {
           console.log(err);
         });
     }
   };
-  qualificationCertificatePicIdChange = (qualificationCertificatePicIdList: any) => {
-    let qualificationCertificatePicIdSelectable = qualificationCertificatePicIdList.length < 2;
+  medicalPracticeCertificateChange = async (
+    practisingCertificatePicIdList: Array<{}>,
+    operationType: string
+  ) => {
+    let practisingCertificatePicIdSelectable =
+      practisingCertificatePicIdList.length < 2;
+    this.setState({
+      practisingCertificatePicIdList,
+      practisingCertificatePicIdSelectable
+    });
+    if (operationType === "add") {
+      api
+        .uploadImg(
+          practisingCertificatePicIdList[
+            practisingCertificatePicIdList.length - 1
+          ]
+        )
+        .then(json => {
+          let practisingCertificatePicIdList = this.state
+            .practisingCertificatePicIdList;
+          practisingCertificatePicIdList[
+            practisingCertificatePicIdList.length - 1
+          ].url = BASE_URL + json.data.url;
+          practisingCertificatePicIdList[
+            practisingCertificatePicIdList.length - 1
+          ].picId = json.data.picId;
+          this.setState({
+            practisingCertificatePicIdList
+          });
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    }
+  };
+  qualificationCertificatePicIdChange = (
+    qualificationCertificatePicIdList: Array<{}>,
+    operationType: string
+  ) => {
+    let qualificationCertificatePicIdSelectable =
+      qualificationCertificatePicIdList.length < 2;
     this.setState({
       qualificationCertificatePicIdList,
-      qualificationCertificatePicIdSelectable,
+      qualificationCertificatePicIdSelectable
     });
+    if (operationType === "add") {
+      api
+        .uploadImg(
+          qualificationCertificatePicIdList[
+            qualificationCertificatePicIdList.length - 1
+          ]
+        )
+        .then(json => {
+          let qualificationCertificatePicIdList = this.state
+            .qualificationCertificatePicIdList;
+          qualificationCertificatePicIdList[
+            qualificationCertificatePicIdList.length - 1
+          ].url = BASE_URL + json.data.url;
+          qualificationCertificatePicIdList[
+            qualificationCertificatePicIdList.length - 1
+          ].picId = json.data.picId;
+          this.setState({
+            qualificationCertificatePicIdList
+          });
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    }
   };
   technicalqualificationCertificatePicIdChange = (
-    technicalqualificationCertificatePicIdList: any,
+    technicalqualificationCertificatePicIdList: Array<{}>,
+    operationType: string
   ) => {
     let technicalqualificationCertificatePicIdSelectable =
       technicalqualificationCertificatePicIdList.length < 9;
     this.setState({
       technicalqualificationCertificatePicIdList,
-      technicalqualificationCertificatePicIdSelectable,
+      technicalqualificationCertificatePicIdSelectable
     });
+    if (operationType === "add") {
+      api
+        .uploadImg(
+          technicalqualificationCertificatePicIdList[
+            technicalqualificationCertificatePicIdList.length - 1
+          ]
+        )
+        .then(json => {
+          let technicalqualificationCertificatePicIdList = this.state
+            .technicalqualificationCertificatePicIdList;
+          technicalqualificationCertificatePicIdList[
+            technicalqualificationCertificatePicIdList.length - 1
+          ].url = BASE_URL + json.data.url;
+          technicalqualificationCertificatePicIdList[
+            technicalqualificationCertificatePicIdList.length - 1
+          ].picId = json.data.picId;
+          this.setState({
+            technicalqualificationCertificatePicIdList
+          });
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    }
   };
   render() {
     if (!this.state.hasLoad) {
       return (
         <View style={style.loading}>
-          <Text style={[style.loadingTitle, global.fontSize14, global.fontStyle]}>加载中...</Text>
+          <Text
+            style={[style.loadingTitle, global.fontSize14, global.fontStyle]}
+          >
+            加载中...
+          </Text>
         </View>
       );
     }
@@ -376,16 +584,28 @@ export default class RealNameAuth extends Component<
         <View style={style.main}>
           <ScrollView style={style.content} keyboardShouldPersistTaps="handled">
             <View style={style.Theme}>
-              <Text style={[style.ThemeTitle, global.fontStyle, global.fontSize16]}>
+              <Text
+                style={[style.ThemeTitle, global.fontStyle, global.fontSize16]}
+              >
                 补充审核资料
               </Text>
             </View>
             <View style={style.form}>
-              <View style={[style.formTitle, global.flex, global.alignItemsCenter]}>
+              <View
+                style={[style.formTitle, global.flex, global.alignItemsCenter]}
+              >
                 <Text style={style.formIcon} />
-                <Text style={[style.formThem, global.fontStyle, global.fontSize14]}>
+                <Text
+                  style={[style.formThem, global.fontStyle, global.fontSize14]}
+                >
                   请上传
-                  <Text style={[style.formImportant, global.fontStyle, global.fontSize14]}>
+                  <Text
+                    style={[
+                      style.formImportant,
+                      global.fontStyle,
+                      global.fontSize14
+                    ]}
+                  >
                     正面照片
                   </Text>{" "}
                   , 我们将为您制作漂亮的头像
@@ -397,17 +617,31 @@ export default class RealNameAuth extends Component<
                   style.formAvatar,
                   global.flex,
                   global.alignItemsCenter,
-                  global.justifyContentStart,
-                ]}>
-                <Text style={[style.fromItemTitle, global.fontSize14, global.fontStyle]}>头像</Text>
+                  global.justifyContentStart
+                ]}
+              >
+                <Text
+                  style={[
+                    style.fromItemTitle,
+                    global.fontSize14,
+                    global.fontStyle
+                  ]}
+                >
+                  头像
+                </Text>
                 <ImagePicker
                   selectable={this.state.avatarSelectable}
                   onChange={this.handleFileChange}
                   files={this.state.avatar}
                 />
                 <Text
-                  style={[style.fromItemTitle_2, global.fontSize14, global.fontStyle]}
-                  numberOfLines={2}>
+                  style={[
+                    style.fromItemTitle_2,
+                    global.fontSize14,
+                    global.fontStyle
+                  ]}
+                  numberOfLines={2}
+                >
                   正面照, 清晰度高, 半身照(胸部以上)
                 </Text>
               </View>
@@ -428,28 +662,40 @@ export default class RealNameAuth extends Component<
                   style.pickerItem,
                   global.flex,
                   global.justifyContentSpaceBetween,
-                  global.alignItemsCenter,
-                ]}>
+                  global.alignItemsCenter
+                ]}
+              >
                 <Text style={style.formItemTitle}>地区</Text>
                 <Picker
                   data={this.state.region}
                   style={style.picker}
                   value={this.state.cityId}
                   triggerType="onPress"
-                  onChange={cityId => this.chooseCityId(cityId)}>
+                  onChange={cityId => this.chooseCityId(cityId)}
+                >
                   <TouchableOpacity
                     style={[
                       style.pickerTitle,
                       global.flex,
                       global.justifyContentEnd,
-                      global.alignItemsCenter,
-                    ]}>
-                    <Text style={[style.topItemTitle, global.fontStyle, global.fontSize14]}>
+                      global.alignItemsCenter
+                    ]}
+                  >
+                    <Text
+                      style={[
+                        style.topItemTitle,
+                        global.fontStyle,
+                        global.fontSize14
+                      ]}
+                    >
                       {this.state.cityId.length === 0
                         ? "请选择"
                         : this.state.regionCidMapAreaName[this.state.cityId[2]]}
                     </Text>
-                    <Icon name="right" style={[style.inputIcon, global.fontSize16]} />
+                    <Icon
+                      name="right"
+                      style={[style.inputIcon, global.fontSize16]}
+                    />
                   </TouchableOpacity>
                 </Picker>
               </View>
@@ -459,23 +705,40 @@ export default class RealNameAuth extends Component<
                   style.pickerItem,
                   global.flex,
                   global.justifyContentSpaceBetween,
-                  global.alignItemsCenter,
-                ]}>
+                  global.alignItemsCenter
+                ]}
+              >
                 <Text style={style.formItemTitle}>医疗机构</Text>
                 <TouchableOpacity
-                  style={[style.hospital, global.flex, global.justifyContentSpaceBetween]}
+                  style={[
+                    style.hospital,
+                    global.flex,
+                    global.justifyContentSpaceBetween
+                  ]}
                   onPress={() => {
                     if (this.state.cityId.length === 0) {
                       return Toast.info("请先选择地区", 3);
                     }
                     this.setState({
-                      selectHospitalActive: true,
+                      selectHospitalActive: true
                     });
-                  }}>
-                  <Text style={[style.hospitalTitle, global.fontSize14, global.fontStyle]}>
-                    {this.state.hospitalName === "" ? "请选择" : this.state.hospitalName}
+                  }}
+                >
+                  <Text
+                    style={[
+                      style.hospitalTitle,
+                      global.fontSize14,
+                      global.fontStyle
+                    ]}
+                  >
+                    {this.state.hospitalName === ""
+                      ? "请选择"
+                      : this.state.hospitalName}
                   </Text>
-                  <Icon name="right" style={[style.inputIcon, global.fontSize16]} />
+                  <Icon
+                    name="right"
+                    style={[style.inputIcon, global.fontSize16]}
+                  />
                 </TouchableOpacity>
               </View>
               <View style={style.formItem}>
@@ -488,6 +751,11 @@ export default class RealNameAuth extends Component<
                   onChange={idCardNo => {
                     this.setState({ idCardNo });
                   }}
+                  onBlur={(idCardNo: any) => {
+                    if (!api.idCardIDChecked(idCardNo)) {
+                      Toast.fail("身份证不正确", 3);
+                    }
+                  }}
                 />
               </View>
               <View
@@ -496,8 +764,9 @@ export default class RealNameAuth extends Component<
                   style.pickerItem,
                   global.flex,
                   global.justifyContentSpaceBetween,
-                  global.alignItemsCenter,
-                ]}>
+                  global.alignItemsCenter
+                ]}
+              >
                 <Text style={style.formItemTitle}>性别</Text>
                 <Picker
                   data={this.gender}
@@ -507,20 +776,33 @@ export default class RealNameAuth extends Component<
                   triggerType="onPress"
                   onChange={gender => {
                     this.setState({
-                      gender,
+                      gender: gender as [number]
                     });
-                  }}>
+                  }}
+                >
                   <TouchableOpacity
                     style={[
                       style.pickerTitle,
                       global.flex,
                       global.justifyContentEnd,
-                      global.alignItemsCenter,
-                    ]}>
-                    <Text style={[style.topItemTitle, global.fontStyle, global.fontSize14]}>
-                      {this.state.gender.length === 0 ? "请选择" : GENDER_ZH[this.state.gender]}
+                      global.alignItemsCenter
+                    ]}
+                  >
+                    <Text
+                      style={[
+                        style.topItemTitle,
+                        global.fontStyle,
+                        global.fontSize14
+                      ]}
+                    >
+                      {this.state.gender[0] === GENDER.UNDEFINED
+                        ? "请选择"
+                        : GENDER_ZH[this.state.gender[0]]}
                     </Text>
-                    <Icon name="right" style={[style.inputIcon, global.fontSize16]} />
+                    <Icon
+                      name="right"
+                      style={[style.inputIcon, global.fontSize16]}
+                    />
                   </TouchableOpacity>
                 </Picker>
               </View>
@@ -530,8 +812,9 @@ export default class RealNameAuth extends Component<
                   style.pickerItem,
                   global.flex,
                   global.justifyContentSpaceBetween,
-                  global.alignItemsCenter,
-                ]}>
+                  global.alignItemsCenter
+                ]}
+              >
                 <Text style={style.formItemTitle}>职称</Text>
                 <Picker
                   data={this.technicalTitle}
@@ -541,35 +824,57 @@ export default class RealNameAuth extends Component<
                   triggerType="onPress"
                   onChange={technicalTitle => {
                     this.setState({
-                      technicalTitle,
+                      technicalTitle: technicalTitle as [number]
                     });
-                  }}>
+                  }}
+                >
                   <TouchableOpacity
                     style={[
                       style.pickerTitle,
                       global.flex,
                       global.justifyContentEnd,
-                      global.alignItemsCenter,
-                    ]}>
-                    <Text style={[style.topItemTitle, global.fontStyle, global.fontSize14]}>
-                      {this.state.technicalTitle.length === 0
+                      global.alignItemsCenter
+                    ]}
+                  >
+                    <Text
+                      style={[
+                        style.topItemTitle,
+                        global.fontStyle,
+                        global.fontSize14
+                      ]}
+                    >
+                      {this.state.technicalTitle[0] === -1
                         ? "请选择"
-                        : TECHNICAL_TITLE_ZH[this.state.technicalTitle]}
+                        : TECHNICAL_TITLE_ZH[this.state.technicalTitle[0]]}
                     </Text>
-                    <Icon name="right" style={[style.inputIcon, global.fontSize16]} />
+                    <Icon
+                      name="right"
+                      style={[style.inputIcon, global.fontSize16]}
+                    />
                   </TouchableOpacity>
                 </Picker>
               </View>
             </View>
             <View style={style.Theme}>
-              <Text style={[style.ThemeTitle_2, global.fontStyle, global.fontSize15]}>
-                平台接受住院医师 ( 仅接受三甲医院 )、主治医师、副主任医师及主任医师进行入驻
+              <Text
+                style={[
+                  style.ThemeTitle_2,
+                  global.fontStyle,
+                  global.fontSize15
+                ]}
+              >
+                平台接受住院医师 ( 仅接受三甲医院
+                )、主治医师、副主任医师及主任医师进行入驻
               </Text>
             </View>
             <View style={style.form}>
-              <View style={[style.formTitle, global.flex, global.alignItemsCenter]}>
+              <View
+                style={[style.formTitle, global.flex, global.alignItemsCenter]}
+              >
                 <Text style={style.formIcon} />
-                <Text style={[style.formThem, global.fontStyle, global.fontSize14]}>
+                <Text
+                  style={[style.formThem, global.fontStyle, global.fontSize14]}
+                >
                   科室及擅长
                 </Text>
               </View>
@@ -579,8 +884,9 @@ export default class RealNameAuth extends Component<
                   style.pickerItem,
                   global.flex,
                   global.justifyContentSpaceBetween,
-                  global.alignItemsCenter,
-                ]}>
+                  global.alignItemsCenter
+                ]}
+              >
                 <Text style={style.formItemTitle}>科室</Text>
                 <Picker
                   data={this.state.hospitalDepartment}
@@ -590,22 +896,35 @@ export default class RealNameAuth extends Component<
                   triggerType="onPress"
                   onChange={departmentId => {
                     this.setState({
-                      departmentId,
+                      departmentId: departmentId as [number]
                     });
-                  }}>
+                  }}
+                >
                   <TouchableOpacity
                     style={[
                       style.pickerTitle,
                       global.flex,
                       global.justifyContentEnd,
-                      global.alignItemsCenter,
-                    ]}>
-                    <Text style={[style.topItemTitle, global.fontStyle, global.fontSize14]}>
-                      {this.state.departmentId.length === 0
+                      global.alignItemsCenter
+                    ]}
+                  >
+                    <Text
+                      style={[
+                        style.topItemTitle,
+                        global.fontStyle,
+                        global.fontSize14
+                      ]}
+                    >
+                      {this.state.departmentId[0] === -1
                         ? "请选择"
-                        : this.state.hospitalDepartmentMap[this.state.departmentId]}
+                        : this.state.hospitalDepartmentMap[
+                            this.state.departmentId[0]
+                          ]}
                     </Text>
-                    <Icon name="right" style={[style.inputIcon, global.fontSize16]} />
+                    <Icon
+                      name="right"
+                      style={[style.inputIcon, global.fontSize16]}
+                    />
                   </TouchableOpacity>
                 </Picker>
               </View>
@@ -615,45 +934,105 @@ export default class RealNameAuth extends Component<
                   style.pickerItem,
                   global.flex,
                   global.justifyContentSpaceBetween,
-                  global.alignItemsCenter,
-                ]}>
+                  global.alignItemsCenter
+                ]}
+              >
                 <Text style={style.formItemTitle}>擅长</Text>
                 <TouchableOpacity
-                  style={[style.hospital, global.flex, global.justifyContentSpaceBetween]}
+                  style={[
+                    style.hospital,
+                    global.flex,
+                    global.justifyContentSpaceBetween
+                  ]}
                   onPress={() => {
                     this.setState({
-                      selectAdeptSymptomActive: true,
+                      selectAdeptSymptomActive: true
                     });
-                  }}>
-                  <Text style={[style.hospitalTitle, global.fontSize14, global.fontStyle]}>
+                  }}
+                >
+                  <Text
+                    style={[
+                      style.hospitalTitle,
+                      global.fontSize14,
+                      global.fontStyle
+                    ]}
+                  >
                     请选择{" "}
                   </Text>
-                  <Icon name="right" style={[style.inputIcon, global.fontSize16]} />
+                  <Icon
+                    name="right"
+                    style={[style.inputIcon, global.fontSize16]}
+                  />
                 </TouchableOpacity>
               </View>
-              <View style={[style.adeptSymptomIdList, global.flex, global.flexWrap]}>
+              <View
+                style={[style.adeptSymptomIdList, global.flex, global.flexWrap]}
+              >
                 {this.state.adeptSymptomIdList.map((v: any, k: number) => {
                   return (
                     <Text
                       key={k}
-                      style={[style.adeptSymptomIdItem, global.fontSize14, global.fontStyle]}>
+                      style={[
+                        style.adeptSymptomIdItem,
+                        global.fontSize14,
+                        global.fontStyle
+                      ]}
+                    >
                       {v.name}
                     </Text>
                   );
                 })}
               </View>
             </View>
+            <View style={style.form}>
+              <View style={style.separationModule} />
+              <View
+                style={[style.formTitle, global.flex, global.alignItemsCenter]}
+              >
+                <Text style={style.formIcon} />
+                <Text
+                  style={[style.formThem, global.fontStyle, global.fontSize14]}
+                >
+                  简介
+                </Text>
+              </View>
+              <View style={[style.formItemTextarea]}>
+                <TextareaItem
+                  style={style.formItemTextarea}
+                  rows={4}
+                  placeholder="简介"
+                  count={100}
+                  onChange={profile => {
+                    this.setState({
+                      profile: profile as string
+                    });
+                  }}
+                />
+              </View>
+            </View>
             <View style={style.Theme}>
-              <Text style={[style.ThemeTitle, global.fontStyle, global.fontSize15]}>
+              <Text
+                style={[style.ThemeTitle, global.fontStyle, global.fontSize15]}
+              >
                 上传审核证书
               </Text>
             </View>
             <View style={style.form}>
-              <View style={[style.formTitle, global.flex, global.alignItemsCenter]}>
+              <View
+                style={[style.formTitle, global.flex, global.alignItemsCenter]}
+              >
                 <Text style={style.formIcon} />
-                <Text style={[style.formThem, global.fontStyle, global.fontSize14]}>
+                <Text
+                  style={[style.formThem, global.fontStyle, global.fontSize14]}
+                >
                   请上传{" "}
-                  <Text style={[style.formImportant, global.fontStyle, global.fontSize14]}>
+                  <Text
+                    style={[
+                      style.formImportant,
+                      global.fontStyle,
+                      global.fontSize14
+                    ]}
+                  >
                     {" "}
                     医师执业证书
                   </Text>
@@ -662,12 +1041,13 @@ export default class RealNameAuth extends Component<
               </View>
               <View
                 style={[
-                  style.formItem,
+                  style.formItemPickerImage,
                   style.formAvatar,
                   global.flex,
                   global.alignItemsCenter,
-                  global.justifyContentStart,
-                ]}>
+                  global.justifyContentStart
+                ]}
+              >
                 <ImagePicker
                   selectable={this.state.practisingCertificatePicIdSelectable}
                   onChange={this.medicalPracticeCertificateChange}
@@ -676,11 +1056,22 @@ export default class RealNameAuth extends Component<
               </View>
             </View>
             <View style={style.form}>
-              <View style={[style.formTitle, global.flex, global.alignItemsCenter]}>
+              <View style={style.separationModule} />
+              <View
+                style={[style.formTitle, global.flex, global.alignItemsCenter]}
+              >
                 <Text style={style.formIcon} />
-                <Text style={[style.formThem, global.fontStyle, global.fontSize14]}>
+                <Text
+                  style={[style.formThem, global.fontStyle, global.fontSize14]}
+                >
                   请上传{" "}
-                  <Text style={[style.formImportant, global.fontStyle, global.fontSize14]}>
+                  <Text
+                    style={[
+                      style.formImportant,
+                      global.fontStyle,
+                      global.fontSize14
+                    ]}
+                  >
                     {" "}
                     医师资格证书
                   </Text>
@@ -689,58 +1080,151 @@ export default class RealNameAuth extends Component<
               </View>
               <View
                 style={[
-                  style.formItem,
+                  style.formItemPickerImage,
                   style.formAvatar,
                   global.flex,
                   global.alignItemsCenter,
-                  global.justifyContentStart,
-                ]}>
+                  global.justifyContentStart
+                ]}
+              >
                 <ImagePicker
-                  selectable={this.state.qualificationCertificatePicIdSelectable}
+                  selectable={
+                    this.state.qualificationCertificatePicIdSelectable
+                  }
                   onChange={this.qualificationCertificatePicIdChange}
                   files={this.state.qualificationCertificatePicIdList}
                 />
               </View>
             </View>
             <View style={style.form}>
-              <View style={[style.formTitle, global.flex, global.alignItemsCenter]}>
+              <View style={style.separationModule} />
+              <View
+                style={[style.formTitle, global.flex, global.alignItemsCenter]}
+              >
                 <Text style={style.formIcon} />
-                <Text style={[style.formThem, global.fontStyle, global.fontSize14]}>
+                <Text
+                  style={[style.formThem, global.fontStyle, global.fontSize14]}
+                >
                   请上传{" "}
-                  <Text style={[style.formImportant, global.fontStyle, global.fontSize14]}>
+                  <Text
+                    style={[
+                      style.formImportant,
+                      global.fontStyle,
+                      global.fontSize14
+                    ]}
+                  >
                     {" "}
                     专业技术资格证书
                   </Text>
-                  即职称证书(选填, 最多9张)
+                  即职称证书(选填, 最多10张)
                 </Text>
               </View>
-              <View style={style.formItem_2}>
+              <View style={style.formItemImg}>
                 <ImagePicker
-                  selectable={this.state.technicalqualificationCertificatePicIdSelectable}
+                  selectable={
+                    this.state.technicalqualificationCertificatePicIdSelectable
+                  }
                   onChange={this.technicalqualificationCertificatePicIdChange}
                   files={this.state.technicalqualificationCertificatePicIdList}
                 />
               </View>
+              <View style={style.previewPic}>
+                <Text
+                  style={[style.example, global.fontStyle, global.fontSize14]}
+                >
+                  证书示例
+                </Text>
+                <Text
+                  style={[
+                    style.previewPicRequirement,
+                    global.fontSize12,
+                    global.fontStyle
+                  ]}
+                >
+                  * 确保姓名、照片、编号、执业范围、签发机关等清晰可见
+                </Text>
+                <Text
+                  style={[
+                    style.previewPicRequirement,
+                    global.fontSize12,
+                    global.fontStyle
+                  ]}
+                >
+                  * 需要上传证书第一、第二页, 确保包含执业地点以及变更记录
+                </Text>
+                <View
+                  style={[
+                    global.flex,
+                    global.justifyContentSpaceAround,
+                    global.alignItemsCenter
+                  ]}
+                >
+                  <TouchableOpacity
+                    onPress={() => {
+                      this.setState({
+                        previewPicFirstActive: true
+                      });
+                    }}
+                  >
+                    <Image
+                      style={style.viewPic}
+                      source={
+                        gImg.common.technicalqualificationCertificatePicFirst
+                      }
+                    />
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() => {
+                      this.setState({
+                        previewPicSecondActive: true
+                      });
+                    }}
+                  >
+                    <Image
+                      style={style.viewPic}
+                      source={
+                        gImg.common.technicalqualificationCertificatePicSecond
+                      }
+                    />
+                  </TouchableOpacity>
+                </View>
+              </View>
             </View>
           </ScrollView>
           <TouchableOpacity style={style.subBtn} onPress={this.submit}>
-            <Text style={[style.subTitle, global.fontStyle, global.fontSize15]}>下一步</Text>
+            <Text style={[style.subTitle, global.fontStyle, global.fontSize15]}>
+              提交
+            </Text>
           </TouchableOpacity>
           {/* 医疗机构选择 */}
-          <View style={this.state.selectHospitalActive ? style.hospitalSelect : global.hidden}>
-            <ScrollView style={style.hospitalContent} keyboardShouldPersistTaps="handled">
+          <View
+            style={
+              this.state.selectHospitalActive
+                ? style.hospitalSelect
+                : global.hidden
+            }
+          >
+            <ScrollView
+              style={style.hospitalContent}
+              keyboardShouldPersistTaps="handled"
+            >
               <View
                 style={[
                   style.hospitalAdd,
                   global.flex,
                   global.alignItemsCenter,
-                  global.justifyContentSpaceBetween,
-                ]}>
+                  global.justifyContentSpaceBetween
+                ]}
+              >
                 <Icon style={style.hospitalSearchIcon} name="search" />
                 <View style={style.hospitalSearch}>
                   <InputItem
                     clear
-                    style={[style.hospitalInput, global.fontStyle, global.fontSize14]}
+                    style={[
+                      style.hospitalInput,
+                      global.fontStyle,
+                      global.fontSize14
+                    ]}
                     value={this.state.hospitalName}
                     placeholder="输入所在医疗机构"
                     onChange={hospitalName => {
@@ -754,30 +1238,49 @@ export default class RealNameAuth extends Component<
                     this.setState({
                       selectHospitalActive: false,
                       hospitalName: "",
-                      hospitalId: 0,
+                      hospitalId: 0
                     });
-                  }}>
-                  <Text style={[style.close, global.fontSize14, global.fontStyle]}>取消</Text>
+                  }}
+                >
+                  <Text
+                    style={[style.close, global.fontSize14, global.fontStyle]}
+                  >
+                    取消
+                  </Text>
                 </TouchableOpacity>
               </View>
               <TouchableOpacity
                 style={[
-                  this.state.hospitalName !== "" ? style.addHospital : global.hidden,
+                  this.state.hospitalName !== ""
+                    ? style.addHospital
+                    : global.hidden,
                   global.flex,
                   global.alignItemsCenter,
-                  global.justifyContentCenter,
+                  global.justifyContentCenter
                 ]}
                 onPress={() => {
                   this.setState({
-                    selectHospitalActive: false,
+                    selectHospitalActive: false
                   });
-                }}>
-                <Text style={[style.addHospitalBtn, global.fontSize14, global.fontStyle]}>
+                }}
+              >
+                <Text
+                  style={[
+                    style.addHospitalBtn,
+                    global.fontSize14,
+                    global.fontStyle
+                  ]}
+                >
                   添加
                 </Text>
                 <Text
                   numberOfLines={1}
-                  style={[style.addHospitalBtn, global.fontSize14, global.fontStyle]}>
+                  style={[
+                    style.addHospitalBtn,
+                    global.fontSize14,
+                    global.fontStyle
+                  ]}
+                >
                   {this.state.hospitalName}
                 </Text>
               </TouchableOpacity>
@@ -789,9 +1292,10 @@ export default class RealNameAuth extends Component<
                       onPress={() => {
                         this.setState({
                           hospitalId: v.id,
-                          hospitalName: v.name,
+                          hospitalName: v.name
                         });
-                      }}>
+                      }}
+                    >
                       <Text style={style.hospitalItem}>{v.name}</Text>
                     </TouchableOpacity>
                   );
@@ -800,28 +1304,51 @@ export default class RealNameAuth extends Component<
             </ScrollView>
           </View>
           {/* 擅长选择 */}
-          <View style={this.state.selectAdeptSymptomActive ? style.adeptSymptom : global.hidden}>
+          <View
+            style={
+              this.state.selectAdeptSymptomActive
+                ? style.adeptSymptom
+                : global.hidden
+            }
+          >
             <TouchableOpacity
               onPress={() => {
                 this.setState({
-                  selectAdeptSymptomActive: false,
+                  selectAdeptSymptomActive: false
                 });
-              }}>
-              <Text style={[style.closeAdeptSymptom, global.fontStyle, global.fontSize14]}>
+              }}
+            >
+              <Text
+                style={[
+                  style.closeAdeptSymptom,
+                  global.fontStyle,
+                  global.fontSize14
+                ]}
+              >
                 关闭
               </Text>
             </TouchableOpacity>
             <ScrollView style={style.adeptSymptomContent}>
-              <View style={[style.formTitle, global.flex, global.alignItemsCenter]}>
+              <View
+                style={[style.formTitle, global.flex, global.alignItemsCenter]}
+              >
                 <Text style={style.formIcon} />
-                <Text style={[style.formThem, global.fontStyle, global.fontSize14]}>
+                <Text
+                  style={[style.formThem, global.fontStyle, global.fontSize14]}
+                >
                   选择擅长治疗疾病(最多选择10个)
                 </Text>
               </View>
               {this.state.hospitalDepartmentSymptom.map((v: any, k: number) => {
                 return (
                   <View key={k} style={style.symptomList}>
-                    <Text style={[style.symptomTitle, global.fontSize14, global.fontStyle]}>
+                    <Text
+                      style={[
+                        style.symptomTitle,
+                        global.fontSize14,
+                        global.fontStyle
+                      ]}
+                    >
                       {v.name}
                     </Text>
                     <View style={[global.flex, global.flexWrap]}>
@@ -830,8 +1357,10 @@ export default class RealNameAuth extends Component<
                           <TouchableOpacity
                             key={k1}
                             onPress={() => {
-                              let hospitalDepartmentSymptom = this.state.hospitalDepartmentSymptom,
-                                adeptSymptomIdList = this.state.adeptSymptomIdList;
+                              let hospitalDepartmentSymptom = this.state
+                                  .hospitalDepartmentSymptom,
+                                adeptSymptomIdList = this.state
+                                  .adeptSymptomIdList;
                               if (adeptSymptomIdList.length < 10) {
                                 hospitalDepartmentSymptom[k].symptomList[
                                   k1
@@ -839,28 +1368,31 @@ export default class RealNameAuth extends Component<
                                 if (v1.isChecked) {
                                   adeptSymptomIdList.push({
                                     id: v1.id,
-                                    name: v1.name,
+                                    name: v1.name
                                   });
                                 } else {
-                                  adeptSymptomIdList.pop({
-                                    id: v1.id,
-                                    name: v1.name,
-                                  });
+                                  adeptSymptomIdList = adeptSymptomIdList.filter(
+                                    v2 => v2.id !== v1.id
+                                  );
                                 }
                                 this.setState({
                                   hospitalDepartmentSymptom,
-                                  adeptSymptomIdList,
+                                  adeptSymptomIdList
                                 });
                               } else {
                                 Toast.info("选择擅长治疗疾病不超过10个", 1);
                               }
-                            }}>
+                            }}
+                          >
                             <Text
                               style={[
-                                v1.isChecked ? style.symptomItemActive : style.symptomItem,
+                                v1.isChecked
+                                  ? style.symptomItemActive
+                                  : style.symptomItem,
                                 global.fontSize14,
-                                global.fontStyle,
-                              ]}>
+                                global.fontStyle
+                              ]}
+                            >
                               {v1.name}
                             </Text>
                           </TouchableOpacity>
@@ -871,6 +1403,56 @@ export default class RealNameAuth extends Component<
                 );
               })}
             </ScrollView>
+          </View>
+        </View>
+        <View
+          style={
+            this.state.previewPicFirstActive ? style.picView : global.hidden
+          }
+        >
+          <TouchableOpacity
+            onPress={() => {
+              this.setState({
+                previewPicFirstActive: false
+              });
+            }}
+          >
+            <Text
+              style={[style.closePicView, global.fontSize14, global.fontStyle]}
+            >
+              关闭
+            </Text>
+          </TouchableOpacity>
+          <View style={style.viewImgFather}>
+            <Image
+              style={style.viewImg}
+              source={gImg.common.technicalqualificationCertificatePicFirst}
+            />
+          </View>
+        </View>
+        <View
+          style={
+            this.state.previewPicSecondActive ? style.picView : global.hidden
+          }
+        >
+          <TouchableOpacity
+            onPress={() => {
+              this.setState({
+                previewPicSecondActive: false
+              });
+            }}
+          >
+            <Text
+              style={[style.closePicView, global.fontSize14, global.fontStyle]}
+            >
+              关闭
+            </Text>
+          </TouchableOpacity>
+          <View style={style.viewImgFather}>
+            <Image
+              style={style.viewImg}
+              source={gImg.common.technicalqualificationCertificatePicSecond}
+            />
           </View>
         </View>
       </>

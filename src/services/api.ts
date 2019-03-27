@@ -22,7 +22,14 @@ export async function bget({ url, query = {}, headers = {} }: RequestParam) {
   let session = await storage.get("session");
   headers["session"] = session;
   headers["content-type"] = "application/json";
-  return BuffReq(BASE_URL, url + "?" + qs.stringify(query), null, "GET", "include", headers);
+  return BuffReq(
+    BASE_URL,
+    url + "?" + qs.stringify(query),
+    null,
+    "GET",
+    "include",
+    headers
+  );
 }
 export async function bpost({ url, data = {}, headers = {} }: RequestParam) {
   let session = await storage.get("session");
@@ -40,8 +47,8 @@ export async function isLogin() {
       bpost({
         url: "/api/isLogin",
         headers: {
-          session,
-        },
+          session
+        }
       })
         .then(() => s(true))
         .catch(() => s(false));
@@ -61,7 +68,7 @@ export interface AccountLoginParam {
 export async function accountLogin({ account, pwd }: AccountLoginParam) {
   return bpost({
     url: "/api/accountLogin",
-    data: { account, pwd },
+    data: { account, pwd }
   });
 }
 export interface PhoneLoginParam {
@@ -75,7 +82,7 @@ export interface PhoneLoginParam {
 export async function phoneLogin({ phone, code, codeUuid }: PhoneLoginParam) {
   return bpost({
     url: "/api/phoneLogin",
-    data: { phone, code, codeUuid },
+    data: { phone, code, codeUuid }
   });
 }
 /**
@@ -83,7 +90,7 @@ export async function phoneLogin({ phone, code, codeUuid }: PhoneLoginParam) {
  */
 export async function logout() {
   return bget({
-    url: "/api/logout",
+    url: "/api/logout"
   });
 }
 
@@ -94,8 +101,8 @@ export function sendPhoneRegisterVerifyCode({ phone }: { phone: string }) {
   return bpost({
     url: "/api/sendPhoneRegisterVerifyCode",
     data: {
-      phone,
-    },
+      phone
+    }
   });
 }
 export interface registerParam {
@@ -117,7 +124,7 @@ export function register({
   phone,
   countyCid,
   hospitalId,
-  hospitalName,
+  hospitalName
 }: registerParam) {
   return bpost({
     url: "/api/register",
@@ -128,8 +135,8 @@ export function register({
       phone,
       countyCid,
       hospitalId,
-      hospitalName,
-    },
+      hospitalName
+    }
   });
 }
 /**
@@ -139,8 +146,8 @@ export function getLoginPhoneVerifyCode({ phone }: { phone: string }) {
   return bpost({
     url: "/api/getLoginPhoneVerifyCode",
     data: {
-      phone,
-    },
+      phone
+    }
   });
 }
 /**
@@ -150,8 +157,8 @@ export function getForgetPwdPhoneVerifyCode({ phone }: { phone: string }) {
   return bpost({
     url: "/api/getForgetPwdPhoneVerifyCode",
     data: {
-      phone,
-    },
+      phone
+    }
   });
 }
 /**
@@ -160,7 +167,7 @@ export function getForgetPwdPhoneVerifyCode({ phone }: { phone: string }) {
 export function checkforGetPwdVerifyCode({
   phone,
   uuid,
-  code,
+  code
 }: {
   phone: string;
   uuid: string;
@@ -171,14 +178,22 @@ export function checkforGetPwdVerifyCode({
     data: {
       phone,
       uuid,
-      code,
-    },
+      code
+    }
   });
 }
 /**
  * 已登录修改密码
  */
-export function modifyPwd({ oriPwd, pwd, rePwd }: { oriPwd: string; pwd: string; rePwd: string }) {
+export function modifyPwd({
+  oriPwd,
+  pwd,
+  rePwd
+}: {
+  oriPwd: string;
+  pwd: string;
+  rePwd: string;
+}) {
   return bpost({ url: "/api/modifyPwd", data: { oriPwd, pwd, rePwd } });
 }
 /**
@@ -189,7 +204,7 @@ export function modifyPwdWithPhoneCode({
   uuid,
   code,
   pwd,
-  rePwd,
+  rePwd
 }: {
   phone: string;
   uuid: string;
@@ -199,7 +214,7 @@ export function modifyPwdWithPhoneCode({
 }) {
   return bpost({
     url: "/api/modifyPwdWithPhoneVerifyCode",
-    data: { phone, uuid, code, pwd, rePwd },
+    data: { phone, uuid, code, pwd, rePwd }
   });
 }
 export interface AliPayOrderInfo {
@@ -210,14 +225,18 @@ export interface AliPayOrderInfo {
 /**
  * 获取支付宝支付订单信息
  */
-export function buildAliPayOrderInfo({ body, subject, money }: AliPayOrderInfo) {
+export function buildAliPayOrderInfo({
+  body,
+  subject,
+  money
+}: AliPayOrderInfo) {
   return bpost({
     url: "/ali_pay/buildOrderInfo",
     data: {
       body,
       subject,
-      money,
-    },
+      money
+    }
   });
 }
 export interface WxPayOrderInfo {
@@ -229,15 +248,20 @@ export interface WxPayOrderInfo {
 /**
  * 获取微信支付订单信息
  */
-export function buildWxPayOrderInfo({ body, detail, attach, money }: WxPayOrderInfo) {
+export function buildWxPayOrderInfo({
+  body,
+  detail,
+  attach,
+  money
+}: WxPayOrderInfo) {
   return bpost({
     url: "/ali_pay/buildOrderInfo",
     data: {
       body,
       detail,
       attach,
-      money,
-    },
+      money
+    }
   });
 }
 /**
@@ -247,8 +271,8 @@ export function updateGetuiCid(cid: string) {
   return bpost({
     url: "/user/updateGetuiCid",
     data: {
-      cid,
-    },
+      cid
+    }
   });
 }
 // /**
@@ -260,10 +284,10 @@ export function uploadImg(file: any) {
   formData.append("file", {
     uri: file.url,
     name: "file.jpg",
-    type: "image/jpeg",
+    type: "image/jpeg"
   });
   return BuffReq(BASE_URL, "/uploadImg", formData, "POST", "include", {
-    "Content-Type": "multipart/form-data",
+    "Content-Type": "multipart/form-data"
   });
 }
 
@@ -272,7 +296,7 @@ export function uploadImg(file: any) {
  */
 export function getRegion() {
   return bget({
-    url: "/getRegion",
+    url: "/getRegion"
   });
 }
 /**
@@ -282,17 +306,69 @@ export function getMedicalInstitutions(cityId: any) {
   return bpost({
     url: "/common/getMedicalInstitutions",
     data: {
-      cityId,
-    },
+      cityId
+    }
   });
 }
-/**
- * 获取消息列表
- */
-export function getInformationList() {
-  return bget({
-    url: "/information/getInformationList",
-  });
+let aCity = {
+  11: "北京",
+  12: "天津",
+  13: "河北",
+  14: "山西",
+  15: "内蒙古",
+  21: "辽宁",
+  22: "吉林",
+  23: "黑龙江",
+  31: "上海",
+  32: "江苏",
+  33: "浙江",
+  34: "安徽",
+  35: "福建",
+  36: "江西",
+  37: "山东",
+  41: "河南",
+  42: "湖北",
+  43: "湖南",
+  44: "广东",
+  45: "广西",
+  46: "海南",
+  50: "重庆",
+  51: "四川",
+  52: "贵州",
+  53: "云南",
+  54: "西藏",
+  61: "陕西",
+  62: "甘肃",
+  63: "青海",
+  64: "宁夏",
+  65: "新疆",
+  71: "台湾",
+  81: "香港",
+  82: "澳门",
+  91: "国外"
+};
+export function idCardIDChecked(sId: string) {
+  var iSum = 0;
+  var info = "";
+  if (!/^\d{17}(\d|x)$/i.test(sId)) return false;
+  sId = sId.replace(/x$/i, "a");
+  if (aCity[parseInt(sId.substr(0, 2))] === null) return false;
+  var sBirthday =
+    sId.substr(6, 4) +
+    "-" +
+    Number(sId.substr(10, 2)) +
+    "-" +
+    Number(sId.substr(12, 2));
+  var d = new Date(sBirthday.replace(/-/g, "/"));
+  if (
+    sBirthday !==
+    d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate()
+  )
+    return false;
+  for (var i = 17; i >= 0; i--)
+    iSum += (Math.pow(2, i) % 11) * parseInt(sId.charAt(17 - i), 11);
+  if (iSum % 11 !== 1) return false;
+  return true;
 }
 export default {
   uploadImg,
@@ -311,5 +387,5 @@ export default {
   updateGetuiCid,
   getRegion,
   getMedicalInstitutions,
-  getInformationList,
+  idCardIDChecked
 };

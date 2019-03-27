@@ -1,9 +1,11 @@
 import { bget, bpost } from "./api";
 
-export async function register() {
+export async function getPersonalInfo() {
   return bpost({
-    url: "/api/register",
-    data: {},
+    url: "/api/getPersonalInfo",
+    data: {}
   });
 }
-export default {};
+export default {
+  getPersonalInfo
+};

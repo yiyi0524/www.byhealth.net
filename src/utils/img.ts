@@ -13,21 +13,27 @@ export default {
     man: require("@img/common/man.png"),
     woman: require("@img/common/woman.png"),
     genderNull: require("@img/common/gender_null.png"),
+    technicalqualificationCertificatePicFirst: require("@img/common/technicalqualificationCertificatePicFirst.png"),
+    technicalqualificationCertificatePicSecond: require("@img/common/technicalqualificationCertificatePicSecond.png")
   },
   home: {
     prescriptionTemplate: require("@img/home/moban.png"),
     uploadPrescription: require("@img/home/shangchuan.png"),
     sittingInformation: require("@img/home/xinxi.png"),
     select: require("@img/home/xuanze.png"),
-    invite: require("@img/home/yaoqing.png"),
+    invite: require("@img/home/yaoqing.jpg"),
     banner_0: require("@img/home/banner_0.png"),
     banner_1: require("@img/home/banner_1.png"),
     banner_2: require("@img/home/banner_2.png"),
-    banner_3: require("@img/home/banner_3.png"),
+    banner_3: require("@img/home/banner_3.png")
   },
   advisory: {
     pillPurchase: require("@img/advisory/pill_purchase.png"),
     reply: require("@img/advisory/reply.png"),
-    followUp: require("@img/advisory/follow_up.png"),
+    followUp: require("@img/advisory/follow_up.png")
   },
+  addressBook: {
+    group: require("@img/address_book/group.png"),
+    phone: require("@img/address_book/phone.png")
+  }
 };

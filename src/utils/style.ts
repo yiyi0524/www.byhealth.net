@@ -1,4 +1,3 @@
-
 import home from "@styles/home";
 import global from "@/assets/styles/global";
 import login from "@/assets/styles/user/login";
@@ -6,6 +5,9 @@ import forgetPwd from "@/assets/styles/user/forgetPwd";
 import register from "@/assets/styles/user/register";
 import realNameAuth from "@/assets/styles/user/realNameAuth";
 import advisoryIndex from "@/assets/styles/advisory/index";
+import advisoryChat from "@/assets/styles/advisory/chat";
+import AddressBookIndex from "@/assets/styles/address_book/index";
+import personalCenterIndex from "@/assets/styles/personal_center/index";
 export default {
   home,
   global,
@@ -13,12 +15,19 @@ export default {
     login,
     register,
     forgetPwd,
-    realNameAuth,
+    realNameAuth
   },
   advisory: {
     advisoryIndex,
+    advisoryChat
+  },
+  addressBook: {
+    AddressBookIndex
+  },
+  personalCenter: {
+    personalCenterIndex
   },
   common: {},
   index: {},
-  admin: {},
+  admin: {}
 };
