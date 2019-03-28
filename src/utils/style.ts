@@ -7,6 +7,7 @@ import realNameAuth from "@/assets/styles/user/realNameAuth";
 import advisoryIndex from "@/assets/styles/advisory/index";
 import advisoryChat from "@/assets/styles/advisory/chat";
 import AddressBookIndex from "@/assets/styles/address_book/index";
+import AddressBookGroup from "@/assets/styles/address_book/group";
 import personalCenterIndex from "@/assets/styles/personal_center/index";
 export default {
   home,
@@ -22,7 +23,8 @@ export default {
     advisoryChat
   },
   addressBook: {
-    AddressBookIndex
+    AddressBookIndex,
+    AddressBookGroup
   },
   personalCenter: {
     personalCenterIndex

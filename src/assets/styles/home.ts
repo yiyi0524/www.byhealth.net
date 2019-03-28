@@ -106,8 +106,8 @@ export default StyleSheet.create({
     height: 80
   },
   categoryItemPic: {
-    width: 45,
-    height: 45,
+    width: 30,
+    height: 30,
     resizeMode: "center"
   },
   categoryItemTitle: {
@@ -126,8 +126,8 @@ export default StyleSheet.create({
     width: 15
   },
   bannerItem: {
-    width: 140,
-    height: 80,
+    width: 160,
+    height: 100,
     marginRight: 15,
     backgroundColor: sColor.white,
     borderRadius: 5,
@@ -138,8 +138,8 @@ export default StyleSheet.create({
     marginBottom: 15
   },
   bannerImg: {
-    width: 140,
-    height: 80,
+    width: 160,
+    height: 100,
     resizeMode: "cover"
   },
   /**

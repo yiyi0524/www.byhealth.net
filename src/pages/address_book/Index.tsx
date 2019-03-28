@@ -14,6 +14,7 @@ import {
 import { Toast, Icon } from "@ant-design/react-native";
 import gStyle from "@utils/style";
 import gImg from "@utils/img";
+import pathMap from "@/routes/pathMap";
 // import userApi from "@api/user";
 const style = gStyle.addressBook.AddressBookIndex;
 const global = gStyle.global;
@@ -235,6 +236,7 @@ export default class Index extends Component<
               global.justifyContentSpaceBetween,
               global.alignItemsCenter
             ]}
+            onPress={() => this.props.navigation.push(pathMap.AddressBookGroup)}
           >
             <View
               style={[

@@ -8,5 +8,6 @@ export default {
   Register: "Register",
   ForgetPwd: "ForgetPwd",
   RealNameAuth: "RealNameAuth",
-  AdvisoryChat: "AdvisoryChat"
+  AdvisoryChat: "AdvisoryChat",
+  AddressBookGroup: "AddressBookGroup"
 };

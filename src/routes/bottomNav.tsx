@@ -13,6 +13,7 @@ import Home from "@pages/Home";
 import PersonalCenter from "@pages/personal_center/Index";
 import AdvisoryIndex from "@pages/advisory/Index";
 import AddressBookIndex from "@pages/address_book/Index";
+import AddressBookGroup from "@pages/address_book/Group";
 import RealNameAuth from "@pages/user/RealNameAuth";
 import AdvisoryChat from "@pages/advisory/Chat";
 const style = StyleSheet.create({
@@ -194,6 +195,9 @@ const StacksOverTabs = createStackNavigator({
   },
   [pathMap.AdvisoryChat]: {
     screen: AdvisoryChat
+  },
+  [pathMap.AddressBookGroup]: {
+    screen: AddressBookGroup
   }
 });
 export default StacksOverTabs;

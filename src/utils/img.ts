@@ -21,8 +21,8 @@ export default {
     uploadPrescription: require("@img/home/shangchuan.png"),
     sittingInformation: require("@img/home/xinxi.png"),
     select: require("@img/home/xuanze.png"),
-    invite: require("@img/home/yaoqing.jpg"),
-    banner_0: require("@img/home/banner_0.png"),
+    invite: require("@img/home/yaoqing.png"),
+    banner_0: require("@img/home/banner_0.jpg"),
     banner_1: require("@img/home/banner_1.png"),
     banner_2: require("@img/home/banner_2.png"),
     banner_3: require("@img/home/banner_3.png")

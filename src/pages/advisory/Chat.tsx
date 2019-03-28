@@ -3,23 +3,17 @@ import { AppState } from "@/redux/stores/store";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import * as userAction from "@/redux/actions/user";
-import {
-  ScrollView,
-  Text,
-  View,
-  Image,
-  TouchableOpacity,
-  RefreshControl
-} from "react-native";
+import { Text, View, PixelRatio } from "react-native";
 import { Toast } from "@ant-design/react-native";
 import gStyle from "@utils/style";
 import gImg from "@utils/img";
 import sColor from "@styles/color";
 import { GiftedChat, Bubble, Send } from "react-native-gifted-chat";
+import { NavigationScreenProp } from "react-navigation";
 const style = gStyle.advisory.advisoryChat;
 const globalStyle = gStyle.global;
 interface Props {
-  navigation: any;
+  navigation: NavigationScreenProp<State>;
 }
 interface messageItem {
   _id: number;
@@ -60,13 +54,14 @@ export default class Index extends Component<
     ReturnType<typeof mapDispatchToProps>,
   State
 > {
-  static navigationOptions = {
-    title: "博一医生助理",
+  static navigationOptions = ({ navigation }: { navigation: any }) => ({
+    title: navigation.state.params.title,
     headerStyle: {
       backgroundColor: sColor.white,
       height: 45,
       elevation: 0,
-      borderBottomColor: sColor.colorDdd
+      borderBottomWidth: 1 / PixelRatio.get(),
+      borderBottomColor: sColor.colorEee
     },
     headerTintColor: sColor.color333,
     headerTitleStyle: {
@@ -77,7 +72,7 @@ export default class Index extends Component<
       textAlign: "center"
     },
     headerRight: <Text />
-  };
+  });
   constructor(props: any) {
     super(props);
     this.state = this.getInitState();
@@ -94,7 +89,6 @@ export default class Index extends Component<
   }
   init = async () => {
     let id = this.props.navigation.getParam("id");
-    let name = this.props.navigation.getParam("name");
     let messages = [
       {
         _id: 1,
@@ -203,8 +197,9 @@ export default class Index extends Component<
           placeholder="请输入"
           dateFormat="YYYY-MM-DD"
           showUserAvatar={true}
+          // bottomOffset={20}
           timeFormat="hh:mm"
-          onSend={this.sendMsg}
+          onSend={(messages: any) => this.sendMsg(messages)}
           user={{
             _id: 22,
             name: "哎呀",
