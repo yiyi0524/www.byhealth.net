@@ -9,5 +9,7 @@ export default {
   ForgetPwd: "ForgetPwd",
   RealNameAuth: "RealNameAuth",
   AdvisoryChat: "AdvisoryChat",
-  AddressBookGroup: "AddressBookGroup"
+  AddressBookGroup: "AddressBookGroup",
+  AddressBookAddGroup: "AddressBookAddGroup",
+  AddressBookGroupDetail: "AddressBookGroupDetail"
 };

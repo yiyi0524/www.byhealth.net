@@ -1,4 +1,5 @@
 import { StyleSheet } from "react-native";
+import sColor from "@styles/color";
 export default StyleSheet.create({
   flex: {
     flexDirection: "row"
@@ -80,5 +81,11 @@ export default StyleSheet.create({
   },
   hidden: {
     display: "none"
+  },
+  titleIcon: {
+    width: 6,
+    height: 25,
+    backgroundColor: sColor.mainRed,
+    marginRight: 5
   }
 });

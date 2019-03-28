@@ -5,6 +5,9 @@ export async function getPersonalInfo() {
     data: {}
   });
 }
+/**
+ * 获取患者分组列表
+ */
 export async function getPatientGroupList({
   page = -1,
   limit = -1,
@@ -19,7 +22,57 @@ export async function getPatientGroupList({
     }
   });
 }
+/**
+ * 删除某患者分组
+ */
+export async function deletePatientGroup({ id }: { id: number }) {
+  return bpost({
+    url: "/deletePatientGroup",
+    data: {
+      id
+    }
+  });
+}
+/**
+ * 添加分组
+ */
+export async function addPatientGroup({
+  name,
+  patientIdList
+}: {
+  name: string;
+  patientIdList: number[];
+}) {
+  return bpost({
+    url: "/addPatientGroup",
+    data: {
+      name,
+      patientIdList
+    }
+  });
+}
+/**
+ * 获取某分组的患者信息
+ */
+export async function getPatientList({
+  page = -1,
+  limit = -1,
+  filter
+}: GetListParam) {
+  return bget({
+    url: "/getPatientList",
+    query: {
+      page,
+      limit,
+      filter
+    }
+  });
+}
+
 export default {
   getPersonalInfo,
-  getPatientGroupList
+  getPatientGroupList,
+  deletePatientGroup,
+  addPatientGroup,
+  getPatientList
 };

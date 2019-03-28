@@ -31,7 +31,9 @@ export default StyleSheet.create({
     borderBottomWidth: 1 / PixelRatio.get(),
     borderBottomColor: sColor.colorDdd
   },
-  patientGroupItemTitle: {},
+  patientGroupItemTitle: {
+    flex: 1
+  },
   patientGroupTitle: {},
   patientGroupCount: {
     marginLeft: 10,
@@ -43,6 +45,10 @@ export default StyleSheet.create({
   patientGroupNames: {
     color: sColor.color888,
     marginRight: 5
+  },
+  deletePatientGroupIcon: {
+    color: sColor.mainRed,
+    width: 34
   },
   patientGroupIcon: {
     color: sColor.color888

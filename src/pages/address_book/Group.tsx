@@ -1,6 +1,5 @@
 import * as userAction from "@/redux/actions/user";
 import { AppState } from "@/redux/stores/store";
-import { Icon, Toast } from "@ant-design/react-native";
 import sColor from "@styles/color";
 import gStyle from "@utils/style";
 import React, { Component } from "react";
@@ -12,13 +11,17 @@ import {
   TouchableOpacity,
   View
 } from "react-native";
+import { Icon, Toast, Modal } from "@ant-design/react-native";
 import { NavigationScreenProp } from "react-navigation";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
+import userApi from "@api/user";
+import pathMap from "@/routes/pathMap";
 const style = gStyle.addressBook.AddressBookGroup;
 const global = gStyle.global;
 interface NavParams {
   navigatePress: () => void;
+  mode: "delete" | "done";
 }
 interface Props {
   navigation: NavigationScreenProp<State, NavParams>;
@@ -83,13 +86,21 @@ export default class Index extends Component<
     },
     headerRight: (
       <TouchableOpacity
-        onPress={() => (navigation.state.params as NavParams).navigatePress}
+        onPress={() => {
+          let oriMode = navigation.getParam("mode");
+          navigation.setParams({
+            mode: oriMode === "done" ? "delete" : "done"
+          });
+          navigation.state.params!.navigatePress();
+        }}
       >
         <Text
           style={[style.headerTitleLeft, global.fontSize14, global.fontStyle]}
         >
           {console.log(navigation.state)}
-          {navigation.state.isDeleteMode ? "删除" : "完成"}
+          {navigation.state.params && navigation.state.params!.mode === "done"
+            ? "删除"
+            : "完成"}
         </Text>
       </TouchableOpacity>
     )
@@ -102,19 +113,21 @@ export default class Index extends Component<
     return {
       hasLoad: false,
       refreshing: false,
-      isDeleteMode: true,
+      isDeleteMode: false,
       patientGroupList: []
     };
   };
   async componentDidMount() {
     await this.init();
-    this.props.navigation.setParams({ navigatePress: this.deleteGroup });
+    this.props.navigation.setParams({
+      mode: "done",
+      navigatePress: this.changeMode
+    });
   }
-  deleteGroup = () => {
+  changeMode = () => {
     this.setState({
       isDeleteMode: !this.state.isDeleteMode
     });
-    Toast.info(`isDeleteMode is ${this.state.isDeleteMode}`, 1);
   };
   init = async () => {
     // let {data} = await userApi.getPatientGroupList({page:-1,limit:-1,filter:{}})
@@ -211,6 +224,17 @@ export default class Index extends Component<
         Toast.fail("刷新失败,错误信息: " + err.msg);
       });
   };
+  deleteGroup = (id: number) => {
+    userApi
+      .deletePatientGroup({ id })
+      .then(() => {
+        Toast.success("删除成功", 3);
+        this.init();
+      })
+      .catch(err => {
+        Toast.fail("删除失败, 错误原因: " + err.msg, 3);
+      });
+  };
   render() {
     if (!this.state.hasLoad) {
       return (
@@ -245,7 +269,31 @@ export default class Index extends Component<
                     global.justifyContentSpaceBetween,
                     global.alignItemsCenter
                   ]}
+                  onPress={() => {
+                    this.props.navigation.push(pathMap.AddressBookGroupDetail, {
+                      id: v.id,
+                      title: v.name
+                    });
+                  }}
                 >
+                  <TouchableOpacity
+                    onPress={() => {
+                      Modal.alert("提示", `您确定删除${v.name}分组吗?`, [
+                        {
+                          text: "取消",
+                          onPress: () => console.log("cancel"),
+                          style: "cancel"
+                        },
+                        { text: "确定", onPress: () => this.deleteGroup(v.id) }
+                      ]);
+                    }}
+                    style={this.state.isDeleteMode ? null : global.hidden}
+                  >
+                    <Icon
+                      name="minus-circle"
+                      style={[style.deletePatientGroupIcon, global.fontSize22]}
+                    />
+                  </TouchableOpacity>
                   <View style={[style.patientGroupItemTitle]}>
                     <View
                       style={[
@@ -320,6 +368,9 @@ export default class Index extends Component<
                 global.alignItemsCenter,
                 global.justifyContentCenter
               ]}
+              onPress={() =>
+                this.props.navigation.push(pathMap.AddressBookAddGroup)
+              }
             >
               <Icon name="plus-circle" style={style.addPatientGroupBtn} />
               <Text

@@ -8,6 +8,8 @@ import advisoryIndex from "@/assets/styles/advisory/index";
 import advisoryChat from "@/assets/styles/advisory/chat";
 import AddressBookIndex from "@/assets/styles/address_book/index";
 import AddressBookGroup from "@/assets/styles/address_book/group";
+import AddressBookAddGroup from "@/assets/styles/address_book/addGroup";
+import AddressBookGroupDetail from "@/assets/styles/address_book/groupDetail";
 import personalCenterIndex from "@/assets/styles/personal_center/index";
 export default {
   home,
@@ -24,7 +26,9 @@ export default {
   },
   addressBook: {
     AddressBookIndex,
-    AddressBookGroup
+    AddressBookGroup,
+    AddressBookAddGroup,
+    AddressBookGroupDetail
   },
   personalCenter: {
     personalCenterIndex
