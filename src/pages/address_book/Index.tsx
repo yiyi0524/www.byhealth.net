@@ -15,7 +15,7 @@ import { Toast, Icon } from "@ant-design/react-native";
 import gStyle from "@utils/style";
 import gImg from "@utils/img";
 import pathMap from "@/routes/pathMap";
-// import userApi from "@api/user";
+import patientApi from "@api/patient";
 const style = gStyle.addressBook.AddressBookIndex;
 const global = gStyle.global;
 interface Props {
@@ -76,7 +76,7 @@ export default class Index extends Component<
     await this.init();
   }
   init = async () => {
-    // let json = await api.getCommunicationList();
+    // let json = await patientApi.getPatientList();
     let communicationList = [
       {
         id: 1,
@@ -267,6 +267,11 @@ export default class Index extends Component<
                     global.justifyContentStart,
                     global.alignItemsCenter
                   ]}
+                  onPress={() =>
+                    this.props.navigation.push(pathMap.PatientDetail, {
+                      title: v.name
+                    })
+                  }
                 >
                   <View style={style.communicationItemPicture}>
                     <Image

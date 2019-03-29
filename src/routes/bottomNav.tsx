@@ -16,6 +16,7 @@ import AddressBookIndex from "@pages/address_book/Index";
 import AddressBookGroup from "@pages/address_book/Group";
 import AddressBookAddGroup from "@pages/address_book/AddGroup";
 import AddressBookGroupDetail from "@pages/address_book/GroupDetail";
+import PatientDetail from "@pages/address_book/PatientDetail";
 import RealNameAuth from "@pages/user/RealNameAuth";
 import AdvisoryChat from "@pages/advisory/Chat";
 const style = StyleSheet.create({
@@ -206,6 +207,9 @@ const StacksOverTabs = createStackNavigator({
   },
   [pathMap.AddressBookGroupDetail]: {
     screen: AddressBookGroupDetail
+  },
+  [pathMap.PatientDetail]: {
+    screen: PatientDetail
   }
 });
 export default StacksOverTabs;

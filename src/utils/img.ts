@@ -23,9 +23,9 @@ export default {
     select: require("@img/home/xuanze.png"),
     invite: require("@img/home/yaoqing.png"),
     banner_0: require("@img/home/banner_0.jpg"),
-    banner_1: require("@img/home/banner_1.png"),
-    banner_2: require("@img/home/banner_2.png"),
-    banner_3: require("@img/home/banner_3.png")
+    banner_1: require("@img/home/banner_1.jpg"),
+    banner_2: require("@img/home/banner_2.jpg"),
+    banner_3: require("@img/home/banner_3.jpg")
   },
   advisory: {
     pillPurchase: require("@img/advisory/pill_purchase.png"),

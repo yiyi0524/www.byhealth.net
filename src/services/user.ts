@@ -51,28 +51,10 @@ export async function addPatientGroup({
     }
   });
 }
-/**
- * 获取某分组的患者信息
- */
-export async function getPatientList({
-  page = -1,
-  limit = -1,
-  filter
-}: GetListParam) {
-  return bget({
-    url: "/getPatientList",
-    query: {
-      page,
-      limit,
-      filter
-    }
-  });
-}
 
 export default {
   getPersonalInfo,
   getPatientGroupList,
   deletePatientGroup,
-  addPatientGroup,
-  getPatientList
+  addPatientGroup
 };

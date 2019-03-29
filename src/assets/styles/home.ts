@@ -126,20 +126,20 @@ export default StyleSheet.create({
     width: 15
   },
   bannerItem: {
-    width: 160,
-    height: 100,
-    marginRight: 15,
+    width: 130,
+    height: 80,
+    marginRight: 10,
     backgroundColor: sColor.white,
     borderRadius: 5,
     borderWidth: 1 / PixelRatio.get(),
     borderColor: sColor.colorCcc,
     overflow: "hidden",
-    marginTop: 15,
-    marginBottom: 15
+    marginTop: 10,
+    marginBottom: 10
   },
   bannerImg: {
-    width: 160,
-    height: 100,
+    width: 130,
+    height: 80,
     resizeMode: "cover"
   },
   /**

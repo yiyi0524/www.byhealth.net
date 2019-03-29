@@ -7,9 +7,6 @@ export default StyleSheet.create({
     color: sColor.mainRed,
     paddingRight: 15
   },
-  group: {
-    flex: 1
-  },
   loading: {
     width: windowWidth,
     height: windowHeight,
@@ -21,8 +18,7 @@ export default StyleSheet.create({
     textAlign: "center"
   },
   main: {
-    backgroundColor: sColor.mainBgColor,
-    flex: 0.9
+    backgroundColor: sColor.mainBgColor
   },
   header: {
     marginTop: 10,
@@ -67,12 +63,13 @@ export default StyleSheet.create({
   patientList: {
     backgroundColor: sColor.white,
     paddingLeft: 15,
-    paddingRight: 15
+    paddingRight: 15,
+    marginTop: 8
   },
   patientItem: {
     height: 50,
     borderBottomWidth: 1 / PixelRatio.get(),
-    borderBottomColor: sColor.colorDdd
+    borderBottomColor: sColor.colorEee
   },
   patientItemAvatar: {
     width: 40,

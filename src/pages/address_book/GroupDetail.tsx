@@ -2,7 +2,7 @@ import * as userAction from "@/redux/actions/user";
 import { AppState } from "@/redux/stores/store";
 import { Icon, InputItem, Toast } from "@ant-design/react-native";
 import { GENDER } from "@api/doctor";
-import userApi from "@api/user";
+import patientApi from "@api/patient";
 import sColor from "@styles/color";
 import gImg from "@utils/img";
 import gStyle from "@utils/style";
@@ -19,6 +19,7 @@ import {
 import { NavigationScreenProp } from "react-navigation";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
+import pathMap from "@/routes/pathMap";
 const style = gStyle.addressBook.AddressBookGroupDetail;
 const global = gStyle.global;
 interface Props {
@@ -171,7 +172,7 @@ export default class Index extends Component<
     };
     let {
       data: { list }
-    } = await userApi.getPatientList({
+    } = await patientApi.getPatientList({
       page: -1,
       limit: -1,
       filter
@@ -188,28 +189,6 @@ export default class Index extends Component<
         Toast.fail("刷新失败,错误信息: " + err.msg);
       });
   };
-  filterPatientList = async () => {
-    let patientList = await this.getPageData();
-    this.setState({
-      patientList
-    });
-  };
-  submit = () => {
-    if (this.state.groupName === "") {
-      return Toast.info("请输入分组名", 3);
-    }
-    userApi
-      .addPatientGroup({
-        name: this.state.groupName,
-        patientIdList: this.state.patientIdList
-      })
-      .then(() => {
-        Toast.success("添加成功", 3);
-      })
-      .catch(err => {
-        Toast.fail("添加分组失败, 错误信息: " + err.msg, 3);
-      });
-  };
   render() {
     if (!this.state.hasLoad) {
       return (
@@ -223,7 +202,7 @@ export default class Index extends Component<
       );
     }
     return (
-      <View style={style.group}>
+      <>
         <ScrollView
           style={style.main}
           refreshControl={
@@ -233,82 +212,6 @@ export default class Index extends Component<
             />
           }
         >
-          <View style={style.header}>
-            <InputItem
-              clear
-              value={this.state.groupName}
-              onChange={groupName => {
-                this.setState({
-                  groupName
-                });
-              }}
-              style={[style.headerInput, global.fontSize14, global.fontStyle]}
-              placeholder="输入分组名称"
-            >
-              名称
-            </InputItem>
-          </View>
-          <View
-            style={[style.patientTitle, global.flex, global.alignItemsCenter]}
-          >
-            <View style={global.titleIcon} />
-            <Text style={[global.fontSize14, global.fontStyle]}>选择患者</Text>
-          </View>
-          <View style={style.selectHeader}>
-            <InputItem
-              clear
-              value={this.state.name}
-              onChange={name => {
-                this.setState({
-                  name
-                });
-                this.filterPatientList();
-              }}
-              style={[style.headerInput, global.fontSize14, global.fontStyle]}
-              placeholder="搜索患者姓名、备注"
-            >
-              <Icon
-                name="search"
-                style={[style.searchIcon, global.fontSize18]}
-              />
-            </InputItem>
-          </View>
-          <Text
-            style={[
-              this.state.patientIdList.length !== 0
-                ? style.selectPatient
-                : global.hidden,
-              global.fontSize14,
-              global.fontStyle
-            ]}
-            numberOfLines={1}
-          >
-            所选患者
-          </Text>
-          <Text
-            style={[
-              this.state.selectPatientList.length !== 0
-                ? style.selectpatientTitle
-                : global.hidden,
-              global.fontSize12,
-              global.fontStyle
-            ]}
-            numberOfLines={1}
-          >
-            {this.state.selectPatientList.map((v: string) => {
-              return v + "、";
-            })}
-          </Text>
-          <Text
-            style={[
-              this.state.name !== "" ? style.selectPatient : global.hidden,
-              global.fontSize14,
-              global.fontStyle
-            ]}
-            numberOfLines={1}
-          >
-            " {this.state.name} " 的搜索结果
-          </Text>
           <View style={style.patientList}>
             {this.state.patientList.map((v: any, k: number) => {
               return (
@@ -320,28 +223,11 @@ export default class Index extends Component<
                     global.flex,
                     global.alignItemsCenter
                   ]}
-                  onPress={() => {
-                    let patientList = this.state.patientList,
-                      patientIdList = this.state.patientIdList,
-                      selectPatientList = this.state.selectPatientList;
-                    patientList[k].isChecked = !patientList[k].isChecked;
-                    if (v.isChecked) {
-                      patientIdList.push(v.id);
-                      selectPatientList.push(v.name);
-                    } else {
-                      patientIdList = patientIdList.filter(item => {
-                        return item !== v.id;
-                      });
-                      selectPatientList = selectPatientList.filter(item => {
-                        return item !== v.name;
-                      });
-                    }
-                    this.setState({
-                      patientList,
-                      patientIdList,
-                      selectPatientList
-                    });
-                  }}
+                  onPress={() =>
+                    this.props.navigation.push(pathMap.PatientDetail, {
+                      title: v.name
+                    })
+                  }
                 >
                   <View style={style.patientItemAvatar}>
                     <Image
@@ -389,24 +275,12 @@ export default class Index extends Component<
                       </Text>
                     </View>
                   </View>
-                  <Icon
-                    name="check-circle"
-                    style={[
-                      v.isChecked ? style.selectIconActive : style.selectIcon,
-                      global.fontSize18
-                    ]}
-                  />
                 </TouchableOpacity>
               );
             })}
           </View>
         </ScrollView>
-        <TouchableOpacity style={style.submitBtn} onPress={() => this.submit()}>
-          <Text style={[style.submit, global.fontStyle, global.fontSize15]}>
-            完成
-          </Text>
-        </TouchableOpacity>
-      </View>
+      </>
     );
   }
 }

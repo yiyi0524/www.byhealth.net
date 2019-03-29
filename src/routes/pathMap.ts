@@ -11,5 +11,6 @@ export default {
   AdvisoryChat: "AdvisoryChat",
   AddressBookGroup: "AddressBookGroup",
   AddressBookAddGroup: "AddressBookAddGroup",
-  AddressBookGroupDetail: "AddressBookGroupDetail"
+  AddressBookGroupDetail: "AddressBookGroupDetail",
+  PatientDetail: "PatientDetail"
 };

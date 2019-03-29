@@ -19,6 +19,7 @@ import { Dispatch } from "redux";
 import gImg from "@utils/img";
 import { GENDER } from "@api/doctor";
 import userApi from "@api/user";
+import patientApi from "@api/patient";
 const style = gStyle.addressBook.AddressBookAddGroup;
 const global = gStyle.global;
 
@@ -155,7 +156,7 @@ export default class Index extends Component<
     };
     let {
       data: { list }
-    } = await userApi.getPatientList({
+    } = await patientApi.getPatientList({
       page: -1,
       limit: -1,
       filter
@@ -209,6 +210,7 @@ export default class Index extends Component<
     return (
       <View style={style.group}>
         <ScrollView
+          keyboardShouldPersistTaps="handled"
           style={style.main}
           refreshControl={
             <RefreshControl
@@ -292,6 +294,16 @@ export default class Index extends Component<
             numberOfLines={1}
           >
             " {this.state.name} " 的搜索结果
+          </Text>
+          <Text
+            style={[
+              this.state.name === "" ? style.selectPatient : global.hidden,
+              global.fontSize14,
+              global.fontStyle
+            ]}
+            numberOfLines={1}
+          >
+            所有患者
           </Text>
           <View style={style.patientList}>
             {this.state.patientList.map((v: any, k: number) => {

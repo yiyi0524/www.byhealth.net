@@ -1,5 +1,6 @@
 export default {
   mainRed: "#ed5736", //全局红色
+  lightRed: "#fd8469", //全局红色
   mainBgColor: "#f2f2f2",
   mainBlack: "#252525",
   mainYellow: "#f5f4d8",

@@ -10,6 +10,7 @@ import AddressBookIndex from "@/assets/styles/address_book/index";
 import AddressBookGroup from "@/assets/styles/address_book/group";
 import AddressBookAddGroup from "@/assets/styles/address_book/addGroup";
 import AddressBookGroupDetail from "@/assets/styles/address_book/groupDetail";
+import PatientDetail from "@/assets/styles/address_book/patientDetail";
 import personalCenterIndex from "@/assets/styles/personal_center/index";
 export default {
   home,
@@ -28,7 +29,8 @@ export default {
     AddressBookIndex,
     AddressBookGroup,
     AddressBookAddGroup,
-    AddressBookGroupDetail
+    AddressBookGroupDetail,
+    PatientDetail
   },
   personalCenter: {
     personalCenterIndex
