@@ -90,7 +90,34 @@ export default class PatientDetail extends Component<
   }
   init = async () => {
     // let json = await patientApi.getPatientInfo();
-    let patientInfo = [];
+    let patientInfo = {
+      id: 1,
+      name: "吴大伟",
+      avatar:
+        "https://www.byhealth.net/uploads/20190315/1cec476d9eaef31971abef5e16716365.png",
+      gender: 1,
+      age: "1岁11个月大",
+      province: "河南省",
+      remarks: "表弟",
+      phone: "15096858596",
+      height: "111",
+      weight: "50",
+      specialPeriod: "无",
+      allergy: "无",
+      anamnesis: "无",
+      entityMedicalRecord: [
+        {
+          id: 2,
+          url:
+            "https://www.byhealth.net/uploads/20190315/1cec476d9eaef31971abef5e16716365.png"
+        },
+        {
+          id: 3,
+          url:
+            "https://www.byhealth.net/uploads/20190315/1cec476d9eaef31971abef5e16716365.png"
+        }
+      ]
+    };
 
     this.setState({
       hasLoad: true
@@ -195,16 +222,20 @@ export default class PatientDetail extends Component<
                 >
                   备注名
                 </Text>
-                <Text style={[style.headerDescriptionReamarksName]}>
-                  未备注
-                  <Icon
-                    style={[
-                      style.headerDescriptionReamarksIcon,
-                      global.fontSize14
-                    ]}
-                    name="right"
-                  />
-                </Text>
+                <View style={[global.flex, global.alignItemsCenter]}>
+                  <Text style={[style.headerDescriptionReamarksName]}>
+                    未备注
+                  </Text>
+                  <TouchableOpacity>
+                    <Icon
+                      style={[
+                        style.headerDescriptionReamarksIcon,
+                        global.fontSize16
+                      ]}
+                      name="form"
+                    />
+                  </TouchableOpacity>
+                </View>
               </View>
               <View
                 style={[
@@ -464,13 +495,17 @@ export default class PatientDetail extends Component<
                   历史病历
                 </Text>
               </View>
-              <Text style={[style.medicalRecordAdd, global.fontSize13]}>
-                <Icon
-                  style={[style.medicalRecordAddIcon, global.fontSize13]}
-                  name="right"
-                />
-                添加新病历
-              </Text>
+              <TouchableOpacity>
+                <View style={[global.flex, global.alignItemsCenter]}>
+                  <Icon
+                    style={[style.medicalRecordAddIcon, global.fontSize16]}
+                    name="plus"
+                  />
+                  <Text style={[style.medicalRecordAdd, global.fontSize13]}>
+                    添加病历
+                  </Text>
+                </View>
+              </TouchableOpacity>
             </View>
             <View style={style.medicalRecordItem}>
               <Text
@@ -674,14 +709,22 @@ export default class PatientDetail extends Component<
             style.bottomBtn,
             global.flex,
             global.alignItemsCenter,
-            global.justifyContentSpaceAround
+            global.justifyContentSpaceBetween
           ]}
         >
           <TouchableOpacity>
-            <Text>进入对话</Text>
+            <Text
+              style={[style.bottomTitle, global.fontSize14, global.fontStyle]}
+            >
+              进入对话
+            </Text>
           </TouchableOpacity>
           <TouchableOpacity>
-            <Text>开放</Text>
+            <Text
+              style={[style.bottomTitle, global.fontSize14, global.fontStyle]}
+            >
+              开方
+            </Text>
           </TouchableOpacity>
         </View>
         {/* 图片查看器 */}

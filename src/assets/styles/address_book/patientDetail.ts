@@ -61,7 +61,8 @@ export default StyleSheet.create({
     color: sColor.white
   },
   headerDescriptionReamarksIcon: {
-    color: sColor.white
+    color: sColor.white,
+    marginLeft: 5
   },
   headerDescriptionPhone: {
     marginTop: 5
@@ -224,7 +225,19 @@ export default StyleSheet.create({
   },
   bottomBtn: {
     flex: 0.1,
+    height: 45,
+    paddingLeft: 15,
+    paddingRight: 15,
     borderTopWidth: 1 / PixelRatio.get(),
     borderTopColor: sColor.colorDdd
+  },
+  bottomTitle: {
+    height: 40,
+    width: (windowWidth - 45) / 2,
+    backgroundColor: sColor.mainRed,
+    color: sColor.white,
+    borderRadius: 5,
+    textAlign: "center",
+    lineHeight: 45
   }
 });
