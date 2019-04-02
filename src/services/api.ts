@@ -1,66 +1,67 @@
-import { request as BuffReq } from "jsbdk";
-import { Dimensions } from "react-native";
-import { BASE_URL } from "@config/api";
-import storage from "@utils/storage";
-import qs from "qs";
-export const windowWidth = Dimensions.get("window").width;
-export const windowHeight = Dimensions.get("window").height;
+import { request as BuffReq } from "jsbdk"
+import { Dimensions } from "react-native"
+import { BASE_URL } from "@config/api"
+import storage from "@utils/storage"
+import qs from "qs"
+export const windowWidth = Dimensions.get("window").width
+export const windowHeight = Dimensions.get("window").height
 export interface RequestParam {
-  url: string;
-  body?: any;
-  query?: any;
-  data?: any;
-  method?: string;
-  headers?: Record<string, string>;
+  url: string
+  body?: any
+  query?: any
+  data?: any
+  method?: string
+  headers?: Record<string, string>
 }
+
 export interface GetListParam {
-  page?: number;
-  limit?: number;
-  filter?: object;
+  page?: number
+  limit?: number
+  filter?: object
 }
 export async function bget({ url, query = {}, headers = {} }: RequestParam) {
-  let session = await storage.get("session");
-  headers["session"] = session;
-  headers["content-type"] = "application/json";
+  let session = await storage.get("session")
+  headers["session"] = session
+  headers["content-type"] = "application/json"
   return BuffReq(
     BASE_URL,
     url + "?" + qs.stringify(query),
     null,
     "GET",
     "include",
-    headers
-  );
+    headers,
+  )
 }
 export async function bpost({ url, data = {}, headers = {} }: RequestParam) {
-  let session = await storage.get("session");
-  headers["session"] = session;
-  headers["content-type"] = "application/json";
-  return BuffReq(BASE_URL, url, data, "POST", "include", headers);
+  let session = await storage.get("session")
+  headers["session"] = session
+  headers["content-type"] = "application/json"
+  return BuffReq(BASE_URL, url, data, "POST", "include", headers)
 }
 export async function isLogin() {
-  let session = await storage.get("session");
+  let session = await storage.get("session")
   if (!session) {
-    return false;
+    return false
   }
   let isLogin: boolean = await new Promise(s => {
     try {
       bpost({
         url: "/api/isLogin",
         headers: {
-          session
-        }
+          session,
+        },
       })
         .then(() => s(true))
-        .catch(() => s(false));
+        .catch(() => s(false))
     } catch (err) {
-      s(false);
+      s(false)
     }
-  });
-  return isLogin;
+  })
+  return isLogin
 }
 export interface AccountLoginParam {
-  account: string;
-  pwd: string;
+  account: string
+  pwd: string
 }
 /**
  * 账号登录
@@ -68,13 +69,13 @@ export interface AccountLoginParam {
 export async function accountLogin({ account, pwd }: AccountLoginParam) {
   return bpost({
     url: "/api/accountLogin",
-    data: { account, pwd }
-  });
+    data: { account, pwd },
+  })
 }
 export interface PhoneLoginParam {
-  phone: string;
-  code: string;
-  codeUuid: string;
+  phone: string
+  code: string
+  codeUuid: string
 }
 /**
  * 手机号码登录
@@ -82,16 +83,16 @@ export interface PhoneLoginParam {
 export async function phoneLogin({ phone, code, codeUuid }: PhoneLoginParam) {
   return bpost({
     url: "/api/phoneLogin",
-    data: { phone, code, codeUuid }
-  });
+    data: { phone, code, codeUuid },
+  })
 }
 /**
  * 退出
  */
 export async function logout() {
   return bget({
-    url: "/api/logout"
-  });
+    url: "/api/logout",
+  })
 }
 
 /**
@@ -101,18 +102,18 @@ export function sendPhoneRegisterVerifyCode({ phone }: { phone: string }) {
   return bpost({
     url: "/api/sendPhoneRegisterVerifyCode",
     data: {
-      phone
-    }
-  });
+      phone,
+    },
+  })
 }
 export interface registerParam {
-  smsUuid: string;
-  verifyCode: string;
-  name: string;
-  phone: string;
-  countyCid: string;
-  hospitalId?: number;
-  hospitalName?: string;
+  smsUuid: string
+  verifyCode: string
+  name: string
+  phone: string
+  countyCid: string
+  hospitalId?: number
+  hospitalName?: string
 }
 /**
  * 注册
@@ -124,7 +125,7 @@ export function register({
   phone,
   countyCid,
   hospitalId,
-  hospitalName
+  hospitalName,
 }: registerParam) {
   return bpost({
     url: "/api/register",
@@ -135,9 +136,9 @@ export function register({
       phone,
       countyCid,
       hospitalId,
-      hospitalName
-    }
-  });
+      hospitalName,
+    },
+  })
 }
 /**
  * 发送登录手机验证码
@@ -146,9 +147,9 @@ export function getLoginPhoneVerifyCode({ phone }: { phone: string }) {
   return bpost({
     url: "/api/getLoginPhoneVerifyCode",
     data: {
-      phone
-    }
-  });
+      phone,
+    },
+  })
 }
 /**
  * 发送忘记密码手机验证码
@@ -157,9 +158,9 @@ export function getForgetPwdPhoneVerifyCode({ phone }: { phone: string }) {
   return bpost({
     url: "/api/getForgetPwdPhoneVerifyCode",
     data: {
-      phone
-    }
-  });
+      phone,
+    },
+  })
 }
 /**
  * 检查忘记密码手机验证码是否正确
@@ -167,20 +168,20 @@ export function getForgetPwdPhoneVerifyCode({ phone }: { phone: string }) {
 export function checkforGetPwdVerifyCode({
   phone,
   uuid,
-  code
+  code,
 }: {
-  phone: string;
-  uuid: string;
-  code: string;
+  phone: string
+  uuid: string
+  code: string
 }) {
   return bpost({
     url: "/api/checkForgetPwdVerifyCode",
     data: {
       phone,
       uuid,
-      code
-    }
-  });
+      code,
+    },
+  })
 }
 /**
  * 已登录修改密码
@@ -188,13 +189,13 @@ export function checkforGetPwdVerifyCode({
 export function modifyPwd({
   oriPwd,
   pwd,
-  rePwd
+  rePwd,
 }: {
-  oriPwd: string;
-  pwd: string;
-  rePwd: string;
+  oriPwd: string
+  pwd: string
+  rePwd: string
 }) {
-  return bpost({ url: "/api/modifyPwd", data: { oriPwd, pwd, rePwd } });
+  return bpost({ url: "/api/modifyPwd", data: { oriPwd, pwd, rePwd } })
 }
 /**
  * 手机验证码修改密码
@@ -204,23 +205,23 @@ export function modifyPwdWithPhoneCode({
   uuid,
   code,
   pwd,
-  rePwd
+  rePwd,
 }: {
-  phone: string;
-  uuid: string;
-  code: string;
-  pwd: string;
-  rePwd: string;
+  phone: string
+  uuid: string
+  code: string
+  pwd: string
+  rePwd: string
 }) {
   return bpost({
     url: "/api/modifyPwdWithPhoneVerifyCode",
-    data: { phone, uuid, code, pwd, rePwd }
-  });
+    data: { phone, uuid, code, pwd, rePwd },
+  })
 }
 export interface AliPayOrderInfo {
-  body: string;
-  subject: string;
-  money: number;
+  body: string
+  subject: string
+  money: number
 }
 /**
  * 获取支付宝支付订单信息
@@ -228,22 +229,22 @@ export interface AliPayOrderInfo {
 export function buildAliPayOrderInfo({
   body,
   subject,
-  money
+  money,
 }: AliPayOrderInfo) {
   return bpost({
     url: "/ali_pay/buildOrderInfo",
     data: {
       body,
       subject,
-      money
-    }
-  });
+      money,
+    },
+  })
 }
 export interface WxPayOrderInfo {
-  body: string;
-  detail: string;
-  attach: string;
-  money: number;
+  body: string
+  detail: string
+  attach: string
+  money: number
 }
 /**
  * 获取微信支付订单信息
@@ -252,7 +253,7 @@ export function buildWxPayOrderInfo({
   body,
   detail,
   attach,
-  money
+  money,
 }: WxPayOrderInfo) {
   return bpost({
     url: "/ali_pay/buildOrderInfo",
@@ -260,9 +261,9 @@ export function buildWxPayOrderInfo({
       body,
       detail,
       attach,
-      money
-    }
-  });
+      money,
+    },
+  })
 }
 /**
  * 更新用户个推cid
@@ -271,24 +272,24 @@ export function updateGetuiCid(cid: string) {
   return bpost({
     url: "/user/updateGetuiCid",
     data: {
-      cid
-    }
-  });
+      cid,
+    },
+  })
 }
 // /**
 //  * 上传图片
 //  */
 export function uploadImg(file: any) {
-  let formData = new FormData();
-  formData.append("name", "file");
+  let formData = new FormData()
+  formData.append("name", "file")
   formData.append("file", {
     uri: file.url,
     name: "file.jpg",
-    type: "image/jpeg"
-  });
+    type: "image/jpeg",
+  })
   return BuffReq(BASE_URL, "/uploadImg", formData, "POST", "include", {
-    "Content-Type": "multipart/form-data"
-  });
+    "Content-Type": "multipart/form-data",
+  })
 }
 
 /**
@@ -296,8 +297,8 @@ export function uploadImg(file: any) {
  */
 export function getRegion() {
   return bget({
-    url: "/getRegion"
-  });
+    url: "/getRegion",
+  })
 }
 /**
  * 获取医疗机构
@@ -306,9 +307,9 @@ export function getMedicalInstitutions(cityId: any) {
   return bpost({
     url: "/common/getMedicalInstitutions",
     data: {
-      cityId
-    }
-  });
+      cityId,
+    },
+  })
 }
 let aCity = {
   11: "北京",
@@ -345,30 +346,30 @@ let aCity = {
   71: "台湾",
   81: "香港",
   82: "澳门",
-  91: "国外"
-};
+  91: "国外",
+}
 export function idCardIDChecked(sId: string) {
-  var iSum = 0;
-  var info = "";
-  if (!/^\d{17}(\d|x)$/i.test(sId)) return false;
-  sId = sId.replace(/x$/i, "a");
-  if (aCity[parseInt(sId.substr(0, 2))] === null) return false;
+  var iSum = 0
+  var info = ""
+  if (!/^\d{17}(\d|x)$/i.test(sId)) return false
+  sId = sId.replace(/x$/i, "a")
+  if (aCity[parseInt(sId.substr(0, 2))] === null) return false
   var sBirthday =
     sId.substr(6, 4) +
     "-" +
     Number(sId.substr(10, 2)) +
     "-" +
-    Number(sId.substr(12, 2));
-  var d = new Date(sBirthday.replace(/-/g, "/"));
+    Number(sId.substr(12, 2))
+  var d = new Date(sBirthday.replace(/-/g, "/"))
   if (
     sBirthday !==
     d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate()
   )
-    return false;
+    return false
   for (var i = 17; i >= 0; i--)
-    iSum += (Math.pow(2, i) % 11) * parseInt(sId.charAt(17 - i), 11);
-  if (iSum % 11 !== 1) return false;
-  return true;
+    iSum += (Math.pow(2, i) % 11) * parseInt(sId.charAt(17 - i), 11)
+  if (iSum % 11 !== 1) return false
+  return true
 }
 export default {
   uploadImg,
@@ -387,5 +388,5 @@ export default {
   updateGetuiCid,
   getRegion,
   getMedicalInstitutions,
-  idCardIDChecked
-};
+  idCardIDChecked,
+}

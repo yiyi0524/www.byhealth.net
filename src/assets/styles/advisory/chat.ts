@@ -1,16 +1,218 @@
-import { StyleSheet, PixelRatio } from "react-native";
-import sColor from "@styles/color";
-import { windowWidth } from "@api/api";
-import { windowHeight } from "@/utils/utils";
+import { StyleSheet, PixelRatio } from "react-native"
+import sColor from "@styles/color"
+import { windowWidth } from "@api/api"
+import { windowHeight } from "@/utils/utils"
 export default StyleSheet.create({
   loading: {
     width: windowWidth,
     height: windowHeight,
     backgroundColor: sColor.white,
     justifyContent: "center",
-    flex: 1
+    flex: 1,
   },
   loadingTitle: {
-    textAlign: "center"
-  }
-});
+    textAlign: "center",
+  },
+  headerRight: {
+    color: sColor.mainRed,
+    paddingRight: 15,
+  },
+  main: {
+    flex: 1,
+  },
+  content: {
+    flex: 0.7,
+    backgroundColor: sColor.mainBgColor,
+  },
+  list: {
+    marginLeft: 15,
+    marginRight: 15,
+  },
+  item: {
+    marginBottom: 15,
+  },
+  sendTime: {
+    height: 40,
+    lineHeight: 40,
+    textAlign: "center",
+    color: sColor.color999,
+  },
+  leftItem: {
+    justifyContent: "flex-start",
+    flex: 1,
+  },
+  itemPic: {
+    width: 40,
+    height: 40,
+    borderRadius: 100,
+    overflow: "hidden",
+  },
+  itemImg: {
+    width: 40,
+    height: 40,
+    resizeMode: "center",
+  },
+  leftItemIcon: {
+    width: 0,
+    height: 0,
+    backgroundColor: "transparent",
+    borderStyle: "solid",
+    borderLeftWidth: 8,
+    borderRightWidth: 15,
+    borderBottomWidth: 4,
+    borderTopWidth: 4,
+    borderLeftColor: "transparent",
+    borderRightColor: sColor.white,
+    borderTopColor: "transparent",
+    borderBottomColor: "transparent",
+    marginTop: 8,
+  },
+  rightItemIcon: {
+    width: 0,
+    height: 0,
+    backgroundColor: "transparent",
+    borderStyle: "solid",
+    borderLeftWidth: 15,
+    borderRightWidth: 8,
+    borderBottomWidth: 4,
+    borderTopWidth: 4,
+    borderLeftColor: sColor.lightChatBlue,
+    borderRightColor: "transparent",
+    borderTopColor: "transparent",
+    borderBottomColor: "transparent",
+    marginTop: 8,
+  },
+  leftItemTitle: {
+    maxWidth: windowWidth - 110,
+    color: sColor.color666,
+    backgroundColor: sColor.white,
+    paddingTop: 8,
+    paddingBottom: 8,
+    paddingLeft: 12,
+    paddingRight: 12,
+    borderRadius: 5,
+    lineHeight: 20,
+  },
+  rightItemTitle: {
+    maxWidth: windowWidth - 110,
+    color: sColor.color666,
+    backgroundColor: sColor.lightChatBlue,
+    paddingTop: 8,
+    paddingBottom: 8,
+    paddingLeft: 12,
+    paddingRight: 12,
+    borderRadius: 5,
+    lineHeight: 20,
+  },
+  leftItemPicture: {
+    minWidth: 50,
+    maxWidth: 150,
+    padding: 8,
+    backgroundColor: sColor.white,
+    borderRadius: 5,
+    overflow: "hidden",
+  },
+  rightItemPicture: {
+    minWidth: 50,
+    maxWidth: 150,
+    padding: 8,
+    backgroundColor: sColor.lightChatBlue,
+    borderRadius: 5,
+    overflow: "hidden",
+  },
+  itemPicImg: {
+    minWidth: 30,
+    maxWidth: 130,
+    resizeMode: "cover",
+  },
+  bottom: {
+    flex: 0.3,
+    borderTopWidth: 1 / PixelRatio.get(),
+    borderTopColor: sColor.colorDdd,
+    position: "relative",
+  },
+
+  bottomNavList: {
+    height: 65,
+    paddingLeft: 15,
+    paddingRight: 15,
+    overflow: "hidden",
+    position: "absolute",
+    backgroundColor: sColor.white,
+  },
+  bottomNavListActive: {
+    height: 130,
+    paddingLeft: 15,
+    paddingRight: 15,
+    overflow: "hidden",
+    position: "absolute",
+    top: -65,
+    backgroundColor: sColor.white,
+  },
+  bottomNavItem: {
+    width: (windowWidth - 30) / 4,
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 5,
+    height: 65,
+  },
+  bottomNavItemPic: {
+    width: 25,
+    height: 25,
+    resizeMode: "center",
+  },
+  bottomNavItemTitle: {
+    color: sColor.color666,
+    marginTop: 3,
+  },
+  bottomInputFa: {},
+  bottomInput: {
+    paddingLeft: 15,
+    paddingRight: 15,
+    borderTopWidth: 1 / PixelRatio.get(),
+    borderTopColor: sColor.colorEee,
+    marginTop: 2,
+    paddingTop: 2,
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    right: 0,
+  },
+  bottomInputFaActive: {
+    height: 110,
+    paddingLeft: 15,
+    paddingRight: 15,
+    borderTopWidth: 1 / PixelRatio.get(),
+    borderTopColor: sColor.colorEee,
+    marginTop: 2,
+    paddingTop: 2,
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: sColor.white,
+  },
+  bottomInputImg: {
+    width: 30,
+    height: 30,
+    resizeMode: "center",
+  },
+  bottomInputSendBtn: {
+    color: sColor.white,
+    paddingTop: 5,
+    paddingBottom: 5,
+    paddingLeft: 8,
+    paddingRight: 8,
+    backgroundColor: sColor.mainRed,
+    borderRadius: 5,
+  },
+  bottomInputFa: {
+    flex: 1,
+    marginLeft: 0,
+    marginRight: 15,
+  },
+  input: {
+    fontSize: 14,
+    color: sColor.color666,
+  },
+})

@@ -13,8 +13,9 @@ export default {
     man: require("@img/common/man.png"),
     woman: require("@img/common/woman.png"),
     genderNull: require("@img/common/gender_null.png"),
+    defaultPic: require("@img/common/default_pic.png"),
     technicalqualificationCertificatePicFirst: require("@img/common/technicalqualificationCertificatePicFirst.png"),
-    technicalqualificationCertificatePicSecond: require("@img/common/technicalqualificationCertificatePicSecond.png")
+    technicalqualificationCertificatePicSecond: require("@img/common/technicalqualificationCertificatePicSecond.png"),
   },
   home: {
     prescriptionTemplate: require("@img/home/moban.png"),
@@ -25,15 +26,15 @@ export default {
     banner_0: require("@img/home/banner_0.jpg"),
     banner_1: require("@img/home/banner_1.jpg"),
     banner_2: require("@img/home/banner_2.jpg"),
-    banner_3: require("@img/home/banner_3.jpg")
+    banner_3: require("@img/home/banner_3.jpg"),
   },
   advisory: {
     pillPurchase: require("@img/advisory/pill_purchase.png"),
     reply: require("@img/advisory/reply.png"),
-    followUp: require("@img/advisory/follow_up.png")
+    followUp: require("@img/advisory/follow_up.png"),
   },
   addressBook: {
     group: require("@img/address_book/group.png"),
-    phone: require("@img/address_book/phone.png")
-  }
-};
+    phone: require("@img/address_book/phone.png"),
+  },
+}

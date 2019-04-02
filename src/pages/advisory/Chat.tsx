@@ -1,52 +1,99 @@
-import React, { Component } from "react";
-import { AppState } from "@/redux/stores/store";
-import { connect } from "react-redux";
-import { Dispatch } from "redux";
-import * as userAction from "@/redux/actions/user";
-import { Text, View, PixelRatio } from "react-native";
-import { Toast } from "@ant-design/react-native";
-import gStyle from "@utils/style";
-import gImg from "@utils/img";
-import sColor from "@styles/color";
-import { GiftedChat, Bubble, Send } from "react-native-gifted-chat";
-import { NavigationScreenProp } from "react-navigation";
-const style = gStyle.advisory.advisoryChat;
-const globalStyle = gStyle.global;
+import * as userAction from "@/redux/actions/user"
+import { AppState } from "@/redux/stores/store"
+import wsMsgApi from "@/services/wsMsg"
+import { Toast, InputItem } from "@ant-design/react-native"
+import sColor from "@styles/color"
+import gStyle from "@utils/style"
+import React, { Component, ReactChild } from "react"
+import {
+  PixelRatio,
+  RefreshControl,
+  Text,
+  View,
+  Image,
+  ImageSourcePropType,
+} from "react-native"
+import { TouchableOpacity } from "react-native-gesture-handler"
+import { NavigationScreenProp, ScrollView } from "react-navigation"
+import { connect } from "react-redux"
+import { Dispatch } from "redux"
+import global from "@/assets/styles/global"
+import pathMap from "@/routes/pathMap"
+import gImg from "@/utils/img"
+const style = gStyle.advisory.advisoryChat
 interface Props {
-  navigation: NavigationScreenProp<State>;
+  navigation: NavigationScreenProp<State>
 }
-interface messageItem {
-  _id: number;
-  text: string;
-  createdAt: any;
-  user: {
-    _id: number;
-    name: string;
-    avatar: string;
-  };
+/**
+ * 枚举类型
+ */
+export enum MsgType {
+  txt,
+  picture,
+  inquirySheet,
+  patientsThemselves,
+}
+export interface bottomNavItem {
+  title: string
+  icon: ImageSourcePropType
+  link: string
+  click?: Promise<void>
+  isShowMore?: boolean
+}
+export interface Picture {
+  id: number
+  title: string
+  url: string
+}
+/**
+ * 一条消息
+ */
+export interface Msg<T = any> {
+  id: number
+  sendUser: {
+    uid: number
+    avatar: Picture
+    name: string
+  }
+  receiveUser: {
+    uid: number
+    avatar: Picture
+    name: string
+  }
+  type: MsgType
+  msg?: string
+  extraData?: T
+  pic?: Picture
+  dom?: ReactChild
+  sendTime: string
 }
 interface State {
-  hasLoad: boolean;
-  refreshing: boolean;
-  messages: messageItem[];
+  hasLoad: boolean
+  refreshing: boolean
+  msgId: number
+  page: number
+  limit: number
+  filter: {}
+  msgList: Msg<any>[]
+  sendMsg: string
 }
 const mapStateToProps = (state: AppState) => {
   return {
     isLogin: state.user.isLogin,
     name: state.user.name,
-    uid: state.user.uid
-  };
-};
+    uid: state.user.uid,
+  }
+}
 const mapDispatchToProps = (dispatch: Dispatch) => {
   return {
     login: (preload: userAction.UserInfo) => {
-      dispatch(userAction.userLogin(preload));
-    }
-  };
-};
+      dispatch(userAction.userLogin(preload))
+    },
+  }
+}
 @connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )
 export default class Index extends Component<
   Props &
@@ -54,159 +101,350 @@ export default class Index extends Component<
     ReturnType<typeof mapDispatchToProps>,
   State
 > {
-  static navigationOptions = ({ navigation }: { navigation: any }) => ({
-    title: navigation.state.params.title,
-    headerStyle: {
-      backgroundColor: sColor.white,
-      height: 45,
-      elevation: 0,
-      borderBottomWidth: 1 / PixelRatio.get(),
-      borderBottomColor: sColor.colorEee
-    },
-    headerTintColor: sColor.color333,
-    headerTitleStyle: {
-      flex: 1,
-      alignItems: "center",
-      justifyContent: "center",
-      fontSize: 14,
-      textAlign: "center"
-    },
-    headerRight: <Text />
-  });
+  static navigationOptions = ({
+    navigation,
+  }: {
+    navigation: NavigationScreenProp<State>
+  }) => {
+    let title = ""
+    if (navigation.state.params) {
+      title = navigation.state.params.title
+    }
+    return {
+      title,
+      headerStyle: {
+        backgroundColor: sColor.white,
+        height: 45,
+        elevation: 0,
+        borderBottomWidth: 1 / PixelRatio.get(),
+        borderBottomColor: sColor.colorEee,
+      },
+      headerTintColor: sColor.color333,
+      headerTitleStyle: {
+        flex: 1,
+        alignItems: "center",
+        justifyContent: "center",
+        fontSize: 14,
+        textAlign: "center",
+      },
+      headerRight: (
+        <TouchableOpacity
+          onPress={() =>
+            navigation.push(pathMap.PatientDetail, {
+              id: navigation.getParam("patientId"),
+            })
+          }
+        >
+          <Text
+            style={[style.headerRight, global.fontSize14, global.fontStyle]}
+          >
+            病历
+          </Text>
+        </TouchableOpacity>
+      ),
+    }
+  }
+  bottomNavList: bottomNavItem[] = []
   constructor(props: any) {
-    super(props);
-    this.state = this.getInitState();
+    super(props)
+    this.bottomNavList = [
+      {
+        icon: gImg.advisory.followUp,
+        title: "辩证开方",
+        link: "",
+      },
+      {
+        icon: gImg.advisory.followUp,
+        title: "快捷回复",
+        link: "",
+      },
+      {
+        icon: gImg.advisory.followUp,
+        title: "结束对话",
+        link: "",
+      },
+      {
+        icon: gImg.advisory.followUp,
+        title: "张开",
+        link: "",
+        isShowMore: false,
+      },
+      {
+        icon: gImg.advisory.followUp,
+        title: "补填问诊单",
+        link: "",
+      },
+      {
+        icon: gImg.advisory.followUp,
+        title: "图片",
+        link: "",
+      },
+      {
+        icon: gImg.advisory.followUp,
+        title: "赠送提问",
+        link: "",
+      },
+      {
+        icon: gImg.advisory.followUp,
+        title: "坐诊信息",
+        link: "",
+      },
+    ]
+    this.state = this.getInitState()
   }
   getInitState = (): State => {
     return {
       hasLoad: false,
       refreshing: false,
-      messages: []
-    };
-  };
+      msgId: 0,
+      page: 1,
+      limit: 10,
+      filter: {},
+      msgList: [],
+      sendMsg: "",
+    }
+  }
   async componentDidMount() {
-    await this.init();
+    await this.init()
   }
   init = async () => {
-    let id = this.props.navigation.getParam("id");
-    let messages = [
-      {
-        _id: 1,
-        text: "您好, 有什么问题我能帮你的吗?",
-        createdAt: new Date(),
-        user: {
-          _id: 2,
-          name: "哎呀",
-          avatar: "https://placeimg.com/140/140/any"
-        }
-      }
-    ];
+    let msgId = this.props.navigation.getParam("id")
+    let page = this.state.page,
+      limit = this.state.limit,
+      filter = this.state.filter
+    await this.getPageData(page, limit, filter)
     this.setState({
       hasLoad: true,
-      messages
-    });
-  };
+      msgId,
+    })
+  }
+  getPageData = async (page: number, limit: number, filter = {}) => {
+    try {
+      let { data } = await wsMsgApi.getMsgList({ page, limit, filter })
+      console.log(data)
+    } catch (err) {
+      console.log(err)
+    }
+  }
   onRefresh = () => {
-    this.setState({ refreshing: true });
+    this.setState({ refreshing: true })
     Promise.all([this.init(), new Promise(s => setTimeout(s, 500))])
       .then(_ => {
-        this.setState({ refreshing: false });
+        this.setState({ refreshing: false })
       })
       .catch(err => {
-        Toast.fail("刷新失败,错误信息: " + err.msg);
-      });
-  };
-  renderSend = (props: any) => {
-    return (
-      <Send {...props}>
-        <View style={{ marginRight: 10 }}>
-          <Text
-            style={{
-              height: 45,
-              lineHeight: 45,
-              fontSize: 15,
-              color: "#0055ec"
-            }}
-          >
-            发送
-          </Text>
-        </View>
-      </Send>
-    );
-  };
-  //气泡
-  renderBubble(props: any) {
-    return (
-      <Bubble
-        {...props}
-        wrapperStyle={{
-          left: {
-            //对方的气泡
-            backgroundColor: "rgb(255,241,192)"
-          },
-          right: {
-            //我方的气泡
-            backgroundColor: "#ff2600"
-          }
-        }}
-      />
-    );
+        Toast.fail("刷新失败,错误信息: " + err.msg)
+      })
   }
-  sendMsg = async (messages = []) => {
-    await new Promise(s =>
-      this.setState(
-        {
-          messages: GiftedChat.append(this.state.messages, messages)
-        },
-        s
-      )
-    );
-    console.log(this.state.messages);
-    try {
-      // juiceApi.subChatMessage({
-      //   sendToUid: this.state.uid,
-      //   messages: this.state.messages,
-      // })
-    } catch (err) {
-      console.log(err);
-    }
-  };
   render() {
     if (!this.state.hasLoad) {
       return (
         <View style={style.loading}>
           <Text
-            style={[
-              style.loadingTitle,
-              globalStyle.fontSize14,
-              globalStyle.fontStyle
-            ]}
+            style={[style.loadingTitle, global.fontSize14, global.fontStyle]}
           >
             加载中...
           </Text>
         </View>
-      );
+      )
     }
     return (
       <>
-        <GiftedChat
-          messages={this.state.messages}
-          renderAvatarOnTop={true}
-          renderSend={this.renderSend}
-          renderBubble={this.renderBubble}
-          placeholder="请输入"
-          dateFormat="YYYY-MM-DD"
-          showUserAvatar={true}
-          // bottomOffset={20}
-          timeFormat="hh:mm"
-          onSend={(messages: any) => this.sendMsg(messages)}
-          user={{
-            _id: 22,
-            name: "哎呀",
-            avatar: gImg.common.defaultAvatar
-          }}
-        />
+        <View style={style.main}>
+          <ScrollView
+            style={style.content}
+            refreshControl={
+              <RefreshControl
+                refreshing={this.state.refreshing}
+                onRefresh={this.onRefresh}
+              />
+            }
+          >
+            <View style={style.list}>
+              {/* 文字左边 */}
+              <View style={style.item}>
+                <Text
+                  style={[style.sendTime, global.fontStyle, global.fontSize12]}
+                >
+                  2019-02-23 10:00
+                </Text>
+                <View style={[style.leftItem, global.flex]}>
+                  <View style={style.itemPic}>
+                    <Image
+                      style={style.itemImg}
+                      source={gImg.common.defaultAvatar}
+                    />
+                  </View>
+                  <View style={style.leftItemIcon} />
+                  <Text
+                    style={[
+                      style.leftItemTitle,
+                      global.fontStyle,
+                      global.fontSize14,
+                    ]}
+                  >
+                    发了酸辣粉阿发
+                  </Text>
+                </View>
+              </View>
+              {/* 文字右边 */}
+              <View style={style.item}>
+                <Text
+                  style={[style.sendTime, global.fontStyle, global.fontSize12]}
+                >
+                  2019-02-23 10:00
+                </Text>
+                <View
+                  style={[
+                    style.leftItem,
+                    global.flex,
+                    global.justifyContentEnd,
+                  ]}
+                >
+                  <Text
+                    style={[
+                      style.rightItemTitle,
+                      global.fontStyle,
+                      global.fontSize14,
+                    ]}
+                  >
+                    发了酸辣粉阿发
+                  </Text>
+                  <View style={style.rightItemIcon} />
+                  <View style={style.itemPic}>
+                    <Image
+                      style={style.itemImg}
+                      source={gImg.common.defaultAvatar}
+                    />
+                  </View>
+                </View>
+              </View>
+              {/* 图片左边 */}
+              <View style={style.item}>
+                <Text
+                  style={[style.sendTime, global.fontStyle, global.fontSize12]}
+                >
+                  2019-02-23 10:00
+                </Text>
+                <View style={[style.leftItem, global.flex]}>
+                  <View style={style.itemPic}>
+                    <Image
+                      style={style.itemImg}
+                      source={gImg.common.defaultAvatar}
+                    />
+                  </View>
+                  <View style={style.leftItemIcon} />
+                  <View style={style.leftItemPicture}>
+                    <Image
+                      style={style.itemPicImg}
+                      source={gImg.common.defaultPic}
+                    />
+                  </View>
+                </View>
+              </View>
+              {/* 图片右边 */}
+              <View style={style.item}>
+                <Text
+                  style={[style.sendTime, global.fontStyle, global.fontSize12]}
+                >
+                  2019-02-23 10:00
+                </Text>
+                <View
+                  style={[
+                    style.leftItem,
+                    global.flex,
+                    global.justifyContentEnd,
+                  ]}
+                >
+                  <View style={style.rightItemPicture}>
+                    <Image
+                      style={style.itemPicImg}
+                      source={gImg.common.defaultPic}
+                    />
+                  </View>
+                  <View style={style.rightItemIcon} />
+                  <View style={style.itemPic}>
+                    <Image
+                      style={style.itemImg}
+                      source={gImg.common.defaultAvatar}
+                    />
+                  </View>
+                </View>
+              </View>
+            </View>
+          </ScrollView>
+          <View style={style.bottom}>
+            <View
+              style={[
+                style.bottomNavList,
+                global.flex,
+                global.alignItemsCenter,
+                global.flexWrap,
+              ]}
+            >
+              {this.bottomNavList.map((v: bottomNavItem, k: number) => {
+                return (
+                  <TouchableOpacity
+                    key={k}
+                    style={style.bottomNavItem}
+                    onPress={() => {}}
+                  >
+                    <Image style={style.bottomNavItemPic} source={v.icon} />
+                    <Text
+                      style={[
+                        style.bottomNavItemTitle,
+                        global.fontSize14,
+                        global.fontStyle,
+                      ]}
+                    >
+                      {v.title}
+                    </Text>
+                  </TouchableOpacity>
+                )
+              })}
+            </View>
+            <View style={style.bottomInputFa}>
+              <View
+                style={[
+                  style.bottomInput,
+                  global.flex,
+                  global.justifyContentSpaceBetween,
+                  global.alignItemsCenter,
+                ]}
+              >
+                <Image
+                  style={style.bottomInputImg}
+                  source={gImg.advisory.pillPurchase}
+                />
+                <View style={style.bottomInputFa}>
+                  <InputItem
+                    style={style.input}
+                    clear
+                    value={this.state.sendMsg}
+                    onChange={value => {
+                      this.setState({
+                        sendMsg: value,
+                      })
+                    }}
+                    placeholder="请输入"
+                  />
+                </View>
+                <TouchableOpacity>
+                  <Text
+                    style={[
+                      style.bottomInputSendBtn,
+                      global.fontSize14,
+                      global.fontStyle,
+                    ]}
+                  >
+                    发送
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </View>
       </>
-    );
+    )
   }
 }

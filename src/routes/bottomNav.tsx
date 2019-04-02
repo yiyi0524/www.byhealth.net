@@ -1,31 +1,31 @@
-import React from "react";
-import { Image, StyleSheet, PixelRatio } from "react-native";
+import React from "react"
+import { Image, StyleSheet, PixelRatio } from "react-native"
 import {
   createBottomTabNavigator,
   createStackNavigator,
-  getActiveChildNavigationOptions
-} from "react-navigation";
-import pathMap from "./pathMap";
-import gImg from "@utils/img";
-import sColor from "@styles/color";
-import Test from "@pages/Test";
-import Home from "@pages/Home";
-import PersonalCenter from "@pages/personal_center/Index";
-import AdvisoryIndex from "@pages/advisory/Index";
-import AddressBookIndex from "@pages/address_book/Index";
-import AddressBookGroup from "@pages/address_book/Group";
-import AddressBookAddGroup from "@pages/address_book/AddGroup";
-import AddressBookGroupDetail from "@pages/address_book/GroupDetail";
-import PatientDetail from "@pages/address_book/PatientDetail";
-import RealNameAuth from "@pages/user/RealNameAuth";
-import AdvisoryChat from "@pages/advisory/Chat";
+  getActiveChildNavigationOptions,
+} from "react-navigation"
+import pathMap from "./pathMap"
+import gImg from "@utils/img"
+import sColor from "@styles/color"
+import Test from "@pages/Test"
+import Home from "@pages/Home"
+import PersonalCenter from "@pages/personal_center/Index"
+import AdvisoryIndex from "@pages/advisory/Index"
+import AddressBookIndex from "@pages/address_book/Index"
+import AddressBookGroup from "@pages/address_book/Group"
+import AddressBookAddGroup from "@pages/address_book/AddGroup"
+import AddressBookGroupDetail from "@pages/address_book/GroupDetail"
+import PatientDetail from "@pages/address_book/PatientDetail"
+import RealNameAuth from "@pages/user/RealNameAuth"
+import AdvisoryChat from "@pages/advisory/Chat"
 const style = StyleSheet.create({
   icon: {
     width: 30,
     height: 30,
-    resizeMode: "center"
-  }
-});
+    resizeMode: "center",
+  },
+})
 const TabNav = createBottomTabNavigator(
   {
     [pathMap.Home]: {
@@ -39,15 +39,15 @@ const TabNav = createBottomTabNavigator(
               style={style.icon}
               source={focused ? gImg.common.homeActive : gImg.common.home}
             />
-          );
-        }
+          )
+        },
       }),
       tabBarOnPress: (obj: any) => {
         if (obj.navigation.state.params && obj.navigation.state.params.init) {
-          obj.navigation.state.params.init();
+          obj.navigation.state.params.init()
         }
-        obj.navigation.navigate(obj.navigation.state.routeName);
-      }
+        obj.navigation.navigate(obj.navigation.state.routeName)
+      },
     },
     [pathMap.AdvisoryIndex]: {
       screen: AdvisoryIndex,
@@ -62,15 +62,15 @@ const TabNav = createBottomTabNavigator(
                 focused ? gImg.common.advisoryActive : gImg.common.advisory
               }
             />
-          );
+          )
         },
         tabBarOnPress: (obj: any) => {
-          obj.navigation.navigate(obj.navigation.state.routeName);
+          obj.navigation.navigate(obj.navigation.state.routeName)
           if (obj.navigation.state.params && obj.navigation.state.params.init) {
-            obj.navigation.state.params.init();
+            obj.navigation.state.params.init()
           }
-        }
-      })
+        },
+      }),
     },
     [pathMap.AddressBookIndex]: {
       screen: AddressBookIndex,
@@ -87,15 +87,15 @@ const TabNav = createBottomTabNavigator(
                   : gImg.common.addressBook
               }
             />
-          );
+          )
         },
         tabBarOnPress: (obj: any) => {
-          obj.navigation.navigate(obj.navigation.state.routeName);
+          obj.navigation.navigate(obj.navigation.state.routeName)
           if (obj.navigation.state.params && obj.navigation.state.params.init) {
-            obj.navigation.state.params.init();
+            obj.navigation.state.params.init()
           }
-        }
-      })
+        },
+      }),
     },
     [pathMap.PersonalCenter]: {
       screen: PersonalCenter,
@@ -112,16 +112,16 @@ const TabNav = createBottomTabNavigator(
                   : gImg.common.personalCenter
               }
             />
-          );
+          )
         },
         tabBarOnPress: (obj: any) => {
-          obj.navigation.navigate(obj.navigation.state.routeName); //跳转
+          obj.navigation.navigate(obj.navigation.state.routeName) //跳转
           if (obj.navigation.state.params && obj.navigation.state.params.init) {
-            obj.navigation.state.params.init(); //查询数据
+            obj.navigation.state.params.init() //查询数据
           }
-        }
-      })
-    }
+        },
+      }),
+    },
   },
   {
     initialRouteName: "Home",
@@ -137,34 +137,34 @@ const TabNav = createBottomTabNavigator(
       style: {
         backgroundColor: sColor.white,
         height: 50,
-        borderTopColor: sColor.colorEee
+        borderTopColor: sColor.colorEee,
       },
       tabStyle: {
         height: 50,
         paddingTop: 5,
-        paddingBottom: 5
+        paddingBottom: 5,
       },
       labelStyle: {
-        fontSize: 10
-      }
-    }
-  }
-);
+        fontSize: 10,
+      },
+    },
+  },
+)
 TabNav.navigationOptions = ({ navigation, screenProps }: any) => {
-  const childOptions = getActiveChildNavigationOptions(navigation, screenProps);
+  const childOptions = getActiveChildNavigationOptions(navigation, screenProps)
   if (childOptions.title === "医馆") {
     return {
       title: childOptions.title,
       headerTitleStyle: {
-        color: sColor.white
+        color: sColor.white,
       },
       headerStyle: {
         height: 0,
         overFlow: "hidden",
         elevation: 0,
-        borderBottomWidth: 0
-      }
-    };
+        borderBottomWidth: 0,
+      },
+    }
   }
   return {
     title: childOptions.title,
@@ -174,42 +174,42 @@ TabNav.navigationOptions = ({ navigation, screenProps }: any) => {
       justifyContent: "center",
       alignItems: "center",
       flex: 1,
-      fontSize: 16
+      fontSize: 16,
     },
     headerStyle: {
       height: 50,
       backgroundColor: sColor.white,
       elevation: 0,
       borderBottomColor: sColor.colorEee,
-      borderBottomWidth: 0
-    }
-  };
-};
+      borderBottomWidth: 0,
+    },
+  }
+}
 
 const StacksOverTabs = createStackNavigator({
   Root: {
-    screen: TabNav
+    screen: TabNav,
   },
   [pathMap.Test]: {
-    screen: Test
+    screen: Test,
   },
   [pathMap.RealNameAuth]: {
-    screen: RealNameAuth
+    screen: RealNameAuth,
   },
   [pathMap.AdvisoryChat]: {
-    screen: AdvisoryChat
+    screen: AdvisoryChat,
   },
   [pathMap.AddressBookGroup]: {
-    screen: AddressBookGroup
+    screen: AddressBookGroup,
   },
   [pathMap.AddressBookAddGroup]: {
-    screen: AddressBookAddGroup
+    screen: AddressBookAddGroup,
   },
   [pathMap.AddressBookGroupDetail]: {
-    screen: AddressBookGroupDetail
+    screen: AddressBookGroupDetail,
   },
   [pathMap.PatientDetail]: {
-    screen: PatientDetail
-  }
-});
-export default StacksOverTabs;
+    screen: PatientDetail,
+  },
+})
+export default StacksOverTabs

@@ -13,5 +13,6 @@ export default {
   color666: "#666",
   color888: "#888",
   color999: "#999",
-  lightBlue: "#d4e4f4"
-};
+  lightBlue: "#d4e4f4",
+  lightChatBlue: "#deeaf8",
+}
