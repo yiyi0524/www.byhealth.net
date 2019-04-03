@@ -27,7 +27,8 @@
     "react-navigation": "^3.4.1",
     "react-redux": "^6.0.1",
     "redux": "^4.0.1",
-    "redux-devtools-extension": "^2.13.8"
+    "redux-devtools-extension": "^2.13.8",
+    "utility-types": "^3.5.0"
   },
   "devDependencies": {
     "@babel/core": "^7.3.4",

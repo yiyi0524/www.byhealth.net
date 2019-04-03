@@ -85,8 +85,49 @@ async function getMsgList({ page, limit, filter = {} }: GetListParam) {
             },
             name: "吴伟伟",
           },
-          type: 2,
-          msg: "",
+          type: 1,
+          msg: "描述一下你的症状",
+          pic: {
+            id: 0,
+            title: "",
+            url: "/uploads/20190315/1cec476d9eaef31971abef5e16716365.png",
+          },
+          extraData: {
+            patient: {
+              id: 1,
+              name: "小小小",
+              gender: 1,
+              yearAge: 0,
+              monthAge: 25,
+            },
+            orderId: 2,
+            ctime: "2018-12-16 16:06:00",
+          },
+          sendTime: "2018-12-12 12:00:00",
+        },
+        {
+          id: 4,
+          sendUser: {
+            uid: 2,
+            avatar: {
+              id: 0,
+              title: "",
+              url: "",
+            },
+            name: "吴大伟",
+          },
+          receiveUser: {
+            uid: 2,
+            avatar: {
+              id: 0,
+              title: "",
+              url: "",
+            },
+            name: "吴伟伟",
+          },
+          type: 0,
+          msg:
+            "头痛 发烧 浑身无力 头痛 发烧 浑身无力 头痛 发烧 浑身无力 头痛 发烧 浑身无力 ",
           pic: {
             id: 0,
             title: "",

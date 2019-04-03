@@ -19,11 +19,15 @@ export interface GetListParam {
   limit?: number
   filter?: object
 }
-export async function bget({ url, query = {}, headers = {} }: RequestParam) {
+export async function bget<T = any>({
+  url,
+  query = {},
+  headers = {},
+}: RequestParam) {
   let session = await storage.get("session")
   headers["session"] = session
   headers["content-type"] = "application/json"
-  return BuffReq(
+  return BuffReq<T>(
     BASE_URL,
     url + "?" + qs.stringify(query),
     null,
@@ -32,11 +36,15 @@ export async function bget({ url, query = {}, headers = {} }: RequestParam) {
     headers,
   )
 }
-export async function bpost({ url, data = {}, headers = {} }: RequestParam) {
+export async function bpost<T = any>({
+  url,
+  data = {},
+  headers = {},
+}: RequestParam) {
   let session = await storage.get("session")
   headers["session"] = session
   headers["content-type"] = "application/json"
-  return BuffReq(BASE_URL, url, data, "POST", "include", headers)
+  return BuffReq<T>(BASE_URL, url, data, "POST", "include", headers)
 }
 export async function isLogin() {
   let session = await storage.get("session")

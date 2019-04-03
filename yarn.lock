@@ -3648,7 +3648,7 @@ js-yaml@^3.12.0, js-yaml@^3.13.0:
 
 "jsbdk@git://github.com/buffge/jsbdk.git#master":
   version "0.1.0"
-  resolved "git://github.com/buffge/jsbdk.git#1977da16bea21bf432b1ad7bac4532b6a52e8be5"
+  resolved "git://github.com/buffge/jsbdk.git#1605412a0158980c819401fe820d57b17dbc5cc6"
 
 jsbn@~0.1.0:
   version "0.1.1"
@@ -6482,6 +6482,11 @@ utility-types@^2.1.0:
   version "2.1.0"
   resolved "http://registry.npm.taobao.org/utility-types/download/utility-types-2.1.0.tgz#0c78fc9f7eb424d14302222b4ddd13fdb17f44ab"
   integrity sha1-DHj8n360JNFDAiIrTd0T/bF/RKs=
+
+utility-types@^3.5.0:
+  version "3.5.0"
+  resolved "http://registry.npm.taobao.org/utility-types/download/utility-types-3.5.0.tgz#d80c95b774575d1683f5ba807879c52d8f35db1c"
+  integrity sha1-2AyVt3RXXRaD9bqAeHnFLY812xw=
 
 utils-merge@1.0.1:
   version "1.0.1"

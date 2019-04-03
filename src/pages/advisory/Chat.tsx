@@ -1,25 +1,29 @@
+import global from "@/assets/styles/global"
+import { BASE_URL } from "@/config/api"
 import * as userAction from "@/redux/actions/user"
 import { AppState } from "@/redux/stores/store"
+import pathMap from "@/routes/pathMap"
+import userApi from "@/services/user"
 import wsMsgApi from "@/services/wsMsg"
-import { Toast, InputItem } from "@ant-design/react-native"
+import gImg from "@/utils/img"
+import { TextareaItem, Toast } from "@ant-design/react-native"
 import sColor from "@styles/color"
 import gStyle from "@utils/style"
 import React, { Component, ReactChild } from "react"
 import {
+  Image,
+  ImageSourcePropType,
+  ListRenderItemInfo,
   PixelRatio,
   RefreshControl,
   Text,
   View,
-  Image,
-  ImageSourcePropType,
 } from "react-native"
 import { TouchableOpacity } from "react-native-gesture-handler"
-import { NavigationScreenProp, ScrollView } from "react-navigation"
+import { FlatList, NavigationScreenProp, ScrollView } from "react-navigation"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
-import global from "@/assets/styles/global"
-import pathMap from "@/routes/pathMap"
-import gImg from "@/utils/img"
+import { Overwrite } from "utility-types"
 const style = gStyle.advisory.advisoryChat
 interface Props {
   navigation: NavigationScreenProp<State>
@@ -37,8 +41,6 @@ export interface bottomNavItem {
   title: string
   icon: ImageSourcePropType
   link: string
-  click?: Promise<void>
-  isShowMore?: boolean
 }
 export interface Picture {
   id: number
@@ -67,9 +69,18 @@ export interface Msg<T = any> {
   dom?: ReactChild
   sendTime: string
 }
+interface infoItem {
+  id: number
+  name: string
+  avatar: Picture
+}
 interface State {
   hasLoad: boolean
   refreshing: boolean
+  isShowBottomNav: boolean
+  isShowBottomPicSelect: boolean
+  hasMoreRecord: boolean
+  info: infoItem
   msgId: number
   page: number
   limit: number
@@ -149,43 +160,42 @@ export default class Index extends Component<
     super(props)
     this.bottomNavList = [
       {
-        icon: gImg.advisory.followUp,
+        icon: gImg.advisory.dialecticalPrescriptions,
         title: "辩证开方",
         link: "",
       },
       {
-        icon: gImg.advisory.followUp,
+        icon: gImg.advisory.quickReply,
         title: "快捷回复",
         link: "",
       },
       {
-        icon: gImg.advisory.followUp,
+        icon: gImg.advisory.closingConversation,
         title: "结束对话",
         link: "",
       },
       {
-        icon: gImg.advisory.followUp,
-        title: "张开",
+        icon: gImg.advisory.show,
+        title: "更多功能",
         link: "",
-        isShowMore: false,
       },
       {
-        icon: gImg.advisory.followUp,
+        icon: gImg.advisory.inquirySheet,
         title: "补填问诊单",
         link: "",
       },
       {
-        icon: gImg.advisory.followUp,
+        icon: gImg.advisory.picture,
         title: "图片",
         link: "",
       },
       {
-        icon: gImg.advisory.followUp,
+        icon: gImg.advisory.givingquestions,
         title: "赠送提问",
         link: "",
       },
       {
-        icon: gImg.advisory.followUp,
+        icon: gImg.advisory.sittingInformation,
         title: "坐诊信息",
         link: "",
       },
@@ -196,6 +206,18 @@ export default class Index extends Component<
     return {
       hasLoad: false,
       refreshing: false,
+      isShowBottomNav: false,
+      isShowBottomPicSelect: false,
+      hasMoreRecord: false,
+      info: {
+        id: 0,
+        name: "",
+        avatar: {
+          id: 0,
+          title: "",
+          url: "",
+        },
+      },
       msgId: 0,
       page: 1,
       limit: 10,
@@ -212,29 +234,255 @@ export default class Index extends Component<
     let page = this.state.page,
       limit = this.state.limit,
       filter = this.state.filter
-    await this.getPageData(page, limit, filter)
+    await userApi
+      .getPersonalInfo()
+      .then(json => {
+        this.setState({
+          info: json.data.info,
+        })
+      })
+      .catch(err => {
+        console.log(err.msg)
+      })
+    await this.getMsgList(page, limit, filter)
     this.setState({
       hasLoad: true,
       msgId,
     })
   }
-  getPageData = async (page: number, limit: number, filter = {}) => {
+  getMsgList = async (page: number, limit: number, filter = {}) => {
     try {
       let { data } = await wsMsgApi.getMsgList({ page, limit, filter })
-      console.log(data)
+      // 格式化
+      let oriMsgList: Exclude<Overwrite<Msg, { pic: Picture }>, "dom">[] =
+        data.list
+      let formatMsg: Msg | undefined
+      let msgList = this.state.msgList
+      for (let serverMsg of oriMsgList) {
+        switch (serverMsg.type) {
+          case MsgType.txt:
+            formatMsg = this.txtFormat(serverMsg)
+            break
+          case MsgType.picture:
+            formatMsg = this.pictureFormat(serverMsg)
+            break
+        }
+        if (formatMsg) {
+          msgList.push(formatMsg)
+        }
+      }
+      this.setState({
+        msgList,
+        hasMoreRecord: data.count > msgList.length,
+      })
     } catch (err) {
       console.log(err)
     }
   }
+  txtFormat = (serverMsg: Exclude<Msg, "dom">) => {
+    let msg: Msg = serverMsg
+    msg.dom = (
+      <View>
+        {/*  左边文字 */}
+        <View
+          style={
+            msg.sendUser.uid === this.state.info.id ? global.hidden : style.item
+          }
+        >
+          <Text style={[style.sendTime, global.fontStyle, global.fontSize12]}>
+            {msg.sendTime.substr(0, 16)}
+          </Text>
+          <View style={[style.leftItem, global.flex]}>
+            <View style={style.itemPic}>
+              <Image
+                style={style.itemImg}
+                source={
+                  msg.sendUser.avatar.url
+                    ? { uri: BASE_URL + msg.sendUser.avatar.url }
+                    : gImg.common.defaultAvatar
+                }
+              />
+            </View>
+            <View style={style.leftItemIcon} />
+            <Text
+              style={[style.leftItemTitle, global.fontStyle, global.fontSize14]}
+            >
+              {msg.msg}
+            </Text>
+          </View>
+        </View>
+        {/* 右边文字 */}
+        <View
+          style={
+            msg.sendUser.uid === this.state.info.id ? style.item : global.hidden
+          }
+        >
+          <Text style={[style.sendTime, global.fontStyle, global.fontSize12]}>
+            {msg.sendTime.substr(0, 16)}
+          </Text>
+          <View style={[style.leftItem, global.flex, global.justifyContentEnd]}>
+            <Text
+              style={[
+                style.rightItemTitle,
+                global.fontStyle,
+                global.fontSize14,
+              ]}
+            >
+              {msg.msg}
+            </Text>
+            <View
+              style={
+                msg.sendUser.uid === this.state.info.id
+                  ? style.rightItemIcon
+                  : global.hidden
+              }
+            />
+            <View style={style.itemPic}>
+              <Image
+                style={style.itemImg}
+                source={
+                  msg.sendUser.avatar.url
+                    ? { uri: BASE_URL + msg.sendUser.avatar.url }
+                    : gImg.common.defaultAvatar
+                }
+              />
+            </View>
+          </View>
+        </View>
+      </View>
+    )
+    return msg
+  }
+  pictureFormat = (
+    serverMsg: Exclude<Overwrite<Msg, { pic: Picture }>, "dom">,
+  ) => {
+    let msg: Overwrite<Msg, { pic: Picture }> = serverMsg
+    msg.dom = (
+      <View>
+        {/* 左边图片 */}
+        <View
+          style={
+            msg.sendUser.uid === this.state.info.id ? global.hidden : style.item
+          }
+        >
+          <Text style={[style.sendTime, global.fontStyle, global.fontSize12]}>
+            {msg.sendTime.substr(0, 16)}
+          </Text>
+          <View style={[style.leftItem, global.flex]}>
+            <View style={style.itemPic}>
+              <Image
+                style={style.itemImg}
+                source={
+                  msg.sendUser.avatar.url
+                    ? { uri: BASE_URL + msg.sendUser.avatar.url }
+                    : gImg.common.defaultAvatar
+                }
+              />
+            </View>
+            <View style={style.leftItemIcon} />
+            <View style={style.leftItemPicture}>
+              <Image
+                style={style.itemPicImg}
+                source={
+                  msg.pic.url
+                    ? { uri: BASE_URL + msg.pic.url }
+                    : gImg.common.defaultPic
+                }
+              />
+            </View>
+          </View>
+        </View>
+        {/* 右边图片 */}
+        <View
+          style={
+            msg.sendUser.uid === this.state.info.id ? style.item : global.hidden
+          }
+        >
+          <Text style={[style.sendTime, global.fontStyle, global.fontSize12]}>
+            2019-02-23 10:00
+          </Text>
+          <View style={[style.leftItem, global.flex, global.justifyContentEnd]}>
+            <View style={style.rightItemPicture}>
+              <Image
+                style={style.itemPicImg}
+                source={
+                  msg.pic.url
+                    ? { uri: BASE_URL + msg.pic.url }
+                    : gImg.common.defaultPic
+                }
+              />
+            </View>
+            <View
+              style={
+                msg.sendUser.uid === this.state.info.id
+                  ? style.rightItemIcon
+                  : global.hidden
+              }
+            />
+            <View style={style.itemPic}>
+              <Image
+                style={style.itemImg}
+                source={
+                  msg.sendUser.avatar.url
+                    ? { uri: BASE_URL + msg.sendUser.avatar.url }
+                    : gImg.common.defaultAvatar
+                }
+              />
+            </View>
+          </View>
+        </View>
+      </View>
+    )
+    return msg
+  }
   onRefresh = () => {
     this.setState({ refreshing: true })
-    Promise.all([this.init(), new Promise(s => setTimeout(s, 500))])
+    new Promise(s =>
+      setTimeout(async () => {
+        let page = this.state.page + 1,
+          limit = this.state.limit,
+          filter = this.state.filter
+        await this.getMsgList(page, limit, filter)
+        s()
+      }, 500),
+    )
       .then(_ => {
         this.setState({ refreshing: false })
       })
       .catch(err => {
         Toast.fail("刷新失败,错误信息: " + err.msg)
       })
+  }
+  selectBottomNav = (v: bottomNavItem) => {
+    if (v.title === "更多功能") {
+      this.setState({
+        isShowBottomNav: true,
+      })
+      v.title = "收起"
+      v.icon = gImg.advisory.retract
+    } else if (v.title === "收起") {
+      this.setState({
+        isShowBottomNav: false,
+      })
+      v.title = "更多功能"
+      v.icon = gImg.advisory.show
+    }
+    if (v.title === "图片") {
+      this.setState({
+        isShowBottomPicSelect: !this.state.isShowBottomPicSelect,
+      })
+    }
+  }
+  sendMsg = () => {
+    if (this.state.sendMsg === "") {
+      return
+    }
+    Toast.info(this.state.sendMsg, 1)
+    setTimeout(() => {
+      this.setState({
+        sendMsg: "",
+      })
+    }, 1000)
   }
   render() {
     if (!this.state.hasLoad) {
@@ -261,185 +509,137 @@ export default class Index extends Component<
             }
           >
             <View style={style.list}>
-              {/* 文字左边 */}
-              <View style={style.item}>
-                <Text
-                  style={[style.sendTime, global.fontStyle, global.fontSize12]}
-                >
-                  2019-02-23 10:00
-                </Text>
-                <View style={[style.leftItem, global.flex]}>
-                  <View style={style.itemPic}>
-                    <Image
-                      style={style.itemImg}
-                      source={gImg.common.defaultAvatar}
-                    />
-                  </View>
-                  <View style={style.leftItemIcon} />
-                  <Text
-                    style={[
-                      style.leftItemTitle,
-                      global.fontStyle,
-                      global.fontSize14,
-                    ]}
-                  >
-                    发了酸辣粉阿发
-                  </Text>
-                </View>
-              </View>
-              {/* 文字右边 */}
-              <View style={style.item}>
-                <Text
-                  style={[style.sendTime, global.fontStyle, global.fontSize12]}
-                >
-                  2019-02-23 10:00
-                </Text>
-                <View
-                  style={[
-                    style.leftItem,
-                    global.flex,
-                    global.justifyContentEnd,
-                  ]}
-                >
-                  <Text
-                    style={[
-                      style.rightItemTitle,
-                      global.fontStyle,
-                      global.fontSize14,
-                    ]}
-                  >
-                    发了酸辣粉阿发
-                  </Text>
-                  <View style={style.rightItemIcon} />
-                  <View style={style.itemPic}>
-                    <Image
-                      style={style.itemImg}
-                      source={gImg.common.defaultAvatar}
-                    />
-                  </View>
-                </View>
-              </View>
-              {/* 图片左边 */}
-              <View style={style.item}>
-                <Text
-                  style={[style.sendTime, global.fontStyle, global.fontSize12]}
-                >
-                  2019-02-23 10:00
-                </Text>
-                <View style={[style.leftItem, global.flex]}>
-                  <View style={style.itemPic}>
-                    <Image
-                      style={style.itemImg}
-                      source={gImg.common.defaultAvatar}
-                    />
-                  </View>
-                  <View style={style.leftItemIcon} />
-                  <View style={style.leftItemPicture}>
-                    <Image
-                      style={style.itemPicImg}
-                      source={gImg.common.defaultPic}
-                    />
-                  </View>
-                </View>
-              </View>
-              {/* 图片右边 */}
-              <View style={style.item}>
-                <Text
-                  style={[style.sendTime, global.fontStyle, global.fontSize12]}
-                >
-                  2019-02-23 10:00
-                </Text>
-                <View
-                  style={[
-                    style.leftItem,
-                    global.flex,
-                    global.justifyContentEnd,
-                  ]}
-                >
-                  <View style={style.rightItemPicture}>
-                    <Image
-                      style={style.itemPicImg}
-                      source={gImg.common.defaultPic}
-                    />
-                  </View>
-                  <View style={style.rightItemIcon} />
-                  <View style={style.itemPic}>
-                    <Image
-                      style={style.itemImg}
-                      source={gImg.common.defaultAvatar}
-                    />
-                  </View>
-                </View>
-              </View>
+              <Text
+                style={[
+                  this.state.hasMoreRecord ? style.downloadMore : global.hidden,
+                  global.fontStyle,
+                  global.fontSize12,
+                ]}
+              >
+                下拉查看更多聊天记录
+              </Text>
+              {this.state.msgList.map((v: Msg, k: number) => {
+                return <View key={k}>{v.dom}</View>
+              })}
             </View>
           </ScrollView>
           <View style={style.bottom}>
-            <View
-              style={[
-                style.bottomNavList,
-                global.flex,
-                global.alignItemsCenter,
-                global.flexWrap,
-              ]}
-            >
-              {this.bottomNavList.map((v: bottomNavItem, k: number) => {
-                return (
-                  <TouchableOpacity
-                    key={k}
-                    style={style.bottomNavItem}
-                    onPress={() => {}}
-                  >
-                    <Image style={style.bottomNavItemPic} source={v.icon} />
+            <View style={style.bottomNav}>
+              <View
+                style={[
+                  this.state.isShowBottomNav
+                    ? style.bottomNavListActive
+                    : style.bottomNavList,
+                  global.flex,
+                  global.alignItemsCenter,
+                  global.flexWrap,
+                ]}
+              >
+                {this.bottomNavList.map((v: bottomNavItem, k: number) => {
+                  return (
+                    <TouchableOpacity
+                      onPress={() => this.selectBottomNav(v)}
+                      key={k}
+                      style={style.bottomNavItem}
+                    >
+                      <Image style={style.bottomNavItemPic} source={v.icon} />
+                      <Text
+                        style={[
+                          style.bottomNavItemTitle,
+                          global.fontSize13,
+                          global.fontStyle,
+                        ]}
+                      >
+                        {v.title}
+                      </Text>
+                    </TouchableOpacity>
+                  )
+                })}
+              </View>
+              <View style={style.bottomInputFa}>
+                <View
+                  style={[
+                    style.bottomInput,
+                    global.flex,
+                    global.justifyContentSpaceBetween,
+                    global.alignItemsCenter,
+                  ]}
+                >
+                  <TouchableOpacity>
+                    {/* <Image
+                      style={style.bottomInputImg}
+                      source={gImg.advisory.voice}
+                    /> */}
+                  </TouchableOpacity>
+                  <View style={style.inputFa}>
+                    <TextareaItem
+                      style={style.input}
+                      placeholder="请输入"
+                      autoHeight
+                      clear
+                      last
+                      rows={1}
+                      value={this.state.sendMsg}
+                      onChange={value => {
+                        this.setState({
+                          sendMsg: value as string,
+                        })
+                      }}
+                    />
+                  </View>
+                  <TouchableOpacity onPress={this.sendMsg}>
                     <Text
                       style={[
-                        style.bottomNavItemTitle,
+                        style.bottomInputSendBtn,
                         global.fontSize14,
                         global.fontStyle,
                       ]}
                     >
-                      {v.title}
+                      发送
                     </Text>
                   </TouchableOpacity>
-                )
-              })}
-            </View>
-            <View style={style.bottomInputFa}>
-              <View
-                style={[
-                  style.bottomInput,
-                  global.flex,
-                  global.justifyContentSpaceBetween,
-                  global.alignItemsCenter,
-                ]}
-              >
-                <Image
-                  style={style.bottomInputImg}
-                  source={gImg.advisory.pillPurchase}
-                />
-                <View style={style.bottomInputFa}>
-                  <InputItem
-                    style={style.input}
-                    clear
-                    value={this.state.sendMsg}
-                    onChange={value => {
-                      this.setState({
-                        sendMsg: value,
-                      })
-                    }}
-                    placeholder="请输入"
-                  />
                 </View>
-                <TouchableOpacity>
-                  <Text
-                    style={[
-                      style.bottomInputSendBtn,
-                      global.fontSize14,
-                      global.fontStyle,
-                    ]}
-                  >
-                    发送
-                  </Text>
-                </TouchableOpacity>
+                <View
+                  style={[
+                    this.state.isShowBottomPicSelect
+                      ? style.selectPicActive
+                      : style.selectPic,
+                    global.flex,
+                    global.alignItemsCenter,
+                    global.justifyContentSpaceAround,
+                  ]}
+                >
+                  <TouchableOpacity style={style.selectPicFa}>
+                    <Image
+                      source={gImg.advisory.selectPic}
+                      style={style.selectImg}
+                    />
+                    <Text
+                      style={[
+                        style.selectTitle,
+                        global.fontSize14,
+                        global.fontStyle,
+                      ]}
+                    >
+                      图片
+                    </Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity style={style.selectPicFa}>
+                    <Image
+                      source={gImg.advisory.selectPhoto}
+                      style={style.selectImg}
+                    />
+                    <Text
+                      style={[
+                        style.selectTitle,
+                        global.fontSize14,
+                        global.fontStyle,
+                      ]}
+                    >
+                      拍照
+                    </Text>
+                  </TouchableOpacity>
+                </View>
               </View>
             </View>
           </View>
