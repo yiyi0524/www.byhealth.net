@@ -23,11 +23,12 @@ export default StyleSheet.create({
   content: {
     flex: 0.7,
     backgroundColor: sColor.mainBgColor,
-    paddingLeft: 15,
-    paddingRight: 15,
     marginBottom: 15,
   },
-  list: {},
+  list: {
+    paddingLeft: 15,
+    paddingRight: 15,
+  },
   item: {
     marginBottom: 15,
     overflow: "hidden",
@@ -53,11 +54,13 @@ export default StyleSheet.create({
     height: 40,
     borderRadius: 100,
     overflow: "hidden",
+    borderWidth: 1,
+    borderColor: sColor.white,
   },
   itemImg: {
     width: 40,
     height: 40,
-    resizeMode: "center",
+    resizeMode: "cover",
   },
   leftItemIcon: {
     width: 0,
@@ -248,5 +251,25 @@ export default StyleSheet.create({
   selectTitle: {
     color: sColor.color666,
     marginTop: 5,
+  },
+  showPic: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: sColor.color666,
+    zIndex: 100,
+  },
+  howImgFa: {
+    alignItems: "center",
+    justifyContent: "center",
+    width: "100%",
+    height: "100%",
+  },
+  showImg: {
+    width: windowWidth - 30,
+    height: windowHeight - 60,
+    resizeMode: "center",
   },
 })

@@ -1,52 +1,53 @@
-import React, { Component } from "react";
-import { AppState } from "@/redux/stores/store";
-import { connect } from "react-redux";
-import { Dispatch } from "redux";
-import * as userAction from "@/redux/actions/user";
+import React, { Component } from "react"
+import { AppState } from "@/redux/stores/store"
+import { connect } from "react-redux"
+import { Dispatch } from "redux"
+import * as userAction from "@/redux/actions/user"
 import {
   ScrollView,
   Text,
   View,
   TouchableOpacity,
-  RefreshControl
-} from "react-native";
-import { Toast, Icon } from "@ant-design/react-native";
-import gStyle from "@utils/style";
-import api from "@api/api";
-const style = gStyle.personalCenter.personalCenterIndex;
-const global = gStyle.global;
+  RefreshControl,
+} from "react-native"
+import { Toast, Icon } from "@ant-design/react-native"
+import gStyle from "@utils/style"
+import api from "@api/api"
+import pathMap from "@/routes/pathMap"
+const style = gStyle.personalCenter.personalCenterIndex
+const global = gStyle.global
 interface Props {
-  navigation: any;
+  navigation: any
 }
 interface State {
-  hasLoad: boolean;
-  refreshing: boolean;
+  hasLoad: boolean
+  refreshing: boolean
   version: {
-    current: string;
-    new: string;
-  };
+    current: string
+    new: string
+  }
 }
 interface functionItem {
-  name: string;
-  link: string;
+  name: string
+  link: string
 }
 const mapStateToProps = (state: AppState) => {
   return {
     isLogin: state.user.isLogin,
     name: state.user.name,
-    uid: state.user.uid
-  };
-};
+    uid: state.user.uid,
+  }
+}
 const mapDispatchToProps = (dispatch: Dispatch) => {
   return {
     login: (preload: userAction.UserInfo) => {
-      dispatch(userAction.userLogin(preload));
-    }
-  };
-};
+      dispatch(userAction.userLogin(preload))
+    },
+  }
+}
 @connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )
 export default class Index extends Component<
   Props &
@@ -54,36 +55,36 @@ export default class Index extends Component<
     ReturnType<typeof mapDispatchToProps>,
   State
 > {
-  functionList: functionItem[] = [];
+  functionList: functionItem[] = []
   constructor(props: any) {
-    super(props);
+    super(props)
     this.functionList = [
       {
         name: "账户",
-        link: ""
+        link: pathMap.Account,
       },
       {
         name: "编辑资料",
-        link: ""
+        link: pathMap.EditInformation,
       },
       {
         name: "修改密码",
-        link: ""
+        link: pathMap.ChangePwd,
       },
       {
         name: "关于我们",
-        link: ""
+        link: pathMap.About,
       },
       {
         name: "联系客服",
-        link: ""
+        link: pathMap.CustomerService,
       },
       {
         name: "退出登录",
-        link: ""
-      }
-    ];
-    this.state = this.getInitState();
+        link: "",
+      },
+    ]
+    this.state = this.getInitState()
   }
   getInitState = (): State => {
     return {
@@ -91,34 +92,34 @@ export default class Index extends Component<
       refreshing: false,
       version: {
         current: "1.0.0",
-        new: ""
-      }
-    };
-  };
+        new: "",
+      },
+    }
+  }
   async componentDidMount() {
-    await this.init();
+    await this.init()
   }
   init = async () => {
     // let {data:version} = api.getVersion();//todo 版本信息监测
     let version = {
       current: "1.0.0",
-      new: "1.0.1"
-    };
+      new: "1.0.1",
+    }
     this.setState({
       hasLoad: true,
-      version
-    });
-  };
+      version,
+    })
+  }
   onRefresh = () => {
-    this.setState({ refreshing: true });
+    this.setState({ refreshing: true })
     Promise.all([this.init(), new Promise(s => setTimeout(s, 500))])
       .then(_ => {
-        this.setState({ refreshing: false });
+        this.setState({ refreshing: false })
       })
       .catch(err => {
-        Toast.fail("刷新失败,错误信息: " + err.msg);
-      });
-  };
+        Toast.fail("刷新失败,错误信息: " + err.msg)
+      })
+  }
   render() {
     if (!this.state.hasLoad) {
       return (
@@ -129,7 +130,7 @@ export default class Index extends Component<
             加载中...
           </Text>
         </View>
-      );
+      )
     }
     return (
       <>
@@ -154,14 +155,14 @@ export default class Index extends Component<
                         style.item,
                         global.flex,
                         global.justifyContentSpaceBetween,
-                        global.alignItemsCenter
+                        global.alignItemsCenter,
                       ]}
                     >
                       <Text
                         style={[
                           style.title,
                           global.fontStyle,
-                          global.fontSize15
+                          global.fontSize15,
                         ]}
                       >
                         {v.name}
@@ -173,7 +174,7 @@ export default class Index extends Component<
                     </TouchableOpacity>
                     <View style={style.separationModule} />
                   </View>
-                );
+                )
               }
               if (v.name === "退出登录") {
                 return (
@@ -185,21 +186,21 @@ export default class Index extends Component<
                         style.item,
                         global.flex,
                         global.justifyContentCenter,
-                        global.alignItemsCenter
+                        global.alignItemsCenter,
                       ]}
                     >
                       <Text
                         style={[
                           style.logout,
                           global.fontStyle,
-                          global.fontSize15
+                          global.fontSize15,
                         ]}
                       >
                         {v.name}
                       </Text>
                     </TouchableOpacity>
                   </View>
-                );
+                )
               }
               return (
                 <TouchableOpacity
@@ -209,7 +210,7 @@ export default class Index extends Component<
                     style.item,
                     global.flex,
                     global.justifyContentSpaceBetween,
-                    global.alignItemsCenter
+                    global.alignItemsCenter,
                   ]}
                 >
                   <Text
@@ -223,7 +224,7 @@ export default class Index extends Component<
                         style={[
                           style.version,
                           global.fontSize14,
-                          global.fontStyle
+                          global.fontStyle,
                         ]}
                       >
                         发现新版本
@@ -241,11 +242,11 @@ export default class Index extends Component<
                     />
                   )}
                 </TouchableOpacity>
-              );
+              )
             })}
           </View>
         </ScrollView>
       </>
-    );
+    )
   }
 }

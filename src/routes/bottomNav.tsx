@@ -10,7 +10,7 @@ import gImg from "@utils/img"
 import sColor from "@styles/color"
 import Test from "@pages/Test"
 import Home from "@pages/Home"
-import PersonalCenter from "@pages/personal_center/Index"
+import PersonalCenter from "@/pages/personal_center/Index"
 import AdvisoryIndex from "@pages/advisory/Index"
 import AddressBookIndex from "@pages/address_book/Index"
 import AddressBookGroup from "@pages/address_book/Group"
@@ -19,6 +19,11 @@ import AddressBookGroupDetail from "@pages/address_book/GroupDetail"
 import PatientDetail from "@pages/address_book/PatientDetail"
 import RealNameAuth from "@pages/user/RealNameAuth"
 import AdvisoryChat from "@pages/advisory/Chat"
+import Account from "@/pages/personal_center/Account"
+import ChangePwd from "@/pages/personal_center/ChangePwd"
+import EditInformation from "@/pages/personal_center/EditInformation"
+import About from "@/pages/personal_center/About"
+import CustomerService from "@/pages/personal_center/CustomerService"
 const style = StyleSheet.create({
   icon: {
     width: 30,
@@ -210,6 +215,21 @@ const StacksOverTabs = createStackNavigator({
   },
   [pathMap.PatientDetail]: {
     screen: PatientDetail,
+  },
+  [pathMap.Account]: {
+    screen: Account,
+  },
+  [pathMap.ChangePwd]: {
+    screen: ChangePwd,
+  },
+  [pathMap.EditInformation]: {
+    screen: EditInformation,
+  },
+  [pathMap.About]: {
+    screen: About,
+  },
+  [pathMap.CustomerService]: {
+    screen: CustomerService,
   },
 })
 export default StacksOverTabs

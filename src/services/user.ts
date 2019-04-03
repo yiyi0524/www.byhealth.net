@@ -1,17 +1,27 @@
 import { bget, bpost, GetListParam } from "./api"
 import { Picture } from "@/pages/advisory/Chat"
 //todo 获取个人信息
-export interface infoItem {
+export interface personalInfo {
   id: number
-  name: string
+  account: string
+  nick: string
+  gender: number
+  phone: string
+  email: string
   avatar: Picture
+  profile: string
 }
 export async function getPersonalInfo() {
   return {
     data: {
       info: {
         id: 5,
-        name: "吴大伟",
+        account: "juice",
+        nick: "吴大伟",
+        phone: "15096443927",
+        email: "",
+        gender: 1,
+        profile: "我是描述",
         avatar: {
           id: 1,
           title: "asd",

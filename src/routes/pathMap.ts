@@ -12,5 +12,10 @@ export default {
   AddressBookGroup: "AddressBookGroup",
   AddressBookAddGroup: "AddressBookAddGroup",
   AddressBookGroupDetail: "AddressBookGroupDetail",
-  PatientDetail: "PatientDetail"
-};
+  PatientDetail: "PatientDetail",
+  Account: "Account",
+  ChangePwd: "ChangePwd",
+  EditInformation: "EditInformation",
+  About: "About",
+  CustomerService: "CustomerService",
+}

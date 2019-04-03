@@ -3,7 +3,7 @@ import { BASE_URL } from "@/config/api"
 import * as userAction from "@/redux/actions/user"
 import { AppState } from "@/redux/stores/store"
 import pathMap from "@/routes/pathMap"
-import userApi from "@/services/user"
+import userApi, { personalInfo } from "@/services/user"
 import wsMsgApi from "@/services/wsMsg"
 import gImg from "@/utils/img"
 import { TextareaItem, Toast } from "@ant-design/react-native"
@@ -13,14 +13,13 @@ import React, { Component, ReactChild } from "react"
 import {
   Image,
   ImageSourcePropType,
-  ListRenderItemInfo,
   PixelRatio,
   RefreshControl,
   Text,
   View,
 } from "react-native"
 import { TouchableOpacity } from "react-native-gesture-handler"
-import { FlatList, NavigationScreenProp, ScrollView } from "react-navigation"
+import { NavigationScreenProp, ScrollView } from "react-navigation"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
 import { Overwrite } from "utility-types"
@@ -69,18 +68,15 @@ export interface Msg<T = any> {
   dom?: ReactChild
   sendTime: string
 }
-interface infoItem {
-  id: number
-  name: string
-  avatar: Picture
-}
 interface State {
   hasLoad: boolean
   refreshing: boolean
   isShowBottomNav: boolean
   isShowBottomPicSelect: boolean
   hasMoreRecord: boolean
-  info: infoItem
+  isShowPic: boolean
+  showPicUrl: string
+  info: personalInfo
   msgId: number
   page: number
   limit: number
@@ -209,9 +205,16 @@ export default class Index extends Component<
       isShowBottomNav: false,
       isShowBottomPicSelect: false,
       hasMoreRecord: false,
+      isShowPic: false,
+      showPicUrl: "",
       info: {
         id: 0,
-        name: "",
+        nick: "",
+        account: "",
+        email: "",
+        gender: 0,
+        phone: "",
+        profile: "",
         avatar: {
           id: 0,
           title: "",
@@ -257,7 +260,8 @@ export default class Index extends Component<
       let oriMsgList: Exclude<Overwrite<Msg, { pic: Picture }>, "dom">[] =
         data.list
       let formatMsg: Msg | undefined
-      let msgList = this.state.msgList
+      let msgList = this.state.msgList,
+        newList: Msg<any>[] = []
       for (let serverMsg of oriMsgList) {
         switch (serverMsg.type) {
           case MsgType.txt:
@@ -268,9 +272,10 @@ export default class Index extends Component<
             break
         }
         if (formatMsg) {
-          msgList.push(formatMsg)
+          newList.push(formatMsg)
         }
       }
+      msgList.unshift(...newList)
       this.setState({
         msgList,
         hasMoreRecord: data.count > msgList.length,
@@ -281,14 +286,11 @@ export default class Index extends Component<
   }
   txtFormat = (serverMsg: Exclude<Msg, "dom">) => {
     let msg: Msg = serverMsg
+    let isSelfMsg = msg.sendUser.uid === this.state.info.id
     msg.dom = (
       <View>
         {/*  左边文字 */}
-        <View
-          style={
-            msg.sendUser.uid === this.state.info.id ? global.hidden : style.item
-          }
-        >
+        <View style={isSelfMsg ? global.hidden : style.item}>
           <Text style={[style.sendTime, global.fontStyle, global.fontSize12]}>
             {msg.sendTime.substr(0, 16)}
           </Text>
@@ -303,7 +305,7 @@ export default class Index extends Component<
                 }
               />
             </View>
-            <View style={style.leftItemIcon} />
+            <View style={isSelfMsg ? global.hidden : style.leftItemIcon} />
             <Text
               style={[style.leftItemTitle, global.fontStyle, global.fontSize14]}
             >
@@ -312,11 +314,7 @@ export default class Index extends Component<
           </View>
         </View>
         {/* 右边文字 */}
-        <View
-          style={
-            msg.sendUser.uid === this.state.info.id ? style.item : global.hidden
-          }
-        >
+        <View style={isSelfMsg ? style.item : global.hidden}>
           <Text style={[style.sendTime, global.fontStyle, global.fontSize12]}>
             {msg.sendTime.substr(0, 16)}
           </Text>
@@ -330,13 +328,7 @@ export default class Index extends Component<
             >
               {msg.msg}
             </Text>
-            <View
-              style={
-                msg.sendUser.uid === this.state.info.id
-                  ? style.rightItemIcon
-                  : global.hidden
-              }
-            />
+            <View style={isSelfMsg ? style.rightItemIcon : global.hidden} />
             <View style={style.itemPic}>
               <Image
                 style={style.itemImg}
@@ -357,14 +349,11 @@ export default class Index extends Component<
     serverMsg: Exclude<Overwrite<Msg, { pic: Picture }>, "dom">,
   ) => {
     let msg: Overwrite<Msg, { pic: Picture }> = serverMsg
+    let isSelfMsg = msg.sendUser.uid === this.state.info.id
     msg.dom = (
       <View>
         {/* 左边图片 */}
-        <View
-          style={
-            msg.sendUser.uid === this.state.info.id ? global.hidden : style.item
-          }
-        >
+        <View style={isSelfMsg ? global.hidden : style.item}>
           <Text style={[style.sendTime, global.fontStyle, global.fontSize12]}>
             {msg.sendTime.substr(0, 16)}
           </Text>
@@ -379,8 +368,11 @@ export default class Index extends Component<
                 }
               />
             </View>
-            <View style={style.leftItemIcon} />
-            <View style={style.leftItemPicture}>
+            <View style={isSelfMsg ? global.hidden : style.leftItemIcon} />
+            <TouchableOpacity
+              style={style.leftItemPicture}
+              onPress={() => this.openShowPic(BASE_URL + msg.pic.url)}
+            >
               <Image
                 style={style.itemPicImg}
                 source={
@@ -389,20 +381,19 @@ export default class Index extends Component<
                     : gImg.common.defaultPic
                 }
               />
-            </View>
+            </TouchableOpacity>
           </View>
         </View>
         {/* 右边图片 */}
-        <View
-          style={
-            msg.sendUser.uid === this.state.info.id ? style.item : global.hidden
-          }
-        >
+        <View style={isSelfMsg ? style.item : global.hidden}>
           <Text style={[style.sendTime, global.fontStyle, global.fontSize12]}>
-            2019-02-23 10:00
+            {msg.sendTime.substr(0, 16)}
           </Text>
           <View style={[style.leftItem, global.flex, global.justifyContentEnd]}>
-            <View style={style.rightItemPicture}>
+            <TouchableOpacity
+              style={style.rightItemPicture}
+              onPress={() => this.openShowPic(BASE_URL + msg.pic.url)}
+            >
               <Image
                 style={style.itemPicImg}
                 source={
@@ -411,14 +402,8 @@ export default class Index extends Component<
                     : gImg.common.defaultPic
                 }
               />
-            </View>
-            <View
-              style={
-                msg.sendUser.uid === this.state.info.id
-                  ? style.rightItemIcon
-                  : global.hidden
-              }
-            />
+            </TouchableOpacity>
+            <View style={isSelfMsg ? style.rightItemIcon : global.hidden} />
             <View style={style.itemPic}>
               <Image
                 style={style.itemImg}
@@ -483,6 +468,18 @@ export default class Index extends Component<
         sendMsg: "",
       })
     }, 1000)
+  }
+  openShowPic = (url: string) => {
+    this.setState({
+      isShowPic: true,
+      showPicUrl: url,
+    })
+  }
+  closeShowPic = () => {
+    this.setState({
+      isShowPic: false,
+      showPicUrl: "",
+    })
   }
   render() {
     if (!this.state.hasLoad) {
@@ -643,6 +640,23 @@ export default class Index extends Component<
               </View>
             </View>
           </View>
+        </View>
+        {/* 图片查看器 */}
+        <View style={this.state.isShowPic ? style.showPic : global.hidden}>
+          <TouchableOpacity onPress={this.closeShowPic} activeOpacity={0.8}>
+            <View style={style.howImgFa}>
+              <Image
+                style={style.showImg}
+                source={
+                  this.state.showPicUrl
+                    ? {
+                        uri: this.state.showPicUrl,
+                      }
+                    : gImg.common.defaultPic
+                }
+              />
+            </View>
+          </TouchableOpacity>
         </View>
       </>
     )
