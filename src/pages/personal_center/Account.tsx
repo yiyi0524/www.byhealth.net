@@ -1,21 +1,19 @@
-import React, { Component } from "react"
-import { AppState } from "@/redux/stores/store"
-import { connect } from "react-redux"
-import { Dispatch } from "redux"
 import * as userAction from "@/redux/actions/user"
+import { AppState } from "@/redux/stores/store"
+import { Icon, Toast } from "@ant-design/react-native"
 import sColor from "@styles/color"
+import gStyle from "@utils/style"
+import React, { Component } from "react"
 import {
+  RefreshControl,
   ScrollView,
   Text,
-  View,
   TouchableOpacity,
-  RefreshControl,
-  PixelRatio,
+  View,
 } from "react-native"
-import { Toast, Icon } from "@ant-design/react-native"
-import gStyle from "@utils/style"
 import { NavigationScreenProp } from "react-navigation"
-import pathMap from "@/routes/pathMap"
+import { connect } from "react-redux"
+import { Dispatch } from "redux"
 const style = gStyle.personalCenter.account
 const global = gStyle.global
 interface Props {
@@ -48,7 +46,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
   mapStateToProps,
   mapDispatchToProps,
 )
-export default class Index extends Component<
+export default class Account extends Component<
   Props &
     ReturnType<typeof mapStateToProps> &
     ReturnType<typeof mapDispatchToProps>,

@@ -206,6 +206,18 @@ export function modifyPwd({
   return bpost({ url: "/api/modifyPwd", data: { oriPwd, pwd, rePwd } })
 }
 /**
+ * TODO
+ * 发送修改密码手机验证码
+ */
+export function getmodifyPwdWithPhoneCode({ phone }: { phone: string }) {
+  return bpost({
+    url: "/api/getmodifyPwdWithPhoneCode",
+    data: {
+      phone,
+    },
+  })
+}
+/**
  * 手机验证码修改密码
  */
 export function modifyPwdWithPhoneCode({
@@ -397,4 +409,6 @@ export default {
   getRegion,
   getMedicalInstitutions,
   idCardIDChecked,
+  getmodifyPwdWithPhoneCode,
+  modifyPwdWithPhoneCode,
 }

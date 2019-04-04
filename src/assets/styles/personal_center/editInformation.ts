@@ -13,88 +13,213 @@ export default StyleSheet.create({
   loadingTitle: {
     textAlign: "center",
   },
-  main: {
-    backgroundColor: sColor.mainBgColor,
+  edit: {
+    flex: 1,
   },
-  headerRight: {
-    color: sColor.white,
-    paddingRight: 15,
+  main: {
+    flex: 0.9,
+    backgroundColor: sColor.mainBgColor,
   },
   header: {
     padding: 15,
-    backgroundColor: sColor.lightGreen,
+    backgroundColor: sColor.mainRed,
   },
-  headerDescription: {
-    color: sColor.whiteOpa7,
-    marginBottom: 8,
-    textAlign: "center",
-  },
-  headerCenter: {
-    marginTop: 5,
-  },
-  headerCenterLeft: {
-    flex: 1,
-  },
-  headerCenterLeftIcon: {
-    color: sColor.whiteOpa7,
-    marginRight: 5,
-  },
-  headerCenterLeftTitle: {
-    color: sColor.whiteOpa7,
-  },
-  headerCenterTitle: {
-    color: sColor.whiteOpa7,
-    flex: 1,
-  },
-  headerCenterRight: {
-    color: sColor.whiteOpa7,
-    flex: 1,
-    borderWidth: 1 / PixelRatio.get(),
-    borderColor: sColor.whiteOpa7,
-    borderRadius: 25,
-    paddingTop: 5,
-    paddingBottom: 5,
-    paddingLeft: 15,
-    paddingRight: 15,
-  },
-  bank: {
-    marginTop: 15,
-  },
-  addBank: {
-    marginLeft: 15,
-    marginRight: 15,
-    backgroundColor: sColor.white,
-    borderRadius: 15,
+  headerInfo: {},
+  headerInfoAvatar: {
+    width: 45,
+    height: 45,
+    borderRadius: 100,
     overflow: "hidden",
   },
-  addBankTitle: {
-    padding: 30,
+  headerInfoImg: {
+    width: 45,
+    height: 45,
+    resizeMode: "cover",
   },
-  addBankIcon: {
-    color: sColor.lightGreen,
+  headerInfoName: {
+    marginLeft: 15,
+    flex: 1,
   },
-  addBankDescription: {
-    color: sColor.color333,
-    marginLeft: 8,
-  },
-  addBankBtn: {
+  headerInfoTitle: {
     color: sColor.white,
-    backgroundColor: sColor.lightGreen,
-    height: 40,
-    lineHeight: 40,
-    textAlign: "center",
+    fontWeight: "500",
+    marginBottom: 5,
   },
-  bankDescription: {
-    marginTop: 15,
+  headerInfoDetail: {
+    color: sColor.white,
+  },
+  headerInfoCustomer: {
+    height: 30,
+    paddingLeft: 15,
+    paddingRight: 15,
+    lineHeight: 30,
+    borderRadius: 25,
+    borderWidth: 1 / PixelRatio.get(),
+    borderColor: sColor.white,
+    color: sColor.white,
+  },
+  headerDescription: {
+    marginTop: 5,
+  },
+  headerDepartment: {
+    color: sColor.white,
+    marginTop: 10,
+  },
+  department: {
+    paddingLeft: 15,
+    paddingRight: 15,
+    marginTop: 30,
+    marginBottom: 30,
+  },
+  departmentTitle: {
+    color: sColor.mainBlack,
+  },
+  departmentEdit: {
+    color: sColor.color888,
+  },
+  departmentList: {
+    paddingTop: 12,
+  },
+  departmentItem: {
+    marginRight: 15,
+    marginBottom: 15,
+    paddingTop: 6,
+    paddingBottom: 6,
+    paddingLeft: 15,
+    paddingRight: 15,
+    borderRadius: 2,
+    borderWidth: 1 / PixelRatio.get(),
+    borderColor: sColor.color999,
+    color: sColor.color666,
+  },
+  profile: {
+    paddingLeft: 15,
+    paddingRight: 15,
+    paddingBottom: 30,
+  },
+  profileTitle: {
+    marginBottom: 15,
+  },
+  profileTheme: {
+    color: sColor.mainBlack,
+  },
+  profileEdit: {
+    color: sColor.color888,
+  },
+  profileDetail: {
+    color: sColor.color666,
+    lineHeight: 25,
+  },
+  viewFa: {
+    flex: 0.1,
+    height: 50,
+    paddingRight: 5,
+    paddingLeft: 5,
+    paddingTop: 5,
+    paddingBottom: 5,
+    backgroundColor: sColor.mainBgColor,
+    borderTopColor: sColor.colorDdd,
+    borderTopWidth: 1 / PixelRatio.get(),
+  },
+  view: {
+    height: 45,
+    lineHeight: 45,
+    textAlign: "center",
+    color: sColor.white,
+    backgroundColor: sColor.mainRed,
+    borderRadius: 5,
+  },
+  selectDepartment: {
+    position: "absolute",
+    top: 0,
+    right: 0,
+    left: 0,
+    bottom: 0,
+    backgroundColor: sColor.white,
+  },
+  closeDepartment: {
+    height: 45,
+    lineHeight: 45,
+    textAlign: "center",
+    color: sColor.white,
+    backgroundColor: sColor.color666,
+  },
+  selectDepartmentList: {
     backgroundColor: sColor.white,
     paddingLeft: 15,
     paddingRight: 15,
+    paddingTop: 15,
+    paddingBottom: 15,
+  },
+  selectDepartmentTitle: {
     height: 45,
+    backgroundColor: sColor.white,
+    borderBottomWidth: 1 / PixelRatio.get(),
+    borderBottomColor: sColor.colorDdd,
   },
-  bankDescriptionTitle: {
+  selectDepartmentIcon: {
+    width: 5,
+    height: 25,
+    backgroundColor: sColor.mainRed,
+  },
+  selectDepartmentTheme: {
     color: sColor.color333,
+    marginLeft: 15,
+    marginRight: 15,
   },
-  bankDescriptionRight: {
+  selectDepartmentDetail: {
     color: sColor.color888,
+  },
+  selectDepartmentItem: {
+    height: 35,
+    paddingLeft: 15,
+    paddingRight: 15,
+    lineHeight: 35,
+    color: sColor.color666,
+    borderWidth: 1 / PixelRatio.get(),
+    borderColor: sColor.colorDdd,
+    borderRadius: 2,
+    marginRight: 15,
+    marginBottom: 15,
+  },
+  selectDepartmentItemActive: {
+    color: sColor.white,
+    backgroundColor: sColor.mainRed,
+    borderColor: sColor.mainRed,
+    height: 35,
+    paddingLeft: 15,
+    paddingRight: 15,
+    lineHeight: 35,
+    borderWidth: 1 / PixelRatio.get(),
+    borderRadius: 2,
+    marginRight: 15,
+    marginBottom: 15,
+  },
+  editProfile: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: sColor.white,
+  },
+  editProfileInput: {
+    fontSize: 14,
+    color: sColor.color666,
+  },
+  editProfileBtn: {
+    height: 45,
+    lineHeight: 45,
+    textAlign: "center",
+    backgroundColor: sColor.mainRed,
+    color: sColor.white,
+    marginTop: 30,
+    marginLeft: 15,
+    marginRight: 15,
+    borderRadius: 5,
+  },
+  editInput: {
+    paddingLeft: 15,
+    paddingRight: 15,
   },
 })

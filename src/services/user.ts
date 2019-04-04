@@ -10,6 +10,16 @@ export interface personalInfo {
   email: string
   avatar: Picture
   profile: string
+  doctorInfo?: DoctorInfo
+}
+export interface DoctorInfo {
+  id: number
+  uid?: number
+  technicalTitle?: number
+  departmentIdr?: number
+  adeptSymptomIdList?: number[]
+  countyCid?: string
+  hospitalId?: number
 }
 export async function getPersonalInfo() {
   return {
@@ -28,6 +38,14 @@ export async function getPersonalInfo() {
           url: "/uploads/20190315/1cec476d9eaef31971abef5e16716365.png",
         },
       },
+      doctorInfo: {
+        id: 1,
+        technicalTitle: 2,
+        departmentIdr: 3,
+        countyCid: "110100000000",
+        hospitalId: 1,
+        adeptSymptomIdList: [11, 12, 13, 14, 15, 16, 17, 18, 19, 20],
+      },
     },
   }
   // return bpost<infoItem>({
@@ -45,6 +63,23 @@ export async function getPatientGroupList({
 }: GetListParam) {
   return bget({
     url: "/getPatientGroupList",
+    query: {
+      page,
+      limit,
+      filter,
+    },
+  })
+}
+/**
+ * 获取医院列表
+ */
+export async function getHospitalList({
+  page = -1,
+  limit = -1,
+  filter = {},
+}: GetListParam) {
+  return bget({
+    url: "/hospital/getList",
     query: {
       page,
       limit,
@@ -81,10 +116,39 @@ export async function addPatientGroup({
     },
   })
 }
+/**
+ * todo 编辑资料 修改擅长治疗的疾病
+ */
+export async function setAdeptSymptomIdList({
+  adeptSymptomIdList,
+}: {
+  adeptSymptomIdList: number[]
+}) {
+  return bpost({
+    url: "/setAdeptSymptomIdList",
+    data: {
+      adeptSymptomIdList,
+    },
+  })
+}
+/**
+ * todo 编辑资料 修改我的简介
+ */
+export async function setProfile({ profile }: { profile: string }) {
+  return bpost({
+    url: "/setProfile",
+    data: {
+      profile,
+    },
+  })
+}
 
 export default {
   getPersonalInfo,
   getPatientGroupList,
   deletePatientGroup,
   addPatientGroup,
+  getHospitalList,
+  setAdeptSymptomIdList,
+  setProfile,
 }

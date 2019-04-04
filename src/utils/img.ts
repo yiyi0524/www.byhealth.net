@@ -16,6 +16,7 @@ export default {
     defaultPic: require("@img/common/default_pic.png"),
     technicalqualificationCertificatePicFirst: require("@img/common/technicalqualificationCertificatePicFirst.png"),
     technicalqualificationCertificatePicSecond: require("@img/common/technicalqualificationCertificatePicSecond.png"),
+    loading: require("@img/common/loading.gif"),
   },
   home: {
     prescriptionTemplate: require("@img/home/moban.png"),
@@ -44,6 +45,10 @@ export default {
     selectPic: require("@img/advisory/select-pic.png"),
     selectPhoto: require("@img/advisory/select-photo.png"),
     voice: require("@img/advisory/voice.png"),
+    customerServicePhone: require("@img/advisory/customer-service-phone.png"),
+    customerServiceQQ: require("@img/advisory/customer-service-qq.png"),
+    customerServiceWeixin: require("@img/advisory/customer-service-weixin.png"),
+    aboutWeixin: require("@img/advisory/customer-service-weixin.png"),
   },
   addressBook: {
     group: require("@img/address_book/group.png"),

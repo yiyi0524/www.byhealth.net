@@ -14,6 +14,42 @@ export default StyleSheet.create({
     textAlign: "center",
   },
   main: {
-    backgroundColor: sColor.mainBgColor,
+    backgroundColor: sColor.white,
+  },
+  list: {
+    paddingRight: 15,
+  },
+  item: {
+    position: "relative",
+    height: 50,
+  },
+  input: {
+    fontSize: 14,
+    color: sColor.color666,
+  },
+  verification: {
+    position: "absolute",
+    right: 10,
+    top: 5,
+  },
+  verificationTitle: {
+    borderRadius: 25,
+    height: 30,
+    lineHeight: 30,
+    paddingLeft: 15,
+    paddingRight: 15,
+    backgroundColor: sColor.mainRed,
+    color: sColor.white,
+  },
+  btn: {
+    marginLeft: 30,
+    marginRight: 30,
+    height: 45,
+    lineHeight: 45,
+    textAlign: "center",
+    backgroundColor: sColor.mainRed,
+    borderRadius: 5,
+    color: sColor.white,
+    marginTop: 30,
   },
 })

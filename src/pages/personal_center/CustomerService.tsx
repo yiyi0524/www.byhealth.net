@@ -1,22 +1,24 @@
-import React, { Component } from "react"
-import { AppState } from "@/redux/stores/store"
-import { connect } from "react-redux"
-import { Dispatch } from "redux"
 import * as userAction from "@/redux/actions/user"
+import { AppState } from "@/redux/stores/store"
+import { Icon, Toast } from "@ant-design/react-native"
 import sColor from "@styles/color"
+import gStyle from "@utils/style"
+import React, { Component } from "react"
 import {
+  RefreshControl,
   ScrollView,
   Text,
-  View,
   TouchableOpacity,
-  RefreshControl,
+  View,
   PixelRatio,
+  Image,
+  ImageSourcePropType,
+  Linking,
 } from "react-native"
-import { Toast, Icon } from "@ant-design/react-native"
-import gStyle from "@utils/style"
-import { NavigationScreenProp } from "react-navigation"
-import pathMap from "@/routes/pathMap"
-const style = gStyle.personalCenter.account
+import { connect } from "react-redux"
+import { Dispatch } from "redux"
+import gImg from "@utils/img"
+const style = gStyle.personalCenter.customerService
 const global = gStyle.global
 interface Props {
   navigation: any
@@ -24,11 +26,12 @@ interface Props {
 interface State {
   hasLoad: boolean
   refreshing: boolean
-  isShowAccount: boolean
 }
-interface functionItem {
+interface item {
+  icon: ImageSourcePropType
   name: string
   link: string
+  type: string
 }
 const mapStateToProps = (state: AppState) => {
   return {
@@ -48,25 +51,23 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
   mapStateToProps,
   mapDispatchToProps,
 )
-export default class Index extends Component<
+export default class CustomerService extends Component<
   Props &
     ReturnType<typeof mapStateToProps> &
     ReturnType<typeof mapDispatchToProps>,
   State
 > {
-  static navigationOptions = ({
-    navigation,
-  }: {
-    navigation: NavigationScreenProp<State>
-  }) => {
+  static navigationOptions = () => {
     return {
-      title: "账户",
+      title: "联系客服",
       headerStyle: {
-        backgroundColor: sColor.lightGreen,
+        backgroundColor: sColor.white,
         height: 45,
         elevation: 0,
+        borderBottomWidth: 1 / PixelRatio.get(),
+        borderBottomColor: sColor.colorDdd,
       },
-      headerTintColor: sColor.white,
+      headerTintColor: sColor.color333,
       headerTitleStyle: {
         flex: 1,
         alignItems: "center",
@@ -74,33 +75,38 @@ export default class Index extends Component<
         fontSize: 14,
         textAlign: "center",
       },
-      headerRight: (
-        <TouchableOpacity
-        // onPress={() =>
-        //   navigation.push(pathMap.PatientDetail, {
-        //     id: navigation.getParam("patientId"),
-        //   })
-        // }
-        >
-          <Text
-            style={[style.headerRight, global.fontSize14, global.fontStyle]}
-          >
-            说明
-          </Text>
-        </TouchableOpacity>
-      ),
+      headerRight: <Text />,
     }
   }
-  functionList: functionItem[] = []
+  list: item[] = []
   constructor(props: any) {
     super(props)
+    this.list = [
+      {
+        icon: gImg.advisory.customerServicePhone,
+        name: "电话: 2345789",
+        link: "2345789",
+        type: "phone",
+      },
+      {
+        icon: gImg.advisory.customerServiceQQ,
+        name: "QQ: 23455666777",
+        link: "23455666777",
+        type: "qq",
+      },
+      {
+        icon: gImg.advisory.customerServiceWeixin,
+        name: "微信: 23455666777",
+        link: "23455666777",
+        type: "weixin",
+      },
+    ]
     this.state = this.getInitState()
   }
   getInitState = (): State => {
     return {
       hasLoad: false,
       refreshing: false,
-      isShowAccount: true,
     }
   }
   async componentDidMount() {
@@ -144,107 +150,53 @@ export default class Index extends Component<
             />
           }
         >
-          <View style={style.header}>
-            <Text
-              style={[
-                style.headerDescription,
-                global.fontSize14,
-                global.fontStyle,
-              ]}
-            >
-              余额已根据国家法律扣除个人所得税
-            </Text>
-            <View
-              style={[
-                style.headerCenter,
-                global.flex,
-                global.alignItemsCenter,
-                global.justifyContentSpaceBetween,
-              ]}
-            >
-              <TouchableOpacity
-                style={[
-                  style.headerCenterLeft,
-                  global.flex,
-                  global.alignItemsCenter,
-                ]}
-              >
-                <Icon
-                  name={this.state.isShowAccount ? "eye-invisible" : "eye"}
-                  style={[style.headerCenterLeftIcon, global.fontSize14]}
-                />
-                <Text style={[style.headerCenterLeftTitle]}>
-                  {this.state.isShowAccount ? "隐藏余额" : "显示余额"}
-                </Text>
-              </TouchableOpacity>
-              <Text style={[style.headerCenterTitle]}>
-                ¥ {this.state.isShowAccount ? "8888" : "****"}
-              </Text>
-              <TouchableOpacity>
-                <Text
+          <View style={style.list}>
+            {this.list.map((v: item, k: number) => {
+              return (
+                <TouchableOpacity
+                  key={k}
                   style={[
-                    style.headerCenterRight,
-                    global.fontSize14,
-                    global.fontStyle,
+                    style.item,
+                    global.flex,
+                    global.alignItemsCenter,
+                    global.justifyContentSpaceBetween,
                   ]}
+                  onPress={() => {
+                    switch (v.type) {
+                      case "phone":
+                        Linking.openURL("tel:" + v.link)
+                        break
+                      case "qq":
+                        break
+                      case "微信":
+                        break
+                    }
+                  }}
                 >
-                  去提现
-                </Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-          <View style={style.bank}>
-            <TouchableOpacity style={style.addBank}>
-              <View
-                style={[
-                  style.addBankTitle,
-                  global.flex,
-                  global.alignItemsCenter,
-                  global.justifyContentCenter,
-                ]}
-              >
-                <Icon
-                  name="plus"
-                  style={[style.addBankIcon, global.fontSize14]}
-                />
-                <Text
-                  style={[
-                    style.addBankDescription,
-                    global.fontSize14,
-                    global.fontStyle,
-                  ]}
-                >
-                  绑定银行卡
-                </Text>
-              </View>
-              <Text style={[style.addBankBtn, global.fontSize14]}>
-                暂无绑定银行卡
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[
-                style.bankDescription,
-                global.flex,
-                global.alignItemsCenter,
-                global.justifyContentSpaceBetween,
-              ]}
-            >
-              <Text style={[style.bankDescriptionTitle, global.fontSize14]}>
-                当前银行卡
-              </Text>
-              <Text style={[style.bankDescriptionTitle, global.fontSize14]}>
-                2343434********4334
-              </Text>
-              <View style={[global.flex, global.alignItemsCenter]}>
-                <Text style={[style.bankDescriptionTitle, global.fontSize14]}>
-                  去修改
-                </Text>
-                <Icon
-                  name="right"
-                  style={[style.bankDescriptionRight, global.fontSize14]}
-                />
-              </View>
-            </TouchableOpacity>
+                  <View
+                    style={[
+                      style.itemTitle,
+                      global.flex,
+                      global.alignItemsCenter,
+                    ]}
+                  >
+                    <View style={style.itemPic}>
+                      <Image style={style.itemImg} source={v.icon} />
+                    </View>
+                    <Text style={[style.itemTheme, global.fontSize14]}>
+                      {v.name}
+                    </Text>
+                  </View>
+                  <Icon
+                    style={[
+                      v.type === "phone" ? style.itemIcon : global.hidden,
+                      global.fontSize14,
+                    ]}
+                    name="right"
+                  />
+                </TouchableOpacity>
+              )
+            })}
           </View>
         </ScrollView>
       </>

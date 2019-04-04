@@ -1,22 +1,22 @@
-import React, { Component } from "react"
-import { AppState } from "@/redux/stores/store"
-import { connect } from "react-redux"
-import { Dispatch } from "redux"
 import * as userAction from "@/redux/actions/user"
+import { AppState } from "@/redux/stores/store"
+import { Icon, Toast, Portal } from "@ant-design/react-native"
 import sColor from "@styles/color"
+import gStyle from "@utils/style"
+import React, { Component } from "react"
 import {
+  RefreshControl,
   ScrollView,
   Text,
-  View,
   TouchableOpacity,
-  RefreshControl,
+  View,
   PixelRatio,
+  Image,
 } from "react-native"
-import { Toast, Icon } from "@ant-design/react-native"
-import gStyle from "@utils/style"
-import { NavigationScreenProp } from "react-navigation"
-import pathMap from "@/routes/pathMap"
-const style = gStyle.personalCenter.account
+import { connect } from "react-redux"
+import { Dispatch } from "redux"
+import gImg from "@utils/img"
+const style = gStyle.personalCenter.about
 const global = gStyle.global
 interface Props {
   navigation: any
@@ -24,12 +24,8 @@ interface Props {
 interface State {
   hasLoad: boolean
   refreshing: boolean
-  isShowAccount: boolean
 }
-interface functionItem {
-  name: string
-  link: string
-}
+
 const mapStateToProps = (state: AppState) => {
   return {
     isLogin: state.user.isLogin,
@@ -48,25 +44,23 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
   mapStateToProps,
   mapDispatchToProps,
 )
-export default class Index extends Component<
+export default class About extends Component<
   Props &
     ReturnType<typeof mapStateToProps> &
     ReturnType<typeof mapDispatchToProps>,
   State
 > {
-  static navigationOptions = ({
-    navigation,
-  }: {
-    navigation: NavigationScreenProp<State>
-  }) => {
+  static navigationOptions = () => {
     return {
-      title: "账户",
+      title: "关于我们",
       headerStyle: {
-        backgroundColor: sColor.lightGreen,
+        backgroundColor: sColor.white,
         height: 45,
         elevation: 0,
+        borderBottomWidth: 1 / PixelRatio.get(),
+        borderBottomColor: sColor.colorDdd,
       },
-      headerTintColor: sColor.white,
+      headerTintColor: sColor.color333,
       headerTitleStyle: {
         flex: 1,
         alignItems: "center",
@@ -74,24 +68,9 @@ export default class Index extends Component<
         fontSize: 14,
         textAlign: "center",
       },
-      headerRight: (
-        <TouchableOpacity
-        // onPress={() =>
-        //   navigation.push(pathMap.PatientDetail, {
-        //     id: navigation.getParam("patientId"),
-        //   })
-        // }
-        >
-          <Text
-            style={[style.headerRight, global.fontSize14, global.fontStyle]}
-          >
-            说明
-          </Text>
-        </TouchableOpacity>
-      ),
+      headerRight: <Text />,
     }
   }
-  functionList: functionItem[] = []
   constructor(props: any) {
     super(props)
     this.state = this.getInitState()
@@ -100,7 +79,6 @@ export default class Index extends Component<
     return {
       hasLoad: false,
       refreshing: false,
-      isShowAccount: true,
     }
   }
   async componentDidMount() {
@@ -121,6 +99,10 @@ export default class Index extends Component<
         Toast.fail("刷新失败,错误信息: " + err.msg)
       })
   }
+  checkedVersion = () => {
+    const key = Toast.loading("正在检测新版本...", 3)
+    // Portal.remove(key)
+  }
   render() {
     if (!this.state.hasLoad) {
       return (
@@ -134,7 +116,7 @@ export default class Index extends Component<
       )
     }
     return (
-      <>
+      <View style={style.about}>
         <ScrollView
           style={style.main}
           refreshControl={
@@ -145,109 +127,42 @@ export default class Index extends Component<
           }
         >
           <View style={style.header}>
-            <Text
-              style={[
-                style.headerDescription,
-                global.fontSize14,
-                global.fontStyle,
-              ]}
-            >
-              余额已根据国家法律扣除个人所得税
+            <Image style={style.headerImg} source={gImg.common.logo} />
+            <Text style={[style.headerTitle, global.fontSize14]}>
+              博一健康医生版
             </Text>
-            <View
-              style={[
-                style.headerCenter,
-                global.flex,
-                global.alignItemsCenter,
-                global.justifyContentSpaceBetween,
-              ]}
-            >
-              <TouchableOpacity
-                style={[
-                  style.headerCenterLeft,
-                  global.flex,
-                  global.alignItemsCenter,
-                ]}
-              >
-                <Icon
-                  name={this.state.isShowAccount ? "eye-invisible" : "eye"}
-                  style={[style.headerCenterLeftIcon, global.fontSize14]}
-                />
-                <Text style={[style.headerCenterLeftTitle]}>
-                  {this.state.isShowAccount ? "隐藏余额" : "显示余额"}
-                </Text>
-              </TouchableOpacity>
-              <Text style={[style.headerCenterTitle]}>
-                ¥ {this.state.isShowAccount ? "8888" : "****"}
-              </Text>
-              <TouchableOpacity>
-                <Text
-                  style={[
-                    style.headerCenterRight,
-                    global.fontSize14,
-                    global.fontStyle,
-                  ]}
-                >
-                  去提现
-                </Text>
-              </TouchableOpacity>
-            </View>
+            <Text style={[style.headerVersion, global.fontSize12]}>
+              版本1.0.0
+            </Text>
           </View>
-          <View style={style.bank}>
-            <TouchableOpacity style={style.addBank}>
-              <View
-                style={[
-                  style.addBankTitle,
-                  global.flex,
-                  global.alignItemsCenter,
-                  global.justifyContentCenter,
-                ]}
-              >
-                <Icon
-                  name="plus"
-                  style={[style.addBankIcon, global.fontSize14]}
-                />
-                <Text
-                  style={[
-                    style.addBankDescription,
-                    global.fontSize14,
-                    global.fontStyle,
-                  ]}
-                >
-                  绑定银行卡
-                </Text>
-              </View>
-              <Text style={[style.addBankBtn, global.fontSize14]}>
-                暂无绑定银行卡
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[
-                style.bankDescription,
-                global.flex,
-                global.alignItemsCenter,
-                global.justifyContentSpaceBetween,
-              ]}
-            >
-              <Text style={[style.bankDescriptionTitle, global.fontSize14]}>
-                当前银行卡
-              </Text>
-              <Text style={[style.bankDescriptionTitle, global.fontSize14]}>
-                2343434********4334
-              </Text>
-              <View style={[global.flex, global.alignItemsCenter]}>
-                <Text style={[style.bankDescriptionTitle, global.fontSize14]}>
-                  去修改
-                </Text>
-                <Icon
-                  name="right"
-                  style={[style.bankDescriptionRight, global.fontSize14]}
-                />
-              </View>
-            </TouchableOpacity>
+          <TouchableOpacity onPress={this.checkedVersion}>
+            <Text style={[style.checkedVersion, global.fontSize14]}>
+              检测更新
+            </Text>
+          </TouchableOpacity>
+          <View
+            style={[
+              style.weixin,
+              global.flex,
+              global.alignItemsCenter,
+              global.justifyContentCenter,
+            ]}
+          >
+            <Icon style={style.weixinLogo} name="wechat" />
+            <Text style={[style.weixinTitle, global.fontSize14]}>
+              微信公众号: 博一健康管理
+            </Text>
           </View>
         </ScrollView>
-      </>
+        <View style={style.bottom}>
+          <TouchableOpacity>
+            <Text style={[style.agreement, global.fontSize14]}>
+              医生注册协议
+            </Text>
+          </TouchableOpacity>
+          <Text style={[style.footer, global.fontSize12]}>©2019 博一健康</Text>
+        </View>
+      </View>
     )
   }
 }

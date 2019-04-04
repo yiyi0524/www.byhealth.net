@@ -13,88 +13,65 @@ export default StyleSheet.create({
   loadingTitle: {
     textAlign: "center",
   },
-  main: {
-    backgroundColor: sColor.mainBgColor,
+  about: {
+    flex: 1,
   },
-  headerRight: {
-    color: sColor.white,
-    paddingRight: 15,
+  main: {
+    flex: 0.85,
+    backgroundColor: sColor.mainBgColor,
+    height: windowHeight,
   },
   header: {
-    padding: 15,
-    backgroundColor: sColor.lightGreen,
-  },
-  headerDescription: {
-    color: sColor.whiteOpa7,
-    marginBottom: 8,
-    textAlign: "center",
-  },
-  headerCenter: {
-    marginTop: 5,
-  },
-  headerCenterLeft: {
-    flex: 1,
-  },
-  headerCenterLeftIcon: {
-    color: sColor.whiteOpa7,
-    marginRight: 5,
-  },
-  headerCenterLeftTitle: {
-    color: sColor.whiteOpa7,
-  },
-  headerCenterTitle: {
-    color: sColor.whiteOpa7,
-    flex: 1,
-  },
-  headerCenterRight: {
-    color: sColor.whiteOpa7,
-    flex: 1,
-    borderWidth: 1 / PixelRatio.get(),
-    borderColor: sColor.whiteOpa7,
-    borderRadius: 25,
-    paddingTop: 5,
-    paddingBottom: 5,
-    paddingLeft: 15,
-    paddingRight: 15,
-  },
-  bank: {
-    marginTop: 15,
-  },
-  addBank: {
-    marginLeft: 15,
-    marginRight: 15,
+    alignItems: "center",
     backgroundColor: sColor.white,
-    borderRadius: 15,
-    overflow: "hidden",
+    paddingTop: 30,
+    paddingBottom: 30,
   },
-  addBankTitle: {
-    padding: 30,
+  headerImg: {
+    marginBottom: 10,
+    width: 50,
+    height: 50,
+    resizeMode: "center",
   },
-  addBankIcon: {
-    color: sColor.lightGreen,
-  },
-  addBankDescription: {
+  headerTitle: {
     color: sColor.color333,
-    marginLeft: 8,
+    marginBottom: 5,
   },
-  addBankBtn: {
-    color: sColor.white,
-    backgroundColor: sColor.lightGreen,
-    height: 40,
-    lineHeight: 40,
-    textAlign: "center",
-  },
-  bankDescription: {
-    marginTop: 15,
-    backgroundColor: sColor.white,
-    paddingLeft: 15,
-    paddingRight: 15,
-    height: 45,
-  },
-  bankDescriptionTitle: {
-    color: sColor.color333,
-  },
-  bankDescriptionRight: {
+  headerVersion: {
     color: sColor.color888,
+  },
+  checkedVersion: {
+    height: 45,
+    lineHeight: 45,
+    paddingLeft: 15,
+    backgroundColor: sColor.white,
+    color: sColor.color666,
+    marginTop: 8,
+  },
+  weixin: {
+    marginTop: 30,
+  },
+  weixinLogo: {
+    color: sColor.white,
+    padding: 3,
+    marginRight: 5,
+    borderRadius: 100,
+    backgroundColor: sColor.mainRed,
+  },
+  weixinTitle: {
+    color: sColor.color888,
+  },
+  bottom: {
+    flex: 0.15,
+    backgroundColor: sColor.mainBgColor,
+  },
+  agreement: {
+    textAlign: "center",
+    color: sColor.mainRed,
+  },
+  footer: {
+    color: sColor.color999,
+    textAlign: "center",
+    marginTop: 15,
   },
 })

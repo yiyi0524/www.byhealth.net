@@ -1,19 +1,20 @@
-import React, { Component } from "react"
-import { AppState } from "@/redux/stores/store"
-import { connect } from "react-redux"
-import { Dispatch } from "redux"
 import * as userAction from "@/redux/actions/user"
+import { AppState } from "@/redux/stores/store"
+import pathMap from "@/routes/pathMap"
+import storage from "@/utils/storage"
+import { Icon, Toast } from "@ant-design/react-native"
+import api from "@api/api"
+import gStyle from "@utils/style"
+import React, { Component } from "react"
 import {
+  RefreshControl,
   ScrollView,
   Text,
-  View,
   TouchableOpacity,
-  RefreshControl,
+  View,
 } from "react-native"
-import { Toast, Icon } from "@ant-design/react-native"
-import gStyle from "@utils/style"
-import api from "@api/api"
-import pathMap from "@/routes/pathMap"
+import { connect } from "react-redux"
+import { Dispatch } from "redux"
 const style = gStyle.personalCenter.personalCenterIndex
 const global = gStyle.global
 interface Props {
@@ -120,6 +121,18 @@ export default class Index extends Component<
         Toast.fail("刷新失败,错误信息: " + err.msg)
       })
   }
+  logout = async () => {
+    const { navigation } = this.props
+    Toast.loading("正在退出", 2)
+    try {
+      await Promise.all([api.logout(), new Promise(s => setTimeout(s, 300))])
+      await storage.remove("session")
+      navigation.navigate(pathMap.Login)
+    } catch (err) {
+      console.log(err)
+      Toast.info("退出失败,错误信息: " + err.msg, 2)
+    }
+  }
   render() {
     if (!this.state.hasLoad) {
       return (
@@ -181,7 +194,7 @@ export default class Index extends Component<
                   <View key={k}>
                     <View style={style.separationModule} />
                     <TouchableOpacity
-                      onPress={() => this.props.navigation.push(v.link)}
+                      onPress={this.logout}
                       style={[
                         style.item,
                         global.flex,
@@ -245,6 +258,14 @@ export default class Index extends Component<
               )
             })}
           </View>
+          <TouchableOpacity
+            style={{ marginTop: 20, alignItems: "center" }}
+            onPress={() => {
+              this.props.navigation.push(pathMap.Test)
+            }}
+          >
+            <Text>test</Text>
+          </TouchableOpacity>
         </ScrollView>
       </>
     )

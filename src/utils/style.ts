@@ -13,10 +13,10 @@ import AddressBookGroupDetail from "@/assets/styles/address_book/groupDetail"
 import PatientDetail from "@/assets/styles/address_book/patientDetail"
 import personalCenterIndex from "@/assets/styles/personal_center/index"
 import account from "@/assets/styles/personal_center/account"
-import ChangePwd from "@/assets/styles/personal_center/changePwd"
-import EditInformation from "@/assets/styles/personal_center/editInformation"
-import About from "@/assets/styles/personal_center/about"
-import CustomerService from "@/assets/styles/personal_center/customerService"
+import changePwd from "@/assets/styles/personal_center/changePwd"
+import editInformation from "@/assets/styles/personal_center/editInformation"
+import about from "@/assets/styles/personal_center/about"
+import customerService from "@/assets/styles/personal_center/customerService"
 export default {
   home,
   global,
@@ -40,10 +40,10 @@ export default {
   personalCenter: {
     personalCenterIndex,
     account,
-    ChangePwd,
-    EditInformation,
-    About,
-    CustomerService,
+    changePwd,
+    editInformation,
+    about,
+    customerService,
   },
   common: {},
   index: {},
