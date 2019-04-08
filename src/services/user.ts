@@ -71,6 +71,23 @@ export async function getPatientGroupList({
   })
 }
 /**
+ * todo 获取已开处方列表
+ */
+export async function getPrescriptionList({
+  page = -1,
+  limit = -1,
+  filter = {},
+}: GetListParam) {
+  return bget({
+    url: "/getPrescriptionList",
+    query: {
+      page,
+      limit,
+      filter,
+    },
+  })
+}
+/**
  * 获取医院列表
  */
 export async function getHospitalList({
@@ -142,6 +159,39 @@ export async function setProfile({ profile }: { profile: string }) {
     },
   })
 }
+/**
+ * todo 设置在线复诊说明
+ */
+export async function setOnlineReferral({
+  onlineReferralChecked,
+}: {
+  onlineReferralChecked: boolean
+}) {
+  return bpost({
+    url: "/setOnlineReferral",
+    data: {
+      onlineReferralChecked,
+    },
+  })
+}
+/**
+ * todo 这只免打扰时段  当start为00:00 end:00:00,为随时可打扰我
+ */
+export async function setDisturbanceFreePeriod({
+  disturbanceFreePeriod,
+}: {
+  disturbanceFreePeriod: {
+    start: string
+    end: string
+  }
+}) {
+  return bpost({
+    url: "/setDisturbanceFreePeriod",
+    data: {
+      disturbanceFreePeriod,
+    },
+  })
+}
 
 export default {
   getPersonalInfo,
@@ -151,4 +201,7 @@ export default {
   getHospitalList,
   setAdeptSymptomIdList,
   setProfile,
+  getPrescriptionList,
+  setOnlineReferral,
+  setDisturbanceFreePeriod,
 }

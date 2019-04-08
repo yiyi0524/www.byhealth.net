@@ -17,9 +17,17 @@ import changePwd from "@/assets/styles/personal_center/changePwd"
 import editInformation from "@/assets/styles/personal_center/editInformation"
 import about from "@/assets/styles/personal_center/about"
 import customerService from "@/assets/styles/personal_center/customerService"
+import Prescription from "@/assets/styles/index/prescription"
+import InvitePatients from "@/assets/styles/index/invitePatients"
+import DiagnosisSettings from "@/assets/styles/index/diagnosisSettings"
 export default {
   home,
   global,
+  index: {
+    Prescription,
+    InvitePatients,
+    DiagnosisSettings,
+  },
   user: {
     login,
     register,
@@ -46,6 +54,5 @@ export default {
     customerService,
   },
   common: {},
-  index: {},
   admin: {},
 }

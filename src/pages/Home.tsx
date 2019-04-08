@@ -1,70 +1,72 @@
-import { AppState } from "@/redux/stores/store";
-import React, { Component } from "react";
-import * as userAction from "@/redux/actions/user";
-import { Dispatch } from "redux";
-import { connect } from "react-redux";
+import * as userAction from "@/redux/actions/user"
+import { AppState } from "@/redux/stores/store"
+import pathMap from "@/routes/pathMap"
+import { Icon, Toast } from "@ant-design/react-native"
+import api from "@api/api"
+import gImg from "@utils/img"
+import gStyle from "@utils/style"
+import React, { Component } from "react"
 import {
+  Image,
+  RefreshControl,
   ScrollView,
   Text,
-  View,
-  Image,
   TouchableOpacity,
-  RefreshControl
-} from "react-native";
-import { Icon, Toast } from "@ant-design/react-native";
-import gImg from "@utils/img";
-import gStyle from "@utils/style";
-import api from "@api/api";
-import userApi from "@api/user";
-import pathMap from "@/routes/pathMap";
-const style = gStyle.home;
-const globalStyle = gStyle.global;
+  View,
+} from "react-native"
+import { connect } from "react-redux"
+import { Dispatch } from "redux"
+import global from "@/assets/styles/global"
+const style = gStyle.home
+const globalStyle = gStyle.global
 interface Props {
-  navigation: any;
+  navigation: any
 }
 interface bannerItem {
-  id: number;
-  url: string;
-  link: string;
+  id: number
+  url: string
+  link: string
 }
 interface State {
-  refreshing: boolean;
-  hasLoad: boolean;
-  isRealNameAuth: boolean;
-  avatar: string;
-  name: string;
-  bannerList: bannerItem[];
+  refreshing: boolean
+  hasLoad: boolean
+  isRealNameAuth: boolean
+  avatar: string
+  name: string
+  bannerList: bannerItem[]
+  prescription: number
+  patient: number
 }
 export interface ShortcutItem {
-  icon: any;
-  title: string;
-  link: any;
+  icon: any
+  title: string
+  link: any
 }
 const mapStateToProps = (state: AppState) => {
   return {
     isLogin: state.user.isLogin,
     name: state.user.name,
-    uid: state.user.uid
-  };
-};
+    uid: state.user.uid,
+  }
+}
 const mapDispatchToProps = (dispatch: Dispatch) => {
   return {
     login: (preload: userAction.UserInfo) => {
-      dispatch(userAction.userLogin(preload));
-    }
-  };
-};
+      dispatch(userAction.userLogin(preload))
+    },
+  }
+}
 const settingList = [
   {
     name: "复诊及诊后咨询",
     description: "未开启在线复诊",
-    link: ""
+    link: pathMap.DiagnosisSettings,
   },
   {
     name: "处方及服务配置",
     description: "",
-    link: ""
-  }
+    link: "",
+  },
   //todo 二期
   // {
   //   name: "自定义问诊单设置",
@@ -76,10 +78,10 @@ const settingList = [
   //   description: "已开启自动发送",
   //   link: ""
   // }
-];
+]
 @connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )
 export default class Home extends Component<
   Props &
@@ -87,110 +89,96 @@ export default class Home extends Component<
     ReturnType<typeof mapDispatchToProps>,
   State
 > {
-  shortcutList: ShortcutItem[] = [];
+  shortcutList: ShortcutItem[] = []
   constructor(props: any) {
-    super(props);
-    this.state = this.getInitState();
+    super(props)
+    this.state = this.getInitState()
     this.shortcutList = [
       {
         icon: gImg.home.invite,
         title: "邀请患者",
-        link: ""
+        link: pathMap.InvitePatients,
       },
-      {
-        icon: gImg.home.select,
-        title: "选择患者",
-        link: ""
-      },
-      {
-        icon: gImg.home.uploadPrescription,
-        title: "上传处方",
-        link: ""
-      },
-      {
-        icon: gImg.home.prescriptionTemplate,
-        title: "处方模板",
-        link: ""
-      },
-      {
-        icon: gImg.home.sittingInformation,
-        title: "坐诊信息",
-        link: ""
-      }
-    ];
+    ]
   }
   getInitState = (): State => {
     return {
       refreshing: false,
       hasLoad: false,
       isRealNameAuth: false,
+      prescription: 0,
+      patient: 0,
       avatar: "",
       name: "",
-      bannerList: []
-    };
-  };
+      bannerList: [],
+    }
+  }
   componentDidMount() {
-    this.init();
+    this.init()
   }
   init = async () => {
-    let isLogin = false;
+    let isLogin = false
     try {
-      isLogin = await api.isLogin();
+      isLogin = await api.isLogin()
       // let {data} = await userApi.getPersonalInfo();
       let data = {
         id: 1,
         name: "吴大伟",
         avatar: "",
-        isRealNameAuth: false,
+        isRealNameAuth: true,
+        prescription: 6,
+        patient: 8,
         bannerList: [
           {
             id: 1,
             url: gImg.home.banner_0,
-            link: ""
+            link: "",
           },
           {
             id: 2,
             url: gImg.home.banner_1,
-            link: ""
+            link: "",
           },
           {
             id: 3,
             url: gImg.home.banner_2,
-            link: ""
+            link: "",
           },
           {
             id: 4,
             url: gImg.home.banner_3,
-            link: ""
-          }
-        ]
-      };
+            link: "",
+          },
+        ],
+      }
       this.setState({
         name: data.name,
         avatar: data.avatar,
+        patient: data.patient,
+        prescription: data.prescription,
         isRealNameAuth: data.isRealNameAuth,
-        bannerList: data.bannerList
-      });
+        bannerList: data.bannerList,
+      })
     } catch (err) {
-      console.log(err);
+      console.log(err)
     }
     this.setState({
-      hasLoad: true
-    });
+      hasLoad: true,
+    })
     if (!isLogin) {
-      this.props.navigation.navigate(pathMap.Login);
+      this.props.navigation.navigate(pathMap.Login)
     }
-  };
+  }
   onRefresh = () => {
-    this.setState({ refreshing: true });
+    this.setState({ refreshing: true })
     Promise.all([this.init(), new Promise(s => setTimeout(s, 170))])
       .then(_ => {
-        this.setState({ refreshing: false });
+        this.setState({ refreshing: false })
       })
       .catch(err => {
-        Toast.fail("刷新失败,错误信息: " + err.msg);
-      });
-  };
+        Toast.fail("刷新失败,错误信息: " + err.msg)
+      })
+  }
   render() {
     if (!this.state.hasLoad) {
       return (
@@ -199,13 +187,13 @@ export default class Home extends Component<
             style={[
               style.loadingTitle,
               globalStyle.fontSize14,
-              globalStyle.fontStyle
+              globalStyle.fontStyle,
             ]}
           >
             加载中...
           </Text>
         </View>
-      );
+      )
     }
     return (
       <>
@@ -224,14 +212,14 @@ export default class Home extends Component<
               style.header,
               globalStyle.flex,
               globalStyle.justifyContentSpaceBetween,
-              globalStyle.alignItemsCenter
+              globalStyle.alignItemsCenter,
             ]}
           >
             <View
               style={[
                 style.headerAvatarCircle,
                 globalStyle.flex,
-                globalStyle.alignItemsCenter
+                globalStyle.alignItemsCenter,
               ]}
             >
               <Image
@@ -248,7 +236,7 @@ export default class Home extends Component<
                 style={[
                   style.headerName,
                   globalStyle.fontSize16,
-                  globalStyle.fontStyle
+                  globalStyle.fontStyle,
                 ]}
                 numberOfLines={1}
               >
@@ -259,14 +247,14 @@ export default class Home extends Component<
                 style={[
                   style.headerVerified,
                   globalStyle.flex,
-                  globalStyle.alignItemsCenter
+                  globalStyle.alignItemsCenter,
                 ]}
               >
                 <Text
                   style={[
                     style.headerVerifiedTitle,
                     globalStyle.fontStyle,
-                    globalStyle.fontSize12
+                    globalStyle.fontSize12,
                   ]}
                 >
                   {" "}
@@ -278,14 +266,14 @@ export default class Home extends Component<
                       ? globalStyle.hidden
                       : style.headerMedicalQualification,
                     globalStyle.flex,
-                    globalStyle.alignItemsCenter
+                    globalStyle.alignItemsCenter,
                   ]}
                 >
                   <Text
                     style={[
                       style.headerMedicalQualificationTitle,
                       globalStyle.fontStyle,
-                      globalStyle.fontSize12
+                      globalStyle.fontSize12,
                     ]}
                   >
                     {" "}
@@ -295,7 +283,7 @@ export default class Home extends Component<
                     name="right"
                     style={[
                       style.headerMedicalQualificationIcon,
-                      globalStyle.fontSize12
+                      globalStyle.fontSize12,
                     ]}
                   />
                 </TouchableOpacity>
@@ -306,37 +294,68 @@ export default class Home extends Component<
                 style={[
                   globalStyle.fontSize14,
                   globalStyle.fontStyle,
-                  style.headerHelpTitle
+                  style.headerHelpTitle,
                 ]}
               >
                 帮助
               </Text>
             </TouchableOpacity>
           </View>
+
+          {/* 处方数 */}
+          <View
+            style={[
+              style.prescription,
+              global.flex,
+              global.alignItemsCenter,
+              global.justifyContentSpaceBetween,
+            ]}
+          >
+            <TouchableOpacity
+              style={style.prescriptionItem}
+              onPress={() => this.props.navigation.push(pathMap.Prescription)}
+            >
+              <Text style={[style.prescriptionItemNum, global.fontSize15]}>
+                {this.state.prescription}
+              </Text>
+              <Text style={[style.prescriptionItemTitle, global.fontSize12]}>
+                处方数
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={style.prescriptionItem}>
+              <Text style={[style.prescriptionItemNum, global.fontSize15]}>
+                {this.state.patient}
+              </Text>
+              <Text style={[style.prescriptionItemTitle, global.fontSize12]}>
+                患者数
+              </Text>
+            </TouchableOpacity>
+          </View>
+
           {/* 认证 */}
           <TouchableOpacity
             style={[
               this.state.isRealNameAuth ? globalStyle.hidden : style.verified,
               globalStyle.flex,
               globalStyle.alignItemsCenter,
-              globalStyle.justifyContentSpaceBetween
+              globalStyle.justifyContentSpaceBetween,
             ]}
             onPress={() => {
-              this.props.navigation.push(pathMap.RealNameAuth);
+              this.props.navigation.push(pathMap.RealNameAuth)
             }}
           >
             <View
               style={[
                 style.verifiedTheme,
                 globalStyle.flex,
-                globalStyle.alignItemsCenter
+                globalStyle.alignItemsCenter,
               ]}
             >
               <Text
                 style={[
                   style.verifiedTitle,
                   globalStyle.fontStyle,
-                  globalStyle.fontSize12
+                  globalStyle.fontSize12,
                 ]}
               >
                 认证
@@ -345,7 +364,7 @@ export default class Home extends Component<
                 style={[
                   style.verifiedDescription,
                   globalStyle.fontStyle,
-                  globalStyle.fontSize12
+                  globalStyle.fontSize12,
                 ]}
               >
                 您还未认证, 点此认证
@@ -357,6 +376,7 @@ export default class Home extends Component<
             />
           </TouchableOpacity>
           {/* 分类 */}
+          <View style={style.marginHeight} />
           <View
             style={[style.categoryList, globalStyle.flex, globalStyle.flexWrap]}
           >
@@ -367,9 +387,9 @@ export default class Home extends Component<
                   style={style.categoryItem}
                   onPress={() => {
                     if (!this.state.isRealNameAuth) {
-                      return Toast.info("您未认证", 3);
+                      return Toast.info("您未认证", 3)
                     }
-                    this.props.navigation.push(item.link);
+                    this.props.navigation.push(item.link)
                   }}
                 >
                   <Image style={style.categoryItemPic} source={item.icon} />
@@ -379,7 +399,7 @@ export default class Home extends Component<
                     {item.title}
                   </Text>
                 </TouchableOpacity>
-              );
+              )
             })}
           </View>
           {/* banner */}
@@ -398,7 +418,7 @@ export default class Home extends Component<
                 >
                   <Image style={style.bannerImg} source={v.url} />
                 </TouchableOpacity>
-              );
+              )
             })}
             <View style={style.scrollPaddingRight} />
           </ScrollView>
@@ -412,19 +432,20 @@ export default class Home extends Component<
                     style.settingItem,
                     globalStyle.flex,
                     globalStyle.justifyContentSpaceBetween,
-                    globalStyle.alignItemsCenter
+                    globalStyle.alignItemsCenter,
                   ]}
                   onPress={() => {
                     if (!this.state.isRealNameAuth) {
-                      return Toast.info("您未认证", 3);
+                      return Toast.info("您未认证", 3)
                     }
+                    this.props.navigation.push(v.link)
                   }}
                 >
                   <Text
                     style={[
                       style.settingTitle,
                       globalStyle.fontSize15,
-                      globalStyle.fontStyle
+                      globalStyle.fontStyle,
                     ]}
                     numberOfLines={1}
                   >
@@ -437,7 +458,7 @@ export default class Home extends Component<
                       style={[
                         style.settingDescription,
                         globalStyle.fontSize15,
-                        globalStyle.fontStyle
+                        globalStyle.fontStyle,
                       ]}
                     >
                       {v.description}
@@ -448,11 +469,11 @@ export default class Home extends Component<
                     />
                   </View>
                 </TouchableOpacity>
-              );
+              )
             })}
           </View>
         </ScrollView>
       </>
-    );
+    )
   }
 }

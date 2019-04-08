@@ -24,6 +24,9 @@ import ChangePwd from "@/pages/personal_center/ChangePwd"
 import EditInformation from "@/pages/personal_center/EditInformation"
 import About from "@/pages/personal_center/About"
 import CustomerService from "@/pages/personal_center/CustomerService"
+import Prescription from "@/pages/index/Prescription"
+import InvitePatients from "@/pages/index/InvitePatients"
+import DiagnosisSettings from "@/pages/index/DiagnosisSettings"
 const style = StyleSheet.create({
   icon: {
     width: 30,
@@ -230,6 +233,15 @@ const StacksOverTabs = createStackNavigator({
   },
   [pathMap.CustomerService]: {
     screen: CustomerService,
+  },
+  [pathMap.Prescription]: {
+    screen: Prescription,
+  },
+  [pathMap.InvitePatients]: {
+    screen: InvitePatients,
+  },
+  [pathMap.DiagnosisSettings]: {
+    screen: DiagnosisSettings,
   },
 })
 export default StacksOverTabs

@@ -18,4 +18,7 @@ export default {
   EditInformation: "EditInformation",
   About: "About",
   CustomerService: "CustomerService",
+  Prescription: "Prescription",
+  InvitePatients: "InvitePatients",
+  DiagnosisSettings: "DiagnosisSettings",
 }

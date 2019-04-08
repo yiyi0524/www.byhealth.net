@@ -2,13 +2,11 @@ import * as userAction from "@/redux/actions/user"
 import { AppState } from "@/redux/stores/store"
 import gStyle from "@utils/style"
 import React, { Component } from "react"
-import { ScrollView, Text, View, Image, TouchableOpacity } from "react-native"
-import { Icon } from "@ant-design/react-native"
+import { ScrollView, Image } from "react-native"
 import gImg from "@utils/img"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
 const style = gStyle.home
-const globalStyle = gStyle.global
 interface Props {}
 interface State {}
 const mapStateToProps = (state: AppState) => {

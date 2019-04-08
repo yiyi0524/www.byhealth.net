@@ -79,6 +79,12 @@ export default StyleSheet.create({
   fontSize28: {
     fontSize: 28,
   },
+  fontSize30: {
+    fontSize: 30,
+  },
+  fontSize32: {
+    fontSize: 32,
+  },
   hidden: {
     display: "none",
   },
