@@ -4,16 +4,11 @@ import { Icon, Toast } from "@ant-design/react-native"
 import sColor from "@styles/color"
 import gStyle from "@utils/style"
 import React, { Component } from "react"
-import {
-  RefreshControl,
-  ScrollView,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native"
+import { RefreshControl, ScrollView, Text, TouchableOpacity, View, Image } from "react-native"
 import { NavigationScreenProp } from "react-navigation"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
+import gImg from "@utils/img"
 const style = gStyle.personalCenter.account
 const global = gStyle.global
 interface Props {
@@ -47,16 +42,10 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
   mapDispatchToProps,
 )
 export default class Account extends Component<
-  Props &
-    ReturnType<typeof mapStateToProps> &
-    ReturnType<typeof mapDispatchToProps>,
+  Props & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
   State
 > {
-  static navigationOptions = ({
-    navigation,
-  }: {
-    navigation: NavigationScreenProp<State>
-  }) => {
+  static navigationOptions = ({ navigation }: { navigation: NavigationScreenProp<State> }) => {
     return {
       title: "账户",
       headerStyle: {
@@ -80,11 +69,7 @@ export default class Account extends Component<
         //   })
         // }
         >
-          <Text
-            style={[style.headerRight, global.fontSize14, global.fontStyle]}
-          >
-            说明
-          </Text>
+          <Text style={[style.headerRight, global.fontSize14, global.fontStyle]}>说明</Text>
         </TouchableOpacity>
       ),
     }
@@ -123,11 +108,10 @@ export default class Account extends Component<
     if (!this.state.hasLoad) {
       return (
         <View style={style.loading}>
-          <Text
-            style={[style.loadingTitle, global.fontSize14, global.fontStyle]}
-          >
-            加载中...
-          </Text>
+          <View style={style.loadingPic}>
+            <Image style={style.loadingImg} source={gImg.common.loading} />
+          </View>
+          <Text style={[style.loadingTitle, global.fontSize14, global.fontStyle]}>加载中...</Text>
         </View>
       )
     }
@@ -136,20 +120,10 @@ export default class Account extends Component<
         <ScrollView
           style={style.main}
           refreshControl={
-            <RefreshControl
-              refreshing={this.state.refreshing}
-              onRefresh={this.onRefresh}
-            />
-          }
-        >
+            <RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh} />
+          }>
           <View style={style.header}>
-            <Text
-              style={[
-                style.headerDescription,
-                global.fontSize14,
-                global.fontStyle,
-              ]}
-            >
+            <Text style={[style.headerDescription, global.fontSize14, global.fontStyle]}>
               余额已根据国家法律扣除个人所得税
             </Text>
             <View
@@ -158,15 +132,9 @@ export default class Account extends Component<
                 global.flex,
                 global.alignItemsCenter,
                 global.justifyContentSpaceBetween,
-              ]}
-            >
+              ]}>
               <TouchableOpacity
-                style={[
-                  style.headerCenterLeft,
-                  global.flex,
-                  global.alignItemsCenter,
-                ]}
-              >
+                style={[style.headerCenterLeft, global.flex, global.alignItemsCenter]}>
                 <Icon
                   name={this.state.isShowAccount ? "eye-invisible" : "eye"}
                   style={[style.headerCenterLeftIcon, global.fontSize14]}
@@ -179,13 +147,7 @@ export default class Account extends Component<
                 ¥ {this.state.isShowAccount ? "8888" : "****"}
               </Text>
               <TouchableOpacity>
-                <Text
-                  style={[
-                    style.headerCenterRight,
-                    global.fontSize14,
-                    global.fontStyle,
-                  ]}
-                >
+                <Text style={[style.headerCenterRight, global.fontSize14, global.fontStyle]}>
                   去提现
                 </Text>
               </TouchableOpacity>
@@ -199,25 +161,13 @@ export default class Account extends Component<
                   global.flex,
                   global.alignItemsCenter,
                   global.justifyContentCenter,
-                ]}
-              >
-                <Icon
-                  name="plus"
-                  style={[style.addBankIcon, global.fontSize14]}
-                />
-                <Text
-                  style={[
-                    style.addBankDescription,
-                    global.fontSize14,
-                    global.fontStyle,
-                  ]}
-                >
+                ]}>
+                <Icon name="plus" style={[style.addBankIcon, global.fontSize14]} />
+                <Text style={[style.addBankDescription, global.fontSize14, global.fontStyle]}>
                   绑定银行卡
                 </Text>
               </View>
-              <Text style={[style.addBankBtn, global.fontSize14]}>
-                暂无绑定银行卡
-              </Text>
+              <Text style={[style.addBankBtn, global.fontSize14]}>暂无绑定银行卡</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={[
@@ -225,22 +175,14 @@ export default class Account extends Component<
                 global.flex,
                 global.alignItemsCenter,
                 global.justifyContentSpaceBetween,
-              ]}
-            >
-              <Text style={[style.bankDescriptionTitle, global.fontSize14]}>
-                当前银行卡
-              </Text>
+              ]}>
+              <Text style={[style.bankDescriptionTitle, global.fontSize14]}>当前银行卡</Text>
               <Text style={[style.bankDescriptionTitle, global.fontSize14]}>
                 2343434********4334
               </Text>
               <View style={[global.flex, global.alignItemsCenter]}>
-                <Text style={[style.bankDescriptionTitle, global.fontSize14]}>
-                  去修改
-                </Text>
-                <Icon
-                  name="right"
-                  style={[style.bankDescriptionRight, global.fontSize14]}
-                />
+                <Text style={[style.bankDescriptionTitle, global.fontSize14]}>去修改</Text>
+                <Icon name="right" style={[style.bankDescriptionRight, global.fontSize14]} />
               </View>
             </TouchableOpacity>
           </View>

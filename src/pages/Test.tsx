@@ -2,7 +2,7 @@ import * as userAction from "@/redux/actions/user"
 import { AppState } from "@/redux/stores/store"
 import gStyle from "@utils/style"
 import React, { Component } from "react"
-import { ScrollView, Image } from "react-native"
+import { ScrollView, Image, View, Text } from "react-native"
 import gImg from "@utils/img"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
@@ -28,9 +28,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
   mapDispatchToProps,
 )
 export default class Home extends Component<
-  Props &
-    ReturnType<typeof mapStateToProps> &
-    ReturnType<typeof mapDispatchToProps>,
+  Props & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
   State
 > {
   constructor(props: any) {
@@ -48,6 +46,18 @@ export default class Home extends Component<
             style={{ width: 100, height: 100, resizeMode: "center" }}
             source={gImg.common.loading}
           />
+          <View>
+            <Text
+              style={{
+                width: 25,
+                borderWidth: 0.8,
+                borderColor: "red",
+                borderStyle: "dashed",
+                borderRadius: 0.1,
+              }}>
+              11111111111111111111
+            </Text>
+          </View>
         </ScrollView>
       </>
     )

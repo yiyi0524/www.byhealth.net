@@ -10,14 +10,7 @@ import { TextareaItem, Toast } from "@ant-design/react-native"
 import sColor from "@styles/color"
 import gStyle from "@utils/style"
 import React, { Component, ReactChild } from "react"
-import {
-  Image,
-  ImageSourcePropType,
-  PixelRatio,
-  RefreshControl,
-  Text,
-  View,
-} from "react-native"
+import { Image, ImageSourcePropType, PixelRatio, RefreshControl, Text, View } from "react-native"
 import { TouchableOpacity } from "react-native-gesture-handler"
 import { NavigationScreenProp, ScrollView } from "react-navigation"
 import { connect } from "react-redux"
@@ -78,6 +71,7 @@ interface State {
   showPicUrl: string
   info: personalInfo
   msgId: number
+  patientId: number
   page: number
   limit: number
   filter: {}
@@ -103,16 +97,10 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
   mapDispatchToProps,
 )
 export default class Index extends Component<
-  Props &
-    ReturnType<typeof mapStateToProps> &
-    ReturnType<typeof mapDispatchToProps>,
+  Props & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
   State
 > {
-  static navigationOptions = ({
-    navigation,
-  }: {
-    navigation: NavigationScreenProp<State>
-  }) => {
+  static navigationOptions = ({ navigation }: { navigation: NavigationScreenProp<State> }) => {
     let title = ""
     if (navigation.state.params) {
       title = navigation.state.params.title
@@ -140,13 +128,8 @@ export default class Index extends Component<
             navigation.push(pathMap.PatientDetail, {
               id: navigation.getParam("patientId"),
             })
-          }
-        >
-          <Text
-            style={[style.headerRight, global.fontSize14, global.fontStyle]}
-          >
-            病历
-          </Text>
+          }>
+          <Text style={[style.headerRight, global.fontSize14, global.fontStyle]}>病历</Text>
         </TouchableOpacity>
       ),
     }
@@ -158,7 +141,7 @@ export default class Index extends Component<
       {
         icon: gImg.advisory.dialecticalPrescriptions,
         title: "辩证开方",
-        link: "",
+        link: pathMap.OnlineOpening,
       },
       {
         icon: gImg.advisory.quickReply,
@@ -207,6 +190,7 @@ export default class Index extends Component<
       hasMoreRecord: false,
       isShowPic: false,
       showPicUrl: "",
+      patientId: 0,
       info: {
         id: 0,
         nick: "",
@@ -234,6 +218,7 @@ export default class Index extends Component<
   }
   init = async () => {
     let msgId = this.props.navigation.getParam("id")
+    let patientId = this.props.navigation.getParam("patientId")
     let page = this.state.page,
       limit = this.state.limit,
       filter = this.state.filter
@@ -251,14 +236,14 @@ export default class Index extends Component<
     this.setState({
       hasLoad: true,
       msgId,
+      patientId,
     })
   }
   getMsgList = async (page: number, limit: number, filter = {}) => {
     try {
       let { data } = await wsMsgApi.getMsgList({ page, limit, filter })
       // 格式化
-      let oriMsgList: Exclude<Overwrite<Msg, { pic: Picture }>, "dom">[] =
-        data.list
+      let oriMsgList: Exclude<Overwrite<Msg, { pic: Picture }>, "dom">[] = data.list
       let formatMsg: Msg | undefined
       let msgList = this.state.msgList,
         newList: Msg<any>[] = []
@@ -306,9 +291,7 @@ export default class Index extends Component<
               />
             </View>
             <View style={isSelfMsg ? global.hidden : style.leftItemIcon} />
-            <Text
-              style={[style.leftItemTitle, global.fontStyle, global.fontSize14]}
-            >
+            <Text style={[style.leftItemTitle, global.fontStyle, global.fontSize14]}>
               {msg.msg}
             </Text>
           </View>
@@ -319,13 +302,7 @@ export default class Index extends Component<
             {msg.sendTime.substr(0, 16)}
           </Text>
           <View style={[style.leftItem, global.flex, global.justifyContentEnd]}>
-            <Text
-              style={[
-                style.rightItemTitle,
-                global.fontStyle,
-                global.fontSize14,
-              ]}
-            >
+            <Text style={[style.rightItemTitle, global.fontStyle, global.fontSize14]}>
               {msg.msg}
             </Text>
             <View style={isSelfMsg ? style.rightItemIcon : global.hidden} />
@@ -345,9 +322,7 @@ export default class Index extends Component<
     )
     return msg
   }
-  pictureFormat = (
-    serverMsg: Exclude<Overwrite<Msg, { pic: Picture }>, "dom">,
-  ) => {
+  pictureFormat = (serverMsg: Exclude<Overwrite<Msg, { pic: Picture }>, "dom">) => {
     let msg: Overwrite<Msg, { pic: Picture }> = serverMsg
     let isSelfMsg = msg.sendUser.uid === this.state.info.id
     msg.dom = (
@@ -371,15 +346,10 @@ export default class Index extends Component<
             <View style={isSelfMsg ? global.hidden : style.leftItemIcon} />
             <TouchableOpacity
               style={style.leftItemPicture}
-              onPress={() => this.openShowPic(BASE_URL + msg.pic.url)}
-            >
+              onPress={() => this.openShowPic(BASE_URL + msg.pic.url)}>
               <Image
                 style={style.itemPicImg}
-                source={
-                  msg.pic.url
-                    ? { uri: BASE_URL + msg.pic.url }
-                    : gImg.common.defaultPic
-                }
+                source={msg.pic.url ? { uri: BASE_URL + msg.pic.url } : gImg.common.defaultPic}
               />
             </TouchableOpacity>
           </View>
@@ -392,15 +362,10 @@ export default class Index extends Component<
           <View style={[style.leftItem, global.flex, global.justifyContentEnd]}>
             <TouchableOpacity
               style={style.rightItemPicture}
-              onPress={() => this.openShowPic(BASE_URL + msg.pic.url)}
-            >
+              onPress={() => this.openShowPic(BASE_URL + msg.pic.url)}>
               <Image
                 style={style.itemPicImg}
-                source={
-                  msg.pic.url
-                    ? { uri: BASE_URL + msg.pic.url }
-                    : gImg.common.defaultPic
-                }
+                source={msg.pic.url ? { uri: BASE_URL + msg.pic.url } : gImg.common.defaultPic}
               />
             </TouchableOpacity>
             <View style={isSelfMsg ? style.rightItemIcon : global.hidden} />
@@ -451,11 +416,12 @@ export default class Index extends Component<
       })
       v.title = "更多功能"
       v.icon = gImg.advisory.show
-    }
-    if (v.title === "图片") {
+    } else if (v.title === "图片") {
       this.setState({
         isShowBottomPicSelect: !this.state.isShowBottomPicSelect,
       })
+    } else {
+      this.props.navigation.push(v.link, { patientId: this.state.patientId })
     }
   }
   sendMsg = () => {
@@ -485,11 +451,10 @@ export default class Index extends Component<
     if (!this.state.hasLoad) {
       return (
         <View style={style.loading}>
-          <Text
-            style={[style.loadingTitle, global.fontSize14, global.fontStyle]}
-          >
-            加载中...
-          </Text>
+          <View style={style.loadingPic}>
+            <Image style={style.loadingImg} source={gImg.common.loading} />
+          </View>
+          <Text style={[style.loadingTitle, global.fontSize14, global.fontStyle]}>加载中...</Text>
         </View>
       )
     }
@@ -499,20 +464,15 @@ export default class Index extends Component<
           <ScrollView
             style={style.content}
             refreshControl={
-              <RefreshControl
-                refreshing={this.state.refreshing}
-                onRefresh={this.onRefresh}
-              />
-            }
-          >
+              <RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh} />
+            }>
             <View style={style.list}>
               <Text
                 style={[
                   this.state.hasMoreRecord ? style.downloadMore : global.hidden,
                   global.fontStyle,
                   global.fontSize12,
-                ]}
-              >
+                ]}>
                 下拉查看更多聊天记录
               </Text>
               {this.state.msgList.map((v: Msg, k: number) => {
@@ -524,29 +484,19 @@ export default class Index extends Component<
             <View style={style.bottomNav}>
               <View
                 style={[
-                  this.state.isShowBottomNav
-                    ? style.bottomNavListActive
-                    : style.bottomNavList,
+                  this.state.isShowBottomNav ? style.bottomNavListActive : style.bottomNavList,
                   global.flex,
                   global.alignItemsCenter,
                   global.flexWrap,
-                ]}
-              >
+                ]}>
                 {this.bottomNavList.map((v: bottomNavItem, k: number) => {
                   return (
                     <TouchableOpacity
                       onPress={() => this.selectBottomNav(v)}
                       key={k}
-                      style={style.bottomNavItem}
-                    >
+                      style={style.bottomNavItem}>
                       <Image style={style.bottomNavItemPic} source={v.icon} />
-                      <Text
-                        style={[
-                          style.bottomNavItemTitle,
-                          global.fontSize13,
-                          global.fontStyle,
-                        ]}
-                      >
+                      <Text style={[style.bottomNavItemTitle, global.fontSize13, global.fontStyle]}>
                         {v.title}
                       </Text>
                     </TouchableOpacity>
@@ -560,8 +510,7 @@ export default class Index extends Component<
                     global.flex,
                     global.justifyContentSpaceBetween,
                     global.alignItemsCenter,
-                  ]}
-                >
+                  ]}>
                   <TouchableOpacity>
                     {/* <Image
                       style={style.bottomInputImg}
@@ -585,54 +534,27 @@ export default class Index extends Component<
                     />
                   </View>
                   <TouchableOpacity onPress={this.sendMsg}>
-                    <Text
-                      style={[
-                        style.bottomInputSendBtn,
-                        global.fontSize14,
-                        global.fontStyle,
-                      ]}
-                    >
+                    <Text style={[style.bottomInputSendBtn, global.fontSize14, global.fontStyle]}>
                       发送
                     </Text>
                   </TouchableOpacity>
                 </View>
                 <View
                   style={[
-                    this.state.isShowBottomPicSelect
-                      ? style.selectPicActive
-                      : style.selectPic,
+                    this.state.isShowBottomPicSelect ? style.selectPicActive : style.selectPic,
                     global.flex,
                     global.alignItemsCenter,
                     global.justifyContentSpaceAround,
-                  ]}
-                >
+                  ]}>
                   <TouchableOpacity style={style.selectPicFa}>
-                    <Image
-                      source={gImg.advisory.selectPic}
-                      style={style.selectImg}
-                    />
-                    <Text
-                      style={[
-                        style.selectTitle,
-                        global.fontSize14,
-                        global.fontStyle,
-                      ]}
-                    >
+                    <Image source={gImg.advisory.selectPic} style={style.selectImg} />
+                    <Text style={[style.selectTitle, global.fontSize14, global.fontStyle]}>
                       图片
                     </Text>
                   </TouchableOpacity>
                   <TouchableOpacity style={style.selectPicFa}>
-                    <Image
-                      source={gImg.advisory.selectPhoto}
-                      style={style.selectImg}
-                    />
-                    <Text
-                      style={[
-                        style.selectTitle,
-                        global.fontSize14,
-                        global.fontStyle,
-                      ]}
-                    >
+                    <Image source={gImg.advisory.selectPhoto} style={style.selectImg} />
+                    <Text style={[style.selectTitle, global.fontSize14, global.fontStyle]}>
                       拍照
                     </Text>
                   </TouchableOpacity>

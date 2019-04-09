@@ -5,14 +5,7 @@ import sColor from "@styles/color"
 import gStyle from "@utils/style"
 import React, { Component } from "react"
 import gImg from "@utils/img"
-import {
-  RefreshControl,
-  ScrollView,
-  Text,
-  View,
-  PixelRatio,
-  Image,
-} from "react-native"
+import { RefreshControl, ScrollView, Text, View, PixelRatio, Image } from "react-native"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
 import userApi, { personalInfo, DoctorInfo } from "@api/user"
@@ -95,9 +88,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
   mapDispatchToProps,
 )
 export default class Index extends Component<
-  Props &
-    ReturnType<typeof mapStateToProps> &
-    ReturnType<typeof mapDispatchToProps>,
+  Props & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
   State
 > {
   static navigationOptions = () => {
@@ -178,10 +169,7 @@ export default class Index extends Component<
         data: { region: oriRegion },
       } = await api.getRegion()
       let regionCidMapAreaName: RegionCidMapAreaName = {}
-      regionCidMapAreaName = this.getChildCidMapAreaName(
-        oriRegion,
-        regionCidMapAreaName,
-      )
+      regionCidMapAreaName = this.getChildCidMapAreaName(oriRegion, regionCidMapAreaName)
       let {
         data: { list: hospitalList },
       } = await userApi.getHospitalList({
@@ -285,11 +273,10 @@ export default class Index extends Component<
     if (!this.state.hasLoad) {
       return (
         <View style={style.loading}>
-          <Text
-            style={[style.loadingTitle, global.fontSize14, global.fontStyle]}
-          >
-            加载中...
-          </Text>
+          <View style={style.loadingPic}>
+            <Image style={style.loadingImg} source={gImg.common.loading} />
+          </View>
+          <Text style={[style.loadingTitle, global.fontSize14, global.fontStyle]}>加载中...</Text>
         </View>
       )
     }
@@ -302,12 +289,9 @@ export default class Index extends Component<
               refreshing={this.state.refreshing}
               // onRefresh={this.onRefresh}
             />
-          }
-        >
+          }>
           <View style={style.header}>
-            <View
-              style={[style.headerInfo, global.flex, global.alignItemsCenter]}
-            >
+            <View style={[style.headerInfo, global.flex, global.alignItemsCenter]}>
               <View style={style.headerInfoAvatar}>
                 <Image
                   style={style.headerInfoImg}
@@ -323,17 +307,14 @@ export default class Index extends Component<
                   {this.state.info.nick}
                 </Text>
                 <Text style={[style.headerInfoDetail, global.fontSize14]}>
-                  {this.state.doctorInfo.technicalTitle ===
-                  TECHNICAL_TITLE.RESIDENT
+                  {this.state.doctorInfo.technicalTitle === TECHNICAL_TITLE.RESIDENT
                     ? TECHNICAL_TITLE_ZH[TECHNICAL_TITLE.RESIDENT]
-                    : this.state.doctorInfo.technicalTitle ===
-                      TECHNICAL_TITLE.ATTENDING_DOCTOR
+                    : this.state.doctorInfo.technicalTitle === TECHNICAL_TITLE.ATTENDING_DOCTOR
                     ? TECHNICAL_TITLE_ZH[TECHNICAL_TITLE.ATTENDING_DOCTOR]
                     : this.state.doctorInfo.technicalTitle ===
                       TECHNICAL_TITLE.DEPUTY_CHIEF_PHYSICIAN
                     ? TECHNICAL_TITLE_ZH[TECHNICAL_TITLE.DEPUTY_CHIEF_PHYSICIAN]
-                    : this.state.doctorInfo.technicalTitle ===
-                      TECHNICAL_TITLE.CHIEF_PHYSICIAN
+                    : this.state.doctorInfo.technicalTitle === TECHNICAL_TITLE.CHIEF_PHYSICIAN
                     ? TECHNICAL_TITLE_ZH[TECHNICAL_TITLE.CHIEF_PHYSICIAN]
                     : "未知"}
                   {"  "}
@@ -345,9 +326,7 @@ export default class Index extends Component<
                 </Text>
               </View>
               <TouchableOpacity>
-                <Text style={[style.headerInfoCustomer, global.fontSize12]}>
-                  联系客服修改
-                </Text>
+                <Text style={[style.headerInfoCustomer, global.fontSize12]}>联系客服修改</Text>
               </TouchableOpacity>
             </View>
             <View style={style.headerDescription}>
@@ -356,59 +335,33 @@ export default class Index extends Component<
               </Text>
               <Text style={[style.headerDepartment, global.fontSize14]}>
                 第一职业机构{"  "}
-                {
-                  this.state.regionCidMapAreaName[
-                    parseInt(this.state.doctorInfo.countyCid)
-                  ]
-                }
+                {this.state.regionCidMapAreaName[parseInt(this.state.doctorInfo.countyCid)]}
                 {"  "}
                 {this.state.hospitalName}
               </Text>
             </View>
           </View>
           <View style={style.department}>
-            <View
-              style={[
-                global.flex,
-                global.alignItemsCenter,
-                global.justifyContentSpaceBetween,
-              ]}
-            >
-              <Text style={[style.departmentTitle, global.fontSize16]}>
-                擅长治疗疾病
-              </Text>
+            <View style={[global.flex, global.alignItemsCenter, global.justifyContentSpaceBetween]}>
+              <Text style={[style.departmentTitle, global.fontSize16]}>擅长治疗疾病</Text>
               <TouchableOpacity
                 onPress={() => {
                   this.setState({
                     isEditAdeptSymptomIdList: true,
                   })
-                }}
-              >
-                <Text style={[style.departmentEdit, global.fontSize14]}>
-                  编辑
-                </Text>
+                }}>
+                <Text style={[style.departmentEdit, global.fontSize14]}>编辑</Text>
               </TouchableOpacity>
             </View>
             <View
-              style={[
-                style.departmentList,
-                global.flex,
-                global.alignItemsCenter,
-                global.flexWrap,
-              ]}
-            >
-              {this.state.adeptSymptomIdList.map(
-                (v1: adeptSymptomIdItem, k1: number) => {
-                  return (
-                    <Text
-                      key={k1}
-                      style={[style.departmentItem, global.fontSize14]}
-                    >
-                      {v1.name}
-                    </Text>
-                  )
-                },
-              )}
+              style={[style.departmentList, global.flex, global.alignItemsCenter, global.flexWrap]}>
+              {this.state.adeptSymptomIdList.map((v1: adeptSymptomIdItem, k1: number) => {
+                return (
+                  <Text key={k1} style={[style.departmentItem, global.fontSize14]}>
+                    {v1.name}
+                  </Text>
+                )
+              })}
             </View>
           </View>
           <View style={style.profile}>
@@ -418,24 +371,18 @@ export default class Index extends Component<
                 global.flex,
                 global.alignItemsCenter,
                 global.justifyContentSpaceBetween,
-              ]}
-            >
-              <Text style={[style.profileTheme, global.fontSize16]}>
-                我的简介
-              </Text>
+              ]}>
+              <Text style={[style.profileTheme, global.fontSize16]}>我的简介</Text>
               <TouchableOpacity
                 onPress={() => {
                   this.setState({
                     isEditProfile: true,
                   })
-                }}
-              >
+                }}>
                 <Text style={[style.profileEdit, global.fontSize14]}>编辑</Text>
               </TouchableOpacity>
             </View>
-            <Text style={[style.profileDetail, global.fontSize14]}>
-              {this.state.info.profile}
-            </Text>
+            <Text style={[style.profileDetail, global.fontSize14]}>{this.state.info.profile}</Text>
           </View>
         </ScrollView>
         <View style={style.viewFa}>
@@ -445,36 +392,22 @@ export default class Index extends Component<
         </View>
         {/* 擅长 */}
         <ScrollView
-          style={
-            this.state.isEditAdeptSymptomIdList
-              ? style.selectDepartment
-              : global.hidden
-          }
-        >
+          style={this.state.isEditAdeptSymptomIdList ? style.selectDepartment : global.hidden}>
           <TouchableOpacity
             onPress={() => {
               this.setState({
                 isEditAdeptSymptomIdList: false,
               })
               this.submitAdeptSymptomIdList()
-            }}
-          >
+            }}>
             <Text style={[style.closeDepartment, global.fontSize14]}>完成</Text>
           </TouchableOpacity>
-          <View
-            style={[
-              style.selectDepartmentTitle,
-              global.flex,
-              global.alignItemsCenter,
-            ]}
-          >
+          <View style={[style.selectDepartmentTitle, global.flex, global.alignItemsCenter]}>
             <View style={style.selectDepartmentIcon} />
             <Text style={[style.selectDepartmentTheme, global.fontSize16]}>
               请选择擅长治疗的疾病
             </Text>
-            <Text style={[style.selectDepartmentDetail, global.fontSize14]}>
-              (最多选10个)
-            </Text>
+            <Text style={[style.selectDepartmentDetail, global.fontSize14]}>(最多选10个)</Text>
           </View>
           <View
             style={[
@@ -482,75 +415,53 @@ export default class Index extends Component<
               global.flex,
               global.alignItemsCenter,
               global.flexWrap,
-            ]}
-          >
-            {this.state.adeptSymptomIdMapList.map(
-              (v: adeptSymptomIdMapItem, k: number) => {
-                return v.symptomList.map((v1: symptomItem, k1: number) => {
-                  return (
-                    <TouchableOpacity
-                      key={k1}
-                      onPress={() => {
-                        let adeptSymptomIdMapList = this.state
-                            .adeptSymptomIdMapList,
-                          adeptSymptomIdList = this.state.adeptSymptomIdList
-                        adeptSymptomIdMapList[k].symptomList[
-                          k1
-                        ].isChecked = !v1.isChecked
-                        if (v1.isChecked) {
-                          if (adeptSymptomIdList.length >= 10) {
-                            adeptSymptomIdMapList[k].symptomList[
-                              k1
-                            ].isChecked = false
-                            return Toast.info("选择擅长治疗疾病不超过10个", 3)
-                          }
-                          adeptSymptomIdList.push({
-                            id: v1.id,
-                            name: v1.name,
-                          })
-                        } else {
-                          adeptSymptomIdList = adeptSymptomIdList.filter(
-                            v2 => v2.id !== v1.id,
-                          )
+            ]}>
+            {this.state.adeptSymptomIdMapList.map((v: adeptSymptomIdMapItem, k: number) => {
+              return v.symptomList.map((v1: symptomItem, k1: number) => {
+                return (
+                  <TouchableOpacity
+                    key={k1}
+                    onPress={() => {
+                      let adeptSymptomIdMapList = this.state.adeptSymptomIdMapList,
+                        adeptSymptomIdList = this.state.adeptSymptomIdList
+                      adeptSymptomIdMapList[k].symptomList[k1].isChecked = !v1.isChecked
+                      if (v1.isChecked) {
+                        if (adeptSymptomIdList.length >= 10) {
+                          adeptSymptomIdMapList[k].symptomList[k1].isChecked = false
+                          return Toast.info("选择擅长治疗疾病不超过10个", 3)
                         }
-                        this.setState({
-                          adeptSymptomIdMapList,
-                          adeptSymptomIdList,
+                        adeptSymptomIdList.push({
+                          id: v1.id,
+                          name: v1.name,
                         })
-                      }}
-                    >
-                      <Text
-                        style={[
-                          v1.isChecked
-                            ? style.selectDepartmentItemActive
-                            : style.selectDepartmentItem,
-                          global.fontSize14,
-                        ]}
-                      >
-                        {v1.name}
-                      </Text>
-                    </TouchableOpacity>
-                  )
-                })
-              },
-            )}
+                      } else {
+                        adeptSymptomIdList = adeptSymptomIdList.filter(v2 => v2.id !== v1.id)
+                      }
+                      this.setState({
+                        adeptSymptomIdMapList,
+                        adeptSymptomIdList,
+                      })
+                    }}>
+                    <Text
+                      style={[
+                        v1.isChecked
+                          ? style.selectDepartmentItemActive
+                          : style.selectDepartmentItem,
+                        global.fontSize14,
+                      ]}>
+                      {v1.name}
+                    </Text>
+                  </TouchableOpacity>
+                )
+              })
+            })}
           </View>
         </ScrollView>
         {/* 编辑个人简介 */}
-        <View
-          style={this.state.isEditProfile ? style.editProfile : global.hidden}
-        >
-          <View
-            style={[
-              style.selectDepartmentTitle,
-              global.flex,
-              global.alignItemsCenter,
-            ]}
-          >
+        <View style={this.state.isEditProfile ? style.editProfile : global.hidden}>
+          <View style={[style.selectDepartmentTitle, global.flex, global.alignItemsCenter]}>
             <View style={style.selectDepartmentIcon} />
-            <Text style={[style.selectDepartmentTheme, global.fontSize16]}>
-              我的简介
-            </Text>
+            <Text style={[style.selectDepartmentTheme, global.fontSize16]}>我的简介</Text>
           </View>
           <View style={style.editInput}>
             <TextareaItem

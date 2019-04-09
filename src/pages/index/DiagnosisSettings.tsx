@@ -1,29 +1,17 @@
 import * as userAction from "@/redux/actions/user"
 import { AppState } from "@/redux/stores/store"
-import {
-  Switch,
-  Toast,
-  Icon,
-  DatePicker,
-  List,
-  DatePickerView,
-} from "@ant-design/react-native"
+import { DatePickerView, Icon, Switch, Toast } from "@ant-design/react-native"
+import userApi from "@api/user"
 import sColor from "@styles/color"
 import gStyle from "@utils/style"
+import moment from "moment"
 import React, { Component } from "react"
-import {
-  PixelRatio,
-  RefreshControl,
-  Text,
-  View,
-  TouchableHighlight,
-} from "react-native"
+import { PixelRatio, RefreshControl, Text, TouchableHighlight, View, Image } from "react-native"
 import { ScrollView, TouchableOpacity } from "react-native-gesture-handler"
 import { NavigationScreenProp } from "react-navigation"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
-import userApi from "@api/user"
-import moment from "moment"
+import gImg from "@utils/img"
 const style = gStyle.index.DiagnosisSettings
 const global = gStyle.global
 
@@ -64,9 +52,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
   mapDispatchToProps,
 )
 export default class DiagnosisSettings extends Component<
-  Props &
-    ReturnType<typeof mapStateToProps> &
-    ReturnType<typeof mapDispatchToProps>,
+  Props & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
   State
 > {
   static navigationOptions = () => ({
@@ -157,10 +143,10 @@ export default class DiagnosisSettings extends Component<
       }
     }
     this.setState({
-      hasLoad: true,
       disturbanceFreePeriod,
       reviewPriceList,
       followUpReviewPriceList,
+      hasLoad: true,
     })
   }
   onRefresh = () => {
@@ -205,15 +191,34 @@ export default class DiagnosisSettings extends Component<
       console.log(err)
     }
   }
+  setReviewPrice = async () => {
+    let reviewPrice = this.state.reviewPrice * 100
+    try {
+      await userApi.setReviewPrice({ reviewPrice })
+      Toast.success("设置复诊价格成功", 1)
+    } catch (err) {
+      Toast.fail("设置复诊价格失败, 错误信息: " + err.msg, 3)
+      console.log(err)
+    }
+  }
+  setFollowUpReviewPrice = async () => {
+    let followUpReviewPrice = this.state.followUpReviewPrice * 100
+    try {
+      await userApi.setFollowUpReviewPrice({ followUpReviewPrice })
+      Toast.success("设置后续复诊价格成功", 1)
+    } catch (err) {
+      Toast.fail("设置后续复诊价格失败, 错误信息: " + err.msg, 3)
+      console.log(err)
+    }
+  }
   render() {
     if (!this.state.hasLoad) {
       return (
         <View style={style.loading}>
-          <Text
-            style={[style.loadingTitle, global.fontSize14, global.fontStyle]}
-          >
-            加载中...
-          </Text>
+          <View style={style.loadingPic}>
+            <Image style={style.loadingImg} source={gImg.common.loading} />
+          </View>
+          <Text style={[style.loadingTitle, global.fontSize14, global.fontStyle]}>加载中...</Text>
         </View>
       )
     }
@@ -222,12 +227,8 @@ export default class DiagnosisSettings extends Component<
         <ScrollView
           style={style.main}
           refreshControl={
-            <RefreshControl
-              refreshing={this.state.refreshing}
-              onRefresh={this.onRefresh}
-            />
-          }
-        >
+            <RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh} />
+          }>
           <View style={style.explain}>
             <View
               style={[
@@ -235,23 +236,21 @@ export default class DiagnosisSettings extends Component<
                 global.flex,
                 global.alignItemsCenter,
                 global.justifyContentSpaceBetween,
-              ]}
-            >
+              ]}>
               <View style={[global.flex, global.alignItemsCenter]}>
                 <View style={style.headerIcon} />
-                <Text style={[style.headerTitle, global.fontSize14]}>
-                  在线复诊服务说明
-                </Text>
+                <Text style={[style.headerTitle, global.fontSize14]}>是否开启复诊</Text>
               </View>
               <Switch
                 checked={this.state.onlineReferralChecked}
                 onChange={this.onlineReferralChange}
               />
             </View>
+            <Text style={[style.title, global.fontSize14]}>在线复诊服务说明</Text>
             <View style={style.explainDetails}>
               <Text style={[style.explainDetail, global.fontSize14]}>
-                您可以通过图文、语音、电话与患者交流, 首次回复需在6小时内( 22:00
-                - 8:30与免打扰时段不计入 ), 默认单次交流时间为首次回复后48小时,
+                您可以通过图文、语音、电话与患者交流, 首次回复需在6小时内( 22:00 -
+                8:30与免打扰时段不计入 ), 默认单次交流时间为首次回复后48小时,
                 辩证开方后经患者同意可随时结束对话。您可自定义收费价格、接单上限、电话图文服务可同时开启。
               </Text>
               <Text style={[style.explainDetail, global.fontSize14]}>
@@ -263,75 +262,53 @@ export default class DiagnosisSettings extends Component<
           <View style={style.list}>
             <Text style={[style.title, global.fontSize14]}>图文复诊</Text>
             <TouchableOpacity
+              activeOpacity={0.9}
               onPress={() => {
                 this.setState({
                   isSelectReviewPrice: true,
                 })
-              }}
-            >
+              }}>
               <View
                 style={[
                   style.item,
                   global.flex,
                   global.alignItemsCenter,
                   global.justifyContentSpaceBetween,
-                ]}
-              >
-                <Text style={[style.itemTitle, global.fontSize14]}>
-                  复诊价格
-                </Text>
-                <View
-                  style={[
-                    style.itemDetail,
-                    global.flex,
-                    global.alignItemsCenter,
-                  ]}
-                >
+                ]}>
+                <Text style={[style.itemTitle, global.fontSize14]}>复诊价格</Text>
+                <View style={[style.itemDetail, global.flex, global.alignItemsCenter]}>
                   <Text style={[style.important, global.fontSize14]}>
                     ¥ {this.state.reviewPrice}
                   </Text>
-                  <Icon
-                    style={[style.itemIcon, global.fontSize14]}
-                    name="right"
-                  />
+                  <Icon style={[style.itemIcon, global.fontSize14]} name="right" />
                 </View>
               </View>
             </TouchableOpacity>
             <TouchableOpacity
+              activeOpacity={0.9}
               onPress={() => {
                 this.setState({
                   isSelectFollowUpReviewPrice: true,
                 })
-              }}
-            >
+              }}>
               <View
                 style={[
                   style.item,
                   global.flex,
                   global.alignItemsCenter,
                   global.justifyContentSpaceBetween,
-                ]}
-              >
+                ]}>
                 <Text style={[style.itemTitle, global.fontSize14]}>
                   后续复诊价格{" "}
                   <Text style={[style.itemDescription, global.fontSize12]}>
                     建议为老患者提供适当优惠
                   </Text>
                 </Text>
-                <View
-                  style={[
-                    style.itemDetail,
-                    global.flex,
-                    global.alignItemsCenter,
-                  ]}
-                >
+                <View style={[style.itemDetail, global.flex, global.alignItemsCenter]}>
                   <Text style={[style.important, global.fontSize14]}>
                     ¥ {this.state.followUpReviewPrice}
                   </Text>
-                  <Icon
-                    style={[style.itemIcon, global.fontSize14]}
-                    name="right"
-                  />
+                  <Icon style={[style.itemIcon, global.fontSize14]} name="right" />
                 </View>
               </View>
             </TouchableOpacity>
@@ -343,35 +320,22 @@ export default class DiagnosisSettings extends Component<
                 global.flex,
                 global.alignItemsCenter,
                 global.justifyContentSpaceBetween,
-              ]}
-            >
+              ]}>
               <View style={[global.flex, global.alignItemsCenter]}>
                 <View style={style.headerIcon} />
-                <Text style={[style.headerTitle, global.fontSize14]}>
-                  免打扰时段
-                </Text>
+                <Text style={[style.headerTitle, global.fontSize14]}>免打扰时段</Text>
               </View>
               <TouchableOpacity
                 onPress={() => {
                   this.setState({
                     isSelectDisturbanceFreePeriod: true,
                   })
-                }}
-              >
-                <View
-                  style={[
-                    style.disturbanceFreePeriod,
-                    global.flex,
-                    global.alignItemsCenter,
-                  ]}
-                >
+                }}>
+                <View style={[style.disturbanceFreePeriod, global.flex, global.alignItemsCenter]}>
                   <Text style={[style.notDisturbTime, global.fontSize14]}>
                     {this.state.disturbanceFreePeriod}
                   </Text>
-                  <Icon
-                    name="right"
-                    style={[style.itemIcon, global.fontSize14]}
-                  />
+                  <Icon name="right" style={[style.itemIcon, global.fontSize14]} />
                 </View>
               </TouchableOpacity>
             </View>
@@ -383,16 +347,14 @@ export default class DiagnosisSettings extends Component<
             this.state.isSelectDisturbanceFreePeriod
               ? style.selectDisturbanceFreePeriod
               : global.hidden
-          }
-        >
+          }>
           <View
             style={[
               style.headerDisturbanceFreePeriod,
               global.flex,
               global.alignItemsCenter,
               global.justifyContentSpaceBetween,
-            ]}
-          >
+            ]}>
             <TouchableHighlight onPress={this.closePicker}>
               <Text style={[style.close, global.fontSize14]}>取消</Text>
             </TouchableHighlight>
@@ -401,19 +363,12 @@ export default class DiagnosisSettings extends Component<
                 this.closePicker()
                 this.setState({
                   disturbanceFreePeriod: "随时可找我",
-                  disturbanceFreePeriodStart: moment(
-                    "2000-01-01 00:00:00",
-                  ).toDate(),
-                  disturbanceFreePeriodEnd: moment(
-                    "2000-01-01 24:00:00",
-                  ).toDate(),
+                  disturbanceFreePeriodStart: moment("2000-01-01 00:00:00").toDate(),
+                  disturbanceFreePeriodEnd: moment("2000-01-01 24:00:00").toDate(),
                 })
                 this.changeDisturbanceFreePeriod()
-              }}
-            >
-              <Text style={[style.atAnyTime, global.fontSize14]}>
-                随时可找我
-              </Text>
+              }}>
+              <Text style={[style.atAnyTime, global.fontSize14]}>随时可找我</Text>
             </TouchableHighlight>
           </View>
           <View
@@ -422,8 +377,7 @@ export default class DiagnosisSettings extends Component<
               global.flex,
               global.alignItemsCenter,
               global.justifyContentSpaceBetween,
-            ]}
-          >
+            ]}>
             <DatePickerView
               style={style.datePicker}
               mode="time"
@@ -458,31 +412,24 @@ export default class DiagnosisSettings extends Component<
                 disturbanceFreePeriod,
               })
               this.changeDisturbanceFreePeriod()
-            }}
-          >
+            }}>
             <Text style={[style.submit, global.fontSize14]}>确认</Text>
           </TouchableOpacity>
         </View>
         {/* 选择复诊价格 */}
-        <View
-          style={
-            this.state.isSelectReviewPrice ? style.reviewPrice : global.hidden
-          }
-        >
+        <View style={this.state.isSelectReviewPrice ? style.reviewPrice : global.hidden}>
           <TouchableOpacity
+            activeOpacity={0.9}
             onPress={() => {
               this.setState({
                 isSelectReviewPrice: false,
               })
-            }}
-          >
-            <Text style={[style.closeReviewPrice, global.fontSize14]}>
-              取消
-            </Text>
+            }}>
+            <Text style={[style.closeReviewPrice, global.fontSize14]}>取消</Text>
           </TouchableOpacity>
           <Text style={[style.description, global.fontSize14]}>
-            收费指导: 主任医师平均定价60元, 副主任医师平均定价40元,
-            主治医师平均定价20元, 您可根据实际情况进行调整。
+            收费指导: 主任医师平均定价60元, 副主任医师平均定价40元, 主治医师平均定价20元,
+            您可根据实际情况进行调整。
           </Text>
           <ScrollView style={style.reviewPriceList}>
             {this.state.reviewPriceList.map((v: number, k: number) => {
@@ -494,15 +441,14 @@ export default class DiagnosisSettings extends Component<
                       reviewPrice: v,
                       isSelectReviewPrice: false,
                     })
-                  }}
-                >
+                    this.setReviewPrice()
+                  }}>
                   <Text
                     style={
                       v === this.state.reviewPrice
                         ? style.reviewPriceItemActive
                         : style.reviewPriceItem
-                    }
-                  >
+                    }>
                     {v}
                   </Text>
                 </TouchableOpacity>
@@ -511,27 +457,19 @@ export default class DiagnosisSettings extends Component<
           </ScrollView>
         </View>
         {/* 选择后续复诊价格 */}
-        <View
-          style={
-            this.state.isSelectFollowUpReviewPrice
-              ? style.reviewPrice
-              : global.hidden
-          }
-        >
+        <View style={this.state.isSelectFollowUpReviewPrice ? style.reviewPrice : global.hidden}>
           <TouchableOpacity
+            activeOpacity={0.9}
             onPress={() => {
               this.setState({
                 isSelectFollowUpReviewPrice: false,
               })
-            }}
-          >
-            <Text style={[style.closeReviewPrice, global.fontSize14]}>
-              取消
-            </Text>
+            }}>
+            <Text style={[style.closeReviewPrice, global.fontSize14]}>取消</Text>
           </TouchableOpacity>
           <Text style={[style.description, global.fontSize14]}>
-            收费指导: 主任医师平均定价30元, 副主任医师平均定价20元,
-            主治医师平均定价10元, 您可根据实际情况进行调整。
+            收费指导: 主任医师平均定价30元, 副主任医师平均定价20元, 主治医师平均定价10元,
+            您可根据实际情况进行调整。
           </Text>
           <ScrollView style={style.reviewPriceList}>
             {this.state.followUpReviewPriceList.map((v: number, k: number) => {
@@ -543,15 +481,14 @@ export default class DiagnosisSettings extends Component<
                       followUpReviewPrice: v,
                       isSelectFollowUpReviewPrice: false,
                     })
-                  }}
-                >
+                    this.setFollowUpReviewPrice()
+                  }}>
                   <Text
                     style={
                       v === this.state.followUpReviewPrice
                         ? style.reviewPriceItemActive
                         : style.reviewPriceItem
-                    }
-                  >
+                    }>
                     {v}
                   </Text>
                 </TouchableOpacity>

@@ -20,6 +20,7 @@ import customerService from "@/assets/styles/personal_center/customerService"
 import Prescription from "@/assets/styles/index/prescription"
 import InvitePatients from "@/assets/styles/index/invitePatients"
 import DiagnosisSettings from "@/assets/styles/index/diagnosisSettings"
+import OnlineOpening from "@/assets/styles/advisory/onlineOpening"
 export default {
   home,
   global,
@@ -37,6 +38,7 @@ export default {
   advisory: {
     advisoryIndex,
     advisoryChat,
+    OnlineOpening,
   },
   addressBook: {
     AddressBookIndex,

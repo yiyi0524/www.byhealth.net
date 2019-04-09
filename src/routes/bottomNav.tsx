@@ -27,6 +27,7 @@ import CustomerService from "@/pages/personal_center/CustomerService"
 import Prescription from "@/pages/index/Prescription"
 import InvitePatients from "@/pages/index/InvitePatients"
 import DiagnosisSettings from "@/pages/index/DiagnosisSettings"
+import OnlineOpening from "@/pages/advisory/OnlineOpening"
 const style = StyleSheet.create({
   icon: {
     width: 30,
@@ -66,9 +67,7 @@ const TabNav = createBottomTabNavigator(
           return (
             <Image
               style={style.icon}
-              source={
-                focused ? gImg.common.advisoryActive : gImg.common.advisory
-              }
+              source={focused ? gImg.common.advisoryActive : gImg.common.advisory}
             />
           )
         },
@@ -89,11 +88,7 @@ const TabNav = createBottomTabNavigator(
           return (
             <Image
               style={style.icon}
-              source={
-                focused
-                  ? gImg.common.addressBookActive
-                  : gImg.common.addressBook
-              }
+              source={focused ? gImg.common.addressBookActive : gImg.common.addressBook}
             />
           )
         },
@@ -114,11 +109,7 @@ const TabNav = createBottomTabNavigator(
           return (
             <Image
               style={style.icon}
-              source={
-                focused
-                  ? gImg.common.personalCenterActive
-                  : gImg.common.personalCenter
-              }
+              source={focused ? gImg.common.personalCenterActive : gImg.common.personalCenter}
             />
           )
         },
@@ -242,6 +233,9 @@ const StacksOverTabs = createStackNavigator({
   },
   [pathMap.DiagnosisSettings]: {
     screen: DiagnosisSettings,
+  },
+  [pathMap.OnlineOpening]: {
+    screen: OnlineOpening,
   },
 })
 export default StacksOverTabs

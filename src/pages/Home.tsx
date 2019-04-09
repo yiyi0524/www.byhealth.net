@@ -6,14 +6,7 @@ import api from "@api/api"
 import gImg from "@utils/img"
 import gStyle from "@utils/style"
 import React, { Component } from "react"
-import {
-  Image,
-  RefreshControl,
-  ScrollView,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native"
+import { Image, RefreshControl, ScrollView, Text, TouchableOpacity, View } from "react-native"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
 import global from "@/assets/styles/global"
@@ -84,9 +77,7 @@ const settingList = [
   mapDispatchToProps,
 )
 export default class Home extends Component<
-  Props &
-    ReturnType<typeof mapStateToProps> &
-    ReturnType<typeof mapDispatchToProps>,
+  Props & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
   State
 > {
   shortcutList: ShortcutItem[] = []
@@ -183,13 +174,10 @@ export default class Home extends Component<
     if (!this.state.hasLoad) {
       return (
         <View style={style.loading}>
-          <Text
-            style={[
-              style.loadingTitle,
-              globalStyle.fontSize14,
-              globalStyle.fontStyle,
-            ]}
-          >
+          <View style={style.loadingPic}>
+            <Image style={style.loadingImg} source={gImg.common.loading} />
+          </View>
+          <Text style={[style.loadingTitle, globalStyle.fontSize14, globalStyle.fontStyle]}>
             加载中...
           </Text>
         </View>
@@ -200,12 +188,8 @@ export default class Home extends Component<
         <ScrollView
           style={style.main}
           refreshControl={
-            <RefreshControl
-              refreshing={this.state.refreshing}
-              onRefresh={this.onRefresh}
-            />
-          }
-        >
+            <RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh} />
+          }>
           {/* 头部 */}
           <View
             style={[
@@ -213,15 +197,9 @@ export default class Home extends Component<
               globalStyle.flex,
               globalStyle.justifyContentSpaceBetween,
               globalStyle.alignItemsCenter,
-            ]}
-          >
+            ]}>
             <View
-              style={[
-                style.headerAvatarCircle,
-                globalStyle.flex,
-                globalStyle.alignItemsCenter,
-              ]}
-            >
+              style={[style.headerAvatarCircle, globalStyle.flex, globalStyle.alignItemsCenter]}>
               <Image
                 source={
                   this.state.avatar.indexOf("http") > 0
@@ -233,30 +211,18 @@ export default class Home extends Component<
             </View>
             <View style={style.headerTitle}>
               <Text
-                style={[
-                  style.headerName,
-                  globalStyle.fontSize16,
-                  globalStyle.fontStyle,
-                ]}
-                numberOfLines={1}
-              >
+                style={[style.headerName, globalStyle.fontSize16, globalStyle.fontStyle]}
+                numberOfLines={1}>
                 {this.state.name === "" ? "未知" : this.state.name}
                 的医馆
               </Text>
-              <View
-                style={[
-                  style.headerVerified,
-                  globalStyle.flex,
-                  globalStyle.alignItemsCenter,
-                ]}
-              >
+              <View style={[style.headerVerified, globalStyle.flex, globalStyle.alignItemsCenter]}>
                 <Text
                   style={[
                     style.headerVerifiedTitle,
                     globalStyle.fontStyle,
                     globalStyle.fontSize12,
-                  ]}
-                >
+                  ]}>
                   {" "}
                   医疗资质{this.state.isRealNameAuth ? "已认证" : "未认证"}{" "}
                 </Text>
@@ -267,36 +233,25 @@ export default class Home extends Component<
                       : style.headerMedicalQualification,
                     globalStyle.flex,
                     globalStyle.alignItemsCenter,
-                  ]}
-                >
+                  ]}>
                   <Text
                     style={[
                       style.headerMedicalQualificationTitle,
                       globalStyle.fontStyle,
                       globalStyle.fontSize12,
-                    ]}
-                  >
+                    ]}>
                     {" "}
                     去认证{" "}
                   </Text>
                   <Icon
                     name="right"
-                    style={[
-                      style.headerMedicalQualificationIcon,
-                      globalStyle.fontSize12,
-                    ]}
+                    style={[style.headerMedicalQualificationIcon, globalStyle.fontSize12]}
                   />
                 </TouchableOpacity>
               </View>
             </View>
             <TouchableOpacity style={style.headerHelp}>
-              <Text
-                style={[
-                  globalStyle.fontSize14,
-                  globalStyle.fontStyle,
-                  style.headerHelpTitle,
-                ]}
-              >
+              <Text style={[globalStyle.fontSize14, globalStyle.fontStyle, style.headerHelpTitle]}>
                 帮助
               </Text>
             </TouchableOpacity>
@@ -309,26 +264,20 @@ export default class Home extends Component<
               global.flex,
               global.alignItemsCenter,
               global.justifyContentSpaceBetween,
-            ]}
-          >
+            ]}>
             <TouchableOpacity
               style={style.prescriptionItem}
-              onPress={() => this.props.navigation.push(pathMap.Prescription)}
-            >
+              onPress={() => this.props.navigation.push(pathMap.Prescription)}>
               <Text style={[style.prescriptionItemNum, global.fontSize15]}>
                 {this.state.prescription}
               </Text>
-              <Text style={[style.prescriptionItemTitle, global.fontSize12]}>
-                处方数
-              </Text>
+              <Text style={[style.prescriptionItemTitle, global.fontSize12]}>处方数</Text>
             </TouchableOpacity>
             <TouchableOpacity style={style.prescriptionItem}>
               <Text style={[style.prescriptionItemNum, global.fontSize15]}>
                 {this.state.patient}
               </Text>
-              <Text style={[style.prescriptionItemTitle, global.fontSize12]}>
-                患者数
-              </Text>
+              <Text style={[style.prescriptionItemTitle, global.fontSize12]}>患者数</Text>
             </TouchableOpacity>
           </View>
 
@@ -342,44 +291,21 @@ export default class Home extends Component<
             ]}
             onPress={() => {
               this.props.navigation.push(pathMap.RealNameAuth)
-            }}
-          >
-            <View
-              style={[
-                style.verifiedTheme,
-                globalStyle.flex,
-                globalStyle.alignItemsCenter,
-              ]}
-            >
-              <Text
-                style={[
-                  style.verifiedTitle,
-                  globalStyle.fontStyle,
-                  globalStyle.fontSize12,
-                ]}
-              >
+            }}>
+            <View style={[style.verifiedTheme, globalStyle.flex, globalStyle.alignItemsCenter]}>
+              <Text style={[style.verifiedTitle, globalStyle.fontStyle, globalStyle.fontSize12]}>
                 认证
               </Text>
               <Text
-                style={[
-                  style.verifiedDescription,
-                  globalStyle.fontStyle,
-                  globalStyle.fontSize12,
-                ]}
-              >
+                style={[style.verifiedDescription, globalStyle.fontStyle, globalStyle.fontSize12]}>
                 您还未认证, 点此认证
               </Text>
             </View>
-            <Icon
-              name="right"
-              style={[style.verifiedIcon, globalStyle.fontSize14]}
-            />
+            <Icon name="right" style={[style.verifiedIcon, globalStyle.fontSize14]} />
           </TouchableOpacity>
           {/* 分类 */}
           <View style={style.marginHeight} />
-          <View
-            style={[style.categoryList, globalStyle.flex, globalStyle.flexWrap]}
-          >
+          <View style={[style.categoryList, globalStyle.flex, globalStyle.flexWrap]}>
             {this.shortcutList.map((item: any, k: any) => {
               return (
                 <TouchableOpacity
@@ -390,12 +316,9 @@ export default class Home extends Component<
                       return Toast.info("您未认证", 3)
                     }
                     this.props.navigation.push(item.link)
-                  }}
-                >
+                  }}>
                   <Image style={style.categoryItemPic} source={item.icon} />
-                  <Text
-                    style={[style.categoryItemTitle, globalStyle.fontSize14]}
-                  >
+                  <Text style={[style.categoryItemTitle, globalStyle.fontSize14]}>
                     {item.title}
                   </Text>
                 </TouchableOpacity>
@@ -406,16 +329,14 @@ export default class Home extends Component<
           <ScrollView
             horizontal={true}
             style={[style.bannerList, globalStyle.flex]}
-            showsHorizontalScrollIndicator={false}
-          >
+            showsHorizontalScrollIndicator={false}>
             {this.state.bannerList.map((v: any, k: number) => {
               return (
                 <TouchableOpacity
                   key={k}
                   style={style.bannerItem}
                   activeOpacity={0.8}
-                  onPress={() => console.log(v.link)}
-                >
+                  onPress={() => console.log(v.link)}>
                   <Image style={style.bannerImg} source={v.url} />
                 </TouchableOpacity>
               )
@@ -439,34 +360,22 @@ export default class Home extends Component<
                       return Toast.info("您未认证", 3)
                     }
                     this.props.navigation.push(v.link)
-                  }}
-                >
+                  }}>
                   <Text
-                    style={[
-                      style.settingTitle,
-                      globalStyle.fontSize15,
-                      globalStyle.fontStyle,
-                    ]}
-                    numberOfLines={1}
-                  >
+                    style={[style.settingTitle, globalStyle.fontSize15, globalStyle.fontStyle]}
+                    numberOfLines={1}>
                     {v.name}
                   </Text>
-                  <View
-                    style={[globalStyle.flex, globalStyle.alignItemsCenter]}
-                  >
+                  <View style={[globalStyle.flex, globalStyle.alignItemsCenter]}>
                     <Text
                       style={[
                         style.settingDescription,
                         globalStyle.fontSize15,
                         globalStyle.fontStyle,
-                      ]}
-                    >
+                      ]}>
                       {v.description}
                     </Text>
-                    <Icon
-                      name="right"
-                      style={[style.settingIcon, globalStyle.fontSize14]}
-                    />
+                    <Icon name="right" style={[style.settingIcon, globalStyle.fontSize14]} />
                   </View>
                 </TouchableOpacity>
               )

@@ -46,9 +46,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
   mapDispatchToProps,
 )
 export default class InvitePatients extends Component<
-  Props &
-    ReturnType<typeof mapStateToProps> &
-    ReturnType<typeof mapDispatchToProps>,
+  Props & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
   State
 > {
   static navigationOptions = ({
@@ -77,8 +75,7 @@ export default class InvitePatients extends Component<
       <TouchableOpacity
         onPress={() => {
           navigation.state.params!.navigatePress()
-        }}
-      >
+        }}>
         <Text style={[style.headerRight, global.fontSize14]}>保存</Text>
       </TouchableOpacity>
     ),
@@ -147,11 +144,10 @@ export default class InvitePatients extends Component<
     if (!this.state.hasLoad) {
       return (
         <View style={style.loading}>
-          <Text
-            style={[style.loadingTitle, global.fontSize14, global.fontStyle]}
-          >
-            加载中...
-          </Text>
+          <View style={style.loadingPic}>
+            <Image style={style.loadingImg} source={gImg.common.loading} />
+          </View>
+          <Text style={[style.loadingTitle, global.fontSize14, global.fontStyle]}>加载中...</Text>
         </View>
       )
     }
@@ -160,23 +156,16 @@ export default class InvitePatients extends Component<
         <ScrollView
           style={style.main}
           refreshControl={
-            <RefreshControl
-              refreshing={this.state.refreshing}
-              onRefresh={this.onRefresh}
-            />
-          }
-        >
+            <RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh} />
+          }>
           <View style={style.invite}>
-            <Text style={[style.title, global.fontSize16]}>
-              {this.state.name}
-            </Text>
+            <Text style={[style.title, global.fontSize16]}>{this.state.name}</Text>
             <Text style={[style.detail, global.fontSize12]}>
               {this.state.technicalTitle === TECHNICAL_TITLE.RESIDENT
                 ? TECHNICAL_TITLE_ZH[TECHNICAL_TITLE.RESIDENT]
                 : this.state.technicalTitle === TECHNICAL_TITLE.ATTENDING_DOCTOR
                 ? TECHNICAL_TITLE_ZH[TECHNICAL_TITLE.ATTENDING_DOCTOR]
-                : this.state.technicalTitle ===
-                  TECHNICAL_TITLE.DEPUTY_CHIEF_PHYSICIAN
+                : this.state.technicalTitle === TECHNICAL_TITLE.DEPUTY_CHIEF_PHYSICIAN
                 ? TECHNICAL_TITLE_ZH[TECHNICAL_TITLE.DEPUTY_CHIEF_PHYSICIAN]
                 : TECHNICAL_TITLE_ZH[TECHNICAL_TITLE.CHIEF_PHYSICIAN]}
             </Text>
@@ -186,28 +175,20 @@ export default class InvitePatients extends Component<
             </Text>
             <Text style={[style.title, global.fontSize24]}>复诊调方</Text>
             <Image style={style.qrCode} source={gImg.common.defaultAvatar} />
-            <Text style={[style.detail, global.fontSize12]}>
-              微信扫描上方我的二维码
-            </Text>
-            <Text style={[style.detail, global.fontSize12]}>
-              关注 | 博一健康管理 | 公众号
-            </Text>
+            <Text style={[style.detail, global.fontSize12]}>微信扫描上方我的二维码</Text>
+            <Text style={[style.detail, global.fontSize12]}>关注 | 博一健康管理 | 公众号</Text>
             <Text style={[style.detail, global.fontSize12]}>
               即可随时在微信与我沟通, 在家找我复诊、调方
             </Text>
             <View style={style.logo}>
               <Image style={style.logoImg} source={gImg.common.logo} />
-              <Text style={[style.detail, global.fontSize12]}>
-                医生的个人线上医馆
-              </Text>
+              <Text style={[style.detail, global.fontSize12]}>医生的个人线上医馆</Text>
             </View>
           </View>
         </ScrollView>
         <View style={style.share}>
           <TouchableOpacity onPress={this.shareBusinessCard}>
-            <Text style={[style.shareTitle, global.fontSize14]}>
-              分享二维码名片
-            </Text>
+            <Text style={[style.shareTitle, global.fontSize14]}>分享二维码名片</Text>
           </TouchableOpacity>
         </View>
       </View>

@@ -6,11 +6,12 @@ import userApi from "@api/user"
 import sColor from "@styles/color"
 import gStyle from "@utils/style"
 import React, { Component } from "react"
-import { PixelRatio, Text, View } from "react-native"
+import { PixelRatio, Text, View, Image } from "react-native"
 import { TouchableOpacity } from "react-native-gesture-handler"
 import { NavigationScreenProp } from "react-navigation"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
+import gImg from "@utils/img"
 const style = gStyle.index.Prescription
 const global = gStyle.global
 interface Props {
@@ -54,9 +55,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
   mapDispatchToProps,
 )
 export default class Prescription extends Component<
-  Props &
-    ReturnType<typeof mapStateToProps> &
-    ReturnType<typeof mapDispatchToProps>,
+  Props & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
   State
 > {
   static navigationOptions = () => ({
@@ -183,11 +182,10 @@ export default class Prescription extends Component<
     if (!this.state.hasLoad) {
       return (
         <View style={style.loading}>
-          <Text
-            style={[style.loadingTitle, global.fontSize14, global.fontStyle]}
-          >
-            加载中...
-          </Text>
+          <View style={style.loadingPic}>
+            <Image style={style.loadingImg} source={gImg.common.loading} />
+          </View>
+          <Text style={[style.loadingTitle, global.fontSize14, global.fontStyle]}>加载中...</Text>
         </View>
       )
     }
@@ -204,258 +202,177 @@ export default class Prescription extends Component<
                   title: `全部 ( ${this.state.prescriptionList.length} )`,
                 },
                 {
-                  title: `已支付 ( ${
-                    this.state.prescriptionPaymentList.length
-                  } )`,
+                  title: `已支付 ( ${this.state.prescriptionPaymentList.length} )`,
                 },
-              ]}
-            >
+              ]}>
               <View style={style.prescriptionList}>
-                {this.state.prescriptionList.map(
-                  (v: prescriptionItem, k: number) => {
-                    return (
-                      <TouchableOpacity key={k} style={style.prescriptionItem}>
+                {this.state.prescriptionList.map((v: prescriptionItem, k: number) => {
+                  return (
+                    <TouchableOpacity key={k} style={style.prescriptionItem}>
+                      <View
+                        style={[
+                          style.prescriptionItemHeader,
+                          global.flex,
+                          global.alignItemsCenter,
+                          global.justifyContentSpaceBetween,
+                        ]}>
                         <View
                           style={[
-                            style.prescriptionItemHeader,
+                            style.prescriptionItemHeaderLeft,
+                            global.flex,
+                            global.alignItemsCenter,
+                          ]}>
+                          <View style={style.prescriptionItemHeaderLeftIcon} />
+                          <Text style={[style.prescriptionItemHeaderLeftTitle, global.fontSize14]}>
+                            {v.name}
+                          </Text>
+                          <Text style={[style.prescriptionItemHeaderLeftDetail, global.fontSize14]}>
+                            {v.gender === GENDER.MAN
+                              ? "男"
+                              : v.gender === GENDER.WOMAN
+                              ? "女"
+                              : "未知"}{" "}
+                            {v.age_year !== 0
+                              ? v.age_year + "岁"
+                              : v.age_month !== 0
+                              ? v.age_month > 12
+                                ? Math.floor(v.age_month / 12) + "岁" + (v.age_month % 12) + "月"
+                                : v.age_month + "月"
+                              : "未知"}
+                          </Text>
+                        </View>
+                        <View
+                          style={[
+                            style.prescriptionItemHeaderRight,
+                            global.flex,
+                            global.alignItemsCenter,
+                          ]}>
+                          <Text style={[style.prescriptionItemHeaderRightTitle, global.fontSize14]}>
+                            查看详情
+                          </Text>
+                          <Icon
+                            name="right"
+                            style={[style.prescriptionItemHeaderRightIcon, global.fontSize14]}
+                          />
+                        </View>
+                      </View>
+                      <View style={style.prescriptionItemDescription}>
+                        <Text
+                          style={[style.prescriptionItemDescriptionDiagnosis, global.fontSize14]}
+                          numberOfLines={1}>
+                          [ 诊断 ] 病毒性感冒; 头疼, 流鼻涕 鼻子不通
+                        </Text>
+                        <View
+                          style={[
+                            style.prescriptionItemDescriptionDetail,
                             global.flex,
                             global.alignItemsCenter,
                             global.justifyContentSpaceBetween,
-                          ]}
-                        >
-                          <View
-                            style={[
-                              style.prescriptionItemHeaderLeft,
-                              global.flex,
-                              global.alignItemsCenter,
-                            ]}
-                          >
-                            <View
-                              style={style.prescriptionItemHeaderLeftIcon}
-                            />
-                            <Text
-                              style={[
-                                style.prescriptionItemHeaderLeftTitle,
-                                global.fontSize14,
-                              ]}
-                            >
-                              {v.name}
-                            </Text>
-                            <Text
-                              style={[
-                                style.prescriptionItemHeaderLeftDetail,
-                                global.fontSize14,
-                              ]}
-                            >
-                              {v.gender === GENDER.MAN
-                                ? "男"
-                                : v.gender === GENDER.WOMAN
-                                ? "女"
-                                : "未知"}{" "}
-                              {v.age_year !== 0
-                                ? v.age_year + "岁"
-                                : v.age_month !== 0
-                                ? v.age_month > 12
-                                  ? Math.floor(v.age_month / 12) +
-                                    "岁" +
-                                    (v.age_month % 12) +
-                                    "月"
-                                  : v.age_month + "月"
-                                : "未知"}
-                            </Text>
-                          </View>
-                          <View
-                            style={[
-                              style.prescriptionItemHeaderRight,
-                              global.flex,
-                              global.alignItemsCenter,
-                            ]}
-                          >
-                            <Text
-                              style={[
-                                style.prescriptionItemHeaderRightTitle,
-                                global.fontSize14,
-                              ]}
-                            >
-                              查看详情
-                            </Text>
-                            <Icon
-                              name="right"
-                              style={[
-                                style.prescriptionItemHeaderRightIcon,
-                                global.fontSize14,
-                              ]}
-                            />
-                          </View>
-                        </View>
-                        <View style={style.prescriptionItemDescription}>
+                          ]}>
                           <Text
-                            style={[
-                              style.prescriptionItemDescriptionDiagnosis,
-                              global.fontSize14,
-                            ]}
-                            numberOfLines={1}
-                          >
-                            [ 诊断 ] 病毒性感冒; 头疼, 流鼻涕 鼻子不通
+                            style={[style.prescriptionItemDescriptionTime, global.fontSize14]}
+                            numberOfLines={1}>
+                            {v.time.substr(0, 4) +
+                              "年" +
+                              v.time.substr(5, 2) +
+                              "月" +
+                              v.time.substr(8, 2) +
+                              "日" +
+                              " " +
+                              v.time.substr(12, 4)}
                           </Text>
-                          <View
-                            style={[
-                              style.prescriptionItemDescriptionDetail,
-                              global.flex,
-                              global.alignItemsCenter,
-                              global.justifyContentSpaceBetween,
-                            ]}
-                          >
-                            <Text
-                              style={[
-                                style.prescriptionItemDescriptionTime,
-                                global.fontSize14,
-                              ]}
-                              numberOfLines={1}
-                            >
-                              {v.time.substr(0, 4) +
-                                "年" +
-                                v.time.substr(5, 2) +
-                                "月" +
-                                v.time.substr(8, 2) +
-                                "日" +
-                                " " +
-                                v.time.substr(12, 4)}
-                            </Text>
-                            <Text
-                              style={[
-                                style.prescriptionItemDescriptionStatus,
-                                global.fontSize14,
-                              ]}
-                              numberOfLines={1}
-                            >
-                              待支付
-                            </Text>
-                          </View>
+                          <Text
+                            style={[style.prescriptionItemDescriptionStatus, global.fontSize14]}
+                            numberOfLines={1}>
+                            待支付
+                          </Text>
                         </View>
-                      </TouchableOpacity>
-                    )
-                  },
-                )}
+                      </View>
+                    </TouchableOpacity>
+                  )
+                })}
               </View>
               <View style={style.prescriptionList}>
-                {this.state.prescriptionPaymentList.map(
-                  (v: prescriptionItem, k: number) => {
-                    return (
-                      <TouchableOpacity key={k} style={style.prescriptionItem}>
+                {this.state.prescriptionPaymentList.map((v: prescriptionItem, k: number) => {
+                  return (
+                    <TouchableOpacity key={k} style={style.prescriptionItem}>
+                      <View
+                        style={[
+                          style.prescriptionItemHeader,
+                          global.flex,
+                          global.alignItemsCenter,
+                          global.justifyContentSpaceBetween,
+                        ]}>
                         <View
                           style={[
-                            style.prescriptionItemHeader,
+                            style.prescriptionItemHeaderLeft,
+                            global.flex,
+                            global.alignItemsCenter,
+                          ]}>
+                          <View style={style.prescriptionItemHeaderLeftIcon} />
+                          <Text style={[style.prescriptionItemHeaderLeftTitle, global.fontSize14]}>
+                            {v.name}
+                          </Text>
+                          <Text style={[style.prescriptionItemHeaderLeftDetail, global.fontSize14]}>
+                            {v.gender === GENDER.MAN
+                              ? "男"
+                              : v.gender === GENDER.WOMAN
+                              ? "女"
+                              : "未知"}{" "}
+                            {v.age_year !== 0
+                              ? v.age_year + "岁"
+                              : v.age_month !== 0
+                              ? v.age_month > 12
+                                ? Math.floor(v.age_month / 12) + "岁" + (v.age_month % 12) + "月"
+                                : v.age_month + "月"
+                              : "未知"}
+                          </Text>
+                        </View>
+                        <View
+                          style={[
+                            style.prescriptionItemHeaderRight,
+                            global.flex,
+                            global.alignItemsCenter,
+                          ]}>
+                          <Text style={[style.prescriptionItemHeaderRightTitle, global.fontSize14]}>
+                            查看详情
+                          </Text>
+                          <Icon
+                            name="right"
+                            style={[style.prescriptionItemHeaderRightIcon, global.fontSize14]}
+                          />
+                        </View>
+                      </View>
+                      <View style={style.prescriptionItemDescription}>
+                        <Text
+                          style={[style.prescriptionItemDescriptionDiagnosis, global.fontSize14]}
+                          numberOfLines={1}>
+                          [ 诊断 ] 病毒性感冒; 头疼, 流鼻涕 鼻子不通
+                        </Text>
+                        <View
+                          style={[
+                            style.prescriptionItemDescriptionDetail,
                             global.flex,
                             global.alignItemsCenter,
                             global.justifyContentSpaceBetween,
-                          ]}
-                        >
-                          <View
-                            style={[
-                              style.prescriptionItemHeaderLeft,
-                              global.flex,
-                              global.alignItemsCenter,
-                            ]}
-                          >
-                            <View
-                              style={style.prescriptionItemHeaderLeftIcon}
-                            />
-                            <Text
-                              style={[
-                                style.prescriptionItemHeaderLeftTitle,
-                                global.fontSize14,
-                              ]}
-                            >
-                              {v.name}
-                            </Text>
-                            <Text
-                              style={[
-                                style.prescriptionItemHeaderLeftDetail,
-                                global.fontSize14,
-                              ]}
-                            >
-                              {v.gender === GENDER.MAN
-                                ? "男"
-                                : v.gender === GENDER.WOMAN
-                                ? "女"
-                                : "未知"}{" "}
-                              {v.age_year !== 0
-                                ? v.age_year + "岁"
-                                : v.age_month !== 0
-                                ? v.age_month > 12
-                                  ? Math.floor(v.age_month / 12) +
-                                    "岁" +
-                                    (v.age_month % 12) +
-                                    "月"
-                                  : v.age_month + "月"
-                                : "未知"}
-                            </Text>
-                          </View>
-                          <View
-                            style={[
-                              style.prescriptionItemHeaderRight,
-                              global.flex,
-                              global.alignItemsCenter,
-                            ]}
-                          >
-                            <Text
-                              style={[
-                                style.prescriptionItemHeaderRightTitle,
-                                global.fontSize14,
-                              ]}
-                            >
-                              查看详情
-                            </Text>
-                            <Icon
-                              name="right"
-                              style={[
-                                style.prescriptionItemHeaderRightIcon,
-                                global.fontSize14,
-                              ]}
-                            />
-                          </View>
-                        </View>
-                        <View style={style.prescriptionItemDescription}>
+                          ]}>
                           <Text
-                            style={[
-                              style.prescriptionItemDescriptionDiagnosis,
-                              global.fontSize14,
-                            ]}
-                            numberOfLines={1}
-                          >
-                            [ 诊断 ] 病毒性感冒; 头疼, 流鼻涕 鼻子不通
+                            style={[style.prescriptionItemDescriptionTime, global.fontSize14]}
+                            numberOfLines={1}>
+                            {v.time.substr(0, 4) +
+                              "年" +
+                              v.time.substr(5, 2) +
+                              "月" +
+                              v.time.substr(8, 2) +
+                              "日" +
+                              " " +
+                              v.time.substr(12, 4)}
                           </Text>
-                          <View
-                            style={[
-                              style.prescriptionItemDescriptionDetail,
-                              global.flex,
-                              global.alignItemsCenter,
-                              global.justifyContentSpaceBetween,
-                            ]}
-                          >
-                            <Text
-                              style={[
-                                style.prescriptionItemDescriptionTime,
-                                global.fontSize14,
-                              ]}
-                              numberOfLines={1}
-                            >
-                              {v.time.substr(0, 4) +
-                                "年" +
-                                v.time.substr(5, 2) +
-                                "月" +
-                                v.time.substr(8, 2) +
-                                "日" +
-                                " " +
-                                v.time.substr(12, 4)}
-                            </Text>
-                          </View>
                         </View>
-                      </TouchableOpacity>
-                    )
-                  },
-                )}
+                      </View>
+                    </TouchableOpacity>
+                  )
+                })}
               </View>
             </Tabs>
           </View>

@@ -6,13 +6,8 @@ import { Icon, Toast } from "@ant-design/react-native"
 import api from "@api/api"
 import gStyle from "@utils/style"
 import React, { Component } from "react"
-import {
-  RefreshControl,
-  ScrollView,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native"
+import gImg from "@utils/img"
+import { RefreshControl, ScrollView, Text, TouchableOpacity, View, Image } from "react-native"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
 const style = gStyle.personalCenter.personalCenterIndex
@@ -51,9 +46,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
   mapDispatchToProps,
 )
 export default class Index extends Component<
-  Props &
-    ReturnType<typeof mapStateToProps> &
-    ReturnType<typeof mapDispatchToProps>,
+  Props & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
   State
 > {
   functionList: functionItem[] = []
@@ -137,11 +130,10 @@ export default class Index extends Component<
     if (!this.state.hasLoad) {
       return (
         <View style={style.loading}>
-          <Text
-            style={[style.loadingTitle, global.fontSize14, global.fontStyle]}
-          >
-            加载中...
-          </Text>
+          <View style={style.loadingPic}>
+            <Image style={style.loadingImg} source={gImg.common.loading} />
+          </View>
+          <Text style={[style.loadingTitle, global.fontSize14, global.fontStyle]}>加载中...</Text>
         </View>
       )
     }
@@ -150,12 +142,8 @@ export default class Index extends Component<
         <ScrollView
           style={style.main}
           refreshControl={
-            <RefreshControl
-              refreshing={this.state.refreshing}
-              onRefresh={this.onRefresh}
-            />
-          }
-        >
+            <RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh} />
+          }>
           <View style={style.separationModule} />
           <View style={style.list}>
             {this.functionList.map((v: any, k: number) => {
@@ -169,21 +157,11 @@ export default class Index extends Component<
                         global.flex,
                         global.justifyContentSpaceBetween,
                         global.alignItemsCenter,
-                      ]}
-                    >
-                      <Text
-                        style={[
-                          style.title,
-                          global.fontStyle,
-                          global.fontSize15,
-                        ]}
-                      >
+                      ]}>
+                      <Text style={[style.title, global.fontStyle, global.fontSize15]}>
                         {v.name}
                       </Text>
-                      <Icon
-                        style={[style.icon, global.fontSize14]}
-                        name="right"
-                      />
+                      <Icon style={[style.icon, global.fontSize14]} name="right" />
                     </TouchableOpacity>
                     <View style={style.separationModule} />
                   </View>
@@ -200,15 +178,8 @@ export default class Index extends Component<
                         global.flex,
                         global.justifyContentCenter,
                         global.alignItemsCenter,
-                      ]}
-                    >
-                      <Text
-                        style={[
-                          style.logout,
-                          global.fontStyle,
-                          global.fontSize15,
-                        ]}
-                      >
+                      ]}>
+                      <Text style={[style.logout, global.fontStyle, global.fontSize15]}>
                         {v.name}
                       </Text>
                     </TouchableOpacity>
@@ -224,35 +195,18 @@ export default class Index extends Component<
                     global.flex,
                     global.justifyContentSpaceBetween,
                     global.alignItemsCenter,
-                  ]}
-                >
-                  <Text
-                    style={[style.title, global.fontStyle, global.fontSize15]}
-                  >
-                    {v.name}
-                  </Text>
+                  ]}>
+                  <Text style={[style.title, global.fontStyle, global.fontSize15]}>{v.name}</Text>
                   {v.name === "关于我们" ? (
                     this.state.version.new !== this.state.version.current ? (
-                      <Text
-                        style={[
-                          style.version,
-                          global.fontSize14,
-                          global.fontStyle,
-                        ]}
-                      >
+                      <Text style={[style.version, global.fontSize14, global.fontStyle]}>
                         发现新版本
                       </Text>
                     ) : (
-                      <Icon
-                        style={[style.icon, global.fontSize14]}
-                        name="right"
-                      />
+                      <Icon style={[style.icon, global.fontSize14]} name="right" />
                     )
                   ) : (
-                    <Icon
-                      style={[style.icon, global.fontSize14]}
-                      name="right"
-                    />
+                    <Icon style={[style.icon, global.fontSize14]} name="right" />
                   )}
                 </TouchableOpacity>
               )
@@ -262,8 +216,7 @@ export default class Index extends Component<
             style={{ marginTop: 20, alignItems: "center" }}
             onPress={() => {
               this.props.navigation.push(pathMap.Test)
-            }}
-          >
+            }}>
             <Text>test</Text>
           </TouchableOpacity>
         </ScrollView>

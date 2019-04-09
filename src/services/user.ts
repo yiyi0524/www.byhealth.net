@@ -56,11 +56,7 @@ export async function getPersonalInfo() {
 /**
  * 获取患者分组列表
  */
-export async function getPatientGroupList({
-  page = -1,
-  limit = -1,
-  filter = {},
-}: GetListParam) {
+export async function getPatientGroupList({ page = -1, limit = -1, filter = {} }: GetListParam) {
   return bget({
     url: "/getPatientGroupList",
     query: {
@@ -73,11 +69,7 @@ export async function getPatientGroupList({
 /**
  * todo 获取已开处方列表
  */
-export async function getPrescriptionList({
-  page = -1,
-  limit = -1,
-  filter = {},
-}: GetListParam) {
+export async function getPrescriptionList({ page = -1, limit = -1, filter = {} }: GetListParam) {
   return bget({
     url: "/getPrescriptionList",
     query: {
@@ -90,11 +82,7 @@ export async function getPrescriptionList({
 /**
  * 获取医院列表
  */
-export async function getHospitalList({
-  page = -1,
-  limit = -1,
-  filter = {},
-}: GetListParam) {
+export async function getHospitalList({ page = -1, limit = -1, filter = {} }: GetListParam) {
   return bget({
     url: "/hospital/getList",
     query: {
@@ -192,6 +180,32 @@ export async function setDisturbanceFreePeriod({
     },
   })
 }
+/**
+ * todo 设置复诊价格 单位为分
+ */
+export async function setReviewPrice({ reviewPrice }: { reviewPrice: number }) {
+  return bpost({
+    url: "/setReviewPrice",
+    data: {
+      reviewPrice,
+    },
+  })
+}
+/**
+ * todo 设置复诊价格 单位为分
+ */
+export async function setFollowUpReviewPrice({
+  followUpReviewPrice,
+}: {
+  followUpReviewPrice: number
+}) {
+  return bpost({
+    url: "/setFollowUpReviewPrice",
+    data: {
+      followUpReviewPrice,
+    },
+  })
+}
 
 export default {
   getPersonalInfo,
@@ -204,4 +218,6 @@ export default {
   getPrescriptionList,
   setOnlineReferral,
   setDisturbanceFreePeriod,
+  setReviewPrice,
+  setFollowUpReviewPrice,
 }

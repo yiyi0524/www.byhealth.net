@@ -3,14 +3,7 @@ import { AppState } from "@/redux/stores/store"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
 import * as userAction from "@/redux/actions/user"
-import {
-  ScrollView,
-  Text,
-  View,
-  Image,
-  TouchableOpacity,
-  RefreshControl,
-} from "react-native"
+import { ScrollView, Text, View, Image, TouchableOpacity, RefreshControl } from "react-native"
 import { Toast } from "@ant-design/react-native"
 import gStyle from "@utils/style"
 import gImg from "@utils/img"
@@ -45,9 +38,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
   mapDispatchToProps,
 )
 export default class Index extends Component<
-  Props &
-    ReturnType<typeof mapStateToProps> &
-    ReturnType<typeof mapDispatchToProps>,
+  Props & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
   State
 > {
   constructor(props: any) {
@@ -137,13 +128,10 @@ export default class Index extends Component<
     if (!this.state.hasLoad) {
       return (
         <View style={style.loading}>
-          <Text
-            style={[
-              style.loadingTitle,
-              globalStyle.fontSize14,
-              globalStyle.fontStyle,
-            ]}
-          >
+          <View style={style.loadingPic}>
+            <Image style={style.loadingImg} source={gImg.common.loading} />
+          </View>
+          <Text style={[style.loadingTitle, globalStyle.fontSize14, globalStyle.fontStyle]}>
             加载中...
           </Text>
         </View>
@@ -154,57 +142,27 @@ export default class Index extends Component<
         <ScrollView
           style={style.main}
           refreshControl={
-            <RefreshControl
-              refreshing={this.state.refreshing}
-              onRefresh={this.onRefresh}
-            />
-          }
-        >
+            <RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh} />
+          }>
           <View
             style={[
               style.headerList,
               globalStyle.flex,
               globalStyle.alignItemsCenter,
               globalStyle.justifyContentSpaceBetween,
-            ]}
-          >
+            ]}>
             <TouchableOpacity
-              style={[
-                style.headerItem,
-                globalStyle.flex,
-                globalStyle.alignItemsCenter,
-              ]}
-            >
+              style={[style.headerItem, globalStyle.flex, globalStyle.alignItemsCenter]}>
               <Image style={style.headerIcon} source={gImg.advisory.reply} />
-              <Text
-                style={[
-                  style.headerItemTitle,
-                  globalStyle.fontSize14,
-                  globalStyle.fontStyle,
-                ]}
-              >
+              <Text style={[style.headerItemTitle, globalStyle.fontSize14, globalStyle.fontStyle]}>
                 待回复
               </Text>
             </TouchableOpacity>
             <View style={style.separationLine} />
             <TouchableOpacity
-              style={[
-                style.headerItem,
-                globalStyle.flex,
-                globalStyle.alignItemsCenter,
-              ]}
-            >
-              <Image
-                style={style.headerIcon}
-                source={gImg.advisory.pillPurchase}
-              />
-              <Text
-                style={[
-                  style.headerItemTitle,
-                  globalStyle.fontSize14,
-                  globalStyle.fontStyle,
-                ]}
-              >
+              style={[style.headerItem, globalStyle.flex, globalStyle.alignItemsCenter]}>
+              <Image style={style.headerIcon} source={gImg.advisory.pillPurchase} />
+              <Text style={[style.headerItemTitle, globalStyle.fontSize14, globalStyle.fontStyle]}>
                 代购药
               </Text>
             </TouchableOpacity>
@@ -226,8 +184,7 @@ export default class Index extends Component<
                       id: v.id,
                       title: v.name,
                     })
-                  }
-                >
+                  }>
                   <View style={style.baseInformation}>
                     <View style={style.avatarFormat}>
                       <Image style={style.avatar} source={v.avatar} />
@@ -238,8 +195,7 @@ export default class Index extends Component<
                         globalStyle.flex,
                         globalStyle.justifyContentSpaceAround,
                         globalStyle.alignItemsCenter,
-                      ]}
-                    >
+                      ]}>
                       <Image
                         style={style.gender}
                         source={
@@ -250,13 +206,7 @@ export default class Index extends Component<
                             : gImg.common.genderNull
                         }
                       />
-                      <Text
-                        style={[
-                          style.age,
-                          globalStyle.fontSize13,
-                          globalStyle.fontStyle,
-                        ]}
-                      >
+                      <Text style={[style.age, globalStyle.fontSize13, globalStyle.fontStyle]}>
                         {v.age}岁
                       </Text>
                     </View>
@@ -267,36 +217,19 @@ export default class Index extends Component<
                         globalStyle.flex,
                         globalStyle.justifyContentSpaceBetween,
                         globalStyle.alignItemsCenter,
-                      ]}
-                    >
+                      ]}>
                       <Text
-                        style={[
-                          style.msgName,
-                          globalStyle.fontSize15,
-                          globalStyle.fontStyle,
-                        ]}
-                        numberOfLines={1}
-                      >
+                        style={[style.msgName, globalStyle.fontSize15, globalStyle.fontStyle]}
+                        numberOfLines={1}>
                         {v.name}
                       </Text>
-                      <Text
-                        style={[
-                          style.msgTime,
-                          globalStyle.fontSize13,
-                          globalStyle.fontStyle,
-                        ]}
-                      >
+                      <Text style={[style.msgTime, globalStyle.fontSize13, globalStyle.fontStyle]}>
                         {v.time.substr(0, 10)}
                       </Text>
                     </View>
                     <Text
-                      style={[
-                        style.msgDescription,
-                        globalStyle.fontSize14,
-                        globalStyle.fontStyle,
-                      ]}
-                      numberOfLines={1}
-                    >
+                      style={[style.msgDescription, globalStyle.fontSize14, globalStyle.fontStyle]}
+                      numberOfLines={1}>
                       {v.description}
                     </Text>
                   </View>

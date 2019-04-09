@@ -45,9 +45,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
   mapDispatchToProps,
 )
 export default class About extends Component<
-  Props &
-    ReturnType<typeof mapStateToProps> &
-    ReturnType<typeof mapDispatchToProps>,
+  Props & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
   State
 > {
   static navigationOptions = () => {
@@ -107,11 +105,10 @@ export default class About extends Component<
     if (!this.state.hasLoad) {
       return (
         <View style={style.loading}>
-          <Text
-            style={[style.loadingTitle, global.fontSize14, global.fontStyle]}
-          >
-            加载中...
-          </Text>
+          <View style={style.loadingPic}>
+            <Image style={style.loadingImg} source={gImg.common.loading} />
+          </View>
+          <Text style={[style.loadingTitle, global.fontSize14, global.fontStyle]}>加载中...</Text>
         </View>
       )
     }
@@ -120,25 +117,15 @@ export default class About extends Component<
         <ScrollView
           style={style.main}
           refreshControl={
-            <RefreshControl
-              refreshing={this.state.refreshing}
-              onRefresh={this.onRefresh}
-            />
-          }
-        >
+            <RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh} />
+          }>
           <View style={style.header}>
             <Image style={style.headerImg} source={gImg.common.logo} />
-            <Text style={[style.headerTitle, global.fontSize14]}>
-              博一健康医生版
-            </Text>
-            <Text style={[style.headerVersion, global.fontSize12]}>
-              版本1.0.0
-            </Text>
+            <Text style={[style.headerTitle, global.fontSize14]}>博一健康医生版</Text>
+            <Text style={[style.headerVersion, global.fontSize12]}>版本1.0.0</Text>
           </View>
           <TouchableOpacity onPress={this.checkedVersion}>
-            <Text style={[style.checkedVersion, global.fontSize14]}>
-              检测更新
-            </Text>
+            <Text style={[style.checkedVersion, global.fontSize14]}>检测更新</Text>
           </TouchableOpacity>
           <View
             style={[
@@ -146,19 +133,14 @@ export default class About extends Component<
               global.flex,
               global.alignItemsCenter,
               global.justifyContentCenter,
-            ]}
-          >
+            ]}>
             <Icon style={style.weixinLogo} name="wechat" />
-            <Text style={[style.weixinTitle, global.fontSize14]}>
-              微信公众号: 博一健康管理
-            </Text>
+            <Text style={[style.weixinTitle, global.fontSize14]}>微信公众号: 博一健康管理</Text>
           </View>
         </ScrollView>
         <View style={style.bottom}>
           <TouchableOpacity>
-            <Text style={[style.agreement, global.fontSize14]}>
-              医生注册协议
-            </Text>
+            <Text style={[style.agreement, global.fontSize14]}>医生注册协议</Text>
           </TouchableOpacity>
           <Text style={[style.footer, global.fontSize12]}>©2019 博一健康</Text>
         </View>

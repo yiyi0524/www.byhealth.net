@@ -14,6 +14,7 @@ export default {
   color888: "#888",
   color999: "#999",
   lightBlue: "#d4e4f4",
+  blue: "#007acc",
   lightChatBlue: "#deeaf8",
   lightGreen: "#0da798",
   whiteOpa7: "rgba(255,255,255,0.7)",

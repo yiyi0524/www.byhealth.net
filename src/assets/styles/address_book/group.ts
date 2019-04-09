@@ -1,66 +1,78 @@
-import { StyleSheet, PixelRatio } from "react-native";
-import sColor from "@styles/color";
-import { windowWidth } from "@api/api";
-import { windowHeight } from "@/utils/utils";
+import { StyleSheet, PixelRatio } from "react-native"
+import sColor from "@styles/color"
+import { windowWidth } from "@api/api"
+import { windowHeight } from "@/utils/utils"
 export default StyleSheet.create({
   headerTitleLeft: {
     paddingRight: 15,
-    color: sColor.mainRed
+    color: sColor.mainRed,
   },
   loading: {
     width: windowWidth,
     height: windowHeight,
     backgroundColor: sColor.white,
     justifyContent: "center",
-    flex: 1
+    alignItems: "center",
+    flex: 1,
   },
   loadingTitle: {
-    textAlign: "center"
+    textAlign: "center",
+    justifyContent: "center",
+  },
+  loadingPic: {
+    width: "100%",
+    overflow: "hidden",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  loadingImg: {
+    width: 300,
+    resizeMode: "center",
   },
   main: {
-    backgroundColor: sColor.mainBgColor
+    backgroundColor: sColor.mainBgColor,
   },
   patientGroupList: {
     marginTop: 15,
     paddingLeft: 15,
     paddingRight: 15,
-    backgroundColor: sColor.white
+    backgroundColor: sColor.white,
   },
   patientGroupItem: {
     height: 70,
     borderBottomWidth: 1 / PixelRatio.get(),
-    borderBottomColor: sColor.colorDdd
+    borderBottomColor: sColor.colorDdd,
   },
   patientGroupItemTitle: {
-    flex: 1
+    flex: 1,
   },
   patientGroupTitle: {},
   patientGroupCount: {
     marginLeft: 10,
-    color: sColor.color333
+    color: sColor.color333,
   },
   patientGroupDescription: {
-    marginTop: 5
+    marginTop: 5,
   },
   patientGroupNames: {
     color: sColor.color888,
-    marginRight: 5
+    marginRight: 5,
   },
   deletePatientGroupIcon: {
     color: sColor.mainRed,
-    width: 34
+    width: 34,
   },
   patientGroupIcon: {
-    color: sColor.color888
+    color: sColor.color888,
   },
   addPatientGroup: {
-    height: 50
+    height: 50,
   },
   addPatientGroupBtn: {
     color: sColor.mainRed,
-    marginRight: 5
+    marginRight: 5,
   },
   addPatientGroupTitle: {
-    color: sColor.color666
-  }
-});
+    color: sColor.color666,
+  },
+})

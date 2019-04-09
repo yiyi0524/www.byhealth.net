@@ -1,49 +1,49 @@
-import * as userAction from "@/redux/actions/user";
-import { AppState } from "@/redux/stores/store";
-import gStyle from "@utils/style";
-import storage from "@utils/storage";
-import React, { Component } from "react";
-import { TouchableOpacity, View, Text } from "react-native";
-import { Tabs, InputItem, Checkbox, Toast } from "@ant-design/react-native";
-import pathMap from "@routes/pathMap";
-import sColor from "@styles/color";
+import * as userAction from "@/redux/actions/user"
+import { AppState } from "@/redux/stores/store"
+import gStyle from "@utils/style"
+import storage from "@utils/storage"
+import React, { Component } from "react"
+import { TouchableOpacity, View, Text } from "react-native"
+import { Tabs, InputItem, Checkbox, Toast } from "@ant-design/react-native"
+import pathMap from "@routes/pathMap"
+import sColor from "@styles/color"
 // import { LocalStorage as storage } from "jsbdk";
-import { connect } from "react-redux";
-import { Dispatch } from "redux";
-import global from "@/assets/styles/global";
-import api from "@api/api";
-import { NavigationScreenProp } from "react-navigation";
-const style = gStyle.user.login;
+import { connect } from "react-redux"
+import { Dispatch } from "redux"
+import global from "@/assets/styles/global"
+import api from "@api/api"
+import { NavigationScreenProp } from "react-navigation"
+const style = gStyle.user.login
 interface Props {
-  navigation: NavigationScreenProp<State>;
+  navigation: NavigationScreenProp<State>
 }
 interface State {
-  saveInformation: boolean;
-  sendVerificationCode: boolean;
-  verificationCodePhone: string;
-  verificationCode: string;
-  phone: string;
-  pwd: string;
-  verificationCodeUuid: string;
-  verificationCodeMsg: string;
+  saveInformation: boolean
+  sendVerificationCode: boolean
+  verificationCodePhone: string
+  verificationCode: string
+  phone: string
+  pwd: string
+  verificationCodeUuid: string
+  verificationCodeMsg: string
 }
 interface TabsItem {
-  title: string;
+  title: string
 }
 const mapStateToProps = (state: AppState) => {
   return {
     isLogin: state.user.isLogin,
     name: state.user.name,
     uid: state.user.uid,
-  };
-};
+  }
+}
 const mapDispatchToProps = (dispatch: Dispatch) => {
   return {
     login: (preload: userAction.UserInfo) => {
-      dispatch(userAction.userLogin(preload));
+      dispatch(userAction.userLogin(preload))
     },
-  };
-};
+  }
+}
 @connect(
   mapStateToProps,
   mapDispatchToProps,
@@ -52,11 +52,11 @@ export default class Login extends Component<
   Props & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
   State
 > {
-  tabs: TabsItem[] = [];
+  tabs: TabsItem[] = []
   constructor(props: any) {
-    super(props);
-    this.tabs = [{ title: "验证码登录" }, { title: "密码登录" }];
-    this.state = this.getInitState();
+    super(props)
+    this.tabs = [{ title: "验证码登录" }, { title: "密码登录" }]
+    this.state = this.getInitState()
   }
   getInitState = (): State => {
     return {
@@ -68,54 +68,54 @@ export default class Login extends Component<
       pwd: "",
       verificationCodeMsg: "获取验证码",
       verificationCodeUuid: "",
-    };
-  };
+    }
+  }
   getVerificationCode = () => {
     if (this.state.verificationCodePhone === "") {
-      return Toast.fail("请输入手机号码", 1);
+      return Toast.fail("请输入手机号码", 1)
     }
     if (!/^1[3456789]\d{9}$/.test(this.state.verificationCodePhone)) {
-      return Toast.fail("请输入正确的手机号码", 1);
+      return Toast.fail("请输入正确的手机号码", 1)
     }
     api
       .getLoginPhoneVerifyCode({ phone: this.state.verificationCodePhone })
       .then(json => {
-        Toast.info("发送成功", 1);
-        let timeout = 60;
+        Toast.info("发送成功", 1)
+        let timeout = 60
         this.setState({
           verificationCodeMsg: timeout-- + "秒后重新发送",
-        });
+        })
         let timer = setInterval(_ => {
           this.setState({
             verificationCodeMsg: timeout-- + "秒后重新发送",
-          });
-        }, 1000);
+          })
+        }, 1000)
         this.setState({
           verificationCodeUuid: json.data.uuid,
-        });
+        })
         setTimeout(_ => {
-          clearInterval(timer);
+          clearInterval(timer)
           this.setState({
             verificationCodeMsg: "获取验证码",
-          });
-        }, timeout * 1000);
+          })
+        }, timeout * 1000)
       })
       .catch(err => {
-        Toast.info("发送失败 错误信息: " + err.msg, 1);
-      });
-  };
+        Toast.info("发送失败 错误信息: " + err.msg, 1)
+      })
+  }
   verificationCodeLogin = () => {
     if (this.state.verificationCode === "") {
-      return Toast.fail("请输入手机号码", 2);
+      return Toast.fail("请输入手机号码", 2)
     }
     if (!/^1[3456789]\d{9}$/.test(this.state.verificationCodePhone)) {
-      return Toast.fail("请输入正确的手机号码", 1);
+      return Toast.fail("请输入正确的手机号码", 1)
     }
     if (this.state.verificationCodeUuid === "") {
-      return Toast.fail("请获取验证码", 2);
+      return Toast.fail("请获取验证码", 2)
     }
     if (this.state.verificationCode === "") {
-      return Toast.fail("请输入验证码", 2);
+      return Toast.fail("请输入验证码", 2)
     }
     api
       .phoneLogin({
@@ -125,29 +125,29 @@ export default class Login extends Component<
       })
       .then((json: any) => {
         Toast.success("登录成功", 1, () => {
-          this.props.navigation.navigate(pathMap.Home);
-          storage.set("session", json.data.appSession as string, 3 * 60 * 24);
-        });
+          this.props.navigation.navigate(pathMap.Home)
+          storage.set("session", json.data.appSession as string, 3 * 60 * 24)
+        })
       })
       .catch(err => {
-        Toast.fail("登录失败: " + err.msg, 2);
-      });
-  };
+        Toast.fail("登录失败: " + err.msg, 2)
+      })
+  }
   pwdLogin = () => {
     if (this.state.phone === "") {
-      return Toast.fail("请输入手机号码", 2);
+      return Toast.fail("请输入手机号码", 2)
     }
     if (!/^1[3456789]\d{9}$/.test(this.state.phone)) {
-      return Toast.fail("请输入正确的手机号码", 1);
+      return Toast.fail("请输入正确的手机号码", 1)
     }
     if (this.state.pwd === "") {
-      return Toast.fail("请输入密码", 2);
+      return Toast.fail("请输入密码", 2)
     }
     console.log({
       account: this.state.phone,
       pwd: this.state.pwd,
       saveInformation: this.state.saveInformation,
-    });
+    })
     api
       .accountLogin({
         account: this.state.phone,
@@ -155,14 +155,14 @@ export default class Login extends Component<
       })
       .then(json => {
         Toast.success("登录成功", 1, () => {
-          this.props.navigation.navigate(pathMap.Home);
-          storage.set("session", json.data.appSession as string, 3 * 60 * 24);
-        });
+          this.props.navigation.navigate(pathMap.Home)
+          storage.set("session", json.data.appSession as string, 3 * 60 * 24)
+        })
       })
       .catch(err => {
-        Toast.fail("登录失败: " + err.msg, 2);
-      });
-  };
+        Toast.fail("登录失败: " + err.msg, 2)
+      })
+  }
   render() {
     return (
       <View style={style.main}>
@@ -180,9 +180,9 @@ export default class Login extends Component<
                   value={this.state.verificationCodePhone}
                   style={style.input}
                   placeholder="手机号码"
-                  type="digit"
+                  type="number"
                   onChange={value => {
-                    this.setState({ verificationCodePhone: value });
+                    this.setState({ verificationCodePhone: value })
                   }}
                 />
               </View>
@@ -192,7 +192,7 @@ export default class Login extends Component<
                   style={style.input}
                   placeholder="验证码"
                   onChange={value => {
-                    this.setState({ verificationCode: value });
+                    this.setState({ verificationCode: value })
                   }}
                 />
                 <TouchableOpacity style={style.verificationBtn} onPress={this.getVerificationCode}>
@@ -224,9 +224,9 @@ export default class Login extends Component<
                   value={this.state.phone}
                   style={style.input}
                   placeholder="手机号码"
-                  type="digit"
+                  type="number"
                   onChange={value => {
-                    this.setState({ phone: value });
+                    this.setState({ phone: value })
                   }}
                 />
               </View>
@@ -237,13 +237,13 @@ export default class Login extends Component<
                   placeholder="密码"
                   type="password"
                   onChange={value => {
-                    this.setState({ pwd: value });
+                    this.setState({ pwd: value })
                   }}
                 />
                 <TouchableOpacity
                   style={style.verificationBtn}
                   onPress={() => {
-                    this.props.navigation.navigate(pathMap.ForgetPwd);
+                    this.props.navigation.navigate(pathMap.ForgetPwd)
                   }}>
                   <Text style={[style.forgetPwd, global.fontSize14, global.fontStyle]}>
                     忘记密码?
@@ -262,7 +262,7 @@ export default class Login extends Component<
                 <Checkbox
                   checked={this.state.saveInformation}
                   onChange={event => {
-                    this.setState({ saveInformation: event.target.checked });
+                    this.setState({ saveInformation: event.target.checked })
                   }}>
                   保存账户信息
                 </Checkbox>
@@ -281,6 +281,6 @@ export default class Login extends Component<
           </View>
         </Tabs>
       </View>
-    );
+    )
   }
 }

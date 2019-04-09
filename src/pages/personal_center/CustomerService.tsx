@@ -52,9 +52,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
   mapDispatchToProps,
 )
 export default class CustomerService extends Component<
-  Props &
-    ReturnType<typeof mapStateToProps> &
-    ReturnType<typeof mapDispatchToProps>,
+  Props & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
   State
 > {
   static navigationOptions = () => {
@@ -131,11 +129,10 @@ export default class CustomerService extends Component<
     if (!this.state.hasLoad) {
       return (
         <View style={style.loading}>
-          <Text
-            style={[style.loadingTitle, global.fontSize14, global.fontStyle]}
-          >
-            加载中...
-          </Text>
+          <View style={style.loadingPic}>
+            <Image style={style.loadingImg} source={gImg.common.loading} />
+          </View>
+          <Text style={[style.loadingTitle, global.fontSize14, global.fontStyle]}>加载中...</Text>
         </View>
       )
     }
@@ -144,12 +141,8 @@ export default class CustomerService extends Component<
         <ScrollView
           style={style.main}
           refreshControl={
-            <RefreshControl
-              refreshing={this.state.refreshing}
-              onRefresh={this.onRefresh}
-            />
-          }
-        >
+            <RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh} />
+          }>
           <View style={style.list}>
             {this.list.map((v: item, k: number) => {
               return (
@@ -171,27 +164,15 @@ export default class CustomerService extends Component<
                       case "微信":
                         break
                     }
-                  }}
-                >
-                  <View
-                    style={[
-                      style.itemTitle,
-                      global.flex,
-                      global.alignItemsCenter,
-                    ]}
-                  >
+                  }}>
+                  <View style={[style.itemTitle, global.flex, global.alignItemsCenter]}>
                     <View style={style.itemPic}>
                       <Image style={style.itemImg} source={v.icon} />
                     </View>
-                    <Text style={[style.itemTheme, global.fontSize14]}>
-                      {v.name}
-                    </Text>
+                    <Text style={[style.itemTheme, global.fontSize14]}>{v.name}</Text>
                   </View>
                   <Icon
-                    style={[
-                      v.type === "phone" ? style.itemIcon : global.hidden,
-                      global.fontSize14,
-                    ]}
+                    style={[v.type === "phone" ? style.itemIcon : global.hidden, global.fontSize14]}
                     name="right"
                   />
                 </TouchableOpacity>

@@ -11,11 +11,13 @@ import {
   TouchableOpacity,
   View,
   PixelRatio,
+  Image,
 } from "react-native"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
 import api from "@/services/api"
 import userApi from "@/services/user"
+import gImg from "@utils/img"
 const style = gStyle.personalCenter.changePwd
 const global = gStyle.global
 interface Props {
@@ -50,9 +52,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
   mapDispatchToProps,
 )
 export default class ChangePwd extends Component<
-  Props &
-    ReturnType<typeof mapStateToProps> &
-    ReturnType<typeof mapDispatchToProps>,
+  Props & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
   State
 > {
   static navigationOptions = () => {
@@ -187,11 +187,10 @@ export default class ChangePwd extends Component<
     if (!this.state.hasLoad) {
       return (
         <View style={style.loading}>
-          <Text
-            style={[style.loadingTitle, global.fontSize14, global.fontStyle]}
-          >
-            加载中...
-          </Text>
+          <View style={style.loadingPic}>
+            <Image style={style.loadingImg} source={gImg.common.loading} />
+          </View>
+          <Text style={[style.loadingTitle, global.fontSize14, global.fontStyle]}>加载中...</Text>
         </View>
       )
     }
@@ -201,12 +200,8 @@ export default class ChangePwd extends Component<
           style={style.main}
           keyboardShouldPersistTaps="always"
           refreshControl={
-            <RefreshControl
-              refreshing={this.state.refreshing}
-              onRefresh={this.onRefresh}
-            />
-          }
-        >
+            <RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh} />
+          }>
           <View style={style.list}>
             <View style={style.item}>
               <InputItem
@@ -228,10 +223,7 @@ export default class ChangePwd extends Component<
                 placeholder="验证码"
                 style={style.input}
               />
-              <TouchableOpacity
-                style={style.verification}
-                onPress={this.sendVerificationCode}
-              >
+              <TouchableOpacity style={style.verification} onPress={this.sendVerificationCode}>
                 <Text style={[style.verificationTitle, global.fontSize12]}>
                   {this.state.verificationMsg}
                 </Text>
