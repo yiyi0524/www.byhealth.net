@@ -141,7 +141,7 @@ export default class Index extends Component<
       {
         icon: gImg.advisory.dialecticalPrescriptions,
         title: "辩证开方",
-        link: pathMap.OnlineOpening,
+        link: pathMap.SquareRoot,
       },
       {
         icon: gImg.advisory.quickReply,

@@ -21,5 +21,6 @@ export default {
   Prescription: "Prescription",
   InvitePatients: "InvitePatients",
   DiagnosisSettings: "DiagnosisSettings",
-  OnlineOpening: "OnlineOpening",
+  SquareRoot: "SquareRoot",
+  DrugSelect: "DrugSelect",
 }

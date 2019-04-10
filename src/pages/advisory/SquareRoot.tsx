@@ -15,28 +15,25 @@ import { Dispatch } from "redux"
 import { Picture } from "./Chat"
 import DashLine from "@/components/DashLine"
 import Pharmacy, { CategoryItem } from "@/components/Pharmacy"
-import DrugSelect from "@/components/DrugSelect"
-const style = gStyle.advisory.OnlineOpening
+import hospital from "@/services/hospital"
+const style = gStyle.advisory.SquareRoot
 interface Props {
   navigation: NavigationScreenProp<State>
 }
 
 interface State {
+  isSelectPharmacy: boolean
+  isSelectDrug: boolean
   hasLoad: boolean
   refreshing: boolean
   patientId: number
   temp: string
   medicalRecordPic: Picture[]
-  isSelectPharmacy: boolean
-  isSelectDrug: boolean
   pharmacy: {
     categoryList: CategoryItem[]
     activeId: number
   }
-  drugs: {
-    drugList: drugItem[]
-    activeDrugList: activeDrugItem[]
-  }
+  chooseDrugInfo: Record<number, { count: number; info: drugItem }>
 }
 export interface activeDrugItem {
   id: number
@@ -46,7 +43,10 @@ export interface drugItem {
   id: number
   name: string
   price: number
-  company: string
+  unit: string
+  standard: string
+  signature: string
+  manufacturer: string
 }
 const mapStateToProps = (state: AppState) => {
   return {
@@ -105,13 +105,10 @@ export default class OnlineOpening extends Component<
         activeId: 0,
         categoryList: [],
       },
-      drugs: {
-        drugList: [],
-        activeDrugList: [],
-      },
       temp: "病毒性感冒",
       patientId: 0,
       medicalRecordPic: [],
+      chooseDrugInfo: [],
     }
   }
   async componentDidMount() {
@@ -119,62 +116,21 @@ export default class OnlineOpening extends Component<
   }
   init = async () => {
     let patientId = this.props.navigation.getParam("patientId")
-    let categoryList: CategoryItem[] = [
-      {
-        id: 1,
-        title: "优先药房",
-      },
-      {
-        id: 2,
-        title: "精选药房",
-      },
-      {
-        id: 3,
-        title: "优先药房",
-      },
-    ]
-    let drugList: drugItem[] = [
-      {
-        id: 1,
-        name: "杏仁止咳合剂",
-        price: 1655,
-        company: "通药制药集团股份有限公司",
-      },
-      {
-        id: 2,
-        name: "杏仁止咳合剂",
-        price: 1655,
-        company: "通药制药集团股份有限公司",
-      },
-      {
-        id: 3,
-        name: "杏仁止咳合剂",
-        price: 1655,
-        company: "通药制药集团股份有限公司",
-      },
-      {
-        id: 4,
-        name: "杏仁止咳合剂",
-        price: 1655,
-        company: "通药制药集团股份有限公司",
-      },
-      {
-        id: 5,
-        name: "杏仁止咳合剂",
-        price: 1655,
-        company: "通药制药集团股份有限公司",
-      },
-    ]
-    let pharmacy = this.state.pharmacy,
-      drugs = this.state.drugs
-    pharmacy.categoryList = categoryList
-    drugs.drugList = drugList
-    this.setState({
-      hasLoad: true,
-      patientId,
-      pharmacy,
-      drugs,
-    })
+    try {
+      let {
+        data: { list: categoryList },
+      } = await hospital.getDrugCategoryList({ page: -1, limit: -1, filter: {} })
+      let pharmacy = this.state.pharmacy
+      pharmacy.categoryList = categoryList
+      pharmacy.activeId = categoryList[0].id
+      this.setState({
+        hasLoad: true,
+        patientId,
+        pharmacy,
+      })
+    } catch (err) {
+      console.log(err)
+    }
   }
   onRefresh = () => {
     this.setState({ refreshing: true })
@@ -225,16 +181,8 @@ export default class OnlineOpening extends Component<
     pharmacy.activeId = id
     this.setState({ pharmacy })
   }
-  chooseDrug = (id: number) => {
-    let { pharmacy } = this.state
-    pharmacy.activeId = id
-    this.setState({ pharmacy })
-  }
   closeChooseCategory = () => {
     this.setState({ isSelectPharmacy: false })
-  }
-  closeChooseDrug = () => {
-    this.setState({ isSelectDrug: false })
   }
   render() {
     if (!this.state.hasLoad) {
@@ -335,7 +283,7 @@ export default class OnlineOpening extends Component<
               <Text style={[style.title, global.fontSize14]}> 开方 </Text>
               <View style={style.titleSpot} />
             </View>
-            <View
+            {/* <View
               style={[
                 style.pharmacyName,
                 global.flex,
@@ -351,7 +299,6 @@ export default class OnlineOpening extends Component<
                     }
                   })}
                 </Text>
-                {/* <View style={style.littleSpot} /> */}
               </View>
               <TouchableOpacity
                 onPress={() => {
@@ -364,7 +311,7 @@ export default class OnlineOpening extends Component<
                   <Icon style={[style.pharmacyNameIcon, global.fontSize14]} name="right" />
                 </View>
               </TouchableOpacity>
-            </View>
+            </View> */}
             <DashLine len={45} width={windowWidth - 46} backgroundColor={sColor.colorEee} />
             <Text style={[style.drug, global.fontSize24]}>R:</Text>
             <View style={style.drugList}>
@@ -415,7 +362,7 @@ export default class OnlineOpening extends Component<
               <TouchableOpacity
                 onPress={() => {
                   this.setState({
-                    isSelectDrug: true,
+                    isSelectPharmacy: true,
                   })
                 }}>
                 <View style={[style.editDrug, global.flex, global.alignItemsCenter]}>
@@ -514,20 +461,12 @@ export default class OnlineOpening extends Component<
         {/* 选择药房 */}
         <View style={this.state.isSelectPharmacy ? style.selectPharmacy : global.hidden}>
           <Pharmacy
+            navigation={this.props.navigation}
             categoryList={this.state.pharmacy.categoryList}
             activeId={this.state.pharmacy.activeId}
             chooseCategory={this.chooseCategory}
             closeChooseCategory={this.closeChooseCategory}
-          />
-        </View>
-        {/* 选择药 */}
-        {/* this.state.isSelectDrug ?: global.hidden */}
-        <View style={style.selectdrug}>
-          <DrugSelect
-            drugList={this.state.drugs.drugList}
-            activeDrugList={this.state.drugs.activeDrugList}
-            chooseDrug={this.chooseDrug}
-            closeChooseDrug={this.closeChooseDrug}
+            chooseDrugInfo={this.state.chooseDrugInfo}
           />
         </View>
       </>

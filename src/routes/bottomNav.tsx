@@ -27,7 +27,8 @@ import CustomerService from "@/pages/personal_center/CustomerService"
 import Prescription from "@/pages/index/Prescription"
 import InvitePatients from "@/pages/index/InvitePatients"
 import DiagnosisSettings from "@/pages/index/DiagnosisSettings"
-import OnlineOpening from "@/pages/advisory/OnlineOpening"
+import SquareRoot from "@/pages/advisory/SquareRoot"
+import DrugSelect from "@/pages/advisory/DrugSelect"
 const style = StyleSheet.create({
   icon: {
     width: 30,
@@ -234,8 +235,11 @@ const StacksOverTabs = createStackNavigator({
   [pathMap.DiagnosisSettings]: {
     screen: DiagnosisSettings,
   },
-  [pathMap.OnlineOpening]: {
-    screen: OnlineOpening,
+  [pathMap.SquareRoot]: {
+    screen: SquareRoot,
+  },
+  [pathMap.DrugSelect]: {
+    screen: DrugSelect,
   },
 })
 export default StacksOverTabs

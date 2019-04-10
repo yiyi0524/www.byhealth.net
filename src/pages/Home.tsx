@@ -10,10 +10,11 @@ import { Image, RefreshControl, ScrollView, Text, TouchableOpacity, View } from 
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
 import global from "@/assets/styles/global"
+import { NavigationScreenProp } from "react-navigation"
 const style = gStyle.home
 const globalStyle = gStyle.global
 interface Props {
-  navigation: any
+  navigation: NavigationScreenProp<State>
 }
 interface bannerItem {
   id: number

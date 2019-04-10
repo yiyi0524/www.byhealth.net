@@ -1,16 +1,21 @@
 import global from "@/assets/styles/global"
+import pathMap from "@/routes/pathMap"
+import { windowHeight, windowWidth } from "@/services/api"
 import { Icon } from "@ant-design/react-native"
 import sColor from "@styles/color"
 import React, { Component } from "react"
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View, PixelRatio } from "react-native"
-import { windowHeight, windowWidth } from "@/services/api"
+import { PixelRatio, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native"
+import { NavigationScreenProp } from "react-navigation"
+import { drugItem } from "@/pages/advisory/SquareRoot"
 export interface CategoryItem {
   id: number
-  title: string
+  name: string
 }
 interface Props {
+  navigation: NavigationScreenProp<State>
   categoryList: CategoryItem[]
   activeId: number
+  chooseDrugInfo: Record<number, { count: number; info: drugItem }>
   chooseCategory: (id: number) => void
   closeChooseCategory: () => void
 }
@@ -31,30 +36,38 @@ export default class Pharmacy extends Component<Props, State> {
           <Icon style={styles.close} name="close" />
         </TouchableOpacity>
         <Text style={[styles.theme, global.fontSize14]}>请选择药房</Text>
-        <View style={[styles.list, global.flex, global.justifyContentSpaceBetween]}>
-          <ScrollView>
+        <ScrollView>
+          <View style={[styles.list, global.flex, global.justifyContentSpaceBetween]}>
             <View style={styles.listLeft}>
               {this.props.categoryList.map(category => {
                 return (
                   <TouchableOpacity
+                    key={category.id}
                     style={this.props.activeId === category.id ? styles.itemActive : styles.item}
                     onPress={() => this.props.chooseCategory(category.id)}>
                     <Text style={[styles.title, global.fontSize14]} key={category.id}>
-                      {category.title}
+                      {category.name}
                     </Text>
                   </TouchableOpacity>
                 )
               })}
             </View>
-          </ScrollView>
-          <ScrollView>
             <View style={styles.listRight}>
-              <View style={styles.listRightItem}>
-                <Text style={[styles.listRightTitle, global.fontSize14]}>优先药房</Text>
-              </View>
+              <TouchableOpacity
+                style={styles.listRightItem}
+                onPress={() => {
+                  this.props.navigation.push(pathMap.DrugSelect, {
+                    categoryList: this.props.categoryList,
+                    activeId: this.props.activeId,
+                    chooseDrugInfo: this.props.chooseDrugInfo,
+                  })
+                  this.props.closeChooseCategory()
+                }}>
+                <Text style={[styles.listRightTitle, global.fontSize14]}>精选药房</Text>
+              </TouchableOpacity>
             </View>
-          </ScrollView>
-        </View>
+          </View>
+        </ScrollView>
       </View>
     )
   }
@@ -109,11 +122,12 @@ const styles = StyleSheet.create({
   listRightItem: {
     borderBottomWidth: 1 / PixelRatio.get(),
     borderBottomColor: sColor.colorEee,
-    paddingLeft: 15,
   },
   listRightTitle: {
     color: sColor.color666,
     height: 50,
     lineHeight: 50,
+    paddingLeft: 15,
+    backgroundColor: sColor.colorEee,
   },
 })
