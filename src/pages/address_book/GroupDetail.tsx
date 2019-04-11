@@ -1,12 +1,12 @@
-import * as userAction from "@/redux/actions/user";
-import { AppState } from "@/redux/stores/store";
-import { Icon, InputItem, Toast } from "@ant-design/react-native";
-import { GENDER } from "@api/doctor";
-import patientApi from "@api/patient";
-import sColor from "@styles/color";
-import gImg from "@utils/img";
-import gStyle from "@utils/style";
-import React, { Component } from "react";
+import * as userAction from "@/redux/actions/user"
+import { AppState } from "@/redux/stores/store"
+import { Icon, InputItem, Toast } from "@ant-design/react-native"
+import { GENDER } from "@api/doctor"
+import patientApi from "@api/patient"
+import sColor from "@styles/color"
+import gImg from "@utils/img"
+import gStyle from "@utils/style"
+import React, { Component } from "react"
 import {
   Image,
   PixelRatio,
@@ -14,71 +14,69 @@ import {
   ScrollView,
   Text,
   TouchableOpacity,
-  View
-} from "react-native";
-import { NavigationScreenProp } from "react-navigation";
-import { connect } from "react-redux";
-import { Dispatch } from "redux";
-import pathMap from "@/routes/pathMap";
-const style = gStyle.addressBook.AddressBookGroupDetail;
-const global = gStyle.global;
+  View,
+} from "react-native"
+import { NavigationScreenProp } from "react-navigation"
+import { connect } from "react-redux"
+import { Dispatch } from "redux"
+import pathMap from "@/routes/pathMap"
+const style = gStyle.addressBook.AddressBookGroupDetail
+const global = gStyle.global
 interface Props {
-  navigation: NavigationScreenProp<State>;
+  navigation: NavigationScreenProp<State>
 }
 interface patientItem {
-  id: number;
-  avatar: string;
-  name: string;
-  gender: number;
-  age: string;
-  isChecked: boolean;
+  id: number
+  avatar: string
+  name: string
+  gender: number
+  age: string
+  isChecked: boolean
 }
 interface State {
-  hasLoad: boolean;
-  refreshing: boolean;
-  groupName: string;
-  name: string;
-  patientList: patientItem[];
-  patientIdList: number[];
-  selectPatientList: string[];
+  hasLoad: boolean
+  refreshing: boolean
+  groupName: string
+  name: string
+  patientList: patientItem[]
+  patientIdList: number[]
+  selectPatientList: string[]
 }
 const mapStateToProps = (state: AppState) => {
   return {
     isLogin: state.user.isLogin,
     name: state.user.name,
-    uid: state.user.uid
-  };
-};
+    uid: state.user.uid,
+  }
+}
 const mapDispatchToProps = (dispatch: Dispatch) => {
   return {
     login: (preload: userAction.UserInfo) => {
-      dispatch(userAction.userLogin(preload));
-    }
-  };
-};
+      dispatch(userAction.userLogin(preload))
+    },
+  }
+}
 @connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )
 export default class Index extends Component<
-  Props &
-    ReturnType<typeof mapStateToProps> &
-    ReturnType<typeof mapDispatchToProps>,
+  Props & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
   State
 > {
   static navigationOptions = ({
-    navigation
+    navigation,
   }: {
-    navigation: NavigationScreenProp<State>; //TODO
+    navigation: NavigationScreenProp<State> //TODO
   }) => ({
-    title: navigation.state.params.title,
+    title: navigation.state.params!.title,
     headerStyle: {
       backgroundColor: sColor.white,
       height: 50,
       elevation: 0,
       color: sColor.mainBlack,
       borderBottomWidth: 1 / PixelRatio.get(),
-      borderBottomColor: sColor.colorEee
+      borderBottomColor: sColor.colorEee,
     },
     headerTintColor: sColor.color333,
     headerTitleStyle: {
@@ -86,7 +84,7 @@ export default class Index extends Component<
       alignItems: "center",
       justifyContent: "center",
       fontSize: 14,
-      textAlign: "center"
+      textAlign: "center",
     },
     headerRight: (
       <TouchableOpacity
@@ -94,19 +92,14 @@ export default class Index extends Component<
           // navigation.push(pathMap.AddressBookGroupManage, {
           //   id: navigation.state.params.id
           // });
-        }}
-      >
-        <Text
-          style={[style.headerTitleLeft, global.fontSize14, global.fontStyle]}
-        >
-          管理
-        </Text>
+        }}>
+        <Text style={[style.headerTitleLeft, global.fontSize14, global.fontStyle]}>管理</Text>
       </TouchableOpacity>
-    )
-  });
+    ),
+  })
   constructor(props: any) {
-    super(props);
-    this.state = this.getInitState();
+    super(props)
+    this.state = this.getInitState()
   }
   getInitState = (): State => {
     return {
@@ -116,32 +109,30 @@ export default class Index extends Component<
       groupName: "",
       patientList: [],
       patientIdList: [],
-      selectPatientList: []
-    };
-  };
+      selectPatientList: [],
+    }
+  }
   async componentDidMount() {
-    await this.init();
+    await this.init()
   }
   init = async () => {
     // let patientList = await this.getPageData();
     let patientList = [
       {
         id: 1,
-        avatar:
-          "https://www.byhealth.net/uploads/20190322/e049282da2c90aa6e0866e66d42ad110.png",
+        avatar: "https://www.byhealth.net/uploads/20190322/e049282da2c90aa6e0866e66d42ad110.png",
         name: "吳大伟",
         gender: 1,
         age: "28岁",
-        isChecked: false
+        isChecked: false,
       },
       {
         id: 2,
-        avatar:
-          "https://www.byhealth.net/uploads/20190322/e049282da2c90aa6e0866e66d42ad110.png",
+        avatar: "https://www.byhealth.net/uploads/20190322/e049282da2c90aa6e0866e66d42ad110.png",
         name: "吳二伟",
         gender: 0,
         age: "2个月大",
-        isChecked: false
+        isChecked: false,
       },
       {
         id: 3,
@@ -149,111 +140,82 @@ export default class Index extends Component<
         name: "吳三伟",
         gender: 2,
         age: "28岁",
-        isChecked: false
+        isChecked: false,
       },
       {
         id: 4,
-        avatar:
-          "https://www.byhealth.net/uploads/20190322/e049282da2c90aa6e0866e66d42ad110.png",
+        avatar: "https://www.byhealth.net/uploads/20190322/e049282da2c90aa6e0866e66d42ad110.png",
         name: "吳思伟",
         gender: 1,
         age: "1岁11个月",
-        isChecked: false
-      }
-    ];
+        isChecked: false,
+      },
+    ]
     this.setState({
       hasLoad: true,
-      patientList
-    });
-  };
+      patientList,
+    })
+  }
   getPageData = async () => {
     let filter = {
-      name: this.state.name
-    };
+      name: this.state.name,
+    }
     let {
-      data: { list }
+      data: { list },
     } = await patientApi.getPatientList({
       page: -1,
       limit: -1,
-      filter
-    });
-    return list;
-  };
+      filter,
+    })
+    return list
+  }
   onRefresh = () => {
-    this.setState({ refreshing: true });
+    this.setState({ refreshing: true })
     Promise.all([this.init(), new Promise(s => setTimeout(s, 500))])
       .then(_ => {
-        this.setState({ refreshing: false });
+        this.setState({ refreshing: false })
       })
       .catch(err => {
-        Toast.fail("刷新失败,错误信息: " + err.msg);
-      });
-  };
+        Toast.fail("刷新失败,错误信息: " + err.msg)
+      })
+  }
   render() {
     if (!this.state.hasLoad) {
       return (
         <View style={style.loading}>
-          <Text
-            style={[style.loadingTitle, global.fontSize14, global.fontStyle]}
-          >
-            加载中...
-          </Text>
+          <Text style={[style.loadingTitle, global.fontSize14, global.fontStyle]}>加载中...</Text>
         </View>
-      );
+      )
     }
     return (
       <>
         <ScrollView
           style={style.main}
           refreshControl={
-            <RefreshControl
-              refreshing={this.state.refreshing}
-              onRefresh={this.onRefresh}
-            />
-          }
-        >
+            <RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh} />
+          }>
           <View style={style.patientList}>
             {this.state.patientList.map((v: any, k: number) => {
               return (
                 <TouchableOpacity
                   activeOpacity={0.8}
                   key={k}
-                  style={[
-                    style.patientItem,
-                    global.flex,
-                    global.alignItemsCenter
-                  ]}
+                  style={[style.patientItem, global.flex, global.alignItemsCenter]}
                   onPress={() =>
                     this.props.navigation.push(pathMap.PatientDetail, {
-                      title: v.name
+                      title: v.name,
                     })
-                  }
-                >
+                  }>
                   <View style={style.patientItemAvatar}>
                     <Image
                       style={style.patientAvatar}
-                      source={
-                        v.avatar !== ""
-                          ? { uri: v.avatar }
-                          : gImg.common.defaultAvatar
-                      }
+                      source={v.avatar !== "" ? { uri: v.avatar } : gImg.common.defaultAvatar}
                     />
                   </View>
                   <View
-                    style={[
-                      style.patientItemDescription,
-                      global.flex,
-                      global.alignItemsCenter
-                    ]}
-                  >
+                    style={[style.patientItemDescription, global.flex, global.alignItemsCenter]}>
                     <Text style={style.patientName}>{v.name}</Text>
-                    <View
-                      style={[
-                        style.patientDescription,
-                        global.flex,
-                        global.alignItemsCenter
-                      ]}
-                    >
+                    <View style={[style.patientDescription, global.flex, global.alignItemsCenter]}>
                       <Image
                         style={style.patientGender}
                         source={
@@ -264,23 +226,17 @@ export default class Index extends Component<
                             : gImg.common.genderNull
                         }
                       />
-                      <Text
-                        style={[
-                          style.patientAge,
-                          global.fontSize12,
-                          global.fontStyle
-                        ]}
-                      >
+                      <Text style={[style.patientAge, global.fontSize12, global.fontStyle]}>
                         {v.age}
                       </Text>
                     </View>
                   </View>
                 </TouchableOpacity>
-              );
+              )
             })}
           </View>
         </ScrollView>
       </>
-    );
+    )
   }
 }

@@ -421,7 +421,9 @@ export default class Index extends Component<
         isShowBottomPicSelect: !this.state.isShowBottomPicSelect,
       })
     } else {
-      this.props.navigation.push(v.link, { patientId: this.state.patientId })
+      this.props.navigation.push(v.link, {
+        patientId: this.state.patientId,
+      })
     }
   }
   sendMsg = () => {

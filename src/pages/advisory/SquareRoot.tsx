@@ -8,7 +8,16 @@ import sColor from "@styles/color"
 import gImg from "@utils/img"
 import gStyle from "@utils/style"
 import React, { Component } from "react"
-import { Image, PixelRatio, RefreshControl, Text, TouchableOpacity, View } from "react-native"
+import {
+  Image,
+  PixelRatio,
+  RefreshControl,
+  Text,
+  TouchableOpacity,
+  View,
+  DeviceEventEmitter,
+  EmitterSubscription,
+} from "react-native"
 import { NavigationScreenProp, ScrollView } from "react-navigation"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
@@ -16,6 +25,7 @@ import { Picture } from "./Chat"
 import DashLine from "@/components/DashLine"
 import Pharmacy, { CategoryItem } from "@/components/Pharmacy"
 import hospital from "@/services/hospital"
+import pathMap from "@/routes/pathMap"
 const style = gStyle.advisory.SquareRoot
 interface Props {
   navigation: NavigationScreenProp<State>
@@ -48,6 +58,7 @@ export interface drugItem {
   signature: string
   manufacturer: string
 }
+
 const mapStateToProps = (state: AppState) => {
   return {
     isLogin: state.user.isLogin,
@@ -66,7 +77,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
   mapStateToProps,
   mapDispatchToProps,
 )
-export default class OnlineOpening extends Component<
+export default class SquareRoot extends Component<
   Props & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
   State
 > {
@@ -91,8 +102,10 @@ export default class OnlineOpening extends Component<
       headerRight: <Text />,
     }
   }
+  listener: EmitterSubscription
   constructor(props: any) {
     super(props)
+    this.listener = null
     this.state = this.getInitState()
   }
   getInitState = (): State => {
@@ -113,7 +126,23 @@ export default class OnlineOpening extends Component<
   }
   async componentDidMount() {
     await this.init()
+    this.listener = DeviceEventEmitter.addListener(
+      pathMap.SquareRoot + "Reload",
+      chooseDrugInfo => {
+        this.setState({
+          chooseDrugInfo,
+        })
+        this.init()
+      },
+    )
   }
+  componentWillUnmount() {
+    //移除监听
+    if (this.listener) {
+      this.listener.remove()
+    }
+  }
+  getDrugList = () => {}
   init = async () => {
     let patientId = this.props.navigation.getParam("patientId")
     try {
@@ -315,46 +344,67 @@ export default class OnlineOpening extends Component<
             <DashLine len={45} width={windowWidth - 46} backgroundColor={sColor.colorEee} />
             <Text style={[style.drug, global.fontSize24]}>R:</Text>
             <View style={style.drugList}>
-              <View style={style.drugItem}>
-                <View
-                  style={[global.flex, global.alignItemsCenter, global.justifyContentSpaceBetween]}>
-                  <View style={style.drugItemLeft}>
-                    <Text style={[style.drugItemLeftTitle, global.fontSize14]} numberOfLines={1}>
-                      名目地黄丸
-                    </Text>
-                    <Text style={[style.drugItemLeftDetail, global.fontSize12]} numberOfLines={1}>
-                      120ml/盒(合剂).OTC
-                    </Text>
-                    <Text style={[style.drugItemLeftDetail, global.fontSize12]} numberOfLines={1}>
-                      通药制药集团股份有限公司
-                    </Text>
+              {Object.keys(this.state.chooseDrugInfo).map((drugIdStr, k) => {
+                let drugId: number = parseInt(drugIdStr),
+                  list = this.state.chooseDrugInfo
+                return (
+                  <View style={style.drugItem} key={k}>
+                    <View
+                      style={[
+                        global.flex,
+                        global.alignItemsCenter,
+                        global.justifyContentSpaceBetween,
+                      ]}>
+                      <View style={style.drugItemLeft}>
+                        <Text
+                          style={[style.drugItemLeftTitle, global.fontSize14]}
+                          numberOfLines={1}>
+                          {list[drugId].info.name}
+                        </Text>
+                        <Text
+                          style={[style.drugItemLeftDetail, global.fontSize12]}
+                          numberOfLines={1}>
+                          {list[drugId].info.standard}
+                        </Text>
+                        <Text
+                          style={[style.drugItemLeftDetail, global.fontSize12]}
+                          numberOfLines={1}>
+                          {list[drugId].info.manufacturer}
+                        </Text>
+                      </View>
+                      <View style={style.drugItemRight}>
+                        <Text
+                          style={[style.drugItemLeftTitle, global.fontSize14]}
+                          numberOfLines={1}>
+                          {list[drugId].count}
+                          {list[drugId].info.unit}
+                        </Text>
+                        <Text
+                          style={[style.drugItemLeftDetail, global.fontSize12]}
+                          numberOfLines={1}>
+                          {(list[drugId].info.price / 100) * list[drugId].count}元
+                        </Text>
+                      </View>
+                    </View>
+                    <View style={[style.usageDosage, global.flex, global.alignItemsCenter]}>
+                      <Text style={[style.diagnosisItemTitle, global.fontSize14]}>用法用量</Text>
+                      <View style={style.diagnosisItemInput}>
+                        <TextareaItem
+                          style={style.input}
+                          autoHeight
+                          value={list[drugId].info.signature}
+                          onChange={value => {
+                            this.setState({
+                              temp: value as string,
+                            })
+                          }}
+                          onBlur={this.saveTemp}
+                        />
+                      </View>
+                    </View>
                   </View>
-                  <View style={style.drugItemRight}>
-                    <Text style={[style.drugItemLeftTitle, global.fontSize14]} numberOfLines={1}>
-                      0盒
-                    </Text>
-                    <Text style={[style.drugItemLeftDetail, global.fontSize12]} numberOfLines={1}>
-                      16.55元
-                    </Text>
-                  </View>
-                </View>
-                <View style={[style.usageDosage, global.flex, global.alignItemsCenter]}>
-                  <Text style={[style.diagnosisItemTitle, global.fontSize14]}>用法用量</Text>
-                  <View style={style.diagnosisItemInput}>
-                    <TextareaItem
-                      style={style.input}
-                      autoHeight
-                      value={this.state.temp}
-                      onChange={value => {
-                        this.setState({
-                          temp: value as string,
-                        })
-                      }}
-                      onBlur={this.saveTemp}
-                    />
-                  </View>
-                </View>
-              </View>
+                )
+              })}
               <Text style={[style.drugPrompt, global.fontSize12]}>
                 *单个处方中药成分不宜超过
                 <Text style={[style.important, global.fontSize12]}>5种</Text>

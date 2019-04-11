@@ -49,6 +49,13 @@ export default StyleSheet.create({
     height: 25,
     backgroundColor: sColor.colorDdd,
   },
+  headerLeft: {
+    paddingLeft: 15,
+    paddingRight: 30,
+    paddingTop: 5,
+    paddingBottom: 5,
+    color: sColor.color666,
+  },
   list: {
     backgroundColor: sColor.white,
     height: windowHeight,
@@ -140,5 +147,20 @@ export default StyleSheet.create({
   drugCompany: {
     color: sColor.color999,
     marginTop: 5,
+  },
+  setCount: {
+    width: 120,
+  },
+  btn: {
+    width: 35,
+    height: 25,
+    borderRadius: 5,
+    borderWidth: 1 / PixelRatio.get(),
+    borderColor: sColor.colorDdd,
+    lineHeight: 25,
+    textAlign: "center",
+  },
+  count: {
+    color: sColor.color666,
   },
 })
