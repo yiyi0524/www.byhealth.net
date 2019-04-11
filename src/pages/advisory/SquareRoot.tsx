@@ -102,10 +102,9 @@ export default class SquareRoot extends Component<
       headerRight: <Text />,
     }
   }
-  listener: EmitterSubscription
+  listener?: EmitterSubscription
   constructor(props: any) {
     super(props)
-    this.listener = null
     this.state = this.getInitState()
   }
   getInitState = (): State => {
@@ -132,7 +131,7 @@ export default class SquareRoot extends Component<
         this.setState({
           chooseDrugInfo,
         })
-        this.init()
+        // this.init()
       },
     )
   }
