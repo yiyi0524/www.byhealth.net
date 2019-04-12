@@ -38,7 +38,7 @@ interface State {
     {
       id: number
       technicalTitle: number
-      departmentIdr: number
+      departmentId: number
       adeptSymptomIdList: number[]
       countyCid: string
       hospitalId: number
@@ -137,7 +137,7 @@ export default class Index extends Component<
       doctorInfo: {
         id: 0,
         technicalTitle: 0,
-        departmentIdr: 0,
+        departmentId: 0,
         adeptSymptomIdList: [],
         countyCid: "",
         hospitalId: 0,

@@ -22,10 +22,10 @@ import { NavigationScreenProp, ScrollView } from "react-navigation"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
 import { Picture } from "./Chat"
-import DashLine from "@/components/DashLine"
-import Pharmacy, { CategoryItem } from "@/components/Pharmacy"
-import hospital from "@/services/hospital"
-import pathMap from "@/routes/pathMap"
+import DashLine from "@components/DashLine"
+import Pharmacy, { CategoryItem } from "@components/Pharmacy"
+import hospital from "@api/hospital"
+import pathMap from "@routes/pathMap"
 const style = gStyle.advisory.SquareRoot
 interface Props {
   navigation: NavigationScreenProp<State>

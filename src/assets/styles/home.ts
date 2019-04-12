@@ -45,7 +45,7 @@ export default StyleSheet.create({
   headerAvatar: {
     width: 60,
     height: 60,
-    resizeMode: "cover",
+    resizeMode: "center",
     borderRadius: 100,
   },
   headerTitle: {

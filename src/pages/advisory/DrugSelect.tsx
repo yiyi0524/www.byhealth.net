@@ -1,23 +1,23 @@
 import global from "@/assets/styles/global"
+import pathMap from "@/routes/pathMap"
+import hospital from "@/services/hospital"
+import { Icon, InputItem, Toast } from "@ant-design/react-native"
 import sColor from "@styles/color"
+import gImg from "@utils/img"
 import gStyle from "@utils/style"
 import React, { Component } from "react"
 import {
+  DeviceEventEmitter,
+  Image,
   PixelRatio,
+  RefreshControl,
   ScrollView,
   Text,
   TouchableOpacity,
   View,
-  Image,
-  RefreshControl,
-  DeviceEventEmitter,
 } from "react-native"
 import { NavigationScreenProp } from "react-navigation"
-import { drugItem, activeDrugItem } from "./SquareRoot"
-import { Toast, Icon, InputItem } from "@ant-design/react-native"
-import gImg from "@utils/img"
-import hospital from "@/services/hospital"
-import pathMap from "@/routes/pathMap"
+import { activeDrugItem, drugItem } from "./SquareRoot"
 const style = gStyle.advisory.DrugSelect
 export interface CategoryItem {
   id: number
@@ -84,11 +84,15 @@ export default class Pharmacy extends Component<Props, State> {
       ),
     }
   }
-  constructor(props: any) {
+  constructor(props: Props) {
     super(props)
     this.state = this.getInitState(props)
   }
-  getInitState = (props: any): State => {
+  getInitState = (props: Props): State => {
+    let chooseDrugInfo: any
+    if (props.navigation.state.params) {
+      chooseDrugInfo = props.navigation.state.params.chooseDrugInfo
+    }
     return {
       hasLoad: false,
       refreshing: false,
@@ -97,7 +101,7 @@ export default class Pharmacy extends Component<Props, State> {
       limit: -1,
       filter: {},
       search: "",
-      chooseDrugInfo: props.navigation.state.params.chooseDrugInfo,
+      chooseDrugInfo,
       matchDrugList: [],
     }
   }

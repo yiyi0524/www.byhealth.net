@@ -1,23 +1,35 @@
+import { Toast } from "@ant-design/react-native"
 import React, { Component } from "react"
-import { AppState } from "@/redux/stores/store"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
 import * as userAction from "@/redux/actions/user"
-import { ScrollView, Text, View, Image, TouchableOpacity, RefreshControl } from "react-native"
-import { Toast } from "@ant-design/react-native"
-import gStyle from "@utils/style"
-import gImg from "@utils/img"
+import { AppState } from "@/redux/stores/store"
 import pathMap from "@/routes/pathMap"
+import gImg from "@utils/img"
+import gStyle from "@utils/style"
+import { Image, RefreshControl, ScrollView, Text, TouchableOpacity, View } from "react-native"
+import { Picture } from "./Chat"
+import { GENDER } from "@/services/doctor"
 // import api from "@api/api";
 const style = gStyle.advisory.advisoryIndex
 const globalStyle = gStyle.global
 interface Props {
   navigation: any
 }
+interface PatientRecord {
+  id: number
+  gender: number
+  name: string
+  currMsg: string
+  currMsgTime: string
+  avatar: Picture
+  patientId: number
+  age: number
+}
 interface State {
   hasLoad: boolean
   refreshing: boolean
-  informationList: any
+  patientRecordList: PatientRecord[]
 }
 const mapStateToProps = (state: AppState) => {
   return {
@@ -49,7 +61,7 @@ export default class Index extends Component<
     return {
       hasLoad: false,
       refreshing: false,
-      informationList: [],
+      patientRecordList: [],
     }
   }
   async componentDidMount() {
@@ -57,61 +69,31 @@ export default class Index extends Component<
   }
   init = async () => {
     // let json = await api.getInformationList();
-    let informationList = [
+    let patientRecordList: PatientRecord[] = [
       {
         id: 4,
         patientId: 1,
         avatar: gImg.common.logo,
-        age: "30",
-        gender: 2, //1:男;2:女'0:未知
-        name: "博一医生助理",
-        description: "欢迎来到博一, 我是您的私人助理, 如果您有任何问题可以问我",
-        time: "2019-03-22 10:10:10",
+        age: 30,
+        gender: GENDER.WOMAN,
+        name: "孟雷",
+        currMsg: "你好 我是孟雷,我头痛",
+        currMsgTime: "2019-03-22 10:10:10",
       },
       {
         id: 1,
         patientId: 2,
         avatar: gImg.common.defaultAvatar,
-        age: "24",
-        gender: 1, //1:男;2:女'0:未知
+        age: 24,
+        gender: GENDER.MAN, //1:男;2:女'0:未知
         name: "吴亦凡",
-        description: "医生, 头还有点晕咋整?",
-        time: "2019-03-22 10:10:10",
-      },
-      {
-        id: 2,
-        patientId: 4,
-        avatar: gImg.common.defaultAvatar,
-        age: "24",
-        gender: 2,
-        name: "张柏芝",
-        description: "在吗?",
-        time: "2019-03-12 10:10:10",
-      },
-      {
-        id: 3,
-        patientId: 3,
-        avatar: gImg.common.defaultAvatar,
-        age: "24",
-        gender: 0,
-        name: "张芸京",
-        description: "hello?",
-        time: "2019-03-30 10:10:10",
-      },
-      {
-        id: 4,
-        patientId: 5,
-        avatar: gImg.common.defaultAvatar,
-        age: "24",
-        gender: 1,
-        name: "包贝尔",
-        description: "在吗?",
-        time: "2019-03-12 10:10:10",
+        currMsg: "医生, 头还有点晕咋整?",
+        currMsgTime: "2019-03-22 10:10:10",
       },
     ]
     this.setState({
       hasLoad: true,
-      informationList,
+      patientRecordList,
     })
   }
   onRefresh = () => {
@@ -168,7 +150,7 @@ export default class Index extends Component<
             </TouchableOpacity>
           </View>
           <View style={style.msgList}>
-            {this.state.informationList.map((v: any, k: number) => {
+            {this.state.patientRecordList.map((v: any, k: number) => {
               return (
                 <TouchableOpacity
                   key={k}

@@ -1,16 +1,19 @@
+import global from "@/assets/styles/global"
 import * as userAction from "@/redux/actions/user"
 import { AppState } from "@/redux/stores/store"
 import pathMap from "@/routes/pathMap"
 import { Icon, Toast } from "@ant-design/react-native"
 import api from "@api/api"
+import userApi from "@api/user"
 import gImg from "@utils/img"
 import gStyle from "@utils/style"
 import React, { Component } from "react"
 import { Image, RefreshControl, ScrollView, Text, TouchableOpacity, View } from "react-native"
+import { NavigationScreenProp } from "react-navigation"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
-import global from "@/assets/styles/global"
-import { NavigationScreenProp } from "react-navigation"
+import { Picture } from "./advisory/Chat"
+import { BASE_URL } from "@/config/api"
 const style = gStyle.home
 const globalStyle = gStyle.global
 interface Props {
@@ -24,12 +27,12 @@ interface bannerItem {
 interface State {
   refreshing: boolean
   hasLoad: boolean
-  isRealNameAuth: boolean
-  avatar: string
+  hasRealNameAuth: boolean
+  avatar: Picture
   name: string
   bannerList: bannerItem[]
-  prescription: number
-  patient: number
+  prescriptionCount: number
+  patientCount: number
 }
 export interface ShortcutItem {
   icon: any
@@ -97,10 +100,14 @@ export default class Home extends Component<
     return {
       refreshing: false,
       hasLoad: false,
-      isRealNameAuth: false,
-      prescription: 0,
-      patient: 0,
-      avatar: "",
+      hasRealNameAuth: false,
+      prescriptionCount: 0,
+      patientCount: 0,
+      avatar: {
+        id: 0,
+        title: "",
+        url: "",
+      },
       name: "",
       bannerList: [],
     }
@@ -112,14 +119,14 @@ export default class Home extends Component<
     let isLogin = false
     try {
       isLogin = await api.isLogin()
-      // let {data} = await userApi.getPersonalInfo();
-      let data = {
-        id: 1,
-        name: "吴大伟",
-        avatar: "",
-        isRealNameAuth: true,
-        prescription: 6,
-        patient: 8,
+      let {
+        data: { doctorInfo, info },
+      } = await userApi.getPersonalInfo()
+      this.setState({
+        name: info.name,
+        avatar: info.avatar,
+        hasRealNameAuth: doctorInfo.hasRealNameAuth,
+        prescriptionCount: doctorInfo.prescriptionCount,
         bannerList: [
           {
             id: 1,
@@ -142,14 +149,6 @@ export default class Home extends Component<
             link: "",
           },
         ],
-      }
-      this.setState({
-        name: data.name,
-        avatar: data.avatar,
-        patient: data.patient,
-        prescription: data.prescription,
-        isRealNameAuth: data.isRealNameAuth,
-        bannerList: data.bannerList,
       })
     } catch (err) {
       console.log(err)
@@ -203,8 +202,8 @@ export default class Home extends Component<
               style={[style.headerAvatarCircle, globalStyle.flex, globalStyle.alignItemsCenter]}>
               <Image
                 source={
-                  this.state.avatar.indexOf("http") > 0
-                    ? { uri: this.state.avatar }
+                  this.state.avatar.url !== ""
+                    ? { uri: BASE_URL + this.state.avatar.url }
                     : gImg.common.defaultAvatar
                 }
                 style={style.headerAvatar}
@@ -225,11 +224,11 @@ export default class Home extends Component<
                     globalStyle.fontSize12,
                   ]}>
                   {" "}
-                  医疗资质{this.state.isRealNameAuth ? "已认证" : "未认证"}{" "}
+                  医疗资质{this.state.hasRealNameAuth ? "已认证" : "未认证"}{" "}
                 </Text>
                 <TouchableOpacity
                   style={[
-                    this.state.isRealNameAuth
+                    this.state.hasRealNameAuth
                       ? globalStyle.hidden
                       : style.headerMedicalQualification,
                     globalStyle.flex,
@@ -270,13 +269,13 @@ export default class Home extends Component<
               style={style.prescriptionItem}
               onPress={() => this.props.navigation.push(pathMap.Prescription)}>
               <Text style={[style.prescriptionItemNum, global.fontSize15]}>
-                {this.state.prescription}
+                {this.state.prescriptionCount}
               </Text>
               <Text style={[style.prescriptionItemTitle, global.fontSize12]}>处方数</Text>
             </TouchableOpacity>
             <TouchableOpacity style={style.prescriptionItem}>
               <Text style={[style.prescriptionItemNum, global.fontSize15]}>
-                {this.state.patient}
+                {this.state.patientCount}
               </Text>
               <Text style={[style.prescriptionItemTitle, global.fontSize12]}>患者数</Text>
             </TouchableOpacity>
@@ -285,7 +284,7 @@ export default class Home extends Component<
           {/* 认证 */}
           <TouchableOpacity
             style={[
-              this.state.isRealNameAuth ? globalStyle.hidden : style.verified,
+              this.state.hasRealNameAuth ? globalStyle.hidden : style.verified,
               globalStyle.flex,
               globalStyle.alignItemsCenter,
               globalStyle.justifyContentSpaceBetween,
@@ -313,7 +312,7 @@ export default class Home extends Component<
                   key={k}
                   style={style.categoryItem}
                   onPress={() => {
-                    if (!this.state.isRealNameAuth) {
+                    if (!this.state.hasRealNameAuth) {
                       return Toast.info("您未认证", 3)
                     }
                     this.props.navigation.push(item.link)
@@ -357,7 +356,7 @@ export default class Home extends Component<
                     globalStyle.alignItemsCenter,
                   ]}
                   onPress={() => {
-                    if (!this.state.isRealNameAuth) {
+                    if (!this.state.hasRealNameAuth) {
                       return Toast.info("您未认证", 3)
                     }
                     this.props.navigation.push(v.link)

@@ -1,57 +1,36 @@
 import { bget, bpost, GetListParam } from "./api"
 import { Picture } from "@/pages/advisory/Chat"
 //todo 获取个人信息
-export interface personalInfo {
-  id: number
-  account: string
-  nick: string
-  gender: number
-  phone: string
-  email: string
-  avatar: Picture
-  profile: string
-  doctorInfo?: DoctorInfo
+export interface PersonalInfo {
+  info: {
+    id: number
+    account: string
+    name: string
+    gender: number
+    phone: string
+    email: string
+    avatar: Picture
+    profile: string
+  }
+  doctorInfo: DoctorInfo
 }
 export interface DoctorInfo {
   id: number
   uid?: number
+  hasRealNameAuth: boolean
+  prescriptionCount: number
+  patientCount: number
   technicalTitle?: number
-  departmentIdr?: number
+  departmentId?: number
   adeptSymptomIdList?: number[]
   countyCid?: string
   hospitalId?: number
 }
+
 export async function getPersonalInfo() {
-  return {
-    data: {
-      info: {
-        id: 5,
-        account: "juice",
-        nick: "吴大伟",
-        phone: "15096443927",
-        email: "",
-        gender: 1,
-        profile: "我是描述",
-        avatar: {
-          id: 1,
-          title: "asd",
-          url: "/uploads/20190315/1cec476d9eaef31971abef5e16716365.png",
-        },
-      },
-      doctorInfo: {
-        id: 1,
-        technicalTitle: 2,
-        departmentIdr: 3,
-        countyCid: "110100000000",
-        hospitalId: 1,
-        adeptSymptomIdList: [11, 12, 13, 14, 15, 16, 17, 18, 19, 20],
-      },
-    },
-  }
-  // return bpost<infoItem>({
-  //   url: "/api/getPersonalInfo",
-  //   data: {},
-  // })
+  return bget<PersonalInfo>({
+    url: "/api/getDoctorPersonalInfo",
+  })
 }
 /**
  * 获取患者分组列表

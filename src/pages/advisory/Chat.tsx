@@ -3,10 +3,10 @@ import { BASE_URL } from "@/config/api"
 import * as userAction from "@/redux/actions/user"
 import { AppState } from "@/redux/stores/store"
 import pathMap from "@/routes/pathMap"
-import userApi, { personalInfo } from "@/services/user"
-import wsMsgApi from "@/services/wsMsg"
 import gImg from "@/utils/img"
 import { TextareaItem, Toast } from "@ant-design/react-native"
+import userApi from "@api/user"
+import wsMsgApi from "@api/wsMsg"
 import sColor from "@styles/color"
 import gStyle from "@utils/style"
 import React, { Component, ReactChild } from "react"
@@ -17,6 +17,7 @@ import { connect } from "react-redux"
 import { Dispatch } from "redux"
 import { Overwrite } from "utility-types"
 const style = gStyle.advisory.advisoryChat
+Toast
 interface Props {
   navigation: NavigationScreenProp<State>
 }
@@ -69,7 +70,6 @@ interface State {
   hasMoreRecord: boolean
   isShowPic: boolean
   showPicUrl: string
-  info: personalInfo
   msgId: number
   patientId: number
   page: number
@@ -77,6 +77,16 @@ interface State {
   filter: {}
   msgList: Msg<any>[]
   sendMsg: string
+  info: {
+    id: number
+    account: string
+    name: string
+    gender: number
+    phone: string
+    email: string
+    avatar: Picture
+    profile: string
+  }
 }
 const mapStateToProps = (state: AppState) => {
   return {
@@ -134,51 +144,50 @@ export default class Index extends Component<
       ),
     }
   }
-  bottomNavList: bottomNavItem[] = []
+  bottomNavList: bottomNavItem[] = [
+    {
+      icon: gImg.advisory.dialecticalPrescriptions,
+      title: "辩证开方",
+      link: pathMap.SquareRoot,
+    },
+    {
+      icon: gImg.advisory.quickReply,
+      title: "快捷回复",
+      link: "",
+    },
+    {
+      icon: gImg.advisory.closingConversation,
+      title: "结束对话",
+      link: "",
+    },
+    {
+      icon: gImg.advisory.show,
+      title: "更多功能",
+      link: "",
+    },
+    {
+      icon: gImg.advisory.inquirySheet,
+      title: "补填问诊单",
+      link: "",
+    },
+    {
+      icon: gImg.advisory.picture,
+      title: "图片",
+      link: "",
+    },
+    {
+      icon: gImg.advisory.givingquestions,
+      title: "赠送提问",
+      link: "",
+    },
+    {
+      icon: gImg.advisory.sittingInformation,
+      title: "坐诊信息",
+      link: "",
+    },
+  ]
   constructor(props: any) {
     super(props)
-    this.bottomNavList = [
-      {
-        icon: gImg.advisory.dialecticalPrescriptions,
-        title: "辩证开方",
-        link: pathMap.SquareRoot,
-      },
-      {
-        icon: gImg.advisory.quickReply,
-        title: "快捷回复",
-        link: "",
-      },
-      {
-        icon: gImg.advisory.closingConversation,
-        title: "结束对话",
-        link: "",
-      },
-      {
-        icon: gImg.advisory.show,
-        title: "更多功能",
-        link: "",
-      },
-      {
-        icon: gImg.advisory.inquirySheet,
-        title: "补填问诊单",
-        link: "",
-      },
-      {
-        icon: gImg.advisory.picture,
-        title: "图片",
-        link: "",
-      },
-      {
-        icon: gImg.advisory.givingquestions,
-        title: "赠送提问",
-        link: "",
-      },
-      {
-        icon: gImg.advisory.sittingInformation,
-        title: "坐诊信息",
-        link: "",
-      },
-    ]
     this.state = this.getInitState()
   }
   getInitState = (): State => {
@@ -193,7 +202,7 @@ export default class Index extends Component<
       patientId: 0,
       info: {
         id: 0,
-        nick: "",
+        name: "",
         account: "",
         email: "",
         gender: 0,
@@ -213,8 +222,8 @@ export default class Index extends Component<
       sendMsg: "",
     }
   }
-  async componentDidMount() {
-    await this.init()
+  componentDidMount() {
+    this.init()
   }
   init = async () => {
     let msgId = this.props.navigation.getParam("id")
