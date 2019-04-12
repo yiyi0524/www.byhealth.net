@@ -9,8 +9,9 @@ import gImg from "@utils/img"
 import gStyle from "@utils/style"
 import { Image, RefreshControl, ScrollView, Text, TouchableOpacity, View } from "react-native"
 import { Picture } from "./Chat"
+import api from "@api/api"
+import patient from "@/services/patient"
 import { GENDER } from "@/services/doctor"
-// import api from "@api/api";
 const style = gStyle.advisory.advisoryIndex
 const globalStyle = gStyle.global
 interface Props {
@@ -68,29 +69,10 @@ export default class Index extends Component<
     await this.init()
   }
   init = async () => {
-    // let json = await api.getInformationList();
-    let patientRecordList: PatientRecord[] = [
-      {
-        id: 4,
-        patientId: 1,
-        avatar: gImg.common.logo,
-        age: 30,
-        gender: GENDER.WOMAN,
-        name: "孟雷",
-        currMsg: "你好 我是孟雷,我头痛",
-        currMsgTime: "2019-03-22 10:10:10",
-      },
-      {
-        id: 1,
-        patientId: 2,
-        avatar: gImg.common.defaultAvatar,
-        age: 24,
-        gender: GENDER.MAN, //1:男;2:女'0:未知
-        name: "吴亦凡",
-        currMsg: "医生, 头还有点晕咋整?",
-        currMsgTime: "2019-03-22 10:10:10",
-      },
-    ]
+    let {
+      data: { list: patientRecordList },
+    } = await patient.getPatientList({ page: -1, limit: -1 })
+
     this.setState({
       hasLoad: true,
       patientRecordList,
@@ -150,7 +132,7 @@ export default class Index extends Component<
             </TouchableOpacity>
           </View>
           <View style={style.msgList}>
-            {this.state.patientRecordList.map((v: any, k: number) => {
+            {this.state.patientRecordList.map((patientRecord, k) => {
               return (
                 <TouchableOpacity
                   key={k}
@@ -162,14 +144,14 @@ export default class Index extends Component<
                   ]}
                   onPress={() =>
                     this.props.navigation.push(pathMap.AdvisoryChat, {
-                      patientId: v.patientId,
-                      id: v.id,
-                      title: v.name,
+                      patientId: patientRecord.patientId,
+                      id: patientRecord.id,
+                      title: patientRecord.name,
                     })
                   }>
                   <View style={style.baseInformation}>
                     <View style={style.avatarFormat}>
-                      <Image style={style.avatar} source={v.avatar} />
+                      <Image style={style.avatar} source={{ uri: patientRecord.avatar.url }} />
                     </View>
                     <View
                       style={[
@@ -181,15 +163,15 @@ export default class Index extends Component<
                       <Image
                         style={style.gender}
                         source={
-                          v.gender === 1
+                          patientRecord.gender === GENDER.MAN
                             ? gImg.common.man
-                            : v.gender === 2
+                            : patientRecord.gender === GENDER.WOMAN
                             ? gImg.common.woman
                             : gImg.common.genderNull
                         }
                       />
                       <Text style={[style.age, globalStyle.fontSize13, globalStyle.fontStyle]}>
-                        {v.age}岁
+                        {patientRecord.age}岁
                       </Text>
                     </View>
                   </View>
@@ -203,16 +185,16 @@ export default class Index extends Component<
                       <Text
                         style={[style.msgName, globalStyle.fontSize15, globalStyle.fontStyle]}
                         numberOfLines={1}>
-                        {v.name}
+                        {patientRecord.name}
                       </Text>
                       <Text style={[style.msgTime, globalStyle.fontSize13, globalStyle.fontStyle]}>
-                        {v.time.substr(0, 10)}
+                        {patientRecord.currMsgTime.substr(0, 10)}
                       </Text>
                     </View>
                     <Text
                       style={[style.msgDescription, globalStyle.fontSize14, globalStyle.fontStyle]}
                       numberOfLines={1}>
-                      {v.description}
+                      {patientRecord.currMsg}
                     </Text>
                   </View>
                 </TouchableOpacity>

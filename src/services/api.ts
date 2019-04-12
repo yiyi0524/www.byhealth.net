@@ -19,28 +19,13 @@ export interface GetListParam {
   limit?: number
   filter?: object
 }
-export async function bget<T = any>({
-  url,
-  query = {},
-  headers = {},
-}: RequestParam) {
+export async function bget<T = any>({ url, query = {}, headers = {} }: RequestParam) {
   let session = await storage.get("session")
   headers["session"] = session
   headers["content-type"] = "application/json"
-  return BuffReq<T>(
-    BASE_URL,
-    url + "?" + qs.stringify(query),
-    null,
-    "GET",
-    "include",
-    headers,
-  )
+  return BuffReq<T>(BASE_URL, url + "?" + qs.stringify(query), null, "GET", "include", headers)
 }
-export async function bpost<T = any>({
-  url,
-  data = {},
-  headers = {},
-}: RequestParam) {
+export async function bpost<T = any>({ url, data = {}, headers = {} }: RequestParam) {
   let session = await storage.get("session")
   headers["session"] = session
   headers["content-type"] = "application/json"
@@ -194,15 +179,7 @@ export function checkforGetPwdVerifyCode({
 /**
  * 已登录修改密码
  */
-export function modifyPwd({
-  oriPwd,
-  pwd,
-  rePwd,
-}: {
-  oriPwd: string
-  pwd: string
-  rePwd: string
-}) {
+export function modifyPwd({ oriPwd, pwd, rePwd }: { oriPwd: string; pwd: string; rePwd: string }) {
   return bpost({ url: "/api/modifyPwd", data: { oriPwd, pwd, rePwd } })
 }
 /**
@@ -246,11 +223,7 @@ export interface AliPayOrderInfo {
 /**
  * 获取支付宝支付订单信息
  */
-export function buildAliPayOrderInfo({
-  body,
-  subject,
-  money,
-}: AliPayOrderInfo) {
+export function buildAliPayOrderInfo({ body, subject, money }: AliPayOrderInfo) {
   return bpost({
     url: "/ali_pay/buildOrderInfo",
     data: {
@@ -269,12 +242,7 @@ export interface WxPayOrderInfo {
 /**
  * 获取微信支付订单信息
  */
-export function buildWxPayOrderInfo({
-  body,
-  detail,
-  attach,
-  money,
-}: WxPayOrderInfo) {
+export function buildWxPayOrderInfo({ body, detail, attach, money }: WxPayOrderInfo) {
   return bpost({
     url: "/ali_pay/buildOrderInfo",
     data: {
@@ -375,19 +343,10 @@ export function idCardIDChecked(sId: string) {
   sId = sId.replace(/x$/i, "a")
   if (aCity[parseInt(sId.substr(0, 2))] === null) return false
   var sBirthday =
-    sId.substr(6, 4) +
-    "-" +
-    Number(sId.substr(10, 2)) +
-    "-" +
-    Number(sId.substr(12, 2))
+    sId.substr(6, 4) + "-" + Number(sId.substr(10, 2)) + "-" + Number(sId.substr(12, 2))
   var d = new Date(sBirthday.replace(/-/g, "/"))
-  if (
-    sBirthday !==
-    d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate()
-  )
-    return false
-  for (var i = 17; i >= 0; i--)
-    iSum += (Math.pow(2, i) % 11) * parseInt(sId.charAt(17 - i), 11)
+  if (sBirthday !== d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate()) return false
+  for (var i = 17; i >= 0; i--) iSum += (Math.pow(2, i) % 11) * parseInt(sId.charAt(17 - i), 11)
   if (iSum % 11 !== 1) return false
   return true
 }
