@@ -1,21 +1,22 @@
+import { BASE_URL } from "@/config/api"
 import * as userAction from "@/redux/actions/user"
 import { AppState } from "@/redux/stores/store"
-import { Toast, TextareaItem } from "@ant-design/react-native"
+import api from "@/services/api"
+import { GENDER_ZH, TECHNICAL_TITLE_ZH } from "@/services/doctor"
+import { TextareaItem, Toast } from "@ant-design/react-native"
+import hospitalApi from "@api/hospital"
+import userApi, { DoctorInfo } from "@api/user"
 import sColor from "@styles/color"
+import gImg from "@utils/img"
 import gStyle from "@utils/style"
 import React, { Component } from "react"
-import gImg from "@utils/img"
-import { RefreshControl, ScrollView, Text, View, PixelRatio, Image } from "react-native"
+import { Image, PixelRatio, RefreshControl, ScrollView, Text, View } from "react-native"
+import { TouchableOpacity } from "react-native-gesture-handler"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
-import userApi, { personalInfo, DoctorInfo } from "@api/user"
-import { TouchableOpacity } from "react-native-gesture-handler"
 import { Overwrite } from "utility-types"
 import { Picture } from "../advisory/Chat"
-import { BASE_URL } from "@/config/api"
-import hospitalApi from "@api/hospital"
-import { GENDER, TECHNICAL_TITLE, TECHNICAL_TITLE_ZH } from "@/services/doctor"
-import api, { getLoginPhoneVerifyCode } from "@/services/api"
+import pathMap from "@/routes/pathMap"
 const style = gStyle.personalCenter.editInformation
 const global = gStyle.global
 interface Props {
@@ -28,7 +29,7 @@ interface State {
   isEditProfile: boolean
   info: {
     id: number
-    nick: string
+    name: string
     gender: number
     profile: string
     avatar: Picture
@@ -125,9 +126,9 @@ export default class Index extends Component<
       isEditProfile: false,
       info: {
         id: 0,
-        nick: "",
+        name: "",
         gender: 0,
-        profile: "",
+        profile: "暂无简介",
         avatar: {
           id: 0,
           title: "",
@@ -141,6 +142,10 @@ export default class Index extends Component<
         adeptSymptomIdList: [],
         countyCid: "",
         hospitalId: 0,
+        hasRealNameAuth: false,
+        patientCount: 0,
+        prescriptionCount: 0,
+        uid: 0,
       },
       technicalTitle: "",
       adeptSymptomIdMapList: [],
@@ -156,6 +161,7 @@ export default class Index extends Component<
     try {
       //获取个人信息
       let { data } = await userApi.getPersonalInfo()
+      console.log(data)
       //获取科室及疾病列表
       let {
         data: { list: hospitalDepartmentSymptom },
@@ -183,9 +189,21 @@ export default class Index extends Component<
           hospitalName = v.name
         }
       }
+      let doctorInfo = {
+        id: data.doctorInfo.id,
+        technicalTitle: data.doctorInfo.technicalTitle as number,
+        departmentId: data.doctorInfo.departmentId as number,
+        adeptSymptomIdList: data.doctorInfo.adeptSymptomIdList as number[],
+        countyCid: data.doctorInfo.countyCid as string,
+        hospitalId: data.doctorInfo.hospitalId as number,
+        hasRealNameAuth: data.doctorInfo.hasRealNameAuth,
+        patientCount: data.doctorInfo.patientCount,
+        prescriptionCount: data.doctorInfo.prescriptionCount,
+        uid: data.doctorInfo.uid,
+      }
       this.setState({
         info: data.info,
-        doctorInfo: data.doctorInfo,
+        doctorInfo,
         regionCidMapAreaName,
         hospitalName,
       })
@@ -276,7 +294,6 @@ export default class Index extends Component<
           <View style={style.loadingPic}>
             <Image style={style.loadingImg} source={gImg.common.loading} />
           </View>
-          <Text style={[style.loadingTitle, global.fontSize14, global.fontStyle]}>加载中...</Text>
         </View>
       )
     }
@@ -304,28 +321,15 @@ export default class Index extends Component<
               </View>
               <View style={style.headerInfoName}>
                 <Text style={[style.headerInfoTitle, global.fontSize16]}>
-                  {this.state.info.nick}
+                  {this.state.info.name}
                 </Text>
                 <Text style={[style.headerInfoDetail, global.fontSize14]}>
-                  {this.state.doctorInfo.technicalTitle === TECHNICAL_TITLE.RESIDENT
-                    ? TECHNICAL_TITLE_ZH[TECHNICAL_TITLE.RESIDENT]
-                    : this.state.doctorInfo.technicalTitle === TECHNICAL_TITLE.ATTENDING_DOCTOR
-                    ? TECHNICAL_TITLE_ZH[TECHNICAL_TITLE.ATTENDING_DOCTOR]
-                    : this.state.doctorInfo.technicalTitle ===
-                      TECHNICAL_TITLE.DEPUTY_CHIEF_PHYSICIAN
-                    ? TECHNICAL_TITLE_ZH[TECHNICAL_TITLE.DEPUTY_CHIEF_PHYSICIAN]
-                    : this.state.doctorInfo.technicalTitle === TECHNICAL_TITLE.CHIEF_PHYSICIAN
-                    ? TECHNICAL_TITLE_ZH[TECHNICAL_TITLE.CHIEF_PHYSICIAN]
-                    : "未知"}
+                  {TECHNICAL_TITLE_ZH[this.state.doctorInfo.technicalTitle]}
                   {"  "}
-                  {this.state.info.gender === GENDER.MAN
-                    ? "男"
-                    : this.state.info.gender === GENDER.WOMAN
-                    ? "女"
-                    : "未知"}
+                  {GENDER_ZH[this.state.info.gender]}
                 </Text>
               </View>
-              <TouchableOpacity>
+              <TouchableOpacity onPress={() => this.props.navigation.push(pathMap.CustomerService)}>
                 <Text style={[style.headerInfoCustomer, global.fontSize12]}>联系客服修改</Text>
               </TouchableOpacity>
             </View>

@@ -105,41 +105,10 @@ export default class Index extends Component<
     await this.init()
   }
   init = async () => {
-    // let patientList = await this.getPageData();
-    let patientList = [
-      {
-        id: 1,
-        avatar: "https://www.byhealth.net/uploads/20190322/e049282da2c90aa6e0866e66d42ad110.png",
-        name: "吳大伟",
-        gender: 1,
-        age: "28岁",
-        isChecked: false,
-      },
-      {
-        id: 2,
-        avatar: "https://www.byhealth.net/uploads/20190322/e049282da2c90aa6e0866e66d42ad110.png",
-        name: "吳二伟",
-        gender: 0,
-        age: "2个月大",
-        isChecked: false,
-      },
-      {
-        id: 3,
-        avatar: "",
-        name: "吳三伟",
-        gender: 2,
-        age: "28岁",
-        isChecked: false,
-      },
-      {
-        id: 4,
-        avatar: "https://www.byhealth.net/uploads/20190322/e049282da2c90aa6e0866e66d42ad110.png",
-        name: "吳思伟",
-        gender: 1,
-        age: "1岁11个月",
-        isChecked: false,
-      },
-    ]
+    let patientList = await this.getPageData()
+    for (let patient of patientList) {
+      patient.isChecked = false
+    }
     this.setState({
       hasLoad: true,
       patientList,
@@ -195,7 +164,6 @@ export default class Index extends Component<
       return (
         <View style={style.loading}>
           <Image style={{ width: 150 }} source={gImg.common.loading} />
-          <Text style={[style.loadingTitle, global.fontSize14, global.fontStyle]}>加载中...</Text>
         </View>
       )
     }
@@ -310,7 +278,9 @@ export default class Index extends Component<
                   <View style={style.patientItemAvatar}>
                     <Image
                       style={style.patientAvatar}
-                      source={v.avatar !== "" ? { uri: v.avatar } : gImg.common.defaultAvatar}
+                      source={
+                        v.avatar.url !== "" ? { uri: v.avatar.url } : gImg.common.defaultAvatar
+                      }
                     />
                   </View>
                   <View

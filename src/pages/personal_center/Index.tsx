@@ -133,7 +133,6 @@ export default class Index extends Component<
           <View style={style.loadingPic}>
             <Image style={style.loadingImg} source={gImg.common.loading} />
           </View>
-          <Text style={[style.loadingTitle, global.fontSize14, global.fontStyle]}>加载中...</Text>
         </View>
       )
     }
@@ -197,28 +196,10 @@ export default class Index extends Component<
                     global.alignItemsCenter,
                   ]}>
                   <Text style={[style.title, global.fontStyle, global.fontSize15]}>{v.name}</Text>
-                  {v.name === "关于我们" ? (
-                    this.state.version.new !== this.state.version.current ? (
-                      <Text style={[style.version, global.fontSize14, global.fontStyle]}>
-                        发现新版本
-                      </Text>
-                    ) : (
-                      <Icon style={[style.icon, global.fontSize14]} name="right" />
-                    )
-                  ) : (
-                    <Icon style={[style.icon, global.fontSize14]} name="right" />
-                  )}
                 </TouchableOpacity>
               )
             })}
           </View>
-          <TouchableOpacity
-            style={{ marginTop: 20, alignItems: "center" }}
-            onPress={() => {
-              this.props.navigation.push(pathMap.Test)
-            }}>
-            <Text>test</Text>
-          </TouchableOpacity>
         </ScrollView>
       </>
     )

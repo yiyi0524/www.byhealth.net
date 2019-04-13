@@ -547,7 +547,6 @@ export default class RealNameAuth extends Component<
           <View style={style.loadingPic}>
             <Image style={style.loadingImg} source={gImg.common.loading} />
           </View>
-          <Text style={[style.loadingTitle, global.fontSize14, global.fontStyle]}>加载中...</Text>
         </View>
       )
     }

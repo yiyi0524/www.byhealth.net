@@ -112,8 +112,8 @@ export default class InvitePatients extends Component<
     let { data } = await userApi.getPersonalInfo()
     this.setState({
       hasLoad: true,
-      name: data.info.nick,
-      technicalTitle: data.doctorInfo.technicalTitle,
+      name: data.info.name,
+      technicalTitle: data.doctorInfo.technicalTitle as number,
     })
   }
   onRefresh = () => {
@@ -147,7 +147,6 @@ export default class InvitePatients extends Component<
           <View style={style.loadingPic}>
             <Image style={style.loadingImg} source={gImg.common.loading} />
           </View>
-          <Text style={[style.loadingTitle, global.fontSize14, global.fontStyle]}>加载中...</Text>
         </View>
       )
     }

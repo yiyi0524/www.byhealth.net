@@ -1,6 +1,6 @@
-import { StyleSheet, PixelRatio } from "react-native";
-import sColor from "@styles/color";
-import { windowHeight } from "@api/api";
+import { StyleSheet, PixelRatio } from "react-native"
+import sColor from "@styles/color"
+import { windowHeight } from "@api/api"
 export default StyleSheet.create({
   main: {
     backgroundColor: sColor.white,
@@ -90,6 +90,7 @@ export default StyleSheet.create({
   agreement: {
     paddingLeft: 30,
     paddingRight: 30,
+    paddingBottom: 40,
   },
   theme: {
     color: sColor.color888,
@@ -163,4 +164,4 @@ export default StyleSheet.create({
     color: sColor.mainRed,
     marginRight: 15,
   },
-});
+})

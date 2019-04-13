@@ -59,11 +59,11 @@ const settingList = [
     description: "未开启在线复诊",
     link: pathMap.DiagnosisSettings,
   },
-  {
-    name: "处方及服务配置",
-    description: "",
-    link: "",
-  },
+  // {
+  //   name: "处方及服务配置",
+  //   description: "",
+  //   link: "",
+  // },
   //todo 二期
   // {
   //   name: "自定义问诊单设置",
@@ -177,9 +177,6 @@ export default class Home extends Component<
           <View style={style.loadingPic}>
             <Image style={style.loadingImg} source={gImg.common.loading} />
           </View>
-          <Text style={[style.loadingTitle, globalStyle.fontSize14, globalStyle.fontStyle]}>
-            加载中...
-          </Text>
         </View>
       )
     }

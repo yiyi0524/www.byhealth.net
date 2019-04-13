@@ -4,11 +4,12 @@ import { connect } from "react-redux"
 import { Dispatch } from "redux"
 import * as userAction from "@/redux/actions/user"
 import { ScrollView, Text, View, Image, TouchableOpacity, RefreshControl } from "react-native"
-import { Toast, Icon } from "@ant-design/react-native"
+import { Toast, Icon, InputItem } from "@ant-design/react-native"
 import gStyle from "@utils/style"
 import gImg from "@utils/img"
 import pathMap from "@/routes/pathMap"
 import patientApi from "@api/patient"
+import { Picture } from "../advisory/Chat"
 const style = gStyle.addressBook.AddressBookIndex
 const global = gStyle.global
 interface Props {
@@ -17,7 +18,7 @@ interface Props {
 interface communicationItem {
   id: number
   uid: number
-  avatar: string
+  avatar: Picture
   name: string
   gender: number
   age: string
@@ -29,6 +30,8 @@ interface State {
   hasLoad: boolean
   refreshing: boolean
   communicationList: communicationItem[]
+  oriCommunicationList: communicationItem[]
+  search: string
 }
 const mapStateToProps = (state: AppState) => {
   return {
@@ -61,107 +64,22 @@ export default class Index extends Component<
       hasLoad: false,
       refreshing: false,
       communicationList: [],
+      oriCommunicationList: [],
+      search: "",
     }
   }
   async componentDidMount() {
     await this.init()
   }
   init = async () => {
-    // let json = await patientApi.getPatientList();
-    let communicationList = [
-      {
-        id: 1,
-        uid: 1,
-        avatar: "",
-        name: "哎呀",
-        gender: 1,
-        age: "28岁",
-        phone: "15096968574",
-        time: "2019-03-27 10:00:11",
-        consultStyle: "扫描",
-      },
-      {
-        id: 2,
-        uid: 2,
-        avatar: "https://www.byhealth.net/uploads/20190315/1cec476d9eaef31971abef5e16716365.png",
-        name: "哎呀",
-        gender: 2,
-        age: "两个月",
-        phone: "15096968574",
-        time: "2019-03-27 10:00:11",
-        consultStyle: "复诊",
-      },
-      {
-        id: 3,
-        uid: 4,
-        avatar: "",
-        name: "哎呀",
-        gender: 1,
-        age: "两个月",
-        phone: "15096968574",
-        time: "2019-03-27 10:00:11",
-        consultStyle: "复诊",
-      },
-      {
-        id: 4,
-        uid: 4,
-        avatar: "https://www.byhealth.net/uploads/20190315/1cec476d9eaef31971abef5e16716365.png",
-        name: "哎呀",
-        gender: 2,
-        age: "两个月",
-        phone: "",
-        time: "2019-03-27 10:00:11",
-        consultStyle: "复诊",
-      },
-      {
-        id: 5,
-        uid: 5,
-        avatar: "",
-        name: "哎呀",
-        gender: 2,
-        age: "两个月",
-        phone: "15096968574",
-        time: "2019-03-27 10:00:11",
-        consultStyle: "复诊",
-      },
-      {
-        id: 5,
-        uid: 5,
-        avatar: "",
-        name: "哎呀",
-        gender: 2,
-        age: "两个月",
-        phone: "15096968574",
-        time: "2019-03-27 10:00:11",
-        consultStyle: "复诊",
-      },
-      {
-        id: 6,
-        uid: 6,
-        avatar: "",
-        name: "哎呀",
-        gender: 2,
-        age: "两个月",
-        phone: "15096968574",
-        time: "2019-03-27 10:00:11",
-        consultStyle: "复诊",
-      },
-      {
-        id: 7,
-        uid: 8,
-        avatar: "",
-        name: "哎呀",
-        gender: 2,
-        age: "两个月",
-        phone: "15096968574",
-        time: "2019-03-27 10:00:11",
-        consultStyle: "复诊",
-      },
-    ]
+    let {
+      data: { list: communicationList },
+    } = await patientApi.getAddressBoolPatientList({ page: -1, limit: -1, filter: {} })
 
     this.setState({
       hasLoad: true,
       communicationList,
+      oriCommunicationList: communicationList,
     })
   }
   onRefresh = () => {
@@ -174,6 +92,7 @@ export default class Index extends Component<
         Toast.fail("刷新失败,错误信息: " + err.msg)
       })
   }
+
   render() {
     if (!this.state.hasLoad) {
       return (
@@ -181,28 +100,58 @@ export default class Index extends Component<
           <View style={style.loadingPic}>
             <Image style={style.loadingImg} source={gImg.common.loading} />
           </View>
-          <Text style={[style.loadingTitle, global.fontSize14, global.fontStyle]}>加载中...</Text>
         </View>
       )
     }
     return (
       <>
         <ScrollView
+          keyboardShouldPersistTaps="always"
           style={style.main}
           refreshControl={
             <RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh} />
           }>
           <View style={style.header}>
-            <TouchableOpacity
+            <View
               style={[
                 style.search,
                 global.flex,
                 global.justifyContentCenter,
                 global.alignItemsCenter,
               ]}>
-              <Icon name="search" style={[style.searchIcon, global.fontSize16]} />
-              <Text style={[style.searchTitle, global.fontSize14, global.fontStyle]}>搜索患者</Text>
-            </TouchableOpacity>
+              <View style={style.searchTitle}>
+                <InputItem
+                  style={[style.searchTitle, global.fontSize14, global.fontStyle]}
+                  clear
+                  last
+                  labelNumber={2}
+                  value={this.state.search}
+                  onChange={search => {
+                    this.setState({
+                      search,
+                    })
+                    let list = [],
+                      communicationList = this.state.oriCommunicationList
+                    if (search !== "") {
+                      for (let patient of communicationList) {
+                        if (patient.name.indexOf(search) >= 0) {
+                          list.push(patient)
+                        }
+                      }
+                      this.setState({
+                        communicationList: list,
+                      })
+                    } else {
+                      this.setState({
+                        communicationList: this.state.oriCommunicationList,
+                      })
+                    }
+                  }}
+                  placeholder="搜索患者">
+                  <Icon name="search" style={[style.searchIcon, global.fontSize20]} />
+                </InputItem>
+              </View>
+            </View>
           </View>
           <View style={style.separationModule} />
           <TouchableOpacity
@@ -245,7 +194,9 @@ export default class Index extends Component<
                   <View style={style.communicationItemPicture}>
                     <Image
                       style={style.communicationItemPic}
-                      source={v.avatar !== "" ? { uri: v.avatar } : gImg.common.defaultAvatar}
+                      source={
+                        v.avatar.url !== "" ? { uri: v.avatar.url } : gImg.common.defaultAvatar
+                      }
                     />
                   </View>
                   <View style={[style.groupTheme, global.justifyContentCenter]}>

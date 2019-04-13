@@ -32,19 +32,7 @@ export async function getPersonalInfo() {
     url: "/api/getDoctorPersonalInfo",
   })
 }
-/**
- * 获取患者分组列表
- */
-export async function getPatientGroupList({ page = -1, limit = -1, filter = {} }: GetListParam) {
-  return bget({
-    url: "/getPatientGroupList",
-    query: {
-      page,
-      limit,
-      filter,
-    },
-  })
-}
+
 /**
  * todo 获取已开处方列表
  */
@@ -188,7 +176,6 @@ export async function setFollowUpReviewPrice({
 
 export default {
   getPersonalInfo,
-  getPatientGroupList,
   deletePatientGroup,
   addPatientGroup,
   getHospitalList,

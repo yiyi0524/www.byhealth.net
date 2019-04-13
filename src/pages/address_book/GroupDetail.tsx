@@ -37,7 +37,7 @@ interface State {
   hasLoad: boolean
   refreshing: boolean
   groupName: string
-  name: string
+  groupId: number
   patientList: patientItem[]
   patientIdList: number[]
   selectPatientList: string[]
@@ -64,11 +64,7 @@ export default class Index extends Component<
   Props & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
   State
 > {
-  static navigationOptions = ({
-    navigation,
-  }: {
-    navigation: NavigationScreenProp<State> //TODO
-  }) => ({
+  static navigationOptions = ({ navigation }: { navigation: NavigationScreenProp<State> }) => ({
     title: navigation.state.params!.title,
     headerStyle: {
       backgroundColor: sColor.white,
@@ -105,7 +101,7 @@ export default class Index extends Component<
     return {
       hasLoad: false,
       refreshing: false,
-      name: "",
+      groupId: 0,
       groupName: "",
       patientList: [],
       patientIdList: [],
@@ -116,58 +112,35 @@ export default class Index extends Component<
     await this.init()
   }
   init = async () => {
-    // let patientList = await this.getPageData();
-    let patientList = [
-      {
-        id: 1,
-        avatar: "https://www.byhealth.net/uploads/20190322/e049282da2c90aa6e0866e66d42ad110.png",
-        name: "吳大伟",
-        gender: 1,
-        age: "28岁",
-        isChecked: false,
-      },
-      {
-        id: 2,
-        avatar: "https://www.byhealth.net/uploads/20190322/e049282da2c90aa6e0866e66d42ad110.png",
-        name: "吳二伟",
-        gender: 0,
-        age: "2个月大",
-        isChecked: false,
-      },
-      {
-        id: 3,
-        avatar: "",
-        name: "吳三伟",
-        gender: 2,
-        age: "28岁",
-        isChecked: false,
-      },
-      {
-        id: 4,
-        avatar: "https://www.byhealth.net/uploads/20190322/e049282da2c90aa6e0866e66d42ad110.png",
-        name: "吳思伟",
-        gender: 1,
-        age: "1岁11个月",
-        isChecked: false,
-      },
-    ]
+    let groupId = this.props.navigation.getParam("id")
+    this.setState({
+      groupId,
+    })
+    let patientList = await this.getPageData()
+    for (let patient of patientList) {
+      patient.isChecked = false //管理:是否选中
+    }
     this.setState({
       hasLoad: true,
       patientList,
     })
   }
   getPageData = async () => {
-    let filter = {
-      name: this.state.name,
+    try {
+      let filter = {
+        groupId: this.state.groupId,
+      }
+      let {
+        data: { list },
+      } = await patientApi.getGroupDetailPatientList({
+        page: -1,
+        limit: -1,
+        filter,
+      })
+      return list
+    } catch (err) {
+      console.log(err)
     }
-    let {
-      data: { list },
-    } = await patientApi.getPatientList({
-      page: -1,
-      limit: -1,
-      filter,
-    })
-    return list
   }
   onRefresh = () => {
     this.setState({ refreshing: true })
@@ -181,11 +154,7 @@ export default class Index extends Component<
   }
   render() {
     if (!this.state.hasLoad) {
-      return (
-        <View style={style.loading}>
-          <Text style={[style.loadingTitle, global.fontSize14, global.fontStyle]}>加载中...</Text>
-        </View>
-      )
+      return <View style={style.loading} />
     }
     return (
       <>

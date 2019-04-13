@@ -19,6 +19,7 @@ import { Dispatch } from "redux"
 import userApi from "@api/user"
 import pathMap from "@/routes/pathMap"
 import gImg from "@utils/img"
+import patient from "@/services/patient"
 const style = gStyle.addressBook.AddressBookGroup
 const global = gStyle.global
 interface NavParams {
@@ -125,85 +126,9 @@ export default class Index extends Component<
     })
   }
   init = async () => {
-    // let {data} = await userApi.getPatientGroupList({page:-1,limit:-1,filter:{}})
-    let patientGroupList = [
-      {
-        id: 1,
-        name: "亲人",
-        patientList: [
-          {
-            id: 1,
-            name: "李伟",
-          },
-          {
-            id: 2,
-            name: "吴伟",
-          },
-          {
-            id: 3,
-            name: "孟磊",
-          },
-          {
-            id: 4,
-            name: "吴大伟",
-          },
-          {
-            id: 5,
-            name: "吴二伟",
-          },
-        ],
-      },
-      {
-        id: 2,
-        name: "朋友",
-        patientList: [
-          {
-            id: 6,
-            name: "孟磊",
-          },
-          {
-            id: 7,
-            name: "吴大伟",
-          },
-          {
-            id: 8,
-            name: "吴二伟",
-          },
-          {
-            id: 9,
-            name: "吴二伟",
-          },
-          {
-            id: 10,
-            name: "吴二伟",
-          },
-          {
-            id: 11,
-            name: "吴二伟",
-          },
-          {
-            id: 12,
-            name: "吴二伟",
-          },
-          {
-            id: 13,
-            name: "吴二伟",
-          },
-          {
-            id: 14,
-            name: "吴二伟",
-          },
-          {
-            id: 15,
-            name: "吴二伟",
-          },
-          {
-            id: 16,
-            name: "吴二伟",
-          },
-        ],
-      },
-    ]
+    let {
+      data: { list: patientGroupList },
+    } = await patient.getPatientGroupList({ page: -1, limit: -1, filter: {} })
     this.setState({
       hasLoad: true,
       patientGroupList,
@@ -237,7 +162,6 @@ export default class Index extends Component<
           <View style={style.loadingPic}>
             <Image style={style.loadingImg} source={gImg.common.loading} />
           </View>
-          <Text style={[style.loadingTitle, global.fontSize14, global.fontStyle]}>加载中...</Text>
         </View>
       )
     }

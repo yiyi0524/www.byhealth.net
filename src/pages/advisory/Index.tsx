@@ -1,17 +1,16 @@
-import { Toast } from "@ant-design/react-native"
-import React, { Component } from "react"
-import { connect } from "react-redux"
-import { Dispatch } from "redux"
 import * as userAction from "@/redux/actions/user"
 import { AppState } from "@/redux/stores/store"
 import pathMap from "@/routes/pathMap"
+import { GENDER } from "@/services/doctor"
+import patient from "@/services/patient"
+import { Toast } from "@ant-design/react-native"
 import gImg from "@utils/img"
 import gStyle from "@utils/style"
+import React, { Component } from "react"
 import { Image, RefreshControl, ScrollView, Text, TouchableOpacity, View } from "react-native"
+import { connect } from "react-redux"
+import { Dispatch } from "redux"
 import { Picture } from "./Chat"
-import api from "@api/api"
-import patient from "@/services/patient"
-import { GENDER } from "@/services/doctor"
 const style = gStyle.advisory.advisoryIndex
 const globalStyle = gStyle.global
 interface Props {
@@ -95,9 +94,6 @@ export default class Index extends Component<
           <View style={style.loadingPic}>
             <Image style={style.loadingImg} source={gImg.common.loading} />
           </View>
-          <Text style={[style.loadingTitle, globalStyle.fontSize14, globalStyle.fontStyle]}>
-            加载中...
-          </Text>
         </View>
       )
     }
@@ -114,6 +110,8 @@ export default class Index extends Component<
               globalStyle.flex,
               globalStyle.alignItemsCenter,
               globalStyle.justifyContentSpaceBetween,
+              ,
+              { display: "none" },
             ]}>
             <TouchableOpacity
               style={[style.headerItem, globalStyle.flex, globalStyle.alignItemsCenter]}>
@@ -151,7 +149,14 @@ export default class Index extends Component<
                   }>
                   <View style={style.baseInformation}>
                     <View style={style.avatarFormat}>
-                      <Image style={style.avatar} source={{ uri: patientRecord.avatar.url }} />
+                      <Image
+                        style={style.avatar}
+                        source={
+                          patientRecord.avatar.url
+                            ? { uri: patientRecord.avatar.url }
+                            : gImg.common.defaultAvatar
+                        }
+                      />
                     </View>
                     <View
                       style={[

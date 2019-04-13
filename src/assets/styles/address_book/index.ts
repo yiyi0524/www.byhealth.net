@@ -37,12 +37,14 @@ export default StyleSheet.create({
     backgroundColor: sColor.mainBgColor,
     borderRadius: 5,
     height: 40,
+    flex: 1,
   },
   searchIcon: {
     color: sColor.color888,
   },
   searchTitle: {
     color: sColor.color888,
+    width: "100%",
   },
   separationModule: {
     flex: 1,

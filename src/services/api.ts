@@ -103,6 +103,8 @@ export interface registerParam {
   smsUuid: string
   verifyCode: string
   name: string
+  pwd: string
+  rePwd: string
   phone: string
   countyCid: string
   hospitalId?: number
@@ -115,6 +117,8 @@ export function register({
   smsUuid,
   verifyCode,
   name,
+  pwd,
+  rePwd,
   phone,
   countyCid,
   hospitalId,
@@ -126,6 +130,8 @@ export function register({
       smsUuid,
       verifyCode,
       name,
+      pwd,
+      rePwd,
       phone,
       countyCid,
       hospitalId,
@@ -299,7 +305,7 @@ export function getMedicalInstitutions(cityId: any) {
     },
   })
 }
-let aCity = {
+let aCity: Record<number, string> = {
   11: "北京",
   12: "天津",
   13: "河北",
@@ -338,7 +344,6 @@ let aCity = {
 }
 export function idCardIDChecked(sId: string) {
   var iSum = 0
-  var info = ""
   if (!/^\d{17}(\d|x)$/i.test(sId)) return false
   sId = sId.replace(/x$/i, "a")
   if (aCity[parseInt(sId.substr(0, 2))] === null) return false
