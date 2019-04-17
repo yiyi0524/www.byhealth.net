@@ -13,6 +13,8 @@ import { Dispatch } from "redux"
 import global from "@/assets/styles/global"
 import api from "@api/api"
 import { NavigationScreenProp } from "react-navigation"
+import { DeviceEventEmitter } from "react-native"
+
 const style = gStyle.user.login
 interface Props {
   navigation: NavigationScreenProp<State>
@@ -126,6 +128,8 @@ export default class Login extends Component<
       .then((json: any) => {
         Toast.success("登录成功", 1, () => {
           this.props.navigation.navigate(pathMap.Home)
+          // 登录成功之后,刷新某个页面 (pathMap.Home:为某页面路由名字)
+          DeviceEventEmitter.emit(pathMap.Home + "Reload", null)
           storage.set("session", json.data.appSession as string, 3 * 60 * 24)
         })
       })

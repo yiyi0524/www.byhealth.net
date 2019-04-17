@@ -1,17 +1,18 @@
 import * as userAction from "@/redux/actions/user"
 import { AppState } from "@/redux/stores/store"
-import { GENDER } from "@/services/doctor"
+import { GENDER_ZH, PRESCRIPTION_STATUS, PRESCRIPTION_STATUS_ZH } from "@/services/doctor"
 import { Icon, Tabs, Toast } from "@ant-design/react-native"
 import userApi from "@api/user"
 import sColor from "@styles/color"
+import gImg from "@utils/img"
 import gStyle from "@utils/style"
+import moment from "moment"
 import React, { Component } from "react"
-import { PixelRatio, Text, View, Image } from "react-native"
+import { Image, PixelRatio, Text, View } from "react-native"
 import { TouchableOpacity } from "react-native-gesture-handler"
 import { NavigationScreenProp } from "react-navigation"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
-import gImg from "@utils/img"
 const style = gStyle.index.Prescription
 const global = gStyle.global
 interface Props {
@@ -24,16 +25,17 @@ interface State {
   limit: number
   filter: {}
   prescriptionList: prescriptionItem[]
-  prescriptionPaymentList: prescriptionItem[]
 }
-interface prescriptionItem {
+export interface prescriptionItem {
   id: number
   name: string
   gender: number
-  age_year: number
-  age_month: number
-  diagnosis: string
-  time: string
+  yearAge: number
+  monthAge: number
+  discrimination: string //辨病
+  syndromeDifferentiation: string //辩证
+  status: number
+  ctime: string
 }
 
 const mapStateToProps = (state: AppState) => {
@@ -87,7 +89,6 @@ export default class Prescription extends Component<
       hasLoad: false,
       refreshing: false,
       prescriptionList: [],
-      prescriptionPaymentList: [],
       page: -1,
       limit: -1,
       filter: {},
@@ -97,64 +98,16 @@ export default class Prescription extends Component<
     await this.init()
   }
   init = async () => {
-    // let {data} = await userApi.getPrescriptionList({page:this.state.page,limit:this.state.limit,filter:this.state.filter)
-    // let filter = {
-    //   status:1,
-    // }
-    // let {data:{prescriptionPaymentList,}} = await userApi.getPrescriptionList({page:this.state.page,limit:this.state.limit,filter)
-    let prescriptionList = [
-      {
-        id: 1,
-        name: "吴大伟",
-        gender: 1,
-        age_year: 23,
-        age_month: 0,
-        diagnosis: "病毒性感冒",
-        time: "2019-03-23 12:00:00",
-      },
-      {
-        id: 2,
-        name: "吴二伟",
-        gender: 2,
-        age_year: 0,
-        age_month: 18,
-        diagnosis: "病毒性感冒",
-        time: "2019-03-23 12:00:00",
-      },
-      {
-        id: 3,
-        name: "吴三伟",
-        gender: 1,
-        age_year: 23,
-        age_month: 0,
-        diagnosis: "病毒性感冒",
-        time: "2019-03-23 12:00:00",
-      },
-    ]
-    let prescriptionPaymentList = [
-      {
-        id: 1,
-        name: "吴大伟",
-        gender: 1,
-        age_year: 23,
-        age_month: 0,
-        diagnosis: "病毒性感冒",
-        time: "2019-03-23 12:00:00",
-      },
-      {
-        id: 3,
-        name: "吴三伟",
-        gender: 1,
-        age_year: 23,
-        age_month: 0,
-        diagnosis: "病毒性感冒",
-        time: "2019-03-23 12:00:00",
-      },
-    ]
+    let {
+      data: { list: prescriptionList },
+    } = await userApi.getPrescriptionList({
+      page: this.state.page,
+      limit: this.state.limit,
+      filter: this.state.filter,
+    })
     this.setState({
       hasLoad: true,
       prescriptionList,
-      prescriptionPaymentList,
     })
   }
   onRefresh = () => {
@@ -177,6 +130,71 @@ export default class Prescription extends Component<
       .catch(err => {
         Toast.fail("删除失败, 错误原因: " + err.msg, 3)
       })
+  }
+  buildPrescriptionDom = (
+    v: prescriptionItem,
+    k: number,
+    showPayStatus = true,
+  ): React.ReactChild => {
+    return (
+      <TouchableOpacity key={k} style={style.prescriptionItem}>
+        <View
+          style={[
+            style.prescriptionItemHeader,
+            global.flex,
+            global.alignItemsCenter,
+            global.justifyContentSpaceBetween,
+          ]}>
+          <View style={[style.prescriptionItemHeaderLeft, global.flex, global.alignItemsCenter]}>
+            <View style={style.prescriptionItemHeaderLeftIcon} />
+            <Text style={[style.prescriptionItemHeaderLeftTitle, global.fontSize14]}>{v.name}</Text>
+            <Text style={[style.prescriptionItemHeaderLeftDetail, global.fontSize14]}>
+              {GENDER_ZH[v.gender]}
+              {v.yearAge !== 0
+                ? v.yearAge + "岁"
+                : v.monthAge !== 0
+                ? v.monthAge > 12
+                  ? Math.floor(v.monthAge / 12) + "岁" + (v.monthAge % 12) + "月"
+                  : v.monthAge + "月"
+                : "未知"}
+            </Text>
+          </View>
+          <View style={[style.prescriptionItemHeaderRight, global.flex, global.alignItemsCenter]}>
+            <Text style={[style.prescriptionItemHeaderRightTitle, global.fontSize14]}>
+              查看详情
+            </Text>
+            <Icon name="right" style={[style.prescriptionItemHeaderRightIcon, global.fontSize14]} />
+          </View>
+        </View>
+        <View style={style.prescriptionItemDescription}>
+          <Text
+            style={[style.prescriptionItemDescriptionDiagnosis, global.fontSize14]}
+            numberOfLines={1}>
+            [ 诊断 ] {v.discrimination}; {v.syndromeDifferentiation}
+          </Text>
+          <View
+            style={[
+              style.prescriptionItemDescriptionDetail,
+              global.flex,
+              global.alignItemsCenter,
+              global.justifyContentSpaceBetween,
+            ]}>
+            <Text
+              style={[style.prescriptionItemDescriptionTime, global.fontSize14]}
+              numberOfLines={1}>
+              {moment(v.ctime).format("YYYY年MM月DD日 HH:mm")}
+            </Text>
+            {showPayStatus ? (
+              <Text
+                style={[style.prescriptionItemDescriptionStatus, global.fontSize14]}
+                numberOfLines={1}>
+                {PRESCRIPTION_STATUS_ZH[v.status]}
+              </Text>
+            ) : null}
+          </View>
+        </View>
+      </TouchableOpacity>
+    )
   }
   render() {
     if (!this.state.hasLoad) {
@@ -201,177 +219,24 @@ export default class Prescription extends Component<
                   title: `全部 ( ${this.state.prescriptionList.length} )`,
                 },
                 {
-                  title: `已支付 ( ${this.state.prescriptionPaymentList.length} )`,
+                  title: `已支付 ( ${
+                    this.state.prescriptionList.filter(
+                      v => v.status === PRESCRIPTION_STATUS.completePay,
+                    ).length
+                  } )`,
                 },
               ]}>
               <View style={style.prescriptionList}>
-                {this.state.prescriptionList.map((v: prescriptionItem, k: number) => {
-                  return (
-                    <TouchableOpacity key={k} style={style.prescriptionItem}>
-                      <View
-                        style={[
-                          style.prescriptionItemHeader,
-                          global.flex,
-                          global.alignItemsCenter,
-                          global.justifyContentSpaceBetween,
-                        ]}>
-                        <View
-                          style={[
-                            style.prescriptionItemHeaderLeft,
-                            global.flex,
-                            global.alignItemsCenter,
-                          ]}>
-                          <View style={style.prescriptionItemHeaderLeftIcon} />
-                          <Text style={[style.prescriptionItemHeaderLeftTitle, global.fontSize14]}>
-                            {v.name}
-                          </Text>
-                          <Text style={[style.prescriptionItemHeaderLeftDetail, global.fontSize14]}>
-                            {v.gender === GENDER.MAN
-                              ? "男"
-                              : v.gender === GENDER.WOMAN
-                              ? "女"
-                              : "未知"}{" "}
-                            {v.age_year !== 0
-                              ? v.age_year + "岁"
-                              : v.age_month !== 0
-                              ? v.age_month > 12
-                                ? Math.floor(v.age_month / 12) + "岁" + (v.age_month % 12) + "月"
-                                : v.age_month + "月"
-                              : "未知"}
-                          </Text>
-                        </View>
-                        <View
-                          style={[
-                            style.prescriptionItemHeaderRight,
-                            global.flex,
-                            global.alignItemsCenter,
-                          ]}>
-                          <Text style={[style.prescriptionItemHeaderRightTitle, global.fontSize14]}>
-                            查看详情
-                          </Text>
-                          <Icon
-                            name="right"
-                            style={[style.prescriptionItemHeaderRightIcon, global.fontSize14]}
-                          />
-                        </View>
-                      </View>
-                      <View style={style.prescriptionItemDescription}>
-                        <Text
-                          style={[style.prescriptionItemDescriptionDiagnosis, global.fontSize14]}
-                          numberOfLines={1}>
-                          [ 诊断 ] 病毒性感冒; 头疼, 流鼻涕 鼻子不通
-                        </Text>
-                        <View
-                          style={[
-                            style.prescriptionItemDescriptionDetail,
-                            global.flex,
-                            global.alignItemsCenter,
-                            global.justifyContentSpaceBetween,
-                          ]}>
-                          <Text
-                            style={[style.prescriptionItemDescriptionTime, global.fontSize14]}
-                            numberOfLines={1}>
-                            {v.time.substr(0, 4) +
-                              "年" +
-                              v.time.substr(5, 2) +
-                              "月" +
-                              v.time.substr(8, 2) +
-                              "日" +
-                              " " +
-                              v.time.substr(12, 4)}
-                          </Text>
-                          <Text
-                            style={[style.prescriptionItemDescriptionStatus, global.fontSize14]}
-                            numberOfLines={1}>
-                            待支付
-                          </Text>
-                        </View>
-                      </View>
-                    </TouchableOpacity>
-                  )
-                })}
+                {this.state.prescriptionList.map((v: prescriptionItem, k: number) =>
+                  this.buildPrescriptionDom(v, k),
+                )}
               </View>
               <View style={style.prescriptionList}>
-                {this.state.prescriptionPaymentList.map((v: prescriptionItem, k: number) => {
-                  return (
-                    <TouchableOpacity key={k} style={style.prescriptionItem}>
-                      <View
-                        style={[
-                          style.prescriptionItemHeader,
-                          global.flex,
-                          global.alignItemsCenter,
-                          global.justifyContentSpaceBetween,
-                        ]}>
-                        <View
-                          style={[
-                            style.prescriptionItemHeaderLeft,
-                            global.flex,
-                            global.alignItemsCenter,
-                          ]}>
-                          <View style={style.prescriptionItemHeaderLeftIcon} />
-                          <Text style={[style.prescriptionItemHeaderLeftTitle, global.fontSize14]}>
-                            {v.name}
-                          </Text>
-                          <Text style={[style.prescriptionItemHeaderLeftDetail, global.fontSize14]}>
-                            {v.gender === GENDER.MAN
-                              ? "男"
-                              : v.gender === GENDER.WOMAN
-                              ? "女"
-                              : "未知"}{" "}
-                            {v.age_year !== 0
-                              ? v.age_year + "岁"
-                              : v.age_month !== 0
-                              ? v.age_month > 12
-                                ? Math.floor(v.age_month / 12) + "岁" + (v.age_month % 12) + "月"
-                                : v.age_month + "月"
-                              : "未知"}
-                          </Text>
-                        </View>
-                        <View
-                          style={[
-                            style.prescriptionItemHeaderRight,
-                            global.flex,
-                            global.alignItemsCenter,
-                          ]}>
-                          <Text style={[style.prescriptionItemHeaderRightTitle, global.fontSize14]}>
-                            查看详情
-                          </Text>
-                          <Icon
-                            name="right"
-                            style={[style.prescriptionItemHeaderRightIcon, global.fontSize14]}
-                          />
-                        </View>
-                      </View>
-                      <View style={style.prescriptionItemDescription}>
-                        <Text
-                          style={[style.prescriptionItemDescriptionDiagnosis, global.fontSize14]}
-                          numberOfLines={1}>
-                          [ 诊断 ] 病毒性感冒; 头疼, 流鼻涕 鼻子不通
-                        </Text>
-                        <View
-                          style={[
-                            style.prescriptionItemDescriptionDetail,
-                            global.flex,
-                            global.alignItemsCenter,
-                            global.justifyContentSpaceBetween,
-                          ]}>
-                          <Text
-                            style={[style.prescriptionItemDescriptionTime, global.fontSize14]}
-                            numberOfLines={1}>
-                            {v.time.substr(0, 4) +
-                              "年" +
-                              v.time.substr(5, 2) +
-                              "月" +
-                              v.time.substr(8, 2) +
-                              "日" +
-                              " " +
-                              v.time.substr(12, 4)}
-                          </Text>
-                        </View>
-                      </View>
-                    </TouchableOpacity>
-                  )
-                })}
+                {this.state.prescriptionList
+                  .filter(v => v.status === PRESCRIPTION_STATUS.completePay)
+                  .map((v: prescriptionItem, k: number) => {
+                    return this.buildPrescriptionDom(v, k, false)
+                  })}
               </View>
             </Tabs>
           </View>

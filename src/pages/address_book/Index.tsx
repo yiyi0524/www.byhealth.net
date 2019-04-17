@@ -9,28 +9,27 @@ import gStyle from "@utils/style"
 import gImg from "@utils/img"
 import pathMap from "@/routes/pathMap"
 import patientApi from "@api/patient"
-import { Picture } from "../advisory/Chat"
+import { Picture } from "@pages/advisory/Chat"
 const style = gStyle.addressBook.AddressBookIndex
 const global = gStyle.global
 interface Props {
   navigation: any
 }
-interface communicationItem {
+export interface communicationItem {
   id: number
   uid: number
   avatar: Picture
   name: string
   gender: number
-  age: string
+  age: number
   phone: string
-  time: string
-  consultStyle: string
+  ctime: string
+  consultStyle: number
 }
 interface State {
   hasLoad: boolean
   refreshing: boolean
   communicationList: communicationItem[]
-  oriCommunicationList: communicationItem[]
   search: string
 }
 const mapStateToProps = (state: AppState) => {
@@ -64,7 +63,6 @@ export default class Index extends Component<
       hasLoad: false,
       refreshing: false,
       communicationList: [],
-      oriCommunicationList: [],
       search: "",
     }
   }
@@ -79,7 +77,6 @@ export default class Index extends Component<
     this.setState({
       hasLoad: true,
       communicationList,
-      oriCommunicationList: communicationList,
     })
   }
   onRefresh = () => {
@@ -131,7 +128,7 @@ export default class Index extends Component<
                       search,
                     })
                     let list = [],
-                      communicationList = this.state.oriCommunicationList
+                      { communicationList } = this.state
                     if (search !== "") {
                       for (let patient of communicationList) {
                         if (patient.name.indexOf(search) >= 0) {
@@ -140,10 +137,6 @@ export default class Index extends Component<
                       }
                       this.setState({
                         communicationList: list,
-                      })
-                    } else {
-                      this.setState({
-                        communicationList: this.state.oriCommunicationList,
                       })
                     }
                   }}
@@ -176,7 +169,7 @@ export default class Index extends Component<
           </TouchableOpacity>
           <View style={style.separationModule} />
           <View style={style.communicationList}>
-            {this.state.communicationList.map((v: any, k: number) => {
+            {this.state.communicationList.map((v: communicationItem, k: number) => {
               return (
                 <TouchableOpacity
                   key={k}
@@ -189,13 +182,20 @@ export default class Index extends Component<
                   onPress={() =>
                     this.props.navigation.push(pathMap.PatientDetail, {
                       title: v.name,
+                      patientUid: v.uid,
                     })
                   }>
                   <View style={style.communicationItemPicture}>
                     <Image
                       style={style.communicationItemPic}
                       source={
-                        v.avatar.url !== "" ? { uri: v.avatar.url } : gImg.common.defaultAvatar
+                        v.avatar.url !== ""
+                          ? // ? { uri: getPicFullUrl(v.avatar.url) }
+                            {
+                              uri:
+                                "https://thirdwx.qlogo.cn/mmopen/NFh0b6W9wb26ibhkNDt6HDsTLOEaDxAtk6BJxUa1MUjfibibJurwub1HALHPmvPxGscfOPR0s3CBvib4sN4E691ysr04XdicE60RE/132",
+                            }
+                          : gImg.common.defaultAvatar
                       }
                     />
                   </View>
@@ -249,7 +249,7 @@ export default class Index extends Component<
                       <View
                         style={[global.flex, global.justifyContentStart, global.alignItemsCenter]}>
                         <Text style={[style.firstConsultTime, global.fontStyle, global.fontSize13]}>
-                          {v.time.substr(0, 10)}
+                          {v.ctime.substr(0, 10)}
                         </Text>
                         <Text style={[style.firstConsultTime, global.fontStyle, global.fontSize13]}>
                           {v.consultStyle}

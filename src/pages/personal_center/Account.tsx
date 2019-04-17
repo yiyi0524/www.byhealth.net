@@ -9,6 +9,7 @@ import { NavigationScreenProp } from "react-navigation"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
 import gImg from "@utils/img"
+import { getBalance } from "@/services/doctor"
 const style = gStyle.personalCenter.account
 const global = gStyle.global
 interface Props {
@@ -18,6 +19,7 @@ interface State {
   hasLoad: boolean
   refreshing: boolean
   isShowAccount: boolean
+  balance: number
 }
 interface functionItem {
   name: string
@@ -84,13 +86,18 @@ export default class Account extends Component<
       hasLoad: false,
       refreshing: false,
       isShowAccount: true,
+      balance: 0.0,
     }
   }
-  async componentDidMount() {
-    await this.init()
+  componentDidMount() {
+    this.init()
   }
   init = async () => {
+    const {
+      data: { balance },
+    } = await getBalance()
     this.setState({
+      balance,
       hasLoad: true,
     })
   }
@@ -133,7 +140,8 @@ export default class Account extends Component<
                 global.justifyContentSpaceBetween,
               ]}>
               <TouchableOpacity
-                style={[style.headerCenterLeft, global.flex, global.alignItemsCenter]}>
+                style={[style.headerCenterLeft, global.flex, global.alignItemsCenter]}
+                onPress={() => this.setState({ isShowAccount: !this.state.isShowAccount })}>
                 <Icon
                   name={this.state.isShowAccount ? "eye-invisible" : "eye"}
                   style={[style.headerCenterLeftIcon, global.fontSize14]}
@@ -143,7 +151,7 @@ export default class Account extends Component<
                 </Text>
               </TouchableOpacity>
               <Text style={[style.headerCenterTitle]}>
-                ¥ {this.state.isShowAccount ? "8888" : "****"}
+                ¥ {this.state.isShowAccount ? this.state.balance / 100 : "****"}
               </Text>
               <TouchableOpacity>
                 <Text style={[style.headerCenterRight, global.fontSize14, global.fontStyle]}>
@@ -152,7 +160,8 @@ export default class Account extends Component<
               </TouchableOpacity>
             </View>
           </View>
-          <View style={style.bank}>
+          {/* 银行卡部分先注释 */}
+          {/* <View style={style.bank}>
             <TouchableOpacity style={style.addBank}>
               <View
                 style={[
@@ -184,7 +193,7 @@ export default class Account extends Component<
                 <Icon name="right" style={[style.bankDescriptionRight, global.fontSize14]} />
               </View>
             </TouchableOpacity>
-          </View>
+          </View> */}
         </ScrollView>
       </>
     )

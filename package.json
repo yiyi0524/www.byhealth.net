@@ -13,6 +13,8 @@
   "dependencies": {
     "@ant-design/react-native": "^3.1.5",
     "@react-native-community/async-storage": "^1.2.1",
+    "@react-native-community/slider": "^1.0.4",
+    "@react-native-community/viewpager": "^1.1.6",
     "@types/moment": "^2.13.0",
     "@types/qs": "^6.5.2",
     "@types/react-redux": "^7.0.5",

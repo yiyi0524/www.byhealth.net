@@ -1,4 +1,5 @@
-import { bget, bpost, GetListParam } from "./api"
+import { communicationItem } from "@/pages/address_book/Index"
+import { bget, GetListParam } from "./api"
 import { GENDER } from "./doctor"
 /**
  * todo获取资讯患者信息
@@ -57,42 +58,8 @@ export async function getPatientList({ page = -1, limit = -1, filter }: GetListP
  *     }
  */
 export async function getAddressBoolPatientList({ page = -1, limit = -1, filter }: GetListParam) {
-  return {
-    data: {
-      list: [
-        {
-          id: 4,
-          patientId: 1,
-          avatar: {
-            id: -1,
-            url: "",
-            title: "",
-          },
-          age: 30,
-          gender: GENDER.WOMAN,
-          name: "孟雷",
-          phone: "15096483854",
-          time: "2019-03-22 10:10:10",
-        },
-        {
-          id: 1,
-          patientId: 2,
-          avatar: {
-            id: -1,
-            url: "",
-            title: "",
-          },
-          age: 24,
-          gender: GENDER.MAN, //1:男;2:女'0:未知
-          name: "吴亦凡",
-          phone: "15096483854",
-          time: "2019-03-22 10:10:10",
-        },
-      ],
-    },
-  }
-  return bget({
-    url: "/getAddressBoolPatientList",
+  return bget<{ list: communicationItem[] }>({
+    url: "api/getAddressBoolPatientList",
     query: {
       page,
       limit,
@@ -103,11 +70,11 @@ export async function getAddressBoolPatientList({ page = -1, limit = -1, filter 
 /**
  * 获取患者个人信息
  */
-export function getPatientInfo({ id }: { id: number }) {
-  return bpost({
-    url: "/api/getPatientInfo",
-    data: {
-      id,
+export function getPatientInfo({ uid }: { uid: number }) {
+  return bget({
+    url: "api/getPatientInfo",
+    query: {
+      uid,
     },
   })
 }

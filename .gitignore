@@ -62,7 +62,7 @@ buck-out/
 ### buff
 .history/
 __tests__
-nbproject/
-/nbproject/private/private.xml
+/nbproject
 .expo/
 juiceNote
+yarn.lock

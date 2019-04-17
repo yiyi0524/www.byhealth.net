@@ -1,8 +1,9 @@
 import { BASE_URL } from "@/config/api"
 import * as userAction from "@/redux/actions/user"
 import { AppState } from "@/redux/stores/store"
+import pathMap from "@/routes/pathMap"
 import api from "@/services/api"
-import { GENDER_ZH, TECHNICAL_TITLE_ZH } from "@/services/doctor"
+import { GENDER_ZH, TECHNICAL_TITLE_ZH, setAdeptSymptomIdList, setProfile } from "@/services/doctor"
 import { TextareaItem, Toast } from "@ant-design/react-native"
 import hospitalApi from "@api/hospital"
 import userApi, { DoctorInfo } from "@api/user"
@@ -16,7 +17,6 @@ import { connect } from "react-redux"
 import { Dispatch } from "redux"
 import { Overwrite } from "utility-types"
 import { Picture } from "../advisory/Chat"
-import pathMap from "@/routes/pathMap"
 const style = gStyle.personalCenter.editInformation
 const global = gStyle.global
 interface Props {
@@ -42,10 +42,11 @@ interface State {
       departmentId: number
       adeptSymptomIdList: number[]
       countyCid: string
+      provinceCid: string
       hospitalId: number
     }
   >
-  technicalTitle: string
+  departmentName: string
   adeptSymptomIdMapList: adeptSymptomIdMapItem[]
   regionCidMapAreaName: RegionCidMapAreaName
   hospitalName: string
@@ -140,14 +141,16 @@ export default class Index extends Component<
         technicalTitle: 0,
         departmentId: 0,
         adeptSymptomIdList: [],
+        provinceCid: "",
         countyCid: "",
+        profile: "",
         hospitalId: 0,
         hasRealNameAuth: false,
         patientCount: 0,
         prescriptionCount: 0,
         uid: 0,
       },
-      technicalTitle: "",
+      departmentName: "",
       adeptSymptomIdMapList: [],
       regionCidMapAreaName: {},
       hospitalName: "",
@@ -195,9 +198,11 @@ export default class Index extends Component<
         departmentId: data.doctorInfo.departmentId as number,
         adeptSymptomIdList: data.doctorInfo.adeptSymptomIdList as number[],
         countyCid: data.doctorInfo.countyCid as string,
+        provinceCid: data.doctorInfo.provinceCid as string,
         hospitalId: data.doctorInfo.hospitalId as number,
         hasRealNameAuth: data.doctorInfo.hasRealNameAuth,
         patientCount: data.doctorInfo.patientCount,
+        profile: data.doctorInfo.profile,
         prescriptionCount: data.doctorInfo.prescriptionCount,
         uid: data.doctorInfo.uid,
       }
@@ -208,9 +213,9 @@ export default class Index extends Component<
         hospitalName,
       })
       for (let v of hospitalDepartmentSymptom) {
-        if (v.id === this.state.doctorInfo.technicalTitle) {
+        if (v.id === this.state.doctorInfo.departmentId) {
           this.setState({
-            technicalTitle: v.name,
+            departmentName: v.name,
           })
         }
         for (let v1 of v.symptomList) {
@@ -268,7 +273,7 @@ export default class Index extends Component<
       adeptSymptomIdList.push(v.id)
     }
     try {
-      await userApi.setAdeptSymptomIdList({ adeptSymptomIdList })
+      await setAdeptSymptomIdList({ adeptSymptomIdList })
       Toast.success("擅长疾病设置成功", 2)
     } catch (err) {
       console.log(err)
@@ -280,7 +285,7 @@ export default class Index extends Component<
       isEditProfile: false,
     })
     try {
-      await userApi.setProfile({ profile: this.state.info.profile })
+      await setProfile({ profile: this.state.doctorInfo.profile })
       Toast.success("我的简介设置成功", 2)
     } catch (err) {
       console.log(err)
@@ -335,11 +340,11 @@ export default class Index extends Component<
             </View>
             <View style={style.headerDescription}>
               <Text style={[style.headerDepartment, global.fontSize14]}>
-                擅长科室: {this.state.technicalTitle}
+                擅长科室: {this.state.departmentName}
               </Text>
               <Text style={[style.headerDepartment, global.fontSize14]}>
                 第一职业机构{"  "}
-                {this.state.regionCidMapAreaName[parseInt(this.state.doctorInfo.countyCid)]}
+                {this.state.regionCidMapAreaName[parseInt(this.state.doctorInfo.provinceCid)]}
                 {"  "}
                 {this.state.hospitalName}
               </Text>
@@ -386,14 +391,16 @@ export default class Index extends Component<
                 <Text style={[style.profileEdit, global.fontSize14]}>编辑</Text>
               </TouchableOpacity>
             </View>
-            <Text style={[style.profileDetail, global.fontSize14]}>{this.state.info.profile}</Text>
+            <Text style={[style.profileDetail, global.fontSize14]}>
+              {this.state.doctorInfo.profile}
+            </Text>
           </View>
         </ScrollView>
-        <View style={style.viewFa}>
+        {/* <View style={style.viewFa}>
           <TouchableOpacity>
             <Text style={[style.view, global.fontSize14]}>预览</Text>
           </TouchableOpacity>
-        </View>
+        </View> */}
         {/* 擅长 */}
         <ScrollView
           style={this.state.isEditAdeptSymptomIdList ? style.selectDepartment : global.hidden}>
@@ -470,14 +477,17 @@ export default class Index extends Component<
           <View style={style.editInput}>
             <TextareaItem
               rows={4}
+              maxLength={500}
               placeholder="请输入简介"
-              value={this.state.info.profile}
-              onChange={value => {
-                let info = this.state.info
-                info.profile = value as string
-                this.setState({
-                  info,
-                })
+              value={this.state.doctorInfo.profile}
+              onChange={profile => {
+                if (profile) {
+                  let doctorInfo = this.state.doctorInfo
+                  doctorInfo.profile = profile
+                  this.setState({
+                    doctorInfo,
+                  })
+                }
               }}
               style={style.editProfileInput}
             />

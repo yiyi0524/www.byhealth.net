@@ -8,7 +8,16 @@ import userApi from "@api/user"
 import gImg from "@utils/img"
 import gStyle from "@utils/style"
 import React, { Component } from "react"
-import { Image, RefreshControl, ScrollView, Text, TouchableOpacity, View } from "react-native"
+import {
+  Image,
+  RefreshControl,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
+  DeviceEventEmitter,
+  EmitterSubscription,
+} from "react-native"
 import { NavigationScreenProp } from "react-navigation"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
@@ -85,6 +94,7 @@ export default class Home extends Component<
   State
 > {
   shortcutList: ShortcutItem[] = []
+  subscription?: EmitterSubscription
   constructor(props: any) {
     super(props)
     this.state = this.getInitState()
@@ -109,47 +119,58 @@ export default class Home extends Component<
         url: "",
       },
       name: "",
-      bannerList: [],
+      bannerList: [
+        {
+          id: 1,
+          url: gImg.home.banner_0,
+          link: "",
+        },
+        {
+          id: 2,
+          url: gImg.home.banner_1,
+          link: "",
+        },
+        {
+          id: 3,
+          url: gImg.home.banner_2,
+          link: "",
+        },
+        {
+          id: 4,
+          url: gImg.home.banner_3,
+          link: "",
+        },
+      ],
     }
   }
   componentDidMount() {
+    this.subscription = DeviceEventEmitter.addListener(pathMap.Home + "Reload", _ => {
+      console.log("首页被刷新")
+      this.init()
+    })
     this.init()
+  }
+  componentWillUnmount() {
+    if (this.subscription) {
+      this.subscription.remove()
+    }
   }
   init = async () => {
     let isLogin = false
     try {
       isLogin = await api.isLogin()
-      let {
-        data: { doctorInfo, info },
-      } = await userApi.getPersonalInfo()
-      this.setState({
-        name: info.name,
-        avatar: info.avatar,
-        hasRealNameAuth: doctorInfo.hasRealNameAuth,
-        prescriptionCount: doctorInfo.prescriptionCount,
-        bannerList: [
-          {
-            id: 1,
-            url: gImg.home.banner_0,
-            link: "",
-          },
-          {
-            id: 2,
-            url: gImg.home.banner_1,
-            link: "",
-          },
-          {
-            id: 3,
-            url: gImg.home.banner_2,
-            link: "",
-          },
-          {
-            id: 4,
-            url: gImg.home.banner_3,
-            link: "",
-          },
-        ],
-      })
+      if (isLogin) {
+        let {
+          data: { doctorInfo, info },
+        } = await userApi.getPersonalInfo()
+        this.setState({
+          name: info.name,
+          avatar: info.avatar,
+          hasRealNameAuth: doctorInfo.hasRealNameAuth,
+          prescriptionCount: doctorInfo.prescriptionCount,
+          patientCount: doctorInfo.patientCount,
+        })
+      }
     } catch (err) {
       console.log(err)
     }
