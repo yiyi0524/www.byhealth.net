@@ -23,9 +23,6 @@ interface State {
   refreshing: boolean
   onlineReferralChecked: boolean
   isSelectDisturbanceFreePeriod: boolean
-  disturbanceFreePeriodStart: Date
-  disturbanceFreePeriodEnd: Date
-  disturbanceFreePeriod: string
   reviewPrice: number
   isSelectReviewPrice: boolean
   isSelectFollowUpReviewPrice: boolean
@@ -87,65 +84,140 @@ export default class DiagnosisSettings extends Component<
       isSelectDisturbanceFreePeriod: false,
       isSelectReviewPrice: false,
       isSelectFollowUpReviewPrice: false,
-      followUpReviewPrice: 1.0,
-      reviewPrice: 5.0,
-      disturbanceFreePeriod: "",
-      disturbanceFreePeriodStart: moment("2000-01-01 08:00:00").toDate(),
-      disturbanceFreePeriodEnd: moment("2000-01-02 23:00:00").toDate(),
-      reviewPriceList: [],
-      followUpReviewPriceList: [],
+      followUpReviewPrice: 0,
+      reviewPrice: 0,
+      reviewPriceList: [
+        5,
+        10,
+        15,
+        20,
+        25,
+        30,
+        35,
+        40,
+        45,
+        50,
+        55,
+        60,
+        65,
+        70,
+        75,
+        80,
+        85,
+        90,
+        95,
+        100,
+        110,
+        120,
+        130,
+        140,
+        150,
+        160,
+        170,
+        180,
+        190,
+        200,
+        210,
+        220,
+        230,
+        240,
+        250,
+        260,
+        270,
+        280,
+        290,
+        300,
+        350,
+        400,
+        450,
+        500,
+        550,
+        600,
+        650,
+        700,
+        750,
+        800,
+        850,
+        900,
+        950,
+        1000,
+      ],
+      followUpReviewPriceList: [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        15,
+        20,
+        25,
+        30,
+        35,
+        40,
+        45,
+        50,
+        55,
+        60,
+        65,
+        70,
+        75,
+        80,
+        85,
+        90,
+        95,
+        100,
+        110,
+        120,
+        130,
+        140,
+        150,
+        160,
+        170,
+        180,
+        190,
+        200,
+        210,
+        220,
+        230,
+        240,
+        250,
+        260,
+        270,
+        280,
+        290,
+        300,
+        350,
+        400,
+        450,
+        500,
+        600,
+        700,
+        800,
+        900,
+        1000,
+        1100,
+        1200,
+        1300,
+        1400,
+        1500,
+        1600,
+        1700,
+        1800,
+        1900,
+        2000,
+      ],
     }
   }
-  async componentDidMount() {
-    await this.init()
+  componentDidMount() {
+    this.init()
   }
   init = async () => {
-    let disturbanceFreePeriod =
-      moment(this.state.disturbanceFreePeriodStart).format("HH:mm") +
-      " - " +
-      moment(this.state.disturbanceFreePeriodEnd).format("HH:mm")
-    let reviewPriceList = this.state.reviewPriceList,
-      followUpReviewPriceList = this.state.followUpReviewPriceList
-    for (let i = 5; i <= 1000; ) {
-      if (i < 100) {
-        reviewPriceList.push(i)
-        i = i + 5
-      }
-      if (i >= 100 && i < 300) {
-        reviewPriceList.push(i)
-        i = i + 10
-      }
-      if (i >= 300) {
-        reviewPriceList.push(i)
-        i = i + 50
-      }
-    }
-    for (let i = 0; i <= 2000; ) {
-      if (i < 10) {
-        followUpReviewPriceList.push(i)
-        i++
-      }
-      if (i >= 10 && i < 100) {
-        followUpReviewPriceList.push(i)
-        i = i + 5
-      }
-      if (i >= 100 && i < 300) {
-        followUpReviewPriceList.push(i)
-        i = i + 10
-      }
-      if (i >= 300 && i < 500) {
-        followUpReviewPriceList.push(i)
-        i = i + 50
-      }
-      if (i >= 500) {
-        followUpReviewPriceList.push(i)
-        i = i + 100
-      }
-    }
     this.setState({
-      disturbanceFreePeriod,
-      reviewPriceList,
-      followUpReviewPriceList,
       hasLoad: true,
     })
   }
@@ -177,19 +249,6 @@ export default class DiagnosisSettings extends Component<
     this.setState({
       isSelectDisturbanceFreePeriod: false,
     })
-  }
-  changeDisturbanceFreePeriod = async () => {
-    let start = moment(this.state.disturbanceFreePeriodStart).format("HH:mm"),
-      end = moment(this.state.disturbanceFreePeriodEnd).format("HH:mm")
-    try {
-      await userApi.setDisturbanceFreePeriod({
-        disturbanceFreePeriod: { start, end },
-      })
-      Toast.success("免打扰时段已设置为" + start + " - " + end + "", 2)
-    } catch (err) {
-      Toast.fail("设置失败, 错误原因: " + err.msg, 3)
-      console.log(err)
-    }
   }
   setReviewPrice = async () => {
     let reviewPrice = this.state.reviewPrice * 100
@@ -250,7 +309,7 @@ export default class DiagnosisSettings extends Component<
               <Text style={[style.explainDetail, global.fontSize14]}>
                 您可以通过图文、语音、电话与患者交流, 首次回复需在6小时内( 22:00 -
                 8:30与免打扰时段不计入 ), 默认单次交流时间为首次回复后48小时,
-                辩证开方后经患者同意可随时结束对话。您可自定义收费价格、接单上限、电话图文服务可同时开启。
+                辩证开方后经患者同意可随时结束对话。您可自定义收费价格。
               </Text>
               <Text style={[style.explainDetail, global.fontSize14]}>
                 互联网诊疗仅适用常见病、慢性病复诊, 且您必须掌握患者病历,
@@ -312,109 +371,7 @@ export default class DiagnosisSettings extends Component<
               </View>
             </TouchableOpacity>
           </View>
-          <View style={style.notDisturb}>
-            <View
-              style={[
-                style.header,
-                global.flex,
-                global.alignItemsCenter,
-                global.justifyContentSpaceBetween,
-              ]}>
-              <View style={[global.flex, global.alignItemsCenter]}>
-                <View style={style.headerIcon} />
-                <Text style={[style.headerTitle, global.fontSize14]}>免打扰时段</Text>
-              </View>
-              <TouchableOpacity
-                onPress={() => {
-                  this.setState({
-                    isSelectDisturbanceFreePeriod: true,
-                  })
-                }}>
-                <View style={[style.disturbanceFreePeriod, global.flex, global.alignItemsCenter]}>
-                  <Text style={[style.notDisturbTime, global.fontSize14]}>
-                    {this.state.disturbanceFreePeriod}
-                  </Text>
-                  <Icon name="right" style={[style.itemIcon, global.fontSize14]} />
-                </View>
-              </TouchableOpacity>
-            </View>
-          </View>
         </ScrollView>
-        {/* 设置免打扰时段 */}
-        <View
-          style={
-            this.state.isSelectDisturbanceFreePeriod
-              ? style.selectDisturbanceFreePeriod
-              : global.hidden
-          }>
-          <View
-            style={[
-              style.headerDisturbanceFreePeriod,
-              global.flex,
-              global.alignItemsCenter,
-              global.justifyContentSpaceBetween,
-            ]}>
-            <TouchableHighlight onPress={this.closePicker}>
-              <Text style={[style.close, global.fontSize14]}>取消</Text>
-            </TouchableHighlight>
-            <TouchableHighlight
-              onPress={() => {
-                this.closePicker()
-                this.setState({
-                  disturbanceFreePeriod: "随时可找我",
-                  disturbanceFreePeriodStart: moment("2000-01-01 00:00:00").toDate(),
-                  disturbanceFreePeriodEnd: moment("2000-01-01 24:00:00").toDate(),
-                })
-                this.changeDisturbanceFreePeriod()
-              }}>
-              <Text style={[style.atAnyTime, global.fontSize14]}>随时可找我</Text>
-            </TouchableHighlight>
-          </View>
-          <View
-            style={[
-              style.datePickerFa,
-              global.flex,
-              global.alignItemsCenter,
-              global.justifyContentSpaceBetween,
-            ]}>
-            <DatePickerView
-              style={style.datePicker}
-              mode="time"
-              value={this.state.disturbanceFreePeriodStart}
-              onChange={value => {
-                console.log(value)
-                this.setState({
-                  disturbanceFreePeriodStart: value,
-                })
-              }}
-            />
-            <Text>至</Text>
-            <DatePickerView
-              style={style.datePicker}
-              mode="time"
-              value={this.state.disturbanceFreePeriodEnd}
-              onChange={value => {
-                this.setState({
-                  disturbanceFreePeriodEnd: value,
-                })
-              }}
-            />
-          </View>
-          <TouchableOpacity
-            onPress={() => {
-              this.closePicker()
-              let disturbanceFreePeriod =
-                moment(this.state.disturbanceFreePeriodStart).format("HH:mm") +
-                " - " +
-                moment(this.state.disturbanceFreePeriodEnd).format("HH:mm")
-              this.setState({
-                disturbanceFreePeriod,
-              })
-              this.changeDisturbanceFreePeriod()
-            }}>
-            <Text style={[style.submit, global.fontSize14]}>确认</Text>
-          </TouchableOpacity>
-        </View>
         {/* 选择复诊价格 */}
         <View style={this.state.isSelectReviewPrice ? style.reviewPrice : global.hidden}>
           <TouchableOpacity

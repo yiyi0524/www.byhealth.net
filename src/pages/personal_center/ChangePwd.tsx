@@ -1,36 +1,33 @@
 import * as userAction from "@/redux/actions/user"
 import { AppState } from "@/redux/stores/store"
+import api from "@/services/api"
 import { InputItem, Toast } from "@ant-design/react-native"
 import sColor from "@styles/color"
+import gImg from "@utils/img"
 import gStyle from "@utils/style"
 import React, { Component } from "react"
 import {
+  Image,
+  PixelRatio,
   RefreshControl,
   ScrollView,
   Text,
   TouchableOpacity,
   View,
-  PixelRatio,
-  Image,
 } from "react-native"
+import { NavigationScreenProp } from "react-navigation"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
-import api from "@/services/api"
-import userApi from "@/services/user"
-import gImg from "@utils/img"
 const style = gStyle.personalCenter.changePwd
 const global = gStyle.global
 interface Props {
-  navigation: any
+  navigation: NavigationScreenProp<State>
 }
 interface State {
   hasLoad: boolean
   refreshing: boolean
-  phone: string
-  verificationUuid: string
-  verificationCode: string
-  verificationMsg: string
-  pwd: string
+  oriPwd: string
+  newPwd: string
   rePwd: string
 }
 const mapStateToProps = (state: AppState) => {
@@ -82,29 +79,17 @@ export default class ChangePwd extends Component<
   }
   getInitState = (): State => {
     return {
-      hasLoad: false,
+      hasLoad: true,
       refreshing: false,
-      phone: "",
-      verificationUuid: "",
-      verificationCode: "",
-      verificationMsg: "获取验证码",
-      pwd: "",
+      oriPwd: "",
+      newPwd: "",
       rePwd: "",
     }
   }
-  async componentDidMount() {
-    await this.init()
+  componentDidMount() {
+    this.init()
   }
   init = async () => {
-    try {
-      let { data } = await userApi.getPersonalInfo()
-      let phone = data.info.phone
-      this.setState({
-        phone,
-      })
-    } catch (err) {
-      console.log(err.msg)
-    }
     this.setState({
       hasLoad: true,
     })
@@ -119,65 +104,34 @@ export default class ChangePwd extends Component<
         Toast.fail("刷新失败,错误信息: " + err.msg)
       })
   }
-  sendVerificationCode = () => {
-    api
-      .getmodifyPwdWithPhoneCode({ phone: this.state.phone })
-      .then(json => {
-        Toast.info("发送成功", 1)
-        let timeout = 60
-        this.setState({
-          verificationMsg: timeout-- + "秒后重新发送",
-        })
-        let timer = setInterval(() => {
-          this.setState({
-            verificationMsg: timeout-- + "秒后重新发送",
-          })
-        }, 1000)
-        this.setState({
-          verificationMsg: json.data.uuid,
-        })
-        setTimeout(() => {
-          clearInterval(timer)
-          this.setState({
-            verificationMsg: "获取验证码",
-          })
-        }, timeout * 1000)
-      })
-      .catch(err => {
-        console.log(err)
-        Toast.info("发送失败 错误信息: " + err.msg, 3)
-      })
-  }
+
   comfirePwd = () => {
-    if (this.state.pwd !== this.state.rePwd) {
+    if (this.state.newPwd !== this.state.rePwd) {
       Toast.fail("两次密码不一致", 3)
     }
   }
   submit = () => {
-    if (this.state.verificationUuid === "") {
-      return Toast.info("请获取验证码", 3)
+    if (this.state.oriPwd === "") {
+      return Toast.info("请输入原密码", 3)
     }
-    if (this.state.verificationCode === "") {
-      return Toast.info("请输入验证码", 3)
-    }
-    if (this.state.pwd === "") {
+    if (this.state.newPwd === "") {
       return Toast.info("请输入新密码", 3)
     }
     if (this.state.rePwd === "") {
       return Toast.info("再次输入密码", 3)
     }
-    if (this.state.rePwd !== this.state.pwd) {
+    if (this.state.rePwd !== this.state.newPwd) {
       return Toast.info("两次密码不一致", 3)
     }
-    let phone = this.state.phone,
-      uuid = this.state.verificationUuid,
-      code = this.state.verificationCode,
-      pwd = this.state.pwd,
+    let oriPwd = this.state.oriPwd,
+      newPwd = this.state.newPwd,
       rePwd = this.state.rePwd
     api
-      .modifyPwdWithPhoneCode({ phone, uuid, code, pwd, rePwd })
+      .modifyPwdWithOriPwd({ oriPwd, newPwd, rePwd })
       .then(() => {
-        Toast.success("修改成功", 2)
+        Toast.success("修改成功", 1, () => {
+          this.setState(this.getInitState())
+        })
       })
       .catch(err => {
         Toast.fail("修改失败, 错误信息: " + err.msg, 3)
@@ -194,73 +148,61 @@ export default class ChangePwd extends Component<
       )
     }
     return (
-      <>
-        <ScrollView
-          style={style.main}
-          keyboardShouldPersistTaps="always"
-          refreshControl={
-            <RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh} />
-          }>
-          <View style={style.list}>
-            <View style={style.item}>
-              <InputItem
-                value={this.state.phone}
-                editable={false}
-                placeholder="手机号"
-                style={style.input}
-              />
-            </View>
-            <View style={style.item}>
-              <InputItem
-                clear
-                value={this.state.verificationCode}
-                onChange={verificationCode => {
-                  this.setState({
-                    verificationCode,
-                  })
-                }}
-                placeholder="验证码"
-                style={style.input}
-              />
-              <TouchableOpacity style={style.verification} onPress={this.sendVerificationCode}>
-                <Text style={[style.verificationTitle, global.fontSize12]}>
-                  {this.state.verificationMsg}
-                </Text>
-              </TouchableOpacity>
-            </View>
-            <View style={style.item}>
-              <InputItem
-                clear
-                value={this.state.pwd}
-                placeholder="6位以上新密码"
-                style={style.input}
-                onChange={pwd => {
-                  this.setState({
-                    pwd,
-                  })
-                }}
-              />
-            </View>
-            <View style={style.item}>
-              <InputItem
-                clear
-                value={this.state.rePwd}
-                placeholder="再次输入密码"
-                style={style.input}
-                onChange={rePwd => {
-                  this.setState({
-                    rePwd,
-                  })
-                }}
-                onBlur={this.comfirePwd}
-              />
-            </View>
-            <TouchableOpacity onPress={this.submit}>
-              <Text style={[style.btn, global.fontSize14]}>登录</Text>
-            </TouchableOpacity>
+      <ScrollView
+        style={style.main}
+        keyboardShouldPersistTaps="always"
+        refreshControl={
+          <RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh} />
+        }>
+        <View style={style.list}>
+          <View style={style.item}>
+            <InputItem
+              clear
+              value={this.state.oriPwd}
+              placeholder="原密码"
+              type="password"
+              style={style.input}
+              onChange={oriPwd => {
+                this.setState({
+                  oriPwd,
+                })
+              }}
+            />
           </View>
-        </ScrollView>
-      </>
+          <View style={style.item}>
+            <InputItem
+              clear
+              value={this.state.newPwd}
+              placeholder="6位以上新密码"
+              type="password"
+              style={style.input}
+              onChange={newPwd => {
+                this.setState({
+                  newPwd,
+                })
+              }}
+            />
+          </View>
+          <View style={style.item}>
+            <InputItem
+              clear
+              value={this.state.rePwd}
+              placeholder="再次输入密码"
+              type="password"
+              style={style.input}
+              onChange={rePwd => {
+                this.setState({
+                  rePwd,
+                })
+              }}
+              onBlur={this.comfirePwd}
+            />
+          </View>
+          <TouchableOpacity onPress={this.submit}>
+            <Text style={[style.btn, global.fontSize14]}>确定</Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
     )
   }
 }

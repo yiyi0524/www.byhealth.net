@@ -1,21 +1,23 @@
 import * as userAction from "@/redux/actions/user"
 import { AppState } from "@/redux/stores/store"
-import { Icon, Toast, Portal } from "@ant-design/react-native"
+import { Icon, Toast } from "@ant-design/react-native"
 import sColor from "@styles/color"
+import gImg from "@utils/img"
 import gStyle from "@utils/style"
 import React, { Component } from "react"
 import {
+  Image,
+  PixelRatio,
+  Platform,
   RefreshControl,
   ScrollView,
   Text,
   TouchableOpacity,
   View,
-  PixelRatio,
-  Image,
 } from "react-native"
+import DeviceInfo from "react-native-device-info"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
-import gImg from "@utils/img"
 const style = gStyle.personalCenter.about
 const global = gStyle.global
 interface Props {
@@ -24,6 +26,7 @@ interface Props {
 interface State {
   hasLoad: boolean
   refreshing: boolean
+  version: string
 }
 
 const mapStateToProps = (state: AppState) => {
@@ -77,14 +80,17 @@ export default class About extends Component<
     return {
       hasLoad: false,
       refreshing: false,
+      version: "",
     }
   }
-  async componentDidMount() {
-    await this.init()
+  componentDidMount() {
+    this.init()
   }
   init = async () => {
+    const version = DeviceInfo.getReadableVersion()
     this.setState({
       hasLoad: true,
+      version,
     })
   }
   onRefresh = () => {
@@ -98,7 +104,7 @@ export default class About extends Component<
       })
   }
   checkedVersion = () => {
-    const key = Toast.loading("正在检测新版本...", 3)
+    // const key = Toast.loading("正在检测新版本...", 3)
     // Portal.remove(key)
   }
   render() {
@@ -121,7 +127,7 @@ export default class About extends Component<
           <View style={style.header}>
             <Image style={style.headerImg} source={gImg.common.logo} />
             <Text style={[style.headerTitle, global.fontSize14]}>博一健康医生版</Text>
-            <Text style={[style.headerVersion, global.fontSize12]}>版本1.0.0</Text>
+            <Text style={[style.headerVersion, global.fontSize12]}>版本{this.state.version}</Text>
           </View>
           <TouchableOpacity onPress={this.checkedVersion}>
             <Text style={[style.checkedVersion, global.fontSize14]}>检测更新</Text>

@@ -901,6 +901,16 @@
     xcode "^2.0.0"
     xmldoc "^0.4.0"
 
+"@react-native-community/slider@^1.0.4":
+  version "1.0.4"
+  resolved "http://registry.npm.taobao.org/@react-native-community/slider/download/@react-native-community/slider-1.0.4.tgz#3ef928c87c686d673ae829e492c7aad4d061d666"
+  integrity sha1-PvkoyHxobWc66Cnkkseq1NBh1mY=
+
+"@react-native-community/viewpager@^1.1.6":
+  version "1.1.6"
+  resolved "http://registry.npm.taobao.org/@react-native-community/viewpager/download/@react-native-community/viewpager-1.1.6.tgz#267da51adbdebfb709e2e22f5e06399f49e6b1ae"
+  integrity sha1-Jn2lGtvev7cJ4uIvXgY5n0nmsa4=
+
 "@react-navigation/core@~3.2.1":
   version "3.2.1"
   resolved "http://registry.npm.taobao.org/@react-navigation/core/download/@react-navigation/core-3.2.1.tgz#fd05c1cc405576c84aec57b6a15a09f649e79e0d"
@@ -5226,6 +5236,11 @@ react-native-communications@2.2.1:
   version "2.2.1"
   resolved "http://registry.npm.taobao.org/react-native-communications/download/react-native-communications-2.2.1.tgz#7883b56b20a002eeb790c113f8616ea8692ca795"
   integrity sha1-eIO1ayCgAu63kMET+GFuqGksp5U=
+
+react-native-device-info@^1.5.0:
+  version "1.5.0"
+  resolved "http://registry.npm.taobao.org/react-native-device-info/download/react-native-device-info-1.5.0.tgz#09e17c8199ac51082d72193f17eb445e9c83e68d"
+  integrity sha1-CeF8gZmsUQgtchk/F+tEXpyD5o0=
 
 react-native-gesture-handler@^1.1.0:
   version "1.1.0"

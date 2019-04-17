@@ -7,7 +7,15 @@ import api from "@api/api"
 import gStyle from "@utils/style"
 import React, { Component } from "react"
 import gImg from "@utils/img"
-import { RefreshControl, ScrollView, Text, TouchableOpacity, View, Image } from "react-native"
+import {
+  RefreshControl,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
+  Image,
+  Platform,
+} from "react-native"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
 const style = gStyle.personalCenter.personalCenterIndex
@@ -96,7 +104,7 @@ export default class Index extends Component<
   init = async () => {
     // let {data:version} = api.getVersion();//todo 版本信息监测
     let version = {
-      current: "1.0.0",
+      current: Platform.Version + "",
       new: "1.0.1",
     }
     this.setState({
@@ -116,7 +124,7 @@ export default class Index extends Component<
   }
   logout = async () => {
     const { navigation } = this.props
-    Toast.loading("正在退出", 2)
+    Toast.loading("正在退出", 1)
     try {
       await Promise.all([api.logout(), new Promise(s => setTimeout(s, 300))])
       await storage.remove("session")

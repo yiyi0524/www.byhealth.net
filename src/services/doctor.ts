@@ -130,10 +130,41 @@ export function setProfile({ profile }: { profile: string }) {
     },
   })
 }
+/**
+ * 获取复诊设置
+ */
+export function getInquirySetup() {
+  return bget<{
+    allowInquiry: number
+    initialPrice: number
+    followUpPrice: number
+  }>({
+    url: "api/getInquirySetup",
+  })
+}
+/**
+ * 设置复诊规则
+ */
+export function setInquirySetup({
+  allowInquiry,
+  initialPrice,
+  followUpPrice,
+}: {
+  allowInquiry: number
+  initialPrice: number
+  followUpPrice: number
+}) {
+  return bpost({
+    url: "api/setInquirySetup",
+    data: { allowInquiry, initialPrice, followUpPrice },
+  })
+}
 export default {
   doctorAuth,
   getMsgList,
   getBalance,
   setAdeptSymptomIdList,
   setProfile,
+  getInquirySetup,
+  setInquirySetup,
 }

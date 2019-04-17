@@ -203,22 +203,18 @@ export function getmodifyPwdWithPhoneCode({ phone }: { phone: string }) {
 /**
  * 手机验证码修改密码
  */
-export function modifyPwdWithPhoneCode({
-  phone,
-  uuid,
-  code,
-  pwd,
+export function modifyPwdWithOriPwd({
+  oriPwd,
+  newPwd,
   rePwd,
 }: {
-  phone: string
-  uuid: string
-  code: string
-  pwd: string
+  oriPwd: string
+  newPwd: string
   rePwd: string
 }) {
   return bpost({
-    url: "/api/modifyPwdWithPhoneVerifyCode",
-    data: { phone, uuid, code, pwd, rePwd },
+    url: "api/modifyPwdWithOriPwd",
+    data: { oriPwd, newPwd, rePwd },
   })
 }
 export interface AliPayOrderInfo {
@@ -374,5 +370,5 @@ export default {
   getMedicalInstitutions,
   idCardIDChecked,
   getmodifyPwdWithPhoneCode,
-  modifyPwdWithPhoneCode,
+  modifyPwdWithOriPwd,
 }
