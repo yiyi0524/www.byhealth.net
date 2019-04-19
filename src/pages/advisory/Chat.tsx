@@ -17,7 +17,6 @@ import { connect } from "react-redux"
 import { Dispatch } from "redux"
 import { Overwrite } from "utility-types"
 const style = gStyle.advisory.advisoryChat
-Toast
 interface Props {
   navigation: NavigationScreenProp<State>
 }
@@ -70,12 +69,11 @@ interface State {
   hasMoreRecord: boolean
   isShowPic: boolean
   showPicUrl: string
-  msgId: number
-  patientId: number
+  patientUid: number
   page: number
   limit: number
   filter: {}
-  msgList: Msg<any>[]
+  msgList: Msg[]
   sendMsg: string
   info: {
     id: number
@@ -112,8 +110,9 @@ export default class Index extends Component<
 > {
   static navigationOptions = ({ navigation }: { navigation: NavigationScreenProp<State> }) => {
     let title = ""
+    console.log(navigation.state.params)
     if (navigation.state.params) {
-      title = navigation.state.params.title
+      title = navigation.state.params.patientName
     }
     return {
       title,
@@ -136,7 +135,7 @@ export default class Index extends Component<
         <TouchableOpacity
           onPress={() =>
             navigation.push(pathMap.PatientDetail, {
-              id: navigation.getParam("patientId"),
+              patientUid: navigation.getParam("patientUid"),
             })
           }>
           <Text style={[style.headerRight, global.fontSize14, global.fontStyle]}>病历</Text>
@@ -199,7 +198,7 @@ export default class Index extends Component<
       hasMoreRecord: false,
       isShowPic: false,
       showPicUrl: "",
-      patientId: 0,
+      patientUid: 0,
       info: {
         id: 0,
         name: "",
@@ -214,7 +213,6 @@ export default class Index extends Component<
           url: "",
         },
       },
-      msgId: 0,
       page: 1,
       limit: 10,
       filter: {},
@@ -226,8 +224,7 @@ export default class Index extends Component<
     this.init()
   }
   init = async () => {
-    let msgId = this.props.navigation.getParam("id")
-    let patientId = this.props.navigation.getParam("patientId")
+    let patientUid = this.props.navigation.getParam("patientUid")
     let page = this.state.page,
       limit = this.state.limit,
       filter = this.state.filter
@@ -244,8 +241,7 @@ export default class Index extends Component<
     await this.getMsgList(page, limit, filter)
     this.setState({
       hasLoad: true,
-      msgId,
-      patientId,
+      patientUid,
     })
   }
   getMsgList = async (page: number, limit: number, filter = {}) => {
@@ -431,7 +427,7 @@ export default class Index extends Component<
       })
     } else {
       this.props.navigation.push(v.link, {
-        patientId: this.state.patientId,
+        patientUid: this.state.patientUid,
       })
     }
   }

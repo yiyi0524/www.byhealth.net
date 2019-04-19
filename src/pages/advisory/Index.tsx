@@ -1,80 +1,59 @@
-import * as userAction from "@/redux/actions/user"
-import { AppState } from "@/redux/stores/store"
 import pathMap from "@/routes/pathMap"
-import { GENDER } from "@/services/doctor"
-import patient from "@/services/patient"
+import doctor, { GENDER } from "@/services/doctor"
+import { getPicFullUrl } from "@/utils/utils"
 import { Toast } from "@ant-design/react-native"
 import gImg from "@utils/img"
 import gStyle from "@utils/style"
 import React, { Component } from "react"
 import { Image, RefreshControl, ScrollView, Text, TouchableOpacity, View } from "react-native"
-import { connect } from "react-redux"
-import { Dispatch } from "redux"
+import { NavigationScreenProp } from "react-navigation"
 import { Picture } from "./Chat"
 const style = gStyle.advisory.advisoryIndex
 const globalStyle = gStyle.global
-interface Props {
-  navigation: any
-}
-interface PatientRecord {
+
+export interface ConsultationItem {
   id: number
   gender: number
+  patientUid: number
+  year_age: number
+  month_age: number
   name: string
   currMsg: string
   currMsgTime: string
   avatar: Picture
-  patientId: number
-  age: number
+}
+interface Props {
+  navigation: NavigationScreenProp<State>
 }
 interface State {
   hasLoad: boolean
   refreshing: boolean
-  patientRecordList: PatientRecord[]
+  consultationList: ConsultationItem[]
 }
-const mapStateToProps = (state: AppState) => {
-  return {
-    isLogin: state.user.isLogin,
-    name: state.user.name,
-    uid: state.user.uid,
-  }
-}
-const mapDispatchToProps = (dispatch: Dispatch) => {
-  return {
-    login: (preload: userAction.UserInfo) => {
-      dispatch(userAction.userLogin(preload))
-    },
-  }
-}
-@connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)
-export default class Index extends Component<
-  Props & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
-  State
-> {
+
+export default class Index extends Component<Props, State> {
   constructor(props: any) {
     super(props)
     this.state = this.getInitState()
   }
   getInitState = (): State => {
     return {
-      hasLoad: false,
+      hasLoad: true,
       refreshing: false,
-      patientRecordList: [],
+      consultationList: [],
     }
   }
-  async componentDidMount() {
-    await this.init()
+  componentDidMount() {
+    this.init()
   }
   init = async () => {
+    this.setState({ hasLoad: false })
     let {
-      data: { list: patientRecordList },
-    } = await patient.getPatientList({ page: -1, limit: -1 })
-
+      data: { list: consultationList },
+    } = await doctor.listConsultation({ page: -1, limit: -1 })
     this.setState({
       hasLoad: true,
-      patientRecordList,
+      consultationList,
     })
   }
   onRefresh = () => {
@@ -130,7 +109,7 @@ export default class Index extends Component<
             </TouchableOpacity>
           </View>
           <View style={style.msgList}>
-            {this.state.patientRecordList.map((patientRecord, k) => {
+            {this.state.consultationList.map((consultation, k) => {
               return (
                 <TouchableOpacity
                   key={k}
@@ -142,9 +121,8 @@ export default class Index extends Component<
                   ]}
                   onPress={() =>
                     this.props.navigation.push(pathMap.AdvisoryChat, {
-                      patientId: patientRecord.patientId,
-                      id: patientRecord.id,
-                      title: patientRecord.name,
+                      patientUid: consultation.patientUid,
+                      patientName: consultation.name,
                     })
                   }>
                   <View style={style.baseInformation}>
@@ -152,8 +130,8 @@ export default class Index extends Component<
                       <Image
                         style={style.avatar}
                         source={
-                          patientRecord.avatar.url
-                            ? { uri: patientRecord.avatar.url }
+                          consultation.avatar.url
+                            ? { uri: getPicFullUrl(consultation.avatar.url) }
                             : gImg.common.defaultAvatar
                         }
                       />
@@ -168,15 +146,16 @@ export default class Index extends Component<
                       <Image
                         style={style.gender}
                         source={
-                          patientRecord.gender === GENDER.MAN
+                          consultation.gender === GENDER.MAN
                             ? gImg.common.man
-                            : patientRecord.gender === GENDER.WOMAN
+                            : consultation.gender === GENDER.WOMAN
                             ? gImg.common.woman
                             : gImg.common.genderNull
                         }
                       />
                       <Text style={[style.age, globalStyle.fontSize13, globalStyle.fontStyle]}>
-                        {patientRecord.age}岁
+                        {consultation.year_age}岁
+                        {consultation.month_age !== 0 ? consultation.month_age + "月" : null}
                       </Text>
                     </View>
                   </View>
@@ -190,16 +169,16 @@ export default class Index extends Component<
                       <Text
                         style={[style.msgName, globalStyle.fontSize15, globalStyle.fontStyle]}
                         numberOfLines={1}>
-                        {patientRecord.name}
+                        {consultation.name}
                       </Text>
                       <Text style={[style.msgTime, globalStyle.fontSize13, globalStyle.fontStyle]}>
-                        {patientRecord.currMsgTime.substr(0, 10)}
+                        {consultation.currMsgTime.substr(0, 10)}
                       </Text>
                     </View>
                     <Text
                       style={[style.msgDescription, globalStyle.fontSize14, globalStyle.fontStyle]}
                       numberOfLines={1}>
-                      {patientRecord.currMsg}
+                      {consultation.currMsg || "无消息"}
                     </Text>
                   </View>
                 </TouchableOpacity>

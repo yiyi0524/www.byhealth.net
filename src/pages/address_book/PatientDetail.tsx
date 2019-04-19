@@ -14,6 +14,7 @@ import patientApi from "@api/patient"
 import { Picture } from "../advisory/Chat"
 import { GENDER, GENDER_ZH } from "@/services/doctor"
 import { getPicFullUrl } from "@/utils/utils"
+import pathMap from "@/routes/pathMap"
 const style = gStyle.addressBook.PatientDetail
 const global = gStyle.global
 /**
@@ -114,17 +115,18 @@ export default class PatientDetail extends Component<
         provinceCid: "",
         remarks: "",
         state: "",
-        uid: 0,
+        uid: this.props.navigation.getParam("patientUid"),
         weight: 0,
       },
     }
   }
-  async componentDidMount() {
-    await this.init()
+  componentDidMount() {
+    this.init()
   }
   init = async () => {
+    let { uid } = this.state.patientInfo
     let { data: patientInfo } = await patientApi.getPatientInfo({
-      uid: this.props.navigation.getParam("patientUid"),
+      uid,
     })
     this.setState({
       hasLoad: true,
@@ -313,7 +315,13 @@ export default class PatientDetail extends Component<
             global.alignItemsCenter,
             global.justifyContentSpaceBetween,
           ]}>
-          <TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              this.props.navigation.navigate(pathMap.AdvisoryChat, {
+                patientName: this.state.patientInfo.name,
+                patientUid: this.state.patientInfo.uid,
+              })
+            }}>
             <Text style={[style.bottomTitle, global.fontSize14, global.fontStyle]}>进入对话</Text>
           </TouchableOpacity>
           <TouchableOpacity>

@@ -24,7 +24,7 @@ interface Props {
 export interface patientGroupItem {
   id: number
   name: string
-  patientList?: patientGroupItem[]
+  patientList: patientGroupItem[]
 }
 interface State {
   hasLoad: boolean
@@ -165,7 +165,7 @@ export default class Index extends Component<
             <RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh} />
           }>
           <View style={style.patientGroupList}>
-            {this.state.patientGroupList.map((v: any, k: number) => {
+            {this.state.patientGroupList.map((v, k) => {
               return (
                 <TouchableOpacity
                   key={k}
@@ -204,7 +204,7 @@ export default class Index extends Component<
                         {v.name}
                       </Text>
                       <Text style={[style.patientGroupCount, global.fontSize15, global.fontStyle]}>
-                        ( {v.patientList.length} ) 人
+                        ( {v.patientList.length} 人)
                       </Text>
                     </View>
                     <View

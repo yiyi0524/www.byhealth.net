@@ -1,6 +1,7 @@
 import { bget, bpost, GetListParam } from "./api"
 import { patientGroupItem } from "@/pages/address_book/Group"
 import { patientItem } from "@/pages/address_book/GroupDetail"
+import { ConsultationItem } from "@/pages/advisory/Index"
 export const ALLOW_INQUIRY = {
   FALSE: 0x0,
   TRUE: 0x1,
@@ -217,6 +218,17 @@ export async function getPatientGroupDetail({ id }: { id: number }) {
     },
   })
 }
+/**
+ * 获取咨询列表
+ */
+export async function listConsultation(param: GetListParam) {
+  return bget<{ list: ConsultationItem[] }>({
+    url: "api/listConsultation",
+    query: {
+      ...param,
+    },
+  })
+}
 export default {
   doctorAuth,
   getMsgList,
@@ -229,4 +241,5 @@ export default {
   deletePatientGroup,
   addPatientGroup,
   getPatientGroupDetail,
+  listConsultation,
 }
