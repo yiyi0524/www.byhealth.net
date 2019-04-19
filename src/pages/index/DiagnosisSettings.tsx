@@ -1,17 +1,17 @@
 import * as userAction from "@/redux/actions/user"
 import { AppState } from "@/redux/stores/store"
-import { DatePickerView, Icon, Switch, Toast } from "@ant-design/react-native"
-import userApi from "@api/user"
+import doctor, { ALLOW_INQUIRY } from "@/services/doctor"
+import { Icon, Switch, Toast } from "@ant-design/react-native"
 import sColor from "@styles/color"
+import gImg from "@utils/img"
 import gStyle from "@utils/style"
-import moment from "moment"
 import React, { Component } from "react"
-import { PixelRatio, RefreshControl, Text, TouchableHighlight, View, Image } from "react-native"
+import { Image, PixelRatio, RefreshControl, Text, View, DeviceEventEmitter } from "react-native"
 import { ScrollView, TouchableOpacity } from "react-native-gesture-handler"
 import { NavigationScreenProp } from "react-navigation"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
-import gImg from "@utils/img"
+import pathMap from "@/routes/pathMap"
 const style = gStyle.index.DiagnosisSettings
 const global = gStyle.global
 
@@ -21,12 +21,12 @@ interface Props {
 interface State {
   hasLoad: boolean
   refreshing: boolean
-  onlineReferralChecked: boolean
+  allowInquiry: number // 开启问诊
   isSelectDisturbanceFreePeriod: boolean
-  reviewPrice: number
-  isSelectReviewPrice: boolean
-  isSelectFollowUpReviewPrice: boolean
-  followUpReviewPrice: number
+  initialPrice: number
+  followUpPrice: number
+  isSelectInitialPrice: boolean
+  isSelectFollowUpPrice: boolean
   reviewPriceList: number[]
   followUpReviewPriceList: number[]
 }
@@ -80,145 +80,33 @@ export default class DiagnosisSettings extends Component<
     return {
       hasLoad: false,
       refreshing: false,
-      onlineReferralChecked: false,
+      allowInquiry: ALLOW_INQUIRY.TRUE,
       isSelectDisturbanceFreePeriod: false,
-      isSelectReviewPrice: false,
-      isSelectFollowUpReviewPrice: false,
-      followUpReviewPrice: 0,
-      reviewPrice: 0,
+      isSelectInitialPrice: false,
+      isSelectFollowUpPrice: false,
+      followUpPrice: 0,
+      initialPrice: 0,
+      // prettier-ignore
       reviewPriceList: [
-        5,
-        10,
-        15,
-        20,
-        25,
-        30,
-        35,
-        40,
-        45,
-        50,
-        55,
-        60,
-        65,
-        70,
-        75,
-        80,
-        85,
-        90,
-        95,
-        100,
-        110,
-        120,
-        130,
-        140,
-        150,
-        160,
-        170,
-        180,
-        190,
-        200,
-        210,
-        220,
-        230,
-        240,
-        250,
-        260,
-        270,
-        280,
-        290,
-        300,
-        350,
-        400,
-        450,
-        500,
-        550,
-        600,
-        650,
-        700,
-        750,
-        800,
-        850,
-        900,
-        950,
-        1000,
+        5, 10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100,110,120,130,140,150,160,170,180,190,200,210,220,230,240,250,260,270,280,290,300,350,400,450,500,550,600,650,700,750,800,850,900,950,1000,
       ],
-      followUpReviewPriceList: [
-        1,
-        2,
-        3,
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        15,
-        20,
-        25,
-        30,
-        35,
-        40,
-        45,
-        50,
-        55,
-        60,
-        65,
-        70,
-        75,
-        80,
-        85,
-        90,
-        95,
-        100,
-        110,
-        120,
-        130,
-        140,
-        150,
-        160,
-        170,
-        180,
-        190,
-        200,
-        210,
-        220,
-        230,
-        240,
-        250,
-        260,
-        270,
-        280,
-        290,
-        300,
-        350,
-        400,
-        450,
-        500,
-        600,
-        700,
-        800,
-        900,
-        1000,
-        1100,
-        1200,
-        1300,
-        1400,
-        1500,
-        1600,
-        1700,
-        1800,
-        1900,
-        2000,
-      ],
+      // prettier-ignore
+      followUpReviewPriceList: [1,2,3,4,5,6,7,8,9,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100,110,120,130,140,150,160,170,180,190,200,210,220,230,240,250,260,270,280,290,300,350,400,450,500,600,700,800,900,1000,1100,1200,1300,1400,1500,1600,1700,1800,1900,2000,
+      ]
     }
   }
   componentDidMount() {
     this.init()
   }
   init = async () => {
+    const {
+      data: { allowInquiry, followUpPrice, initialPrice },
+    } = await doctor.getInquirySetup()
     this.setState({
       hasLoad: true,
+      allowInquiry,
+      followUpPrice,
+      initialPrice,
     })
   }
   onRefresh = () => {
@@ -231,14 +119,20 @@ export default class DiagnosisSettings extends Component<
         Toast.fail("刷新失败,错误信息: " + err.msg)
       })
   }
-  onlineReferralChange = async () => {
+  changeAllowInquiry = async () => {
+    let allowInquiry =
+      this.state.allowInquiry === ALLOW_INQUIRY.FALSE ? ALLOW_INQUIRY.TRUE : ALLOW_INQUIRY.FALSE
     this.setState({
-      onlineReferralChecked: !this.state.onlineReferralChecked,
+      allowInquiry,
     })
     try {
-      await userApi.setOnlineReferral({
-        onlineReferralChecked: this.state.onlineReferralChecked,
+      let { followUpPrice, initialPrice } = this.state
+      await doctor.setInquirySetup({
+        allowInquiry,
+        followUpPrice,
+        initialPrice,
       })
+      DeviceEventEmitter.emit(pathMap.Home + "Reload")
       Toast.success("设置成功", 1)
     } catch (err) {
       Toast.fail("设置失败, 错误信息: " + err.msg, 3)
@@ -250,10 +144,14 @@ export default class DiagnosisSettings extends Component<
       isSelectDisturbanceFreePeriod: false,
     })
   }
-  setReviewPrice = async () => {
-    let reviewPrice = this.state.reviewPrice * 100
+  setInitialPrice = async () => {
     try {
-      await userApi.setReviewPrice({ reviewPrice })
+      let { allowInquiry, followUpPrice, initialPrice } = this.state
+      await doctor.setInquirySetup({
+        allowInquiry,
+        followUpPrice,
+        initialPrice,
+      })
       Toast.success("设置复诊价格成功", 1)
     } catch (err) {
       Toast.fail("设置复诊价格失败, 错误信息: " + err.msg, 3)
@@ -261,9 +159,13 @@ export default class DiagnosisSettings extends Component<
     }
   }
   setFollowUpReviewPrice = async () => {
-    let followUpReviewPrice = this.state.followUpReviewPrice * 100
     try {
-      await userApi.setFollowUpReviewPrice({ followUpReviewPrice })
+      let { allowInquiry, followUpPrice, initialPrice } = this.state
+      await doctor.setInquirySetup({
+        allowInquiry,
+        followUpPrice,
+        initialPrice,
+      })
       Toast.success("设置后续复诊价格成功", 1)
     } catch (err) {
       Toast.fail("设置后续复诊价格失败, 错误信息: " + err.msg, 3)
@@ -300,8 +202,8 @@ export default class DiagnosisSettings extends Component<
                 <Text style={[style.headerTitle, global.fontSize14]}>是否开启复诊</Text>
               </View>
               <Switch
-                checked={this.state.onlineReferralChecked}
-                onChange={this.onlineReferralChange}
+                checked={this.state.allowInquiry === ALLOW_INQUIRY.TRUE}
+                onChange={this.changeAllowInquiry}
               />
             </View>
             <Text style={[style.title, global.fontSize14]}>在线复诊服务说明</Text>
@@ -323,7 +225,7 @@ export default class DiagnosisSettings extends Component<
               activeOpacity={0.9}
               onPress={() => {
                 this.setState({
-                  isSelectReviewPrice: true,
+                  isSelectInitialPrice: true,
                 })
               }}>
               <View
@@ -336,7 +238,7 @@ export default class DiagnosisSettings extends Component<
                 <Text style={[style.itemTitle, global.fontSize14]}>复诊价格</Text>
                 <View style={[style.itemDetail, global.flex, global.alignItemsCenter]}>
                   <Text style={[style.important, global.fontSize14]}>
-                    ¥ {this.state.reviewPrice}
+                    ¥ {this.state.initialPrice / 100}
                   </Text>
                   <Icon style={[style.itemIcon, global.fontSize14]} name="right" />
                 </View>
@@ -346,7 +248,7 @@ export default class DiagnosisSettings extends Component<
               activeOpacity={0.9}
               onPress={() => {
                 this.setState({
-                  isSelectFollowUpReviewPrice: true,
+                  isSelectFollowUpPrice: true,
                 })
               }}>
               <View
@@ -364,7 +266,7 @@ export default class DiagnosisSettings extends Component<
                 </Text>
                 <View style={[style.itemDetail, global.flex, global.alignItemsCenter]}>
                   <Text style={[style.important, global.fontSize14]}>
-                    ¥ {this.state.followUpReviewPrice}
+                    ¥ {this.state.followUpPrice / 100}
                   </Text>
                   <Icon style={[style.itemIcon, global.fontSize14]} name="right" />
                 </View>
@@ -373,12 +275,12 @@ export default class DiagnosisSettings extends Component<
           </View>
         </ScrollView>
         {/* 选择复诊价格 */}
-        <View style={this.state.isSelectReviewPrice ? style.reviewPrice : global.hidden}>
+        <View style={this.state.isSelectInitialPrice ? style.reviewPrice : global.hidden}>
           <TouchableOpacity
             activeOpacity={0.9}
             onPress={() => {
               this.setState({
-                isSelectReviewPrice: false,
+                isSelectInitialPrice: false,
               })
             }}>
             <Text style={[style.closeReviewPrice, global.fontSize14]}>取消</Text>
@@ -393,15 +295,17 @@ export default class DiagnosisSettings extends Component<
                 <TouchableOpacity
                   key={k}
                   onPress={() => {
-                    this.setState({
-                      reviewPrice: v,
-                      isSelectReviewPrice: false,
-                    })
-                    this.setReviewPrice()
+                    this.setState(
+                      {
+                        initialPrice: v * 100,
+                        isSelectInitialPrice: false,
+                      },
+                      this.setInitialPrice,
+                    )
                   }}>
                   <Text
                     style={
-                      v === this.state.reviewPrice
+                      v * 100 === this.state.initialPrice
                         ? style.reviewPriceItemActive
                         : style.reviewPriceItem
                     }>
@@ -413,12 +317,12 @@ export default class DiagnosisSettings extends Component<
           </ScrollView>
         </View>
         {/* 选择后续复诊价格 */}
-        <View style={this.state.isSelectFollowUpReviewPrice ? style.reviewPrice : global.hidden}>
+        <View style={this.state.isSelectFollowUpPrice ? style.reviewPrice : global.hidden}>
           <TouchableOpacity
             activeOpacity={0.9}
             onPress={() => {
               this.setState({
-                isSelectFollowUpReviewPrice: false,
+                isSelectFollowUpPrice: false,
               })
             }}>
             <Text style={[style.closeReviewPrice, global.fontSize14]}>取消</Text>
@@ -433,15 +337,17 @@ export default class DiagnosisSettings extends Component<
                 <TouchableOpacity
                   key={k}
                   onPress={() => {
-                    this.setState({
-                      followUpReviewPrice: v,
-                      isSelectFollowUpReviewPrice: false,
-                    })
-                    this.setFollowUpReviewPrice()
+                    this.setState(
+                      {
+                        followUpPrice: v * 100,
+                        isSelectFollowUpPrice: false,
+                      },
+                      this.setFollowUpReviewPrice,
+                    )
                   }}>
                   <Text
                     style={
-                      v === this.state.followUpReviewPrice
+                      v * 100 === this.state.followUpPrice
                         ? style.reviewPriceItemActive
                         : style.reviewPriceItem
                     }>

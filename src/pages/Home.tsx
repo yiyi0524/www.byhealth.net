@@ -23,6 +23,7 @@ import { connect } from "react-redux"
 import { Dispatch } from "redux"
 import { Picture } from "./advisory/Chat"
 import { BASE_URL } from "@/config/api"
+import { ALLOW_INQUIRY } from "@/services/doctor"
 const style = gStyle.home
 const globalStyle = gStyle.global
 interface Props {
@@ -37,11 +38,12 @@ interface State {
   refreshing: boolean
   hasLoad: boolean
   hasRealNameAuth: boolean
-  avatar: Picture
-  name: string
-  bannerList: bannerItem[]
   prescriptionCount: number
   patientCount: number
+  name: string
+  avatar: Picture
+  bannerList: bannerItem[]
+  settingList: SettingItem[]
 }
 export interface ShortcutItem {
   icon: any
@@ -62,29 +64,11 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
     },
   }
 }
-const settingList = [
-  {
-    name: "复诊及诊后咨询",
-    description: "未开启在线复诊",
-    link: pathMap.DiagnosisSettings,
-  },
-  // {
-  //   name: "处方及服务配置",
-  //   description: "",
-  //   link: "",
-  // },
-  //todo 二期
-  // {
-  //   name: "自定义问诊单设置",
-  //   description: "已开启自动发送",
-  //   link: ""
-  // },
-  // {
-  //   name: "欢迎语设置",
-  //   description: "已开启自动发送",
-  //   link: ""
-  // }
-]
+export interface SettingItem {
+  name: string
+  description: string
+  link: string
+}
 @connect(
   mapStateToProps,
   mapDispatchToProps,
@@ -119,6 +103,29 @@ export default class Home extends Component<
         url: "",
       },
       name: "",
+      settingList: [
+        {
+          name: "复诊及诊后咨询",
+          description: "未开启在线复诊",
+          link: pathMap.DiagnosisSettings,
+        },
+        // {
+        //   name: "处方及服务配置",
+        //   description: "",
+        //   link: "",
+        // },
+        //todo 二期
+        // {
+        //   name: "自定义问诊单设置",
+        //   description: "已开启自动发送",
+        //   link: ""
+        // },
+        // {
+        //   name: "欢迎语设置",
+        //   description: "已开启自动发送",
+        //   link: ""
+        // }
+      ],
       bannerList: [
         {
           id: 1,
@@ -163,12 +170,18 @@ export default class Home extends Component<
         let {
           data: { doctorInfo, info },
         } = await userApi.getPersonalInfo()
+        let { settingList } = this.state
+        if ("allowInquiry" in doctorInfo) {
+          settingList[0].description =
+            doctorInfo.allowInquiry === ALLOW_INQUIRY.FALSE ? "未开启在线复诊" : "已开启在线复诊"
+        }
         this.setState({
           name: info.name,
           avatar: info.avatar,
           hasRealNameAuth: doctorInfo.hasRealNameAuth,
           prescriptionCount: doctorInfo.prescriptionCount,
           patientCount: doctorInfo.patientCount,
+          settingList,
         })
       }
     } catch (err) {
@@ -363,7 +376,7 @@ export default class Home extends Component<
           </ScrollView>
           {/* 设置列表 */}
           <View style={style.settingList}>
-            {settingList.map((v: any, k: number) => {
+            {this.state.settingList.map((v, k) => {
               return (
                 <TouchableOpacity
                   key={k}

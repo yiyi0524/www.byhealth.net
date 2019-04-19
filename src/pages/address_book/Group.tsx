@@ -1,25 +1,17 @@
 import * as userAction from "@/redux/actions/user"
 import { AppState } from "@/redux/stores/store"
+import pathMap from "@/routes/pathMap"
+import doctor from "@/services/doctor"
+import { Icon, Modal, Toast } from "@ant-design/react-native"
 import sColor from "@styles/color"
+import gImg from "@utils/img"
 import gStyle from "@utils/style"
 import React, { Component } from "react"
-import {
-  PixelRatio,
-  RefreshControl,
-  ScrollView,
-  Text,
-  TouchableOpacity,
-  View,
-  Image,
-} from "react-native"
-import { Icon, Toast, Modal } from "@ant-design/react-native"
+// prettier-ignore
+import { Image, PixelRatio, RefreshControl, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { NavigationScreenProp } from "react-navigation"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
-import userApi from "@api/user"
-import pathMap from "@/routes/pathMap"
-import gImg from "@utils/img"
-import patient from "@/services/patient"
 const style = gStyle.addressBook.AddressBookGroup
 const global = gStyle.global
 interface NavParams {
@@ -29,7 +21,7 @@ interface NavParams {
 interface Props {
   navigation: NavigationScreenProp<State, NavParams>
 }
-interface patientGroupItem {
+export interface patientGroupItem {
   id: number
   name: string
   patientList?: patientGroupItem[]
@@ -113,12 +105,12 @@ export default class Index extends Component<
       patientGroupList: [],
     }
   }
-  async componentDidMount() {
-    await this.init()
+  componentDidMount() {
     this.props.navigation.setParams({
       mode: "done",
       navigatePress: this.changeMode,
     })
+    this.init()
   }
   changeMode = () => {
     this.setState({
@@ -128,7 +120,7 @@ export default class Index extends Component<
   init = async () => {
     let {
       data: { list: patientGroupList },
-    } = await patient.getPatientGroupList({ page: -1, limit: -1, filter: {} })
+    } = await doctor.getPatientGroupList({ page: -1, limit: -1, filter: {} })
     this.setState({
       hasLoad: true,
       patientGroupList,
@@ -145,14 +137,14 @@ export default class Index extends Component<
       })
   }
   deleteGroup = (id: number) => {
-    userApi
+    doctor
       .deletePatientGroup({ id })
       .then(() => {
-        Toast.success("删除成功", 3)
+        Toast.success("删除成功", 1)
         this.init()
       })
       .catch(err => {
-        Toast.fail("删除失败, 错误原因: " + err.msg, 3)
+        Toast.fail("删除失败, 错误原因: " + err.msg, 1)
       })
   }
   render() {

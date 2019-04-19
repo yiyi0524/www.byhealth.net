@@ -1,7 +1,8 @@
 import * as userAction from "@/redux/actions/user"
 import { AppState } from "@/redux/stores/store"
-import { Icon, InputItem, Toast } from "@ant-design/react-native"
-import { GENDER } from "@api/doctor"
+import pathMap from "@/routes/pathMap"
+import { Toast } from "@ant-design/react-native"
+import doctor, { GENDER } from "@api/doctor"
 import patientApi from "@api/patient"
 import sColor from "@styles/color"
 import gImg from "@utils/img"
@@ -19,18 +20,20 @@ import {
 import { NavigationScreenProp } from "react-navigation"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
-import pathMap from "@/routes/pathMap"
+import { Picture } from "../advisory/Chat"
+import { getPicFullUrl } from "@/utils/utils"
 const style = gStyle.addressBook.AddressBookGroupDetail
 const global = gStyle.global
 interface Props {
   navigation: NavigationScreenProp<State>
 }
-interface patientItem {
+export interface patientItem {
   id: number
-  avatar: string
+  avatar: Picture
   name: string
   gender: number
-  age: string
+  year_age: number
+  month_age: number
   isChecked: boolean
 }
 interface State {
@@ -108,15 +111,21 @@ export default class Index extends Component<
       selectPatientList: [],
     }
   }
-  async componentDidMount() {
-    await this.init()
+  componentDidMount() {
+    this.init()
   }
   init = async () => {
     let groupId = this.props.navigation.getParam("id")
     this.setState({
       groupId,
     })
-    let patientList = await this.getPageData()
+    let {
+      data: {
+        detail: { patientList },
+      },
+    } = await doctor.getPatientGroupDetail({
+      id: groupId,
+    })
     for (let patient of patientList) {
       patient.isChecked = false //管理:是否选中
     }
@@ -124,23 +133,6 @@ export default class Index extends Component<
       hasLoad: true,
       patientList,
     })
-  }
-  getPageData = async () => {
-    try {
-      let filter = {
-        groupId: this.state.groupId,
-      }
-      let {
-        data: { list },
-      } = await patientApi.getGroupDetailPatientList({
-        page: -1,
-        limit: -1,
-        filter,
-      })
-      return list
-    } catch (err) {
-      console.log(err)
-    }
   }
   onRefresh = () => {
     this.setState({ refreshing: true })
@@ -164,7 +156,7 @@ export default class Index extends Component<
             <RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh} />
           }>
           <View style={style.patientList}>
-            {this.state.patientList.map((v: any, k: number) => {
+            {this.state.patientList.map((v: patientItem, k: number) => {
               return (
                 <TouchableOpacity
                   activeOpacity={0.8}
@@ -178,7 +170,11 @@ export default class Index extends Component<
                   <View style={style.patientItemAvatar}>
                     <Image
                       style={style.patientAvatar}
-                      source={v.avatar !== "" ? { uri: v.avatar } : gImg.common.defaultAvatar}
+                      source={
+                        v.avatar.url !== ""
+                          ? { uri: getPicFullUrl(v.avatar.url) }
+                          : gImg.common.defaultAvatar
+                      }
                     />
                   </View>
                   <View
@@ -196,7 +192,7 @@ export default class Index extends Component<
                         }
                       />
                       <Text style={[style.patientAge, global.fontSize12, global.fontStyle]}>
-                        {v.age}
+                        {v.year_age}岁{v.month_age !== 0 ? v.month_age + "月" : null}
                       </Text>
                     </View>
                   </View>

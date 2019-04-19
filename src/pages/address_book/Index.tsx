@@ -10,6 +10,8 @@ import gImg from "@utils/img"
 import pathMap from "@/routes/pathMap"
 import patientApi from "@api/patient"
 import { Picture } from "@pages/advisory/Chat"
+import { getPicFullUrl } from "@/utils/utils"
+import { Overwrite, Assign } from "utility-types"
 const style = gStyle.addressBook.AddressBookIndex
 const global = gStyle.global
 interface Props {
@@ -21,7 +23,8 @@ export interface communicationItem {
   avatar: Picture
   name: string
   gender: number
-  age: number
+  year_age: number
+  month_age: number
   phone: string
   ctime: string
   consultStyle: number
@@ -29,7 +32,7 @@ export interface communicationItem {
 interface State {
   hasLoad: boolean
   refreshing: boolean
-  communicationList: communicationItem[]
+  communicationList: Assign<communicationItem, { hidden?: boolean }>[]
   search: string
 }
 const mapStateToProps = (state: AppState) => {
@@ -127,18 +130,20 @@ export default class Index extends Component<
                     this.setState({
                       search,
                     })
-                    let list = [],
-                      { communicationList } = this.state
+                    let { communicationList } = this.state
                     if (search !== "") {
                       for (let patient of communicationList) {
-                        if (patient.name.indexOf(search) >= 0) {
-                          list.push(patient)
-                        }
+                        patient.hidden = patient.name.indexOf(search) < 0
                       }
-                      this.setState({
-                        communicationList: list,
+                    } else {
+                      communicationList = communicationList.map(v => {
+                        v.hidden = false
+                        return v
                       })
                     }
+                    this.setState({
+                      communicationList,
+                    })
                   }}
                   placeholder="搜索患者">
                   <Icon name="search" style={[style.searchIcon, global.fontSize20]} />
@@ -169,97 +174,104 @@ export default class Index extends Component<
           </TouchableOpacity>
           <View style={style.separationModule} />
           <View style={style.communicationList}>
-            {this.state.communicationList.map((v: communicationItem, k: number) => {
-              return (
-                <TouchableOpacity
-                  key={k}
-                  style={[
-                    style.communicationItem,
-                    global.flex,
-                    global.justifyContentStart,
-                    global.alignItemsCenter,
-                  ]}
-                  onPress={() =>
-                    this.props.navigation.push(pathMap.PatientDetail, {
-                      title: v.name,
-                      patientUid: v.uid,
-                    })
-                  }>
-                  <View style={style.communicationItemPicture}>
-                    <Image
-                      style={style.communicationItemPic}
-                      source={
-                        v.avatar.url !== ""
-                          ? // ? { uri: getPicFullUrl(v.avatar.url) }
-                            {
-                              uri:
-                                "https://thirdwx.qlogo.cn/mmopen/NFh0b6W9wb26ibhkNDt6HDsTLOEaDxAtk6BJxUa1MUjfibibJurwub1HALHPmvPxGscfOPR0s3CBvib4sN4E691ysr04XdicE60RE/132",
-                            }
-                          : gImg.common.defaultAvatar
-                      }
-                    />
-                  </View>
-                  <View style={[style.groupTheme, global.justifyContentCenter]}>
-                    <Text
-                      style={[style.communicationItemTitle, global.fontSize14, global.fontStyle]}>
-                      {v.name}
-                    </Text>
-                    <View
-                      style={[
-                        style.communicationItemdescriptionBottom,
-                        global.flex,
-                        global.justifyContentSpaceBetween,
-                        global.alignItemsCenter,
-                      ]}>
+            {this.state.communicationList.map(
+              (v: Assign<communicationItem, { hidden?: boolean }>, k: number) => {
+                if (v.hidden) {
+                  return null
+                }
+                return (
+                  <TouchableOpacity
+                    key={k}
+                    style={[
+                      style.communicationItem,
+                      global.flex,
+                      global.justifyContentStart,
+                      global.alignItemsCenter,
+                    ]}
+                    onPress={() =>
+                      this.props.navigation.push(pathMap.PatientDetail, {
+                        title: v.name,
+                        patientUid: v.uid,
+                      })
+                    }>
+                    <View style={style.communicationItemPicture}>
+                      <Image
+                        style={style.communicationItemPic}
+                        source={
+                          v.avatar.url !== ""
+                            ? { uri: getPicFullUrl(v.avatar.url) }
+                            : gImg.common.defaultAvatar
+                        }
+                      />
+                    </View>
+                    <View style={[style.groupTheme, global.justifyContentCenter]}>
+                      <Text
+                        style={[style.communicationItemTitle, global.fontSize14, global.fontStyle]}>
+                        {v.name}
+                      </Text>
                       <View
                         style={[
-                          style.communicationItemDescription,
+                          style.communicationItemdescriptionBottom,
                           global.flex,
-                          global.justifyContentStart,
+                          global.justifyContentSpaceBetween,
                           global.alignItemsCenter,
                         ]}>
-                        <Image
-                          style={style.genderIcon}
-                          source={
-                            v.gender === 1
-                              ? gImg.common.man
-                              : v.gender === 2
-                              ? gImg.common.woman
-                              : gImg.common.genderNull
-                          }
-                        />
-                        <Text
+                        <View
                           style={[
-                            style.communicationItemDetail,
-                            global.fontSize11,
-                            global.fontStyle,
+                            style.communicationItemDescription,
+                            global.flex,
+                            global.justifyContentStart,
+                            global.alignItemsCenter,
                           ]}>
-                          {v.age || "未知"}
-                        </Text>
-                        <Image style={style.genderIcon} source={gImg.addressBook.phone} />
-                        <Text
+                          <Image
+                            style={style.genderIcon}
+                            source={
+                              v.gender === 1
+                                ? gImg.common.man
+                                : v.gender === 2
+                                ? gImg.common.woman
+                                : gImg.common.genderNull
+                            }
+                          />
+                          <Text
+                            style={[
+                              style.communicationItemDetail,
+                              global.fontSize11,
+                              global.fontStyle,
+                            ]}>
+                            {v.year_age || "未知"}
+                          </Text>
+                          <Image style={style.genderIcon} source={gImg.addressBook.phone} />
+                          <Text
+                            style={[
+                              style.communicationItemDetail,
+                              global.fontSize11,
+                              global.fontStyle,
+                            ]}>
+                            {v.phone.substr(7, 4) || "未填写"}
+                          </Text>
+                        </View>
+                        <View
                           style={[
-                            style.communicationItemDetail,
-                            global.fontSize11,
-                            global.fontStyle,
+                            global.flex,
+                            global.justifyContentStart,
+                            global.alignItemsCenter,
                           ]}>
-                          {v.phone.substr(7, 4) || "未填写"}
-                        </Text>
-                      </View>
-                      <View
-                        style={[global.flex, global.justifyContentStart, global.alignItemsCenter]}>
-                        <Text style={[style.firstConsultTime, global.fontStyle, global.fontSize13]}>
-                          {v.ctime.substr(0, 10)}
-                        </Text>
-                        <Text style={[style.firstConsultTime, global.fontStyle, global.fontSize13]}>
-                          {v.consultStyle}
-                        </Text>
+                          <Text
+                            style={[style.firstConsultTime, global.fontStyle, global.fontSize13]}>
+                            {v.ctime.substr(0, 10)}
+                          </Text>
+                          <Text
+                            style={[style.firstConsultTime, global.fontStyle, global.fontSize13]}>
+                            {v.consultStyle}
+                          </Text>
+                        </View>
                       </View>
                     </View>
-                  </View>
-                </TouchableOpacity>
-              )
-            })}
+                  </TouchableOpacity>
+                )
+              },
+            )}
           </View>
         </ScrollView>
       </>

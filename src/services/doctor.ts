@@ -1,4 +1,10 @@
 import { bget, bpost, GetListParam } from "./api"
+import { patientGroupItem } from "@/pages/address_book/Group"
+import { patientItem } from "@/pages/address_book/GroupDetail"
+export const ALLOW_INQUIRY = {
+  FALSE: 0x0,
+  TRUE: 0x1,
+}
 export const GENDER = {
   UNDEFINED: 0x0,
   MAN: 0x1,
@@ -159,6 +165,58 @@ export function setInquirySetup({
     data: { allowInquiry, initialPrice, followUpPrice },
   })
 }
+/**
+ * 获取患者分组列表
+ */
+export async function getPatientGroupList(param: GetListParam) {
+  return bget<{ list: patientGroupItem[] }>({
+    url: "api/getPatientGroupList",
+    query: {
+      ...param,
+    },
+  })
+}
+/**
+ * 删除某患者分组
+ */
+export async function deletePatientGroup({ id }: { id: number }) {
+  return bpost({
+    url: "api/deletePatientGroup",
+    data: {
+      id,
+    },
+  })
+}
+/**
+ * 添加分组
+ */
+export async function addPatientGroup({
+  name,
+  patientUidList,
+}: {
+  name: string
+  patientUidList: number[]
+}) {
+  return bpost({
+    url: "api/addPatientGroup",
+    data: {
+      name,
+      patientUidList,
+    },
+  })
+}
+
+/**
+ * 获取患者组详情
+ */
+export async function getPatientGroupDetail({ id }: { id: number }) {
+  return bget<{ detail: { patientList: patientItem[] } }>({
+    url: "api/getPatientGroupDetail",
+    query: {
+      id,
+    },
+  })
+}
 export default {
   doctorAuth,
   getMsgList,
@@ -167,4 +225,8 @@ export default {
   setProfile,
   getInquirySetup,
   setInquirySetup,
+  getPatientGroupList,
+  deletePatientGroup,
+  addPatientGroup,
+  getPatientGroupDetail,
 }
