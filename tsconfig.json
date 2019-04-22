@@ -10,7 +10,7 @@
     "experimentalDecorators": true,
     "module": "commonjs",
     "jsx": "react-native",
-    "lib": ["es6"],
+    "lib": ["es6", "dom"],
     "moduleResolution": "node",
     "noEmit": true,
     "strict": true,

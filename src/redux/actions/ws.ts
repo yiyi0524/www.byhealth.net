@@ -1,15 +1,13 @@
-import { Picture } from "@/pages/advisory/Chat"
-
-export const USER_LOGIN = "用户登录"
-
-export interface UserInfo {
-  uid: number
-  name: string
-  avatar: Picture
+export interface WsInfo {
+  status: number
 }
-export function userLogin(userInfo: UserInfo) {
+export const CHANGE_STATUS = "改变websocket状态"
+
+export function changeStatus({ status }: { status: number }) {
   return {
-    type: USER_LOGIN,
-    preload: userInfo,
+    type: CHANGE_STATUS,
+    preload: {
+      status,
+    },
   }
 }

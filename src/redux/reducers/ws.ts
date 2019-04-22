@@ -1,41 +1,30 @@
-import * as userAction from "../actions/user"
-import { Picture } from "@/pages/advisory/Chat"
-export interface UserState {
-  isLogin: boolean
-  name: string
-  uid: number
-  avatar: Picture
+import * as wsAction from "../actions/ws"
+export interface WsState {
+  status: number
 }
-const initState: UserState = {
-  isLogin: false,
-  uid: 0,
-  name: "未命名",
-  avatar: {
-    id: 0,
-    title: "",
-    url: "",
-  },
+const initState: WsState = {
+  // websocket 状态
+  status: WebSocket.CLOSED,
 }
 export interface Action<T> {
   type: string
   preload: T
 }
-function userLogin(state = initState, action: Action<userAction.UserInfo>) {
-  if (action.type === userAction.USER_LOGIN) {
+/**
+ * 改变 ws 状态
+ */
+function changeStatus(state = initState, action: Action<{ status: number }>) {
+  if (action.type === wsAction.CHANGE_STATUS) {
     let newState = Object.assign({}, state)
-    newState.isLogin = true
-    newState.name = action.preload.name
-    newState.uid = action.preload.uid
-    newState.avatar = action.preload.avatar
+    newState.status = action.preload.status
     return newState
   }
   return state
 }
-
 export default function reducer(state = initState, action: Action<any>) {
   switch (action.type) {
-    case userAction.USER_LOGIN:
-      return userLogin(state, action)
+    case wsAction.CHANGE_STATUS:
+      return changeStatus(state, action)
     default:
       break
   }

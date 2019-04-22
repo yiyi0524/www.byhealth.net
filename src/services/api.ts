@@ -3,6 +3,9 @@ import { Dimensions } from "react-native"
 import { BASE_URL } from "@config/api"
 import storage from "@utils/storage"
 import qs from "qs"
+export const JsonReturnCode = {
+  SUCCESS: 0x0,
+}
 export const windowWidth = Dimensions.get("window").width
 export const windowHeight = Dimensions.get("window").height
 export const TYPE = {

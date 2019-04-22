@@ -1,8 +1,13 @@
-import { createStore, combineReducers } from "redux";
-import { composeWithDevTools } from "redux-devtools-extension";
+import { createStore, combineReducers } from "redux"
+import { composeWithDevTools } from "redux-devtools-extension"
 
-import userReducer, { UserState } from "../reducers/user";
+import userReducer, { UserState } from "../reducers/user"
+import wsReducer, { WsState } from "../reducers/ws"
 export interface AppState {
-  user: UserState;
+  user: UserState
+  ws: WsState
 }
-export default createStore(combineReducers({ user: userReducer }), composeWithDevTools());
+export default createStore(
+  combineReducers({ user: userReducer, ws: wsReducer }),
+  composeWithDevTools(),
+)

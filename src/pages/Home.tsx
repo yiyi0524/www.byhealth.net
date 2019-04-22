@@ -170,6 +170,11 @@ export default class Home extends Component<
         let {
           data: { doctorInfo, info },
         } = await userApi.getPersonalInfo()
+        this.props.login({
+          uid: info.id,
+          avatar: info.avatar,
+          name: info.name,
+        })
         let { settingList } = this.state
         if ("allowInquiry" in doctorInfo) {
           settingList[0].description =
