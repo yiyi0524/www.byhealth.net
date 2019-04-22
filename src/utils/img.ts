@@ -28,6 +28,7 @@ export default {
     banner_1: require("@img/home/banner_1.jpg"),
     banner_2: require("@img/home/banner_2.jpg"),
     banner_3: require("@img/home/banner_3.jpg"),
+    empty: require("@img/home/empty.png"),
   },
   advisory: {
     pillPurchase: require("@img/advisory/pill_purchase.png"),

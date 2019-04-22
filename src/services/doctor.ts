@@ -229,6 +229,17 @@ export async function listConsultation(param: GetListParam) {
     },
   })
 }
+/**
+ * 获取认证详情
+ */
+export async function getWaitAuditDoctorDetail({ id }: { id: number }) {
+  return bget({
+    url: "doctor/getWaitAuditDoctorDetail",
+    query: {
+      id,
+    },
+  })
+}
 export default {
   doctorAuth,
   getMsgList,
@@ -242,4 +253,5 @@ export default {
   addPatientGroup,
   getPatientGroupDetail,
   listConsultation,
+  getWaitAuditDoctorDetail,
 }

@@ -7,6 +7,7 @@ import api from "@api/api"
 import gStyle from "@utils/style"
 import React, { Component } from "react"
 import gImg from "@utils/img"
+import userApi from "@api/user"
 import {
   RefreshControl,
   ScrollView,
@@ -25,6 +26,7 @@ interface Props {
 }
 interface State {
   hasLoad: boolean
+  hasRealNameAuth: boolean
   refreshing: boolean
   version: {
     current: string
@@ -91,6 +93,7 @@ export default class Index extends Component<
   getInitState = (): State => {
     return {
       hasLoad: false,
+      hasRealNameAuth: false,
       refreshing: false,
       version: {
         current: "1.0.0",
@@ -102,15 +105,22 @@ export default class Index extends Component<
     await this.init()
   }
   init = async () => {
-    // let {data:version} = api.getVersion();//todo 版本信息监测
-    let version = {
-      current: Platform.Version + "",
-      new: "1.0.1",
+    try {
+      let {
+        data: { doctorInfo },
+      } = await userApi.getPersonalInfo()
+      let version = {
+        current: Platform.Version + "",
+        new: "1.0.1",
+      }
+      this.setState({
+        hasLoad: true,
+        hasRealNameAuth: doctorInfo.hasRealNameAuth,
+        version,
+      })
+    } catch (err) {
+      console.log(err)
     }
-    this.setState({
-      hasLoad: true,
-      version,
-    })
   }
   onRefresh = () => {
     this.setState({ refreshing: true })
@@ -158,7 +168,12 @@ export default class Index extends Component<
                 return (
                   <View key={k}>
                     <TouchableOpacity
-                      onPress={() => this.props.navigation.push(v.link)}
+                      onPress={() => {
+                        if (!this.state.hasRealNameAuth) {
+                          return Toast.info("您未认证", 3)
+                        }
+                        this.props.navigation.push(v.link)
+                      }}
                       style={[
                         style.item,
                         global.flex,
@@ -195,7 +210,14 @@ export default class Index extends Component<
               }
               return (
                 <TouchableOpacity
-                  onPress={() => this.props.navigation.push(v.link)}
+                  onPress={() => {
+                    if (v.name === "编辑资料") {
+                      if (!this.state.hasRealNameAuth) {
+                        return Toast.info("您未认证", 3)
+                      }
+                    }
+                    this.props.navigation.push(v.link)
+                  }}
                   key={k}
                   style={[
                     style.item,

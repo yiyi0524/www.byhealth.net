@@ -2,7 +2,7 @@ import global from "@/assets/styles/global"
 import * as userAction from "@/redux/actions/user"
 import { AppState } from "@/redux/stores/store"
 import { Icon, InputItem, Picker, Toast } from "@ant-design/react-native"
-import api, { registerParam } from "@api/api"
+import api, { registerParam, TYPE } from "@api/api"
 import hospitalApi from "@api/hospital"
 import pathMap from "@routes/pathMap"
 import gImg from "@utils/img"
@@ -72,8 +72,8 @@ export default class Register extends Component<
     return {
       selectHospitalActive: false,
       hospitalId: 0,
-      page: 0,
-      limit: 0,
+      page: -1,
+      limit: -1,
       name: "",
       phone: "",
       pwd: "",
@@ -146,9 +146,13 @@ export default class Register extends Component<
         page: this.state.page,
         limit: this.state.limit,
         filter: {
-          countyCid: cityId[2],
+          countyCid: {
+            condition: TYPE.eq,
+            val: cityId[2],
+          },
         },
       })
+      console.log(hospitalList)
       this.setState({
         hospitalList,
       })
@@ -483,6 +487,7 @@ export default class Register extends Component<
                         this.setState({
                           hospitalId: v.id,
                           hospitalName: v.name,
+                          selectHospitalActive: false,
                         })
                       }}>
                       <Text style={style.hospitalItem}>{v.name}</Text>

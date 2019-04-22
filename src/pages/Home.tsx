@@ -177,7 +177,13 @@ export default class Home extends Component<
         }
         this.setState({
           name: info.name,
-          avatar: info.avatar,
+          avatar: info.avatar
+            ? info.avatar
+            : {
+                id: 0,
+                title: "",
+                url: "",
+              },
           hasRealNameAuth: doctorInfo.hasRealNameAuth,
           prescriptionCount: doctorInfo.prescriptionCount,
           patientCount: doctorInfo.patientCount,
@@ -258,6 +264,9 @@ export default class Home extends Component<
                   医疗资质{this.state.hasRealNameAuth ? "已认证" : "未认证"}{" "}
                 </Text>
                 <TouchableOpacity
+                  onPress={() => {
+                    this.props.navigation.push(pathMap.RealNameAuth)
+                  }}
                   style={[
                     this.state.hasRealNameAuth
                       ? globalStyle.hidden
@@ -298,18 +307,23 @@ export default class Home extends Component<
             ]}>
             <TouchableOpacity
               style={style.prescriptionItem}
-              onPress={() => this.props.navigation.push(pathMap.Prescription)}>
+              onPress={() => {
+                if (this.state.hasRealNameAuth) {
+                  return Toast.info("您未认证", 3)
+                }
+                this.props.navigation.push(pathMap.Prescription)
+              }}>
               <Text style={[style.prescriptionItemNum, global.fontSize15]}>
                 {this.state.prescriptionCount}
               </Text>
               <Text style={[style.prescriptionItemTitle, global.fontSize12]}>处方数</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={style.prescriptionItem}>
+            <View style={style.prescriptionItem}>
               <Text style={[style.prescriptionItemNum, global.fontSize15]}>
                 {this.state.patientCount}
               </Text>
               <Text style={[style.prescriptionItemTitle, global.fontSize12]}>患者数</Text>
-            </TouchableOpacity>
+            </View>
           </View>
 
           {/* 认证 */}

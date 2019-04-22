@@ -1,6 +1,7 @@
 import global from "@/assets/styles/global"
 import * as userAction from "@/redux/actions/user"
 import { AppState } from "@/redux/stores/store"
+import userApi from "@api/user"
 import {
   ScrollView,
   Text,
@@ -11,7 +12,7 @@ import {
   Image,
 } from "react-native"
 import { Icon, InputItem, Picker, Toast, ImagePicker, TextareaItem } from "@ant-design/react-native"
-import api from "@api/api"
+import api, { TYPE } from "@api/api"
 import doctorApi, { authParam } from "@api/doctor"
 import { BASE_URL } from "@config/api"
 import hospitalApi from "@api/hospital"
@@ -54,6 +55,7 @@ interface State {
   hasLoad: boolean
   previewPicFirstActive: boolean
   previewPicSecondActive: boolean
+  uid: number
   hospitalName: string
   name: string
   idCardNo: string
@@ -74,9 +76,9 @@ interface State {
   hospitalDepartment: hospitalDepartmentItem[] //科室
   hospitalDepartmentMap: any
   hospitalDepartmentSymptom: any //症状
-  practisingCertificatePicIdList: any //医生执业证书
-  qualificationCertificatePicIdList: any //医生资格证书
-  technicalqualificationCertificatePicIdList: any //专业技术资格证书10张
+  practisingCertificatePicList: any //医生执业证书
+  qualificationCertificatePicList: any //医生资格证书
+  technicalqualificationCertificatePicList: any //专业技术资格证书10张
   avatarId: number
 }
 interface RegionCidMapAreaName extends Record<string, string> {}
@@ -175,6 +177,7 @@ export default class RealNameAuth extends Component<
       previewPicFirstActive: false,
       previewPicSecondActive: false,
       hospitalId: 0,
+      uid: 0,
       page: 1,
       limit: -1,
       hospitalName: "",
@@ -194,9 +197,9 @@ export default class RealNameAuth extends Component<
       departmentId: [-1],
       hospitalDepartmentSymptom: [], //症状
       adeptSymptomIdList: [], //擅长
-      practisingCertificatePicIdList: [], //医生执业证书
-      qualificationCertificatePicIdList: [], //医生资格证书
-      technicalqualificationCertificatePicIdList: [], //专业技术资格证书9张
+      practisingCertificatePicList: [], //医生执业证书
+      qualificationCertificatePicList: [], //医生资格证书
+      technicalqualificationCertificatePicList: [], //专业技术资格证书9张
       avatarId: 0,
     }
   }
@@ -261,6 +264,14 @@ export default class RealNameAuth extends Component<
           v1.isChecked = false
         }
       }
+      let {
+        data: { info },
+      } = await userApi.getPersonalInfo()
+      this.setState({
+        uid: info.id,
+      })
+      let { data } = await doctorApi.getWaitAuditDoctorDetail({ id: this.state.uid })
+      console.log(data)
       this.setState({
         region,
         regionCidMapAreaName,
@@ -311,7 +322,10 @@ export default class RealNameAuth extends Component<
         page: this.state.page,
         limit: this.state.limit,
         filter: {
-          countyCid: cityId[2],
+          countyCid: {
+            condition: TYPE.eqString,
+            val: cityId[2],
+          },
         },
       })
       this.setState({
@@ -355,16 +369,16 @@ export default class RealNameAuth extends Component<
     if (this.state.adeptSymptomIdList.length === 0) {
       return Toast.fail("请选择擅长", 3)
     }
-    if (this.state.practisingCertificatePicIdList.length === 0) {
+    if (this.state.practisingCertificatePicList.length === 0) {
       return Toast.fail("请上传医师执业证书", 3)
     }
-    if (this.state.practisingCertificatePicIdList.length === 1) {
+    if (this.state.practisingCertificatePicList.length === 1) {
       return Toast.fail("请上传两张医师执业证书", 3)
     }
-    if (this.state.qualificationCertificatePicIdList.length === 0) {
+    if (this.state.qualificationCertificatePicList.length === 0) {
       return Toast.fail("请上传医师资格证书", 3)
     }
-    if (this.state.qualificationCertificatePicIdList.length === 1) {
+    if (this.state.qualificationCertificatePicList.length === 1) {
       return Toast.fail("请上传两张医师资格证书", 3)
     }
     let adeptSymptomIds: any = [],
@@ -374,18 +388,19 @@ export default class RealNameAuth extends Component<
       adeptSymptomIds.push(v.id)
     }
     let practisingCertificatePicIds: any = [],
-      practisingCertificatePicIdList = this.state.practisingCertificatePicIdList
-    for (let v of practisingCertificatePicIdList) {
+      practisingCertificatePicList = this.state.practisingCertificatePicList
+    for (let v of practisingCertificatePicList) {
       practisingCertificatePicIds.push(v.picId)
     }
     let qualificationCertificatePicIds: any = [],
-      qualificationCertificatePicIdList = this.state.qualificationCertificatePicIdList
-    for (let v of qualificationCertificatePicIdList) {
+      qualificationCertificatePicList = this.state.qualificationCertificatePicList
+    console.log(qualificationCertificatePicList)
+    for (let v of qualificationCertificatePicList) {
       qualificationCertificatePicIds.push(v.picId)
     }
     let technicalqualificationCertificatePicIds: any = [],
       technicalQualificationCertificatePicIdList = this.state
-        .technicalqualificationCertificatePicIdList
+        .technicalqualificationCertificatePicList
     for (let v of technicalQualificationCertificatePicIdList) {
       technicalqualificationCertificatePicIds.push(v.picId)
     }
@@ -444,25 +459,21 @@ export default class RealNameAuth extends Component<
     }
   }
   medicalPracticeCertificateChange = async (
-    practisingCertificatePicIdList: Array<{}>,
+    practisingCertificatePicList: Array<any>,
     operationType: string,
   ) => {
-    let practisingCertificatePicIdSelectable = practisingCertificatePicIdList.length < 2
-    this.setState({
-      practisingCertificatePicIdList,
-      practisingCertificatePicIdSelectable,
-    })
+    let practisingCertificatePicIdSelectable = practisingCertificatePicList.length < 2
     if (operationType === "add") {
       api
-        .uploadImg(practisingCertificatePicIdList[practisingCertificatePicIdList.length - 1])
+        .uploadImg(practisingCertificatePicList[practisingCertificatePicList.length - 1])
         .then(json => {
-          let practisingCertificatePicIdList = this.state.practisingCertificatePicIdList
-          practisingCertificatePicIdList[practisingCertificatePicIdList.length - 1].url =
+          practisingCertificatePicList[practisingCertificatePicList.length - 1].url =
             BASE_URL + json.data.url
-          practisingCertificatePicIdList[practisingCertificatePicIdList.length - 1].picId =
+          practisingCertificatePicList[practisingCertificatePicList.length - 1].picId =
             json.data.picId
           this.setState({
-            practisingCertificatePicIdList,
+            practisingCertificatePicList,
+            practisingCertificatePicIdSelectable,
           })
         })
         .catch(err => {
@@ -470,30 +481,27 @@ export default class RealNameAuth extends Component<
         })
     } else if (operationType === "remove") {
       this.setState({
-        practisingCertificatePicIdList,
+        practisingCertificatePicList,
+        practisingCertificatePicIdSelectable,
       })
     }
   }
   qualificationCertificatePicIdChange = (
-    qualificationCertificatePicIdList: Array<{}>,
+    qualificationCertificatePicList: Array<any>,
     operationType: string,
   ) => {
-    let qualificationCertificatePicIdSelectable = qualificationCertificatePicIdList.length < 2
-    this.setState({
-      qualificationCertificatePicIdList,
-      qualificationCertificatePicIdSelectable,
-    })
+    let qualificationCertificatePicIdSelectable = qualificationCertificatePicList.length < 2
     if (operationType === "add") {
       api
-        .uploadImg(qualificationCertificatePicIdList[qualificationCertificatePicIdList.length - 1])
+        .uploadImg(qualificationCertificatePicList[qualificationCertificatePicList.length - 1])
         .then(json => {
-          let qualificationCertificatePicIdList = this.state.qualificationCertificatePicIdList
-          qualificationCertificatePicIdList[qualificationCertificatePicIdList.length - 1].url =
+          qualificationCertificatePicList[qualificationCertificatePicList.length - 1].url =
             BASE_URL + json.data.url
-          qualificationCertificatePicIdList[qualificationCertificatePicIdList.length - 1].picId =
+          qualificationCertificatePicList[qualificationCertificatePicList.length - 1].picId =
             json.data.picId
           this.setState({
-            qualificationCertificatePicIdList,
+            qualificationCertificatePicList,
+            qualificationCertificatePicIdSelectable,
           })
         })
         .catch(err => {
@@ -501,43 +509,44 @@ export default class RealNameAuth extends Component<
         })
     } else if (operationType === "remove") {
       this.setState({
-        qualificationCertificatePicIdList,
+        qualificationCertificatePicList,
+        qualificationCertificatePicIdSelectable,
       })
     }
   }
   technicalqualificationCertificatePicIdChange = (
-    technicalqualificationCertificatePicIdList: Array<{}>,
+    technicalqualificationCertificatePicList: Array<any>,
     operationType: string,
   ) => {
     let technicalqualificationCertificatePicIdSelectable =
-      technicalqualificationCertificatePicIdList.length < 9
-    this.setState({
-      technicalqualificationCertificatePicIdList,
-      technicalqualificationCertificatePicIdSelectable,
-    })
+      technicalqualificationCertificatePicList.length < 9
     if (operationType === "add") {
       api
         .uploadImg(
-          technicalqualificationCertificatePicIdList[
-            technicalqualificationCertificatePicIdList.length - 1
+          technicalqualificationCertificatePicList[
+            technicalqualificationCertificatePicList.length - 1
           ],
         )
         .then(json => {
-          let technicalqualificationCertificatePicIdList = this.state
-            .technicalqualificationCertificatePicIdList
-          technicalqualificationCertificatePicIdList[
-            technicalqualificationCertificatePicIdList.length - 1
+          technicalqualificationCertificatePicList[
+            technicalqualificationCertificatePicList.length - 1
           ].url = BASE_URL + json.data.url
-          technicalqualificationCertificatePicIdList[
-            technicalqualificationCertificatePicIdList.length - 1
+          technicalqualificationCertificatePicList[
+            technicalqualificationCertificatePicList.length - 1
           ].picId = json.data.picId
           this.setState({
-            technicalqualificationCertificatePicIdList,
+            technicalqualificationCertificatePicList,
+            technicalqualificationCertificatePicIdSelectable,
           })
         })
         .catch(err => {
           console.log(err)
         })
+    } else if (operationType === "remove") {
+      this.setState({
+        technicalqualificationCertificatePicList,
+        technicalqualificationCertificatePicIdSelectable,
+      })
     }
   }
   render() {
@@ -877,7 +886,7 @@ export default class RealNameAuth extends Component<
                 <ImagePicker
                   selectable={this.state.practisingCertificatePicIdSelectable}
                   onChange={this.medicalPracticeCertificateChange}
-                  files={this.state.practisingCertificatePicIdList}
+                  files={this.state.practisingCertificatePicList}
                 />
               </View>
             </View>
@@ -905,7 +914,7 @@ export default class RealNameAuth extends Component<
                 <ImagePicker
                   selectable={this.state.qualificationCertificatePicIdSelectable}
                   onChange={this.qualificationCertificatePicIdChange}
-                  files={this.state.qualificationCertificatePicIdList}
+                  files={this.state.qualificationCertificatePicList}
                 />
               </View>
             </View>
@@ -926,7 +935,7 @@ export default class RealNameAuth extends Component<
                 <ImagePicker
                   selectable={this.state.technicalqualificationCertificatePicIdSelectable}
                   onChange={this.technicalqualificationCertificatePicIdChange}
-                  files={this.state.technicalqualificationCertificatePicIdList}
+                  files={this.state.technicalqualificationCertificatePicList}
                 />
               </View>
               <View style={style.previewPic}>
@@ -1032,6 +1041,7 @@ export default class RealNameAuth extends Component<
                         this.setState({
                           hospitalId: v.id,
                           hospitalName: v.name,
+                          selectHospitalActive: false,
                         })
                       }}>
                       <Text style={style.hospitalItem}>{v.name}</Text>

@@ -8,6 +8,7 @@ import React, { Component } from "react"
 import { Image, RefreshControl, ScrollView, Text, TouchableOpacity, View } from "react-native"
 import { NavigationScreenProp } from "react-navigation"
 import { Picture } from "./Chat"
+import Empty from "@components/Empty"
 const style = gStyle.advisory.advisoryIndex
 const globalStyle = gStyle.global
 
@@ -89,7 +90,6 @@ export default class Index extends Component<Props, State> {
               globalStyle.flex,
               globalStyle.alignItemsCenter,
               globalStyle.justifyContentSpaceBetween,
-              ,
               { display: "none" },
             ]}>
             <TouchableOpacity
@@ -184,6 +184,7 @@ export default class Index extends Component<Props, State> {
                 </TouchableOpacity>
               )
             })}
+            {this.state.consultationList.length === 0 ? <Empty /> : null}
           </View>
         </ScrollView>
       </>

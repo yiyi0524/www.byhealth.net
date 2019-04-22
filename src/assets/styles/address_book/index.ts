@@ -45,6 +45,14 @@ export default StyleSheet.create({
   searchTitle: {
     color: sColor.color888,
     width: "100%",
+    position: "relative",
+  },
+  searchMode: {
+    height: 45,
+    position: "absolute",
+    left: 0,
+    right: 0,
+    zIndex: 100,
   },
   separationModule: {
     flex: 1,

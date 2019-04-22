@@ -9,9 +9,10 @@ import gStyle from "@utils/style"
 import gImg from "@utils/img"
 import pathMap from "@/routes/pathMap"
 import patientApi from "@api/patient"
+import userApi from "@api/user"
 import { Picture } from "@pages/advisory/Chat"
 import { getPicFullUrl } from "@/utils/utils"
-import { Overwrite, Assign } from "utility-types"
+import { Assign } from "utility-types"
 const style = gStyle.addressBook.AddressBookIndex
 const global = gStyle.global
 interface Props {
@@ -31,6 +32,7 @@ export interface communicationItem {
 }
 interface State {
   hasLoad: boolean
+  hasRealNameAuth: boolean
   refreshing: boolean
   communicationList: Assign<communicationItem, { hidden?: boolean }>[]
   search: string
@@ -64,23 +66,31 @@ export default class Index extends Component<
   getInitState = (): State => {
     return {
       hasLoad: false,
+      hasRealNameAuth: false,
       refreshing: false,
       communicationList: [],
       search: "",
     }
   }
-  async componentDidMount() {
-    await this.init()
+  componentDidMount() {
+    this.init()
   }
   init = async () => {
-    let {
-      data: { list: communicationList },
-    } = await patientApi.getAddressBoolPatientList({ page: -1, limit: -1, filter: {} })
-
-    this.setState({
-      hasLoad: true,
-      communicationList,
-    })
+    try {
+      let {
+        data: { doctorInfo },
+      } = await userApi.getPersonalInfo()
+      let {
+        data: { list: communicationList },
+      } = await patientApi.getAddressBoolPatientList({ page: -1, limit: -1, filter: {} })
+      this.setState({
+        hasLoad: true,
+        hasRealNameAuth: doctorInfo.hasRealNameAuth,
+        communicationList,
+      })
+    } catch (err) {
+      console.log(err)
+    }
   }
   onRefresh = () => {
     this.setState({ refreshing: true })
@@ -120,6 +130,14 @@ export default class Index extends Component<
                 global.alignItemsCenter,
               ]}>
               <View style={style.searchTitle}>
+                <TouchableOpacity
+                  style={this.state.hasRealNameAuth ? global.hidden : style.searchMode}
+                  onPress={() => {
+                    if (!this.state.hasRealNameAuth) {
+                      return Toast.info("您未认证", 3)
+                    }
+                  }}
+                />
                 <InputItem
                   style={[style.searchTitle, global.fontSize14, global.fontStyle]}
                   clear
@@ -159,7 +177,12 @@ export default class Index extends Component<
               global.justifyContentSpaceBetween,
               global.alignItemsCenter,
             ]}
-            onPress={() => this.props.navigation.push(pathMap.AddressBookGroup)}>
+            onPress={() => {
+              if (!this.state.hasRealNameAuth) {
+                return Toast.info("您未认证", 3)
+              }
+              this.props.navigation.push(pathMap.AddressBookGroup)
+            }}>
             <View
               style={[
                 style.groupTheme,
@@ -188,12 +211,15 @@ export default class Index extends Component<
                       global.justifyContentStart,
                       global.alignItemsCenter,
                     ]}
-                    onPress={() =>
+                    onPress={() => {
+                      if (!this.state.hasRealNameAuth) {
+                        return Toast.info("您未认证", 3)
+                      }
                       this.props.navigation.push(pathMap.PatientDetail, {
                         title: v.name,
                         patientUid: v.uid,
                       })
-                    }>
+                    }}>
                     <View style={style.communicationItemPicture}>
                       <Image
                         style={style.communicationItemPic}

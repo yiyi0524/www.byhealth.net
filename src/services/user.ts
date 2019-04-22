@@ -32,7 +32,7 @@ export interface DoctorInfo {
 
 export async function getPersonalInfo() {
   return bget<PersonalInfo>({
-    url: "/api/getDoctorPersonalInfo",
+    url: "api/getDoctorPersonalInfo",
   })
 }
 

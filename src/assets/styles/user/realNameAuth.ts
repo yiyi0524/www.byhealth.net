@@ -1,6 +1,7 @@
 import { StyleSheet, PixelRatio } from "react-native"
 import sColor from "@styles/color"
 import { windowHeight, windowWidth } from "@api/api"
+import { s } from "@/services/user"
 export default StyleSheet.create({
   loading: {
     width: windowWidth,
@@ -186,15 +187,20 @@ export default StyleSheet.create({
   },
   subBtn: {
     flex: 0.1,
-    paddingLeft: 15,
-    paddingRight: 15,
+    borderTopWidth: 1 / PixelRatio.get(),
+    borderTopColor: sColor.colorDdd,
+    paddingLeft: 8,
+    paddingRight: 8,
+    paddingTop: 8,
+    paddingBottom: 5,
+    height: 50,
   },
   subTitle: {
-    height: 50,
+    height: 40,
     color: sColor.white,
     backgroundColor: sColor.mainRed,
     borderRadius: 5,
-    lineHeight: 50,
+    lineHeight: 40,
     textAlign: "center",
   },
   hospitalSelect: {
