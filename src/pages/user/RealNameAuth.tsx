@@ -1,7 +1,6 @@
 import global from "@/assets/styles/global"
 import * as userAction from "@/redux/actions/user"
 import { AppState } from "@/redux/stores/store"
-import userApi from "@api/user"
 import {
   ScrollView,
   Text,
@@ -24,6 +23,8 @@ import { Dispatch } from "redux"
 import sColor from "@styles/color"
 import gImg from "@utils/img"
 import { GENDER, GENDER_ZH, TECHNICAL_TITLE, TECHNICAL_TITLE_ZH } from "@api/doctor"
+import user from "@/services/user"
+import { Picture } from "../advisory/Chat"
 const style = gStyle.user.realNameAuth
 interface Props {
   navigation: NavigationScreenProp<State>
@@ -36,11 +37,11 @@ interface hospitalItem {
   id: number
   name: string
 }
-interface picture {
-  name: string
-  picId: number
-  url: string
-}
+// interface picture {
+//   name: string
+//   picId: number
+//   url: string
+// }
 interface hospitalDepartmentItem {
   value: number
   label: string
@@ -55,31 +56,30 @@ interface State {
   hasLoad: boolean
   previewPicFirstActive: boolean
   previewPicSecondActive: boolean
-  uid: number
+  page: number
+  limit: number
+  hospitalId: number
+  avatarId: number
+  gender: [number]
   hospitalName: string
   name: string
   idCardNo: string
   profile: string
-  page: number
-  limit: number
-  gender: [number]
   technicalTitle: [number]
   departmentId: [number]
   adeptSymptomIdList: adeptSymptomIdItem[]
-  hospitalId: number
   region: any
   cityId: string[]
   regionCidMapAreaName: any
   filter: {}
   hospitalList: hospitalItem[]
-  avatar: picture[]
+  avatar: Picture[]
   hospitalDepartment: hospitalDepartmentItem[] //科室
   hospitalDepartmentMap: any
   hospitalDepartmentSymptom: any //症状
   practisingCertificatePicList: any //医生执业证书
   qualificationCertificatePicList: any //医生资格证书
   technicalqualificationCertificatePicList: any //专业技术资格证书10张
-  avatarId: number
 }
 interface RegionCidMapAreaName extends Record<string, string> {}
 interface CityItem {
@@ -177,7 +177,6 @@ export default class RealNameAuth extends Component<
       previewPicFirstActive: false,
       previewPicSecondActive: false,
       hospitalId: 0,
-      uid: 0,
       page: 1,
       limit: -1,
       hospitalName: "",
@@ -265,22 +264,91 @@ export default class RealNameAuth extends Component<
         }
       }
       let {
-        data: { info },
-      } = await userApi.getPersonalInfo()
-      this.setState({
-        uid: info.id,
+        data: { detail },
+      } = await doctorApi.getWaitAuditDoctorDetail()
+      let practisingCertificatePicList = detail.practisingCertificateList
+      for (let v of practisingCertificatePicList) {
+        v.url = BASE_URL + v.url
+        v.picId = v.id
+      }
+      let qualificationCertificatePicList = detail.qualificationCertificateList
+      for (let v of qualificationCertificatePicList) {
+        v.url = BASE_URL + v.url
+        v.picId = v.id
+      }
+      let technicalqualificationCertificatePicList = detail.technicalQualificationCertificateList
+      for (let v of technicalqualificationCertificatePicList) {
+        v.url = BASE_URL + v.url
+        v.picId = v.id
+      }
+      let {
+        data: { list: hospitalList },
+      } = await hospitalApi.getList({
+        page: this.state.page,
+        limit: this.state.limit,
+        filter: {
+          countyCid: {
+            condition: TYPE.eqString,
+            val: detail.address[2],
+          },
+        },
       })
-      let { data } = await doctorApi.getWaitAuditDoctorDetail({ id: this.state.uid })
-      console.log(data)
+      let hospitalId = detail.hospital_id,
+        hospitalName = detail.hospital_name
+      if (hospitalId !== 0) {
+        for (let v of hospitalList) {
+          if (v.id === hospitalId) {
+            hospitalName = v.name
+          }
+        }
+      }
+      for (let v of hospitalDepartmentSymptom) {
+        for (let v1 of v.symptomList) {
+          for (let v2 of detail.adeptSymptomList) {
+            if (v1.id === v2.id) {
+              v1.isChecked = true
+            }
+          }
+        }
+      }
+      let avatar: Picture[] = []
+      if (detail.avatar) {
+        avatar.push({
+          id: detail.avatar.id,
+          title: detail.avatar.title,
+          url: BASE_URL + detail.avatar.url,
+        })
+      }
       this.setState({
         region,
         regionCidMapAreaName,
         hospitalDepartment: hospitalDepartmentList,
         hospitalDepartmentMap,
         hospitalDepartmentSymptom,
+        hospitalList,
+        avatar,
+        avatarId: detail.avatar ? detail.avatar.id : 0,
+        name: detail.name,
+        cityId: detail.address,
+        hospitalName,
+        hospitalId: detail.hospital_id,
+        idCardNo: detail.id_no,
+        gender: [detail.gender],
+        technicalTitle: [detail.technical_title],
+        departmentId: [detail.department_id],
+        profile: detail.profile,
+        adeptSymptomIdList: detail.adeptSymptomList,
+        practisingCertificatePicList,
+        qualificationCertificatePicList,
+        technicalqualificationCertificatePicList,
+        practisingCertificatePicIdSelectable: practisingCertificatePicList.length < 2,
+        qualificationCertificatePicIdSelectable: qualificationCertificatePicList.length < 2,
+        technicalqualificationCertificatePicIdSelectable:
+          technicalqualificationCertificatePicList.length < 10,
+        avatarSelectable: avatar.length < 1,
       })
     } catch (err) {
-      console.log(err.msg)
+      console.log(err)
     }
     this.setState({
       hasLoad: true,
@@ -425,6 +493,7 @@ export default class RealNameAuth extends Component<
     } else {
       param.hospitalName = this.state.hospitalName
     }
+    // console.log(param)
     try {
       await doctorApi.doctorAuth(param)
       Toast.fail("提交成功, 等待审核", 2, () => {})
@@ -435,10 +504,6 @@ export default class RealNameAuth extends Component<
   }
   handleFileChange = (avatar: any, operationType: string) => {
     let avatarSelectable = avatar.length < 1
-    this.setState({
-      avatar,
-      avatarSelectable,
-    })
     if (operationType === "add") {
       api
         .uploadImg(avatar[avatar.length - 1])
@@ -451,11 +516,18 @@ export default class RealNameAuth extends Component<
           this.setState({
             avatarId,
             avatar,
+            avatarSelectable,
           })
         })
         .catch(err => {
           console.log(err)
         })
+    } else if (operationType === "remove") {
+      this.setState({
+        avatarId: 0,
+        avatar,
+        avatarSelectable,
+      })
     }
   }
   medicalPracticeCertificateChange = async (
@@ -652,7 +724,7 @@ export default class RealNameAuth extends Component<
                 <Text style={style.formItemTitle}>医疗机构</Text>
                 <TouchableOpacity
                   style={[style.hospital, global.flex, global.justifyContentSpaceBetween]}
-                  onPress={() => {
+                  onPress={async () => {
                     if (this.state.cityId.length === 0) {
                       return Toast.info("请先选择地区", 3)
                     }
@@ -850,6 +922,7 @@ export default class RealNameAuth extends Component<
                   rows={4}
                   placeholder="简介"
                   count={100}
+                  value={this.state.profile}
                   onChange={profile => {
                     this.setState({
                       profile: profile as string,

@@ -36,6 +36,7 @@ export interface bottomNavItem {
 }
 export interface Picture {
   id: number
+  picId?: number
   title: string
   url: string
 }

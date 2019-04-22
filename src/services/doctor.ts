@@ -232,12 +232,10 @@ export async function listConsultation(param: GetListParam) {
 /**
  * 获取认证详情
  */
-export async function getWaitAuditDoctorDetail({ id }: { id: number }) {
+export async function getWaitAuditDoctorDetail() {
   return bget({
     url: "doctor/getWaitAuditDoctorDetail",
-    query: {
-      id,
-    },
+    query: {},
   })
 }
 export default {
