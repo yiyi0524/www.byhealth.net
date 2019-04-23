@@ -1,14 +1,19 @@
+import { AppState } from "@/redux/stores/store"
 import pathMap from "@/routes/pathMap"
 import doctor, { GENDER } from "@/services/doctor"
 import { getPicFullUrl } from "@/utils/utils"
 import { Toast } from "@ant-design/react-native"
+import Empty from "@components/Empty"
+import * as wsAction from "@redux/actions/ws"
 import gImg from "@utils/img"
 import gStyle from "@utils/style"
 import React, { Component } from "react"
 import { Image, RefreshControl, ScrollView, Text, TouchableOpacity, View } from "react-native"
 import { NavigationScreenProp } from "react-navigation"
+import { Dispatch } from "redux"
 import { Picture } from "./Chat"
-import Empty from "@components/Empty"
+import { connect } from "react-redux"
+
 const style = gStyle.advisory.advisoryIndex
 const globalStyle = gStyle.global
 
@@ -31,8 +36,29 @@ interface State {
   refreshing: boolean
   consultationList: ConsultationItem[]
 }
-
-export default class Index extends Component<Props, State> {
+const mapStateToProps = (state: AppState) => {
+  return {
+    isLogin: state.user.isLogin,
+    name: state.user.name,
+    uid: state.user.uid,
+    ws: state.ws,
+  }
+}
+const mapDispatchToProps = (dispatch: Dispatch) => {
+  return {
+    changeWsStatus: (preload: { status: number }) => {
+      dispatch(wsAction.changeStatus(preload))
+    },
+  }
+}
+@connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)
+export default class Index extends Component<
+  Props & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
+  State
+> {
   constructor(props: any) {
     super(props)
     this.state = this.getInitState()
@@ -66,6 +92,32 @@ export default class Index extends Component<Props, State> {
       .catch(err => {
         Toast.fail("刷新失败,错误信息: " + err.msg)
       })
+  }
+  /**
+   * 获取用户最后的一条信息
+   */
+  getUserWsLastMsg = (uid: number) => {
+    if (uid in this.props.ws.chatMsg) {
+      let lastMsg = this.props.ws.chatMsg[uid][this.props.ws.chatMsg[uid].length - 1]
+      return lastMsg
+    }
+    return false
+  }
+  // 获取用户当前的消息信息
+  getCurrMsgInfo = (consultation: ConsultationItem): { currMsg: string; currMsgTime: string } => {
+    let lastMsg = this.getUserWsLastMsg(consultation.patientUid)
+    let currMsg, currMsgTime
+    if (!lastMsg) {
+      currMsg = consultation.currMsg
+      currMsgTime = consultation.currMsgTime
+    } else {
+      currMsg = lastMsg.msg || ""
+      currMsgTime = lastMsg.sendTime
+    }
+    return {
+      currMsg,
+      currMsgTime,
+    }
   }
   render() {
     if (!this.state.hasLoad) {
@@ -110,6 +162,7 @@ export default class Index extends Component<Props, State> {
           </View>
           <View style={style.msgList}>
             {this.state.consultationList.map((consultation, k) => {
+              let currMsgInfo = this.getCurrMsgInfo(consultation)
               return (
                 <TouchableOpacity
                   key={k}
@@ -172,13 +225,13 @@ export default class Index extends Component<Props, State> {
                         {consultation.name}
                       </Text>
                       <Text style={[style.msgTime, globalStyle.fontSize13, globalStyle.fontStyle]}>
-                        {consultation.currMsgTime.substr(0, 10)}
+                        {currMsgInfo.currMsgTime.substr(0, 10)}
                       </Text>
                     </View>
                     <Text
                       style={[style.msgDescription, globalStyle.fontSize14, globalStyle.fontStyle]}
                       numberOfLines={1}>
-                      {consultation.currMsg || "无消息"}
+                      {currMsgInfo.currMsg || "无消息"}
                     </Text>
                   </View>
                 </TouchableOpacity>

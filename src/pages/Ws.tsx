@@ -129,6 +129,9 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
     changeWsStatus: (preload: { status: number }) => {
       dispatch(wsAction.changeStatus(preload))
     },
+    addMsg: (preload: Msg) => {
+      dispatch(wsAction.addMsg(preload))
+    },
   }
 }
 class Ws extends React.Component<
@@ -192,7 +195,7 @@ class Ws extends React.Component<
     return !!this.client && this.client.readyState === this.client.OPEN
   }
   receiveMsg = (frame: ReceiveFrame<Exclude<Overwrite<Msg, MsgOptionalDataToRequired>, "dom">>) => {
-    console.log(frame)
+    this.props.addMsg(frame.data)
   }
   initClient = async () => {
     if (this.clientIsConnect || this.client) {

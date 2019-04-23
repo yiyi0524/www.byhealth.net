@@ -6,7 +6,6 @@ import pathMap from "@/routes/pathMap"
 import gImg from "@/utils/img"
 import { TextareaItem, Toast } from "@ant-design/react-native"
 import userApi from "@api/user"
-import wsMsgApi from "@api/wsMsg"
 import sColor from "@styles/color"
 import gStyle from "@utils/style"
 import React, { Component, ReactChild } from "react"
@@ -74,7 +73,6 @@ interface State {
   page: number
   limit: number
   filter: {}
-  msgList: Msg[]
   sendMsg: string
   info: {
     id: number
@@ -92,6 +90,7 @@ const mapStateToProps = (state: AppState) => {
     isLogin: state.user.isLogin,
     name: state.user.name,
     uid: state.user.uid,
+    ws: state.ws,
   }
 }
 const mapDispatchToProps = (dispatch: Dispatch) => {
@@ -105,7 +104,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
   mapStateToProps,
   mapDispatchToProps,
 )
-export default class Index extends Component<
+export default class Chat extends Component<
   Props & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
   State
 > {
@@ -217,7 +216,6 @@ export default class Index extends Component<
       page: 1,
       limit: 10,
       filter: {},
-      msgList: [],
       sendMsg: "",
     }
   }
@@ -246,34 +244,34 @@ export default class Index extends Component<
     })
   }
   getMsgList = async (page: number, limit: number, filter = {}) => {
-    try {
-      let { data } = await wsMsgApi.getMsgList({ page, limit, filter })
-      // 格式化
-      let oriMsgList: Exclude<Overwrite<Msg, { pic: Picture }>, "dom">[] = data.list
-      let formatMsg: Msg | undefined
-      let msgList = this.state.msgList,
-        newList: Msg<any>[] = []
-      for (let serverMsg of oriMsgList) {
-        switch (serverMsg.type) {
-          case MsgType.txt:
-            formatMsg = this.txtFormat(serverMsg)
-            break
-          case MsgType.picture:
-            formatMsg = this.pictureFormat(serverMsg)
-            break
-        }
-        if (formatMsg) {
-          newList.push(formatMsg)
-        }
-      }
-      msgList.unshift(...newList)
-      this.setState({
-        msgList,
-        hasMoreRecord: data.count > msgList.length,
-      })
-    } catch (err) {
-      console.log(err)
-    }
+    console.log(page, limit, filter)
+    // try {
+    //   let { data } = await wsMsgApi.getMsgList({ page, limit, filter })
+    //   // 格式化
+    //   let oriMsgList: Exclude<Overwrite<Msg, { pic: Picture }>, "dom">[] = data.list
+    //   let formatMsg: Msg | undefined
+    //   let msgList = this.props.ws.chatMsg[this.state.patientUid],
+    //     newList: Msg<any>[] = []
+    //   for (let serverMsg of oriMsgList) {
+    //     switch (serverMsg.type) {
+    //       case MsgType.txt:
+    //         formatMsg = this.txtFormat(serverMsg)
+    //         break
+    //       case MsgType.picture:
+    //         formatMsg = this.pictureFormat(serverMsg)
+    //         break
+    //     }
+    //     if (formatMsg) {
+    //       newList.push(formatMsg)
+    //     }
+    //   }
+    //   msgList.unshift(...newList)
+    //   this.setState({
+    //     hasMoreRecord: data.count > msgList.length,
+    //   })
+    // } catch (err) {
+    //   console.log(err)
+    // }
   }
   txtFormat = (serverMsg: Exclude<Msg, "dom">) => {
     let msg: Msg = serverMsg
@@ -482,9 +480,23 @@ export default class Index extends Component<
                 ]}>
                 下拉查看更多聊天记录
               </Text>
-              {this.state.msgList.map((v: Msg, k: number) => {
-                return <View key={k}>{v.dom}</View>
-              })}
+              {Array.isArray(this.props.ws.chatMsg[this.state.patientUid]) &&
+                this.props.ws.chatMsg[this.state.patientUid].map((v: any, k) => {
+                  let formatMsg: Msg | null = null
+                  switch (v.type) {
+                    case MsgType.txt:
+                      formatMsg = this.txtFormat(v)
+                      break
+                    case MsgType.picture:
+                      formatMsg = this.pictureFormat(v)
+                      break
+                    default:
+                      break
+                  }
+                  if (formatMsg) {
+                    return <View key={k}>{formatMsg.dom}</View>
+                  }
+                })}
             </View>
           </ScrollView>
           <View style={style.bottom}>
