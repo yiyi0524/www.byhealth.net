@@ -73,18 +73,16 @@ export default StyleSheet.create({
   },
   share: {
     flex: 0.1,
-    height: 40,
     marginLeft: 8,
     marginRight: 8,
-    marginBottom: 5,
     marginTop: 5,
-    borderRadius: 5,
-    backgroundColor: sColor.mainRed,
   },
   shareTitle: {
     color: sColor.white,
-    height: 40,
-    lineHeight: 40,
+    height: 45,
+    lineHeight: 45,
+    borderRadius: 5,
+    backgroundColor: sColor.mainRed,
     textAlign: "center",
   },
 })

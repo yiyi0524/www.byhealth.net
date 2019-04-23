@@ -393,10 +393,10 @@ export default class Chat extends Component<
     this.setState({ refreshing: true })
     new Promise(s =>
       setTimeout(async () => {
-        let page = this.state.page + 1,
-          limit = this.state.limit,
-          filter = this.state.filter
-        await this.getMsgList(page, limit, filter)
+        // let page = this.state.page + 1,
+        //   limit = this.state.limit,
+        //   filter = this.state.filter
+        // await this.getMsgList(page, limit, filter)
         s()
       }, 500),
     )
