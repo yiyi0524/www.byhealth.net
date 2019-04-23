@@ -16,6 +16,16 @@ export const GENDER_ZH = {
   [GENDER.MAN]: "男",
   [GENDER.WOMAN]: "女",
 }
+export const STATUS = {
+  process: 0x0,
+  pass: 0x1,
+  reject: 0x2,
+}
+export const STATUS_ZH = {
+  [STATUS.process]: "处理中",
+  [STATUS.pass]: "已通过",
+  [STATUS.reject]: "已拒绝",
+}
 /**
  * 处方状态
  */

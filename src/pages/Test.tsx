@@ -1,36 +1,12 @@
-import * as userAction from "@/redux/actions/user"
-import { AppState } from "@/redux/stores/store"
-import gStyle from "@utils/style"
 import React, { Component } from "react"
-import { ScrollView, Image, View, Text } from "react-native"
-import gImg from "@utils/img"
-import { connect } from "react-redux"
-import { Dispatch } from "redux"
-const style = gStyle.home
+import { CameraRoll, View, TouchableOpacity, Text } from "react-native"
+import QrCode from "react-native-qrcode"
+import ViewShot from "react-native-view-shot"
 interface Props {}
 interface State {}
-const mapStateToProps = (state: AppState) => {
-  return {
-    isLogin: state.user.isLogin,
-    name: state.user.name,
-    uid: state.user.uid,
-  }
-}
-const mapDispatchToProps = (dispatch: Dispatch) => {
-  return {
-    login: (preload: userAction.UserInfo) => {
-      dispatch(userAction.userLogin(preload))
-    },
-  }
-}
-@connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)
-export default class Home extends Component<
-  Props & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
-  State
-> {
+
+export default class Main extends Component<Props, State> {
+  refs: any
   constructor(props: any) {
     super(props)
     this.state = this.getInitState()
@@ -38,28 +14,37 @@ export default class Home extends Component<
   getInitState = (): State => {
     return {}
   }
+  componentDidMount() {}
+  saveQrCode = () => {
+    console.log(this.refs)
+    this.refs.viewShot
+      .capture()
+      .then((uri: any) => {
+        console.log("do something with ", uri)
+        CameraRoll.saveToCameraRoll(uri)
+          .then(json => {
+            console.log(json)
+          })
+          .catch(e => {
+            console.log(e)
+          })
+      })
+      .catch((e: any) => {
+        console.log(e)
+      })
+  }
   render() {
     return (
-      <>
-        <ScrollView style={style.main}>
-          <Image
-            style={{ width: 100, height: 100, resizeMode: "center" }}
-            source={gImg.common.loading}
-          />
-          <View>
-            <Text
-              style={{
-                width: 25,
-                borderWidth: 0.8,
-                borderColor: "red",
-                borderStyle: "dashed",
-                borderRadius: 0.1,
-              }}>
-              11111111111111111111
-            </Text>
-          </View>
-        </ScrollView>
-      </>
+      <View>
+        <TouchableOpacity onPress={this.saveQrCode}>
+          <ViewShot
+            ref="viewShot"
+            options={{ format: "jpg", quality: 1, snapshotContentContainer: true }}>
+            <Text>...Something to title...</Text>
+            <QrCode value={"www.buffge.com"} size={200} bgColor="#333" fgColor="white" />
+          </ViewShot>
+        </TouchableOpacity>
+      </View>
     )
   }
 }

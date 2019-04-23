@@ -295,7 +295,11 @@ export default class Home extends Component<
                 </TouchableOpacity>
               </View>
             </View>
-            <TouchableOpacity style={style.headerHelp}>
+            <TouchableOpacity
+              style={style.headerHelp}
+              onPress={() => {
+                this.props.navigation.push(pathMap.CustomerService)
+              }}>
               <Text style={[globalStyle.fontSize14, globalStyle.fontStyle, style.headerHelpTitle]}>
                 帮助
               </Text>
@@ -313,7 +317,7 @@ export default class Home extends Component<
             <TouchableOpacity
               style={style.prescriptionItem}
               onPress={() => {
-                if (this.state.hasRealNameAuth) {
+                if (!this.state.hasRealNameAuth) {
                   return Toast.info("您未认证", 3)
                 }
                 this.props.navigation.push(pathMap.Prescription)

@@ -1,19 +1,15 @@
 import * as userAction from "@/redux/actions/user"
 import { AppState } from "@/redux/stores/store"
-import { TECHNICAL_TITLE_ZH } from "@/services/doctor"
 import { Toast } from "@ant-design/react-native"
-import userApi from "@api/user"
 import sColor from "@styles/color"
 import gImg from "@utils/img"
 import gStyle from "@utils/style"
 import React, { Component } from "react"
 import { Image, PixelRatio, RefreshControl, Text, View } from "react-native"
-import { ScrollView, TouchableOpacity } from "react-native-gesture-handler"
+import { ScrollView } from "react-native-gesture-handler"
 import { NavigationScreenProp } from "react-navigation"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
-import QRCode from "react-native-qrcode"
-import pathMap from "@/routes/pathMap"
 const style = gStyle.index.InvitePatients
 const global = gStyle.global
 interface NavParams {
@@ -26,9 +22,6 @@ interface Props {
 interface State {
   hasLoad: boolean
   refreshing: boolean
-  name: string
-  technicalTitle: number
-  url: string
 }
 const mapStateToProps = (state: AppState) => {
   return {
@@ -52,12 +45,8 @@ export default class InvitePatients extends Component<
   Props & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
   State
 > {
-  static navigationOptions = ({
-    navigation,
-  }: {
-    navigation: NavigationScreenProp<State, NavParams>
-  }) => ({
-    title: "二维码名片",
+  static navigationOptions = () => ({
+    title: "注册协议",
     headerStyle: {
       backgroundColor: sColor.white,
       height: 50,
@@ -74,14 +63,7 @@ export default class InvitePatients extends Component<
       fontSize: 14,
       textAlign: "center",
     },
-    headerRight: (
-      <TouchableOpacity
-        onPress={() => {
-          navigation.state.params!.navigatePress()
-        }}>
-        <Text style={[style.headerRight, global.fontSize14]}>保存</Text>
-      </TouchableOpacity>
-    ),
+    headerRight: <Text />,
   })
   constructor(props: any) {
     super(props)
@@ -91,33 +73,15 @@ export default class InvitePatients extends Component<
     return {
       hasLoad: false,
       refreshing: false,
-      name: "",
-      technicalTitle: 0,
-      url: "https://www.byhealth.net",
     }
   }
-  async componentDidMount() {
-    await this.init()
-    this.props.navigation.setParams({
-      navigatePress: this.saveBusinessCard,
-    })
+  componentDidMount() {
+    this.init()
   }
-  /**
-   * TODO 保存名片
-   * 样式:     姓名
-   *          职称
-   *         二维码
-   *       微信扫描上方二维码, 随时复诊
-   */
-  saveBusinessCard = () => {
-    Toast.info("保存成功", 1)
-  }
+
   init = async () => {
-    let { data } = await userApi.getPersonalInfo()
     this.setState({
       hasLoad: true,
-      name: data.info.name,
-      technicalTitle: data.doctorInfo.technicalTitle as number,
     })
   }
   onRefresh = () => {
@@ -130,9 +94,7 @@ export default class InvitePatients extends Component<
         Toast.fail("刷新失败,错误信息: " + err.msg)
       })
   }
-  shareBusinessCard = async () => {
-    Toast.info("分享", 1)
-  }
+
   render() {
     if (!this.state.hasLoad) {
       return (
@@ -150,32 +112,10 @@ export default class InvitePatients extends Component<
           refreshControl={
             <RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh} />
           }>
-          <View style={style.invite}>
-            <Text style={[style.title, global.fontSize16]}>{this.state.name}</Text>
-            <Text style={[style.detail, global.fontSize12]}>
-              {TECHNICAL_TITLE_ZH[this.state.technicalTitle]}
-            </Text>
-            <Text style={[style.detail, global.fontSize14]}>在家随时找我</Text>
-            <Text style={[style.title, global.fontSize24]}>复诊调方</Text>
-            <View style={style.qrCode}>
-              <QRCode value={this.state.url} size={120} bgColor="#252525" fgColor="white" />
-            </View>
-            <Text style={[style.detail, global.fontSize12]}>微信扫描上方我的二维码</Text>
-            <Text style={[style.detail, global.fontSize12]}>关注 | 博一健康管理 | 公众号</Text>
-            <Text style={[style.detail, global.fontSize12]}>
-              即可随时在微信与我沟通, 在家找我复诊、调方
-            </Text>
-            <View style={style.logo}>
-              <Image style={style.logoImg} source={gImg.common.logo} />
-              <Text style={[style.detail, global.fontSize12]}>医生的个人线上医馆</Text>
-            </View>
+          <View>
+            <Text>注册协议</Text>
           </View>
         </ScrollView>
-        <View style={style.share}>
-          <TouchableOpacity onPress={this.shareBusinessCard}>
-            <Text style={[style.shareTitle, global.fontSize14]}>分享二维码名片</Text>
-          </TouchableOpacity>
-        </View>
       </View>
     )
   }
