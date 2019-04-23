@@ -194,6 +194,8 @@ export default class Home extends Component<
           patientCount: doctorInfo.patientCount,
           settingList,
         })
+      } else {
+        this.props.navigation.navigate(pathMap.Login)
       }
     } catch (err) {
       console.log(err)
@@ -201,9 +203,6 @@ export default class Home extends Component<
     this.setState({
       hasLoad: true,
     })
-    if (!isLogin) {
-      this.props.navigation.navigate(pathMap.Login)
-    }
   }
   onRefresh = () => {
     this.setState({ refreshing: true })

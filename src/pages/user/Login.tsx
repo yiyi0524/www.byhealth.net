@@ -131,7 +131,6 @@ export default class Login extends Component<
           // 登录成功之后,刷新某个页面 (pathMap.Home:为某页面路由名字)
           storage.set("session", json.data.appSession as string, 3 * 60 * 24)
           DeviceEventEmitter.emit(pathMap.Home + "Reload", null)
-          console.log("即将刷新首页")
         })
       })
       .catch(err => {
@@ -158,11 +157,12 @@ export default class Login extends Component<
         account: this.state.phone,
         pwd: this.state.pwd,
       })
-      .then(json => {
+      .then((json: any) => {
         Toast.success("登录成功", 1, () => {
           this.props.navigation.navigate(pathMap.Home)
-          DeviceEventEmitter.emit(pathMap.Home + "Reload", null)
+          // 登录成功之后,刷新某个页面 (pathMap.Home:为某页面路由名字)
           storage.set("session", json.data.appSession as string, 3 * 60 * 24)
+          DeviceEventEmitter.emit(pathMap.Home + "Reload", null)
         })
       })
       .catch(err => {
