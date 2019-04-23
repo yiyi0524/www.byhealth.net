@@ -9,10 +9,11 @@ import {
   Platform,
   PermissionsAndroid,
   Image,
+  DeviceEventEmitter,
 } from "react-native"
 import { Icon, InputItem, Picker, Toast, ImagePicker, TextareaItem } from "@ant-design/react-native"
 import api, { TYPE } from "@api/api"
-import doctorApi, { authParam } from "@api/doctor"
+import doctorApi, { authParam, STATUS } from "@api/doctor"
 import { BASE_URL } from "@config/api"
 import hospitalApi from "@api/hospital"
 import gStyle from "@utils/style"
@@ -25,6 +26,7 @@ import gImg from "@utils/img"
 import { GENDER, GENDER_ZH, TECHNICAL_TITLE, TECHNICAL_TITLE_ZH } from "@api/doctor"
 import user from "@/services/user"
 import { Picture } from "../advisory/Chat"
+import pathMap from "@/routes/pathMap"
 const style = gStyle.user.realNameAuth
 interface Props {
   navigation: NavigationScreenProp<State>
@@ -56,6 +58,7 @@ interface State {
   hasLoad: boolean
   previewPicFirstActive: boolean
   previewPicSecondActive: boolean
+  status: number
   page: number
   limit: number
   hospitalId: number
@@ -177,6 +180,7 @@ export default class RealNameAuth extends Component<
       previewPicFirstActive: false,
       previewPicSecondActive: false,
       hospitalId: 0,
+      status: 0,
       page: 1,
       limit: -1,
       hospitalName: "",
@@ -327,6 +331,7 @@ export default class RealNameAuth extends Component<
         hospitalDepartmentSymptom,
         hospitalList,
         avatar,
+        status: detail.status,
         avatarId: detail.avatar ? detail.avatar.id : 0,
         name: detail.name,
         cityId: detail.address,
@@ -334,8 +339,8 @@ export default class RealNameAuth extends Component<
         hospitalId: detail.hospital_id,
         idCardNo: detail.id_no,
         gender: [detail.gender],
-        technicalTitle: [detail.technical_title],
-        departmentId: [detail.department_id],
+        technicalTitle: detail.technical_title ? [detail.technical_title] : [-1],
+        departmentId: detail.department_id ? [detail.department_id] : [-1],
         profile: detail.profile,
         adeptSymptomIdList: detail.adeptSymptomList,
         practisingCertificatePicList,
@@ -497,6 +502,8 @@ export default class RealNameAuth extends Component<
     try {
       await doctorApi.doctorAuth(param)
       Toast.fail("提交成功, 等待审核", 2, () => {})
+      DeviceEventEmitter.emit(pathMap.Home + "Reload", null)
+      this.props.navigation.goBack()
     } catch (err) {
       console.log(err)
       Toast.fail("提交失败, 错误信息: " + err.msg, 3)
@@ -508,8 +515,7 @@ export default class RealNameAuth extends Component<
       api
         .uploadImg(avatar[avatar.length - 1])
         .then(json => {
-          let avatarId = this.state.avatarId,
-            avatar = this.state.avatar
+          let avatarId = this.state.avatarId
           avatar[avatar.length - 1].url = BASE_URL + json.data.url
           avatar[avatar.length - 1].picId = json.data.picId
           avatarId = json.data.picId
@@ -1047,7 +1053,9 @@ export default class RealNameAuth extends Component<
               </View>
             </View>
           </ScrollView>
-          <TouchableOpacity style={style.subBtn} onPress={this.submit}>
+          <TouchableOpacity
+            style={this.state.status !== STATUS.pass ? style.subBtn : global.hidden}
+            onPress={this.submit}>
             <Text style={[style.subTitle, global.fontStyle, global.fontSize15]}>提交</Text>
           </TouchableOpacity>
           {/* 医疗机构选择 */}

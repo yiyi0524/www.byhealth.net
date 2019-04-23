@@ -164,7 +164,6 @@ export default class Index extends Component<
     try {
       //获取个人信息
       let { data } = await userApi.getPersonalInfo()
-      console.log(data)
       //获取科室及疾病列表
       let {
         data: { list: hospitalDepartmentSymptom },

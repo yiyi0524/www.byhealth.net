@@ -38,15 +38,16 @@ export default StyleSheet.create({
   },
   headerInfo: {},
   headerInfoAvatar: {
-    width: 45,
-    height: 45,
+    width: 50,
+    height: 50,
     borderRadius: 100,
     overflow: "hidden",
+    backgroundColor: sColor.white,
   },
   headerInfoImg: {
-    width: 45,
-    height: 45,
-    resizeMode: "cover",
+    width: 50,
+    height: 50,
+    resizeMode: "center",
   },
   headerInfoName: {
     marginLeft: 15,

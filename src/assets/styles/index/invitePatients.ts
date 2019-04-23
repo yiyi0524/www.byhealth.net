@@ -55,6 +55,7 @@ export default StyleSheet.create({
     width: 150,
     height: 150,
     resizeMode: "center",
+    alignItems: "center",
   },
   logo: {
     padding: 15,
@@ -62,8 +63,8 @@ export default StyleSheet.create({
     backgroundColor: sColor.mainBgColor,
     flex: 1,
     width: "100%",
-    marginTop: 30,
-    marginBottom: 30,
+    marginTop: 15,
+    marginBottom: 15,
   },
   logoImg: {
     width: 150,
@@ -75,6 +76,8 @@ export default StyleSheet.create({
     height: 40,
     marginLeft: 8,
     marginRight: 8,
+    marginBottom: 5,
+    marginTop: 5,
     borderRadius: 5,
     backgroundColor: sColor.mainRed,
   },
