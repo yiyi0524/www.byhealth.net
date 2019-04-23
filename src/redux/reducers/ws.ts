@@ -26,8 +26,26 @@ function changeStatus(state = initState, action: Action<{ status: number }>) {
 }
 function addMsg(state = initState, action: Action<{ msg: Msg }>) {
   if (action.type === wsAction.ADD_MSG) {
-    let newState = Object.assign({}, state, { chatMsg: { ...state.chatMsg } })
     let { sendUser } = action.preload.msg
+    let newState = Object.assign({}, state, {
+      chatMsg: { [sendUser.uid]: [...state.chatMsg[sendUser.uid]], ...state.chatMsg },
+    })
+    if (sendUser.uid in state.chatMsg) {
+      newState.chatMsg[sendUser.uid].push(action.preload.msg)
+    } else {
+      newState.chatMsg[sendUser.uid] = [action.preload.msg]
+    }
+    console.log(newState)
+    return newState
+  }
+  return state
+}
+function addMsgList(state = initState, action: Action<{ msg: Msg }>) {
+  if (action.type === wsAction.ADD_MSG_LIST) {
+    let { sendUser } = action.preload.msg
+    let newState = Object.assign({}, state, {
+      chatMsg: { [sendUser.uid]: [...state.chatMsg[sendUser.uid]], ...state.chatMsg },
+    })
     if (sendUser.uid in state.chatMsg) {
       newState.chatMsg[sendUser.uid].push(action.preload.msg)
     } else {
@@ -44,6 +62,8 @@ export default function reducer(state = initState, action: Action<any>) {
       return changeStatus(state, action)
     case wsAction.ADD_MSG:
       return addMsg(state, action)
+    case wsAction.ADD_MSG_LIST:
+      return addMsgList(state, action)
     default:
       break
   }

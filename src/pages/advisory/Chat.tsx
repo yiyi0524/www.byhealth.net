@@ -15,6 +15,7 @@ import { NavigationScreenProp, ScrollView } from "react-navigation"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
 import { Overwrite } from "utility-types"
+import wsMsgApi from "@api/wsMsg"
 const style = gStyle.advisory.advisoryChat
 interface Props {
   navigation: NavigationScreenProp<State>
@@ -244,34 +245,36 @@ export default class Chat extends Component<
     })
   }
   getMsgList = async (page: number, limit: number, filter = {}) => {
-    console.log(page, limit, filter)
-    // try {
-    //   let { data } = await wsMsgApi.getMsgList({ page, limit, filter })
-    //   // 格式化
-    //   let oriMsgList: Exclude<Overwrite<Msg, { pic: Picture }>, "dom">[] = data.list
-    //   let formatMsg: Msg | undefined
-    //   let msgList = this.props.ws.chatMsg[this.state.patientUid],
-    //     newList: Msg<any>[] = []
-    //   for (let serverMsg of oriMsgList) {
-    //     switch (serverMsg.type) {
-    //       case MsgType.txt:
-    //         formatMsg = this.txtFormat(serverMsg)
-    //         break
-    //       case MsgType.picture:
-    //         formatMsg = this.pictureFormat(serverMsg)
-    //         break
-    //     }
-    //     if (formatMsg) {
-    //       newList.push(formatMsg)
-    //     }
-    //   }
-    //   msgList.unshift(...newList)
-    //   this.setState({
-    //     hasMoreRecord: data.count > msgList.length,
-    //   })
-    // } catch (err) {
-    //   console.log(err)
-    // }
+    try {
+      let {
+        data: { list },
+      } = await wsMsgApi.getMsgList({ page, limit, filter })
+      console.log(list)
+      // 格式化
+      //   let oriMsgList: Exclude<Overwrite<Msg, { pic: Picture }>, "dom">[] = data.list
+      //   let formatMsg: Msg | undefined
+      //   let msgList = this.props.ws.chatMsg[this.state.patientUid],
+      //     newList: Msg<any>[] = []
+      //   for (let serverMsg of oriMsgList) {
+      //     switch (serverMsg.type) {
+      //       case MsgType.txt:
+      //         formatMsg = this.txtFormat(serverMsg)
+      //         break
+      //       case MsgType.picture:
+      //         formatMsg = this.pictureFormat(serverMsg)
+      //         break
+      //     }
+      //     if (formatMsg) {
+      //       newList.push(formatMsg)
+      //     }
+      //   }
+      //   msgList.unshift(...newList)
+      //   this.setState({
+      //     hasMoreRecord: data.count > msgList.length,
+      //   })
+    } catch (err) {
+      console.log(err)
+    }
   }
   txtFormat = (serverMsg: Exclude<Msg, "dom">) => {
     let msg: Msg = serverMsg
