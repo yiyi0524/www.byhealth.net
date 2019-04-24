@@ -18,6 +18,7 @@ export default StyleSheet.create({
     paddingRight: 15,
     borderBottomWidth: 1 / PixelRatio.get(),
     borderBottomColor: sColor.colorEee,
+    marginTop: 10,
   },
   headerLeft: {
     width: 60,
