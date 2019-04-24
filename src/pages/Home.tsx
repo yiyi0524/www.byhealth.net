@@ -239,8 +239,7 @@ export default class Home extends Component<
               globalStyle.justifyContentSpaceBetween,
               globalStyle.alignItemsCenter,
             ]}>
-            <View
-              style={[style.headerAvatarCircle, globalStyle.flex, globalStyle.alignItemsCenter]}>
+            <View style={style.headerAvatarCircle}>
               <Image
                 source={
                   this.state.avatar.url !== ""

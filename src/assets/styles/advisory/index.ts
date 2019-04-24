@@ -68,12 +68,13 @@ export default StyleSheet.create({
     width: 50,
     height: 50,
     borderRadius: 100,
+    overflow: "hidden",
+    marginBottom: 5,
   },
   avatar: {
     width: 50,
     height: 50,
-    resizeMode: "contain",
-    borderRadius: 100,
+    resizeMode: "center",
   },
   baseInformationBottom: {
     borderWidth: 1 / PixelRatio.get(),

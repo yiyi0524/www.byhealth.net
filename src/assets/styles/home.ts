@@ -46,7 +46,6 @@ export default StyleSheet.create({
     width: 60,
     height: 60,
     resizeMode: "center",
-    borderRadius: 100,
   },
   headerTitle: {
     flex: 1,
