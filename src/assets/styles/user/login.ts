@@ -23,11 +23,11 @@ export default StyleSheet.create({
   },
   inputList: {
     marginTop: 30,
-    marginRight: 15,
   },
   inputItem: {
     position: "relative",
     height: 55,
+    marginRight: 15,
     justifyContent: "center",
   },
   input: {

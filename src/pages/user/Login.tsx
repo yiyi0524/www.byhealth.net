@@ -207,19 +207,19 @@ export default class Login extends Component<
                   </Text>
                 </TouchableOpacity>
               </View>
+              <TouchableOpacity
+                style={style.register}
+                onPress={() => this.props.navigation.navigate(pathMap.Register)}>
+                <Text style={[style.registerTitle, global.fontStyle, global.fontSize14]}>
+                  我要注册
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={style.subBtn} onPress={this.verificationCodeLogin}>
+                <Text style={[style.subBtnName, global.fontStyle, global.fontSize18]}>
+                  登录医生版
+                </Text>
+              </TouchableOpacity>
             </View>
-            <TouchableOpacity
-              style={style.register}
-              onPress={() => this.props.navigation.navigate(pathMap.Register)}>
-              <Text style={[style.registerTitle, global.fontStyle, global.fontSize14]}>
-                我要注册
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={style.subBtn} onPress={this.verificationCodeLogin}>
-              <Text style={[style.subBtnName, global.fontStyle, global.fontSize18]}>
-                登录医生版
-              </Text>
-            </TouchableOpacity>
           </View>
           {/* 密码登录 */}
           <View style={style.tabItem}>
@@ -256,34 +256,34 @@ export default class Login extends Component<
                   </Text>
                 </TouchableOpacity>
               </View>
-            </View>
-            <View
-              style={[
-                style.savePwd,
-                global.flex,
-                global.justifyContentSpaceBetween,
-                global.alignItemsCenter,
-              ]}>
-              <TouchableOpacity>
-                <Checkbox
-                  checked={this.state.saveInformation}
-                  onChange={event => {
-                    this.setState({ saveInformation: event.target.checked })
-                  }}>
-                  保存账户信息
-                </Checkbox>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => this.props.navigation.navigate(pathMap.Register)}>
-                <Text style={[style.savePwdTitle, global.fontStyle, global.fontSize14]}>
-                  我要注册
+              <View
+                style={[
+                  style.savePwd,
+                  global.flex,
+                  global.justifyContentSpaceBetween,
+                  global.alignItemsCenter,
+                ]}>
+                <TouchableOpacity>
+                  <Checkbox
+                    checked={this.state.saveInformation}
+                    onChange={event => {
+                      this.setState({ saveInformation: event.target.checked })
+                    }}>
+                    保存账户信息
+                  </Checkbox>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => this.props.navigation.navigate(pathMap.Register)}>
+                  <Text style={[style.savePwdTitle, global.fontStyle, global.fontSize14]}>
+                    我要注册
+                  </Text>
+                </TouchableOpacity>
+              </View>
+              <TouchableOpacity style={style.subBtn} onPress={this.pwdLogin}>
+                <Text style={[style.subBtnName, global.fontStyle, global.fontSize18]}>
+                  登录医生版
                 </Text>
               </TouchableOpacity>
             </View>
-            <TouchableOpacity style={style.subBtn} onPress={this.pwdLogin}>
-              <Text style={[style.subBtnName, global.fontStyle, global.fontSize18]}>
-                登录医生版
-              </Text>
-            </TouchableOpacity>
           </View>
         </Tabs>
       </View>
