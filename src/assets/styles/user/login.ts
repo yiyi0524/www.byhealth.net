@@ -62,9 +62,11 @@ export default StyleSheet.create({
   subBtn: {
     marginLeft: 15,
     marginRight: 15,
+    flex: 1,
   },
   subBtnName: {
     height: 45,
+    width: "100%",
     backgroundColor: sColor.mainRed,
     lineHeight: 45,
     textAlign: "center",
@@ -83,10 +85,12 @@ export default StyleSheet.create({
     marginTop: 5,
     marginBottom: 5,
     paddingLeft: 15,
+    paddingRight: 15,
+    width: "100%",
   },
   savePwdTitle: {
     height: 50,
-    paddingRight: 30,
+    paddingRight: 15,
     lineHeight: 50,
   },
 })
