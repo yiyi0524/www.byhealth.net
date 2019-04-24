@@ -28,6 +28,7 @@ interface State {
   pwd: string
   verificationCodeUuid: string
   verificationCodeMsg: string
+  selectLoginStyle: string
 }
 interface TabsItem {
   title: string
@@ -70,6 +71,7 @@ export default class Login extends Component<
       pwd: "",
       verificationCodeMsg: "获取验证码",
       verificationCodeUuid: "",
+      selectLoginStyle: "verificationCodeLogin",
     }
   }
   getVerificationCode = () => {
@@ -172,16 +174,51 @@ export default class Login extends Component<
   render() {
     return (
       <View style={style.main}>
-        <Tabs
-          tabs={this.tabs}
-          style={style.tabs}
-          animated={false}
-          swipeable={false}
-          useOnPan={false}
-          distanceToChangeTab={0.7}
-          tabBarActiveTextColor={sColor.mainRed}
-          tabBarUnderlineStyle={style.tabBarUnderlineStyle}>
-          <View style={style.tabItem}>
+        <View style={[style.tabs]}>
+          <View
+            style={[
+              style.header,
+              global.flex,
+              global.alignItemsCenter,
+              global.justifyContentSpaceAround,
+            ]}>
+            <TouchableOpacity
+              onPress={() => {
+                this.setState({
+                  selectLoginStyle: "verificationCodeLogin",
+                })
+              }}>
+              <Text
+                style={[
+                  this.state.selectLoginStyle === "verificationCodeLogin"
+                    ? style.activeTitle
+                    : style.title,
+                  global.fontSize14,
+                ]}>
+                验证码登录
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                this.setState({
+                  selectLoginStyle: "pwdLogin",
+                })
+              }}>
+              <Text
+                style={[
+                  this.state.selectLoginStyle === "pwdLogin" ? style.activeTitle : style.title,
+                  global.fontSize14,
+                ]}>
+                密码登录
+              </Text>
+            </TouchableOpacity>
+          </View>
+          <View
+            style={
+              this.state.selectLoginStyle === "verificationCodeLogin"
+                ? style.tabItem
+                : global.hidden
+            }>
             <View style={style.inputList}>
               <View style={style.inputItem}>
                 <InputItem
@@ -225,7 +262,7 @@ export default class Login extends Component<
             </TouchableOpacity>
           </View>
           {/* 密码登录 */}
-          <View style={style.tabItem}>
+          <View style={this.state.selectLoginStyle === "pwdLogin" ? style.tabItem : global.hidden}>
             <View style={style.inputList}>
               <View style={style.inputItem}>
                 <InputItem
@@ -288,7 +325,7 @@ export default class Login extends Component<
               </Text>
             </TouchableOpacity>
           </View>
-        </Tabs>
+        </View>
       </View>
     )
   }

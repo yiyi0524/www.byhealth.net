@@ -12,6 +12,17 @@ export default StyleSheet.create({
     paddingLeft: 15,
     paddingRight: 15,
   },
+  header: {
+    height: 45,
+    borderBottomWidth: 1 / PixelRatio.get(),
+    borderBottomColor: sColor.colorDdd,
+  },
+  title: {
+    color: sColor.color666,
+  },
+  activeTitle: {
+    color: sColor.mainRed,
+  },
   tabItem: {
     height: windowHeight,
     flex: 1,

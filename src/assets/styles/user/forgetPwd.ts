@@ -1,6 +1,6 @@
-import { StyleSheet, PixelRatio } from "react-native";
-import sColor from "@styles/color";
-import { windowHeight } from "@api/api";
+import { StyleSheet, PixelRatio } from "react-native"
+import sColor from "@styles/color"
+import { windowHeight } from "@api/api"
 export default StyleSheet.create({
   main: {
     backgroundColor: sColor.white,
@@ -10,6 +10,7 @@ export default StyleSheet.create({
     paddingLeft: 15,
     paddingRight: 15,
     height: 50,
+    marginTop: 10,
     borderBottomWidth: 1 / PixelRatio.get(),
     borderBottomColor: sColor.colorDdd,
   },
@@ -30,7 +31,7 @@ export default StyleSheet.create({
     marginRight: 15,
   },
   inputItem: {
-    position: 'relative',
+    position: "relative",
     height: 55,
     justifyContent: "center",
   },
@@ -94,4 +95,4 @@ export default StyleSheet.create({
     height: 50,
     lineHeight: 50,
   },
-});
+})
