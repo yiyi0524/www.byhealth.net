@@ -4,9 +4,8 @@ import gStyle from "@utils/style"
 import storage from "@utils/storage"
 import React, { Component } from "react"
 import { TouchableOpacity, View, Text } from "react-native"
-import { Tabs, InputItem, Checkbox, Toast } from "@ant-design/react-native"
+import { InputItem, Checkbox, Toast } from "@ant-design/react-native"
 import pathMap from "@routes/pathMap"
-import sColor from "@styles/color"
 // import { LocalStorage as storage } from "jsbdk";
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
@@ -30,9 +29,7 @@ interface State {
   verificationCodeMsg: string
   selectLoginStyle: string
 }
-interface TabsItem {
-  title: string
-}
+
 const mapStateToProps = (state: AppState) => {
   return {
     isLogin: state.user.isLogin,
@@ -55,10 +52,8 @@ export default class Login extends Component<
   Props & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
   State
 > {
-  tabs: TabsItem[] = []
   constructor(props: any) {
     super(props)
-    this.tabs = [{ title: "验证码登录" }, { title: "密码登录" }]
     this.state = this.getInitState()
   }
   getInitState = (): State => {

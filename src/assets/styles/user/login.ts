@@ -19,9 +19,17 @@ export default StyleSheet.create({
   },
   title: {
     color: sColor.color666,
+    height: 45,
+    lineHeight: 45,
+    paddingLeft: 15,
+    paddingRight: 15,
   },
   activeTitle: {
     color: sColor.mainRed,
+    height: 45,
+    lineHeight: 45,
+    paddingLeft: 15,
+    paddingRight: 15,
   },
   tabItem: {
     height: windowHeight,

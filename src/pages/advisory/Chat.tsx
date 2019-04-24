@@ -4,7 +4,7 @@ import * as userAction from "@/redux/actions/user"
 import { AppState } from "@/redux/stores/store"
 import pathMap from "@/routes/pathMap"
 import gImg from "@/utils/img"
-import { TextareaItem, Toast } from "@ant-design/react-native"
+import { TextareaItem, Toast, ImagePicker, Portal } from "@ant-design/react-native"
 import userApi from "@api/user"
 import sColor from "@styles/color"
 import gStyle from "@utils/style"
@@ -18,7 +18,7 @@ import { Overwrite } from "utility-types"
 import DashLine from "@/components/DashLine"
 import { windowWidth, getPicFullUrl } from "@/utils/utils"
 import { GENDER_ZH } from "@/services/doctor"
-import { getRegion } from "@/services/api"
+import api, { getRegion } from "@/services/api"
 const style = gStyle.advisory.advisoryChat
 interface Props {
   navigation: NavigationScreenProp<State>
@@ -74,6 +74,7 @@ export interface Msg<T = any> {
   dom?: ReactChild
   sendTime: string
 }
+
 interface State {
   hasLoad: boolean
   refreshing: boolean
@@ -465,6 +466,7 @@ export default class Chat extends Component<
     )
     return msg
   }
+  // 治疗方案
   treatmentPlanFormat = (
     serverMsg: Exclude<Overwrite<Msg, { extraData: TreatmentPlan }>, "dom">,
   ) => {
@@ -476,7 +478,7 @@ export default class Chat extends Component<
           <View style={[style.treatmentPlanHeader, global.flex, global.alignItemsCenter]}>
             <Image style={style.treatmentPlanHeaderImg} source={gImg.common.injury} />
             <View style={style.treatmentPlanHeaderTitle}>
-              <Text style={[style.treatmentPlanHeaderTheme, global.fontSize22]}>治疗方案</Text>
+              <Text style={[style.treatmentPlanHeaderTheme, global.fontSize18]}>治疗方案</Text>
               <Text style={[style.treatmentPlanHeaderTime, global.fontSize14]}>{msg.sendTime}</Text>
             </View>
           </View>
@@ -497,8 +499,11 @@ export default class Chat extends Component<
           <Text style={[style.treatmentPlanItem, global.fontSize14]}>
             根据治疗方案购买 服药, 并按时复诊
           </Text>
-          {/* //todo 不知道跳到哪里 */}
-          <TouchableOpacity>
+          {/* //todo SquareRoot:辩证开方 */}
+          <TouchableOpacity
+            onPress={() => {
+              this.props.navigation.push(pathMap.SquareRoot)
+            }}>
             <Text style={[style.treatmentPlanBtn, global.fontSize14]}>点此查看治疗方案</Text>
           </TouchableOpacity>
           <Image style={style.treatmentPlanFlag} source={gImg.common.flag} />
@@ -507,6 +512,7 @@ export default class Chat extends Component<
     )
     return msg
   }
+  //问诊单
   inquirySheetFormat = (
     serverMsg: Exclude<Overwrite<Msg, { extraData: MsgInquirySheetData }>, "dom">,
   ) => {
@@ -514,7 +520,9 @@ export default class Chat extends Component<
     msg.dom = (
       <View style={style.inquirySheet}>
         <Text style={[style.sendTime, global.fontStyle, global.fontSize12]}>{msg.sendTime}</Text>
+        {/* //todo  PatientDetail:患者详情 */}
         <TouchableOpacity
+          activeOpacity={0.8}
           onPress={() =>
             this.props.navigation.push(pathMap.PatientDetail, {
               patientUid: msg.extraData.patient.id,
@@ -548,6 +556,7 @@ export default class Chat extends Component<
     )
     return msg
   }
+  //患者自述
   patientsThemselvesFormat = (
     serverMsg: Exclude<Overwrite<Msg, { extraData: PatientsThemselves }>, "dom">,
   ) => {
@@ -557,7 +566,7 @@ export default class Chat extends Component<
         <Text style={[style.sendTime, global.fontStyle, global.fontSize12]}>{msg.sendTime}</Text>
         <View style={style.patientsThemselvesContent}>
           <View style={style.patientsThemselvesHeader}>
-            <Text style={[style.patientsThemselvesHeaderTitle, global.fontSize20]}>
+            <Text style={[style.patientsThemselvesHeaderTitle, global.fontSize18]}>
               {msg.extraData.patient.name}
             </Text>
             <View
@@ -727,6 +736,35 @@ export default class Chat extends Component<
       showPicUrl: "",
     })
   }
+  selectPic = (files: Array<{}>, operationType: string) => {
+    if (operationType === "add") {
+      let key = Toast.loading("上传图片中")
+      api
+        .uploadImg(files[files.length - 1])
+        .then(json => {
+          if (typeof json === "object") {
+            if (json.code === 0) {
+              Portal.remove(key)
+              this.setState({
+                isShowBottomPicSelect: !this.state.isShowBottomPicSelect,
+              })
+              console.log(json.data.url, json.data.picId)
+            } else {
+              Portal.remove(key)
+              Toast.fail("上传图片失败,错误信息: " + json.msg, 3)
+            }
+          } else {
+            Portal.remove(key)
+            Toast.fail("上传图片失败,服务器错误", 3)
+          }
+        })
+        .catch(err => {
+          Portal.remove(key)
+          Toast.fail("上传失败, 错误原因: " + err.msg + ", 请重试", 3)
+          console.log(err)
+        })
+    }
+  }
   render() {
     if (!this.state.hasLoad) {
       return (
@@ -853,6 +891,9 @@ export default class Chat extends Component<
                     <Text style={[style.selectTitle, global.fontSize14, global.fontStyle]}>
                       图片
                     </Text>
+                    <View style={style.imgSelector}>
+                      <ImagePicker onChange={this.selectPic} />
+                    </View>
                   </TouchableOpacity>
                   <TouchableOpacity style={style.selectPicFa}>
                     <Image source={gImg.advisory.selectPhoto} style={style.selectImg} />

@@ -257,11 +257,16 @@ export default StyleSheet.create({
   },
   selectPicFa: {
     alignItems: "center",
+    position: "relative",
   },
   selectImg: {
     width: 50,
     height: 50,
     resizeMode: "cover",
+  },
+  imgSelector: {
+    position: "absolute",
+    opacity: 0,
   },
   selectTitle: {
     color: sColor.color666,
