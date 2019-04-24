@@ -28,7 +28,7 @@ interface Props {
   navigation: NavigationScreenProp<State>
 }
 export interface patientItem {
-  id: number
+  uid: number
   avatar: Picture
   name: string
   gender: number
@@ -165,6 +165,7 @@ export default class Index extends Component<
                   onPress={() =>
                     this.props.navigation.push(pathMap.PatientDetail, {
                       title: v.name,
+                      patientUid: v.uid,
                     })
                   }>
                   <View style={style.patientItemAvatar}>

@@ -250,6 +250,6 @@ export default StyleSheet.create({
     color: sColor.white,
     borderRadius: 5,
     textAlign: "center",
-    lineHeight: 45,
+    lineHeight: 40,
   },
 })
