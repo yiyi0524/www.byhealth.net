@@ -17,8 +17,8 @@ export default StyleSheet.create({
     flex: 1,
   },
   tabBarUnderlineStyle: {
-    width: "30%",
-    marginLeft: "7%",
+    // width: "30%",
+    // marginLeft: "7%",
     backgroundColor: sColor.mainRed,
   },
   inputList: {
@@ -54,7 +54,7 @@ export default StyleSheet.create({
   },
   registerTitle: {
     height: 45,
-    marginRight: 15,
+    marginRight: 30,
     lineHeight: 45,
     textAlign: "right",
     color: sColor.color888,
@@ -86,7 +86,7 @@ export default StyleSheet.create({
   },
   savePwdTitle: {
     height: 50,
-    paddingRight: 15,
+    paddingRight: 30,
     lineHeight: 50,
   },
 })
