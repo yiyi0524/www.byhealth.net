@@ -31,9 +31,10 @@ export default StyleSheet.create({
   },
   main: {
     flex: 1,
+    backgroundColor: sColor.mainBgColor,
   },
   content: {
-    flex: 0.7,
+    flex: 0.75,
     backgroundColor: sColor.mainBgColor,
     marginBottom: 15,
   },
@@ -148,10 +149,11 @@ export default StyleSheet.create({
     width: 130,
   },
   bottom: {
-    flex: 0.3,
+    flex: 0.25,
     borderTopWidth: 1 / PixelRatio.get(),
     borderTopColor: sColor.colorDdd,
     position: "relative",
+    backgroundColor: sColor.white,
   },
 
   bottomNav: {
@@ -284,4 +286,5 @@ export default StyleSheet.create({
     height: windowHeight - 60,
     resizeMode: "center",
   },
+  // 治疗方案
 })

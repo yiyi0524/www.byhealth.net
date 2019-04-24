@@ -246,10 +246,10 @@ export default class Chat extends Component<
   }
   getMsgList = async (page: number, limit: number, filter = {}) => {
     try {
-      let {
-        data: { list },
-      } = await wsMsgApi.getMsgList({ page, limit, filter })
-      console.log(list)
+      // let {
+      //   data: { list },
+      // } = await wsMsgApi.getMsgList({ page, limit, filter })
+      // console.log(list)
       // 格式化
       //   let oriMsgList: Exclude<Overwrite<Msg, { pic: Picture }>, "dom">[] = data.list
       //   let formatMsg: Msg | undefined
@@ -500,6 +500,8 @@ export default class Chat extends Component<
                     return <View key={k}>{formatMsg.dom}</View>
                   }
                 })}
+              {/* 治疗方案 */}
+              <View style={style.treatmentPlan} />
             </View>
           </ScrollView>
           <View style={style.bottom}>

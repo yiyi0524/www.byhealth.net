@@ -7,7 +7,127 @@ export interface WsState {
 const initState: WsState = {
   // websocket 状态
   status: WebSocket.CLOSED,
-  chatMsg: {},
+  chatMsg: {
+    16: [
+      {
+        id: 1,
+        sendUser: {
+          uid: 5,
+          avatar: {
+            id: 0,
+            title: "",
+            url: "/uploads/20190315/cee606bdbfcffc69950777cb3d5d84f1.png",
+          },
+          name: "吴大伟",
+        },
+        receiveUser: {
+          uid: 2,
+          avatar: {
+            id: 0,
+            title: "",
+            url: "",
+          },
+          name: "吴伟伟",
+        },
+        type: 1,
+        msg: "您好您好您好您好",
+        pic: {
+          id: 0,
+          title: "",
+          url: "/uploads/20190315/cee606bdbfcffc69950777cb3d5d84f1.png",
+        },
+        sendTime: "2018-12-12 12:00:00",
+      },
+      {
+        id: 2,
+        sendUser: {
+          uid: 5,
+          avatar: {
+            id: 0,
+            title: "",
+            url: "/uploads/20190315/cee606bdbfcffc69950777cb3d5d84f1.png",
+          },
+          name: "吴大伟",
+        },
+        receiveUser: {
+          uid: 2,
+          avatar: {
+            id: 0,
+            title: "",
+            url: "",
+          },
+          name: "吴伟伟",
+        },
+        type: 0,
+        msg:
+          "您好您好您好您好您好您好您好您好您好您好您好您好您好您好您好您好您好您好您好您好您好您好您好您好",
+        pic: {
+          id: 0,
+          title: "",
+          url: "",
+        },
+        sendTime: "2018-12-12 12:00:00",
+      },
+      {
+        id: 3,
+        sendUser: {
+          uid: 11,
+          avatar: {
+            id: 0,
+            title: "",
+            url: "/uploads/20190315/cee606bdbfcffc69950777cb3d5d84f1.png",
+          },
+          name: "吴大伟",
+        },
+        receiveUser: {
+          uid: 2,
+          avatar: {
+            id: 0,
+            title: "",
+            url: "",
+          },
+          name: "吴伟伟",
+        },
+        type: 1,
+        msg: "您好",
+        pic: {
+          id: 0,
+          title: "",
+          url: "/uploads/20190315/cee606bdbfcffc69950777cb3d5d84f1.png",
+        },
+        sendTime: "2018-12-12 12:00:00",
+      },
+      {
+        id: 4,
+        sendUser: {
+          uid: 11,
+          avatar: {
+            id: 0,
+            title: "",
+            url: "/uploads/20190315/cee606bdbfcffc69950777cb3d5d84f1.png",
+          },
+          name: "吴大伟",
+        },
+        receiveUser: {
+          uid: 2,
+          avatar: {
+            id: 0,
+            title: "",
+            url: "",
+          },
+          name: "吴伟伟",
+        },
+        type: 0,
+        msg: "您好",
+        pic: {
+          id: 0,
+          title: "",
+          url: "",
+        },
+        sendTime: "2018-12-12 12:00:00",
+      },
+    ],
+  },
 }
 export interface Action<T> {
   type: string
