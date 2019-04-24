@@ -17,8 +17,8 @@ export default StyleSheet.create({
     flex: 1,
   },
   tabBarUnderlineStyle: {
-    // width: "30%",
-    // marginLeft: "7%",
+    width: "30%",
+    marginLeft: "7%",
     backgroundColor: sColor.mainRed,
   },
   inputList: {
@@ -26,8 +26,8 @@ export default StyleSheet.create({
   },
   inputItem: {
     position: "relative",
-    height: 55,
     marginRight: 15,
+    height: 55,
     justifyContent: "center",
   },
   input: {
