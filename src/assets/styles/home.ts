@@ -145,6 +145,7 @@ export default StyleSheet.create({
   categoryItemTitle: {
     textAlign: "center",
     color: sColor.mainBlack,
+    marginTop: 3,
   },
   /**
    * banner

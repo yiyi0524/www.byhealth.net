@@ -36,6 +36,7 @@ export default StyleSheet.create({
   content: {
     flex: 0.75,
     backgroundColor: sColor.mainBgColor,
+    paddingBottom: 30,
     marginBottom: 30,
   },
   list: {
@@ -290,11 +291,14 @@ export default StyleSheet.create({
   treatmentPlan: {
     marginLeft: 15,
     marginRight: 15,
+    marginBottom: 15,
   },
   treatmentPlanCenter: {
     backgroundColor: sColor.white,
     borderRadius: 5,
     padding: 15,
+    position: "relative",
+    overflow: "hidden",
   },
   treatmentPlanHeader: {
     paddingBottom: 15,
@@ -307,6 +311,7 @@ export default StyleSheet.create({
   treatmentPlanHeaderTitle: {},
   treatmentPlanHeaderTheme: {
     color: sColor.color333,
+    marginBottom: 5,
   },
   treatmentPlanHeaderTime: {
     color: sColor.color888,
@@ -324,5 +329,115 @@ export default StyleSheet.create({
     color: sColor.white,
     backgroundColor: sColor.mainRed,
     borderRadius: 5,
+  },
+  treatmentPlanFlag: {
+    position: "absolute",
+    top: -2,
+    right: 30,
+    width: 25,
+    height: 35,
+    resizeMode: "cover",
+  },
+  // 问诊单
+  inquirySheet: {
+    marginLeft: 15,
+    marginRight: 15,
+    marginBottom: 15,
+  },
+  inquirySheetContent: {
+    padding: 15,
+    backgroundColor: sColor.white,
+    borderRadius: 5,
+    position: "relative",
+    overflow: "hidden",
+  },
+  inquirySheetHeader: {
+    marginBottom: 15,
+  },
+  inquirySheetHeaderImg: {
+    width: 60,
+    resizeMode: "center",
+    marginRight: 15,
+  },
+  inquirySheetHeaderTitle: {
+    color: sColor.color333,
+    marginBottom: 5,
+  },
+  inquirySheetHeaderTime: {
+    color: sColor.color888,
+  },
+  inquirySheetPatient: {
+    color: sColor.color333,
+    height: 45,
+    lineHeight: 45,
+  },
+  inquirySheetDetail: {
+    color: sColor.color888,
+    height: 45,
+    lineHeight: 45,
+  },
+  inquirySheetFlag: {
+    position: "absolute",
+    top: -2,
+    right: 30,
+    width: 25,
+    height: 35,
+    resizeMode: "cover",
+  },
+  //患者自述
+  patientsThemselves: {
+    marginLeft: 15,
+    marginRight: 15,
+    marginBottom: 15,
+  },
+  patientsThemselvesContent: {
+    padding: 15,
+    backgroundColor: sColor.white,
+  },
+  patientsThemselvesHeader: {
+    marginBottom: 20,
+  },
+  patientsThemselvesHeaderTitle: {
+    color: sColor.color333,
+    marginBottom: 10,
+    textAlign: "center",
+  },
+  patientsThemselvesHeaderPatient: {
+    justifyContent: "center",
+  },
+  patientsThemselvesHeaderPatientTitle: {
+    color: sColor.color666,
+  },
+  dot: {
+    width: 2,
+    height: 2,
+    borderRadius: 100,
+    backgroundColor: sColor.color333,
+    marginLeft: 5,
+    marginRight: 5,
+  },
+  patientsThemeselvesPatient: {},
+  patientsThemeselvesPatientTitle: {
+    color: sColor.color888,
+    marginBottom: 5,
+  },
+  patientsThemeselvesPatientDetail: {
+    color: sColor.color333,
+  },
+  patientsThemeselvesPatientItem: {
+    paddingTop: 8,
+    paddingBottom: 8,
+  },
+  patientsThemeselvesPatientPic: {
+    marginBottom: 10,
+    marginTop: 10,
+  },
+  patientsThemeselvesPatientImg: {
+    width: 80,
+    height: 80,
+    resizeMode: "cover",
+    marginLeft: 5,
+    marginRight: 5,
+    marginBottom: 5,
   },
 })

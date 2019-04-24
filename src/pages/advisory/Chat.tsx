@@ -15,9 +15,10 @@ import { NavigationScreenProp, ScrollView } from "react-navigation"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
 import { Overwrite } from "utility-types"
-import wsMsgApi from "@api/wsMsg"
 import DashLine from "@/components/DashLine"
-import { windowWidth } from "@/utils/utils"
+import { windowWidth, getPicFullUrl } from "@/utils/utils"
+import { GENDER_ZH } from "@/services/doctor"
+import { getRegion } from "@/services/api"
 const style = gStyle.advisory.advisoryChat
 interface Props {
   navigation: NavigationScreenProp<State>
@@ -28,13 +29,22 @@ interface Props {
 export enum MsgType {
   txt,
   picture,
-  inquirySheet,
-  patientsThemselves,
+  inquirySheet, //问诊单
+  patientsThemselves, //患者信息
+  treatmentPlan, //治疗方案
 }
 export interface bottomNavItem {
   title: string
   icon: ImageSourcePropType
   link: string
+}
+export interface Region {
+  cid: string
+  value: string
+  label: string
+  areaName: string
+  level: number
+  children: Region[]
 }
 export interface Picture {
   id: number
@@ -87,6 +97,58 @@ interface State {
     avatar: Picture
     profile: string
   }
+  region: Region[]
+}
+/**
+ * 治疗方案
+ */
+export interface TreatmentPlan {
+  id: number
+  patient: {
+    uid: number
+    name: string
+    gender: number
+    yearAge: number
+    monthAge: number
+    discrimination: string //辨病
+    syndromeDifferentiation: string //辩证
+  }
+  orderId: number
+  ctime: string
+}
+/**
+ * 当消息为问诊单时 附加信息类型
+ */
+export interface MsgInquirySheetData {
+  patient: {
+    id: number
+    name: string
+    gender: number
+    yearAge: number
+    monthAge: number
+  }
+  orderId: number
+  ctime: string
+}
+/**
+ *  患者自述
+ */
+export interface PatientsThemselves {
+  patient: {
+    id: number
+    name: string
+    gender: number
+    yearAge: number
+    monthAge: number
+    weight: number
+    height: number
+    provinceCid: string
+    state: string //用户情况 症状和病情
+    allergyHistory: string //病史
+    medicalHistory: string //病史
+    medicalRecordPics: Picture[] //病历
+    tongueCoatingPics: Picture[] //舌苔照
+  }
 }
 const mapStateToProps = (state: AppState) => {
   return {
@@ -113,7 +175,6 @@ export default class Chat extends Component<
 > {
   static navigationOptions = ({ navigation }: { navigation: NavigationScreenProp<State> }) => {
     let title = ""
-    console.log(navigation.state.params)
     if (navigation.state.params) {
       title = navigation.state.params.patientName
     }
@@ -220,6 +281,7 @@ export default class Chat extends Component<
       limit: 10,
       filter: {},
       sendMsg: "",
+      region: [],
     }
   }
   componentDidMount() {
@@ -235,6 +297,15 @@ export default class Chat extends Component<
       .then(json => {
         this.setState({
           info: json.data.info,
+        })
+      })
+      .catch(err => {
+        console.log(err.msg)
+      })
+    await getRegion()
+      .then(json => {
+        this.setState({
+          region: json.data.region,
         })
       })
       .catch(err => {
@@ -394,6 +465,204 @@ export default class Chat extends Component<
     )
     return msg
   }
+  treatmentPlanFormat = (
+    serverMsg: Exclude<Overwrite<Msg, { extraData: TreatmentPlan }>, "dom">,
+  ) => {
+    let msg: Overwrite<Msg, { extraData: TreatmentPlan }> = serverMsg
+    msg.dom = (
+      <View style={style.treatmentPlan}>
+        <Text style={[style.sendTime, global.fontStyle, global.fontSize12]}>{msg.sendTime}</Text>
+        <View style={style.treatmentPlanCenter}>
+          <View style={[style.treatmentPlanHeader, global.flex, global.alignItemsCenter]}>
+            <Image style={style.treatmentPlanHeaderImg} source={gImg.common.injury} />
+            <View style={style.treatmentPlanHeaderTitle}>
+              <Text style={[style.treatmentPlanHeaderTheme, global.fontSize22]}>治疗方案</Text>
+              <Text style={[style.treatmentPlanHeaderTime, global.fontSize14]}>{msg.sendTime}</Text>
+            </View>
+          </View>
+          <DashLine len={45} backgroundColor={sColor.colorEee} width={windowWidth - 90} />
+          <Text style={[style.treatmentPlanItem, global.fontSize14]}>
+            患者 {msg.extraData.patient.name} ( {GENDER_ZH[msg.extraData.patient.gender]}{" "}
+            {msg.extraData.patient.yearAge > 3
+              ? msg.extraData.patient.yearAge + "岁"
+              : msg.extraData.patient.yearAge + "岁" + msg.extraData.patient.monthAge + "月"}{" "}
+            )
+          </Text>
+          <DashLine len={45} backgroundColor={sColor.colorEee} width={windowWidth - 90} />
+          <Text style={[style.treatmentPlanItem, global.fontSize14]}>
+            诊断 {msg.extraData.patient.discrimination};
+            {msg.extraData.patient.syndromeDifferentiation}
+          </Text>
+          <DashLine len={45} backgroundColor={sColor.colorEee} width={windowWidth - 90} />
+          <Text style={[style.treatmentPlanItem, global.fontSize14]}>
+            根据治疗方案购买 服药, 并按时复诊
+          </Text>
+          {/* //todo 不知道跳到哪里 */}
+          <TouchableOpacity>
+            <Text style={[style.treatmentPlanBtn, global.fontSize14]}>点此查看治疗方案</Text>
+          </TouchableOpacity>
+          <Image style={style.treatmentPlanFlag} source={gImg.common.flag} />
+        </View>
+      </View>
+    )
+    return msg
+  }
+  inquirySheetFormat = (
+    serverMsg: Exclude<Overwrite<Msg, { extraData: MsgInquirySheetData }>, "dom">,
+  ) => {
+    let msg: Overwrite<Msg, { extraData: MsgInquirySheetData }> = serverMsg
+    msg.dom = (
+      <View style={style.inquirySheet}>
+        <Text style={[style.sendTime, global.fontStyle, global.fontSize12]}>{msg.sendTime}</Text>
+        <TouchableOpacity
+          onPress={() =>
+            this.props.navigation.push(pathMap.PatientDetail, {
+              patientUid: msg.extraData.patient.id,
+            })
+          }
+          style={style.inquirySheetContent}>
+          <View style={[style.inquirySheetHeader, global.flex, global.alignItemsCenter]}>
+            <Image style={style.inquirySheetHeaderImg} source={gImg.common.injury} />
+            <View>
+              <Text style={[style.inquirySheetHeaderTitle, global.fontSize18]}>
+                {msg.extraData.patient.name}的问诊单
+              </Text>
+              <Text style={[style.inquirySheetHeaderTime, global.fontSize14]}>
+                {msg.extraData.ctime}
+              </Text>
+            </View>
+          </View>
+          <DashLine backgroundColor={sColor.colorEee} len={45} width={windowWidth - 90} />
+          <Text style={[style.inquirySheetPatient, global.fontSize14]}>
+            患者 {msg.extraData.patient.name} ( {GENDER_ZH[msg.extraData.patient.gender]}{" "}
+            {msg.extraData.patient.yearAge > 3
+              ? msg.extraData.patient.yearAge + "岁"
+              : msg.extraData.patient.yearAge + "岁" + msg.extraData.patient.monthAge + "月"}{" "}
+            )
+          </Text>
+          <DashLine backgroundColor={sColor.colorEee} len={45} width={windowWidth - 90} />
+          <Text style={[style.inquirySheetDetail, global.fontSize14]}>已提交问诊单, 请查看</Text>
+          <Image style={style.inquirySheetFlag} source={gImg.common.flag} />
+        </TouchableOpacity>
+      </View>
+    )
+    return msg
+  }
+  patientsThemselvesFormat = (
+    serverMsg: Exclude<Overwrite<Msg, { extraData: PatientsThemselves }>, "dom">,
+  ) => {
+    let msg: Overwrite<Msg, { extraData: PatientsThemselves }> = serverMsg
+    msg.dom = (
+      <View style={style.patientsThemselves}>
+        <Text style={[style.sendTime, global.fontStyle, global.fontSize12]}>{msg.sendTime}</Text>
+        <View style={style.patientsThemselvesContent}>
+          <View style={style.patientsThemselvesHeader}>
+            <Text style={[style.patientsThemselvesHeaderTitle, global.fontSize20]}>
+              {msg.extraData.patient.name}
+            </Text>
+            <View
+              style={[style.patientsThemselvesHeaderPatient, global.flex, global.alignItemsCenter]}>
+              <Text style={[style.patientsThemselvesHeaderPatientTitle, global.fontSize14]}>
+                {GENDER_ZH[msg.extraData.patient.gender]}
+              </Text>
+              <View style={style.dot} />
+              <Text style={[style.patientsThemselvesHeaderPatientTitle, global.fontSize14]}>
+                {msg.extraData.patient.yearAge > 3
+                  ? msg.extraData.patient.yearAge + "岁"
+                  : msg.extraData.patient.yearAge + "岁" + msg.extraData.patient.monthAge + "月"}
+              </Text>
+              <View style={style.dot} />
+              <Text style={[style.patientsThemselvesHeaderPatientTitle, global.fontSize14]}>
+                {this.state.region.map(region => {
+                  if (region.cid === msg.extraData.patient.provinceCid) {
+                    return region.areaName
+                  }
+                })}
+              </Text>
+            </View>
+          </View>
+          <View
+            style={[
+              style.patientsThemeselvesPatient,
+              global.flex,
+              global.alignItemsCenter,
+              global.justifyContentSpaceAround,
+            ]}>
+            <View>
+              <Text style={[style.patientsThemeselvesPatientTitle, global.fontSize13]}>
+                患者身高
+              </Text>
+              <Text style={[style.patientsThemeselvesPatientDetail, global.fontSize15]}>
+                {msg.extraData.patient.height} cm
+              </Text>
+            </View>
+            <View>
+              <Text style={[style.patientsThemeselvesPatientTitle, global.fontSize13]}>
+                患者体重
+              </Text>
+              <Text style={[style.patientsThemeselvesPatientDetail, global.fontSize15]}>
+                {msg.extraData.patient.weight} kg
+              </Text>
+            </View>
+          </View>
+          <View style={style.patientsThemeselvesPatientItem}>
+            <Text style={[style.patientsThemeselvesPatientTitle, global.fontSize13]}>过敏历史</Text>
+            <Text style={[style.patientsThemeselvesPatientDetail, global.fontSize15]}>
+              {msg.extraData.patient.allergyHistory}
+            </Text>
+          </View>
+          <View style={style.patientsThemeselvesPatientItem}>
+            <Text style={[style.patientsThemeselvesPatientTitle, global.fontSize13]}>既往病史</Text>
+            <Text style={[style.patientsThemeselvesPatientDetail, global.fontSize15]}>
+              {msg.extraData.patient.medicalHistory}
+            </Text>
+          </View>
+          <View style={style.patientsThemeselvesPatientItem}>
+            <Text style={[style.patientsThemeselvesPatientTitle, global.fontSize13]}>患者自述</Text>
+            <Text style={[style.patientsThemeselvesPatientDetail, global.fontSize15]}>
+              {msg.extraData.patient.state}
+            </Text>
+          </View>
+          <View style={style.patientsThemeselvesPatientItem}>
+            <Text style={[style.patientsThemeselvesPatientTitle, global.fontSize13]}>舌苔面照</Text>
+            <View
+              style={[
+                style.patientsThemeselvesPatientPic,
+                global.flex,
+                global.alignItemsCenter,
+                global.flexWrap,
+              ]}>
+              {msg.extraData.patient.tongueCoatingPics.map(v => {
+                return (
+                  <TouchableOpacity
+                    key={v.id}
+                    onPress={() => {
+                      this.setState({
+                        isShowPic: true,
+                        showPicUrl: v.url,
+                      })
+                    }}>
+                    <Image
+                      style={style.patientsThemeselvesPatientImg}
+                      source={v.url ? { uri: getPicFullUrl(v.url) } : gImg.common.defaultPic}
+                    />
+                  </TouchableOpacity>
+                )
+              })}
+              {msg.extraData.patient.tongueCoatingPics.length === 0 ? (
+                <Text style={[style.patientsThemeselvesPatientTitle, global.fontSize13]}>暂无</Text>
+              ) : null}
+            </View>
+            <Text style={[style.patientsThemeselvesPatientTitle, global.fontSize13]}>
+              问诊单问题
+            </Text>
+            <Text style={[style.patientsThemeselvesPatientDetail, global.fontSize15]}>已提交</Text>
+          </View>
+        </View>
+      </View>
+    )
+    return msg
+  }
   onRefresh = () => {
     this.setState({ refreshing: true })
     new Promise(s =>
@@ -495,6 +764,15 @@ export default class Chat extends Component<
                     case MsgType.picture:
                       formatMsg = this.pictureFormat(v)
                       break
+                    case MsgType.inquirySheet:
+                      formatMsg = this.inquirySheetFormat(v)
+                      break
+                    case MsgType.patientsThemselves:
+                      formatMsg = this.patientsThemselvesFormat(v)
+                      break
+                    case MsgType.treatmentPlan:
+                      formatMsg = this.treatmentPlanFormat(v)
+                      break
                     default:
                       break
                   }
@@ -502,42 +780,6 @@ export default class Chat extends Component<
                     return <View key={k}>{formatMsg.dom}</View>
                   }
                 })}
-              {/* 治疗方案 */}
-              <View style={style.treatmentPlan}>
-                <Text style={[style.sendTime, global.fontStyle, global.fontSize12]}>
-                  2019-04-23 23:23
-                </Text>
-                <View style={style.treatmentPlanCenter}>
-                  <View style={[style.treatmentPlanHeader, global.flex, global.alignItemsCenter]}>
-                    <Image style={style.treatmentPlanHeaderImg} source={gImg.common.injury} />
-                    <View style={style.treatmentPlanHeaderTitle}>
-                      <Text style={[style.treatmentPlanHeaderTheme, global.fontSize22]}>
-                        治疗方案
-                      </Text>
-                      <Text style={[style.treatmentPlanHeaderTime, global.fontSize14]}>
-                        2019-04-12 17:34
-                      </Text>
-                    </View>
-                  </View>
-                  <DashLine len={45} backgroundColor={sColor.colorEee} width={windowWidth - 90} />
-                  <Text style={[style.treatmentPlanItem, global.fontSize14]}>
-                    患者 孟磊 ( 男 23岁 )
-                  </Text>
-                  <DashLine len={45} backgroundColor={sColor.colorEee} width={windowWidth - 90} />
-                  <Text style={[style.treatmentPlanItem, global.fontSize14]}>
-                    诊断 感冒; 头痛流鼻涕鼻子不通
-                  </Text>
-                  <DashLine len={45} backgroundColor={sColor.colorEee} width={windowWidth - 90} />
-                  <Text style={[style.treatmentPlanItem, global.fontSize14]}>
-                    根据治疗方案购买 服药, 并按时复诊
-                  </Text>
-                  <TouchableOpacity>
-                    <Text style={[style.treatmentPlanBtn, global.fontSize14]}>
-                      点此查看治疗方案
-                    </Text>
-                  </TouchableOpacity>
-                </View>
-              </View>
             </View>
           </ScrollView>
           <View style={style.bottom}>
@@ -632,7 +874,7 @@ export default class Chat extends Component<
                 source={
                   this.state.showPicUrl
                     ? {
-                        uri: this.state.showPicUrl,
+                        uri: getPicFullUrl(this.state.showPicUrl),
                       }
                     : gImg.common.defaultPic
                 }
