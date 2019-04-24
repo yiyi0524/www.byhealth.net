@@ -16,6 +16,8 @@ import { connect } from "react-redux"
 import { Dispatch } from "redux"
 import { Overwrite } from "utility-types"
 import wsMsgApi from "@api/wsMsg"
+import DashLine from "@/components/DashLine"
+import { windowWidth } from "@/utils/utils"
 const style = gStyle.advisory.advisoryChat
 interface Props {
   navigation: NavigationScreenProp<State>
@@ -501,7 +503,41 @@ export default class Chat extends Component<
                   }
                 })}
               {/* 治疗方案 */}
-              <View style={style.treatmentPlan} />
+              <View style={style.treatmentPlan}>
+                <Text style={[style.sendTime, global.fontStyle, global.fontSize12]}>
+                  2019-04-23 23:23
+                </Text>
+                <View style={style.treatmentPlanCenter}>
+                  <View style={[style.treatmentPlanHeader, global.flex, global.alignItemsCenter]}>
+                    <Image style={style.treatmentPlanHeaderImg} source={gImg.common.injury} />
+                    <View style={style.treatmentPlanHeaderTitle}>
+                      <Text style={[style.treatmentPlanHeaderTheme, global.fontSize22]}>
+                        治疗方案
+                      </Text>
+                      <Text style={[style.treatmentPlanHeaderTime, global.fontSize14]}>
+                        2019-04-12 17:34
+                      </Text>
+                    </View>
+                  </View>
+                  <DashLine len={45} backgroundColor={sColor.colorEee} width={windowWidth - 90} />
+                  <Text style={[style.treatmentPlanItem, global.fontSize14]}>
+                    患者 孟磊 ( 男 23岁 )
+                  </Text>
+                  <DashLine len={45} backgroundColor={sColor.colorEee} width={windowWidth - 90} />
+                  <Text style={[style.treatmentPlanItem, global.fontSize14]}>
+                    诊断 感冒; 头痛流鼻涕鼻子不通
+                  </Text>
+                  <DashLine len={45} backgroundColor={sColor.colorEee} width={windowWidth - 90} />
+                  <Text style={[style.treatmentPlanItem, global.fontSize14]}>
+                    根据治疗方案购买 服药, 并按时复诊
+                  </Text>
+                  <TouchableOpacity>
+                    <Text style={[style.treatmentPlanBtn, global.fontSize14]}>
+                      点此查看治疗方案
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
             </View>
           </ScrollView>
           <View style={style.bottom}>

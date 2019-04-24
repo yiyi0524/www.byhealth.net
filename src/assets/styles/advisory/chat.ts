@@ -36,7 +36,7 @@ export default StyleSheet.create({
   content: {
     flex: 0.75,
     backgroundColor: sColor.mainBgColor,
-    marginBottom: 15,
+    marginBottom: 30,
   },
   list: {
     paddingLeft: 15,
@@ -287,4 +287,42 @@ export default StyleSheet.create({
     resizeMode: "center",
   },
   // 治疗方案
+  treatmentPlan: {
+    marginLeft: 15,
+    marginRight: 15,
+  },
+  treatmentPlanCenter: {
+    backgroundColor: sColor.white,
+    borderRadius: 5,
+    padding: 15,
+  },
+  treatmentPlanHeader: {
+    paddingBottom: 15,
+  },
+  treatmentPlanHeaderImg: {
+    width: 60,
+    resizeMode: "center",
+    marginRight: 15,
+  },
+  treatmentPlanHeaderTitle: {},
+  treatmentPlanHeaderTheme: {
+    color: sColor.color333,
+  },
+  treatmentPlanHeaderTime: {
+    color: sColor.color888,
+  },
+  treatmentPlanItem: {
+    height: 45,
+    lineHeight: 45,
+    color: sColor.color666,
+  },
+  treatmentPlanBtn: {
+    marginTop: 15,
+    height: 35,
+    lineHeight: 35,
+    textAlign: "center",
+    color: sColor.white,
+    backgroundColor: sColor.mainRed,
+    borderRadius: 5,
+  },
 })

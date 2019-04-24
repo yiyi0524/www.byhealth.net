@@ -17,6 +17,8 @@ export default {
     technicalqualificationCertificatePicFirst: require("@img/common/technicalqualificationCertificatePicFirst.png"),
     technicalqualificationCertificatePicSecond: require("@img/common/technicalqualificationCertificatePicSecond.png"),
     loading: require("@img/common/loadding.gif"),
+    flag: require("@img/common/flag.png"),
+    injury: require("@img/common/injury.jpg"),
   },
   home: {
     prescriptionTemplate: require("@img/home/moban.png"),
