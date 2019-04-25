@@ -8,6 +8,7 @@ import storage from "@/utils/storage"
 import { Picture } from "./advisory/Chat"
 import { Overwrite } from "utility-types"
 import { JsonReturnCode } from "@/services/api"
+import { Toast } from "@ant-design/react-native"
 /**
  * 枚举类型
  */
@@ -129,8 +130,11 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
     changeWsStatus: (preload: { status: number }) => {
       dispatch(wsAction.changeStatus(preload))
     },
-    addMsg: (preload: Msg) => {
+    addMsg: (preload: wsAction.MsgPreload) => {
       dispatch(wsAction.addMsg(preload))
+    },
+    setWsFn: (preload: wsAction.WsFnPreload) => {
+      dispatch(wsAction.setWsFn(preload))
     },
   }
 }
@@ -160,6 +164,10 @@ class Ws extends React.Component<
   }
   componentDidMount() {
     this.checkIsLoginTimer = setInterval(this.checkLoginStatus, 1000)
+    this.props.setWsFn({
+      wsGet: this.wsGet,
+      wsPost: this.wsPost,
+    })
     this.init()
   }
   componentWillUnmount() {
@@ -175,6 +183,7 @@ class Ws extends React.Component<
    * 检查登录状态
    */
   checkLoginStatus = () => {
+    console.log("正在检查登录状态")
     // 如果已登录则检查ws连接状态
     if (this.userIsLogin()) {
       if (!this.wsIsConnect()) {
@@ -192,13 +201,22 @@ class Ws extends React.Component<
    * websocket 是否已连接
    */
   wsIsConnect = (): boolean => {
-    return !!this.client && this.client.readyState === this.client.OPEN
+    console.log(this.client)
+    if (this.client) {
+      console.log(this.client.readyState)
+    }
+    return !!this.client && this.client.readyState === WebSocket.OPEN
   }
   receiveMsg = (frame: ReceiveFrame<Exclude<Overwrite<Msg, MsgOptionalDataToRequired>, "dom">>) => {
-    this.props.addMsg(frame.data)
+    let patientUid =
+      this.props.uid === frame.data.sendUser.uid
+        ? frame.data.receiveUser.uid
+        : frame.data.sendUser.uid
+    this.props.addMsg({ uid: patientUid, msg: frame.data })
   }
   initClient = async () => {
-    if (this.clientIsConnect || this.client) {
+    console.log("正在初始化ws客户端")
+    if (this.clientIsConnect) {
       return
     }
     let sessionId = await storage.get("session")
@@ -224,15 +242,13 @@ class Ws extends React.Component<
    * 当ws断开的时候 关闭ping计时器,如果应该重连,则1s后重连
    */
   onClose = (_: CloseEvent) => {
-    let { client } = this
+    console.log("ws is onClose")
     if (this.pingTimer) {
       clearInterval(this.pingTimer)
     }
-    if (!client) {
-      return
-    }
-    this.props.changeWsStatus({ status: client.readyState })
+    this.props.changeWsStatus({ status: WebSocket.CLOSED })
     if (this.shouldReConnect) {
+      console.log("正在重连")
       setTimeout(this.reConnect, 1000)
     }
   }
@@ -240,6 +256,7 @@ class Ws extends React.Component<
     console.log("socket 有错误", evt)
   }
   onMessage = (evt: MessageEvent) => {
+    console.log(evt.data)
     let { client } = this
     if (!client) {
       return
@@ -267,6 +284,7 @@ class Ws extends React.Component<
     }
   }
   onOpen = (_: Event) => {
+    console.log("onOpen")
     let { client } = this
     if (!client) {
       return
@@ -289,7 +307,7 @@ class Ws extends React.Component<
     }
     return this.sendMsg(frame)
   }
-  wsPost = ({ url, data = {} }: { url: string; data: {} }): boolean => {
+  wsPost = ({ url, data = {} }: { url: string; data?: {} }): boolean => {
     let frame: SendFrame = {
       url,
       arguments: {
@@ -300,12 +318,13 @@ class Ws extends React.Component<
   }
   sendMsg = (frame: SendFrame): boolean => {
     if (!this.client || !this.wsIsConnect()) {
-      console.log("未连接,无法发送消息")
+      Toast.fail("未连接,无法发送消息")
       return false
     }
     frame.arguments = frame.arguments || {}
     frame.arguments.cookie = this.cookie
     frame.arguments.post = frame.arguments.post || {}
+
     this.client.send(JSON.stringify(frame))
     return true
   }

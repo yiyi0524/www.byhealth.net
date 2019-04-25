@@ -75,13 +75,20 @@ export default class Index extends Component<
   }
   init = async () => {
     this.setState({ hasLoad: false })
-    let {
-      data: { list: consultationList },
-    } = await doctor.listConsultation({ page: -1, limit: -1 })
-    this.setState({
-      hasLoad: true,
-      consultationList,
-    })
+    try {
+      let {
+        data: { list: consultationList },
+      } = await doctor.listConsultation({ page: -1, limit: -1 })
+      this.setState({
+        hasLoad: true,
+        consultationList,
+      })
+    } catch (err) {
+      this.setState({
+        hasLoad: true,
+      })
+      Toast.fail("获取咨询列表失败, 错误信息: " + err.msg)
+    }
   }
   onRefresh = () => {
     this.setState({ refreshing: true })

@@ -13,7 +13,6 @@ import { NavigationScreenProp } from "react-navigation"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
 import QRCode from "react-native-qrcode"
-import pathMap from "@/routes/pathMap"
 const style = gStyle.index.InvitePatients
 const global = gStyle.global
 interface NavParams {
@@ -26,9 +25,10 @@ interface Props {
 interface State {
   hasLoad: boolean
   refreshing: boolean
+  doctorId: number
   name: string
   technicalTitle: number
-  url: string
+  inviteUrl: string
 }
 const mapStateToProps = (state: AppState) => {
   return {
@@ -91,9 +91,10 @@ export default class InvitePatients extends Component<
     return {
       hasLoad: false,
       refreshing: false,
-      name: "",
+      doctorId: 0,
       technicalTitle: 0,
-      url: "https://www.byhealth.net",
+      name: "",
+      inviteUrl: "https://www.byhealth.net/doctor",
     }
   }
   async componentDidMount() {
@@ -116,8 +117,10 @@ export default class InvitePatients extends Component<
     let { data } = await userApi.getPersonalInfo()
     this.setState({
       hasLoad: true,
+      doctorId: data.doctorInfo.id,
       name: data.info.name,
       technicalTitle: data.doctorInfo.technicalTitle as number,
+      inviteUrl: "https://www.byhealth.net/doctor?id=" + data.doctorInfo.id,
     })
   }
   onRefresh = () => {
@@ -158,7 +161,7 @@ export default class InvitePatients extends Component<
             <Text style={[style.detail, global.fontSize14]}>在家随时找我</Text>
             <Text style={[style.title, global.fontSize24]}>复诊调方</Text>
             <View style={style.qrCode}>
-              <QRCode value={this.state.url} size={120} bgColor="#252525" fgColor="white" />
+              <QRCode value={this.state.inviteUrl} size={120} bgColor="#252525" fgColor="white" />
             </View>
             <Text style={[style.detail, global.fontSize12]}>微信扫描上方我的二维码</Text>
             <Text style={[style.detail, global.fontSize12]}>关注 | 博一健康管理 | 公众号</Text>

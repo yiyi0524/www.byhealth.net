@@ -37,7 +37,8 @@ interface State {
   hasLoad: boolean
   refreshing: boolean
   patientId: number
-  temp: string
+  discrimination: string
+  syndromeDifferentiation: string
   medicalRecordPic: Picture[]
   pharmacy: {
     categoryList: CategoryItem[]
@@ -117,7 +118,8 @@ export default class SquareRoot extends Component<
         activeId: 0,
         categoryList: [],
       },
-      temp: "病毒性感冒",
+      discrimination: "",
+      syndromeDifferentiation: "",
       patientId: 0,
       medicalRecordPic: [],
       chooseDrugInfo: [],
@@ -261,10 +263,13 @@ export default class SquareRoot extends Component<
                 <TextareaItem
                   style={style.input}
                   autoHeight
-                  value={this.state.temp}
-                  onChange={value => {
+                  value={this.state.discrimination}
+                  onChange={discrimination => {
+                    if (!discrimination) {
+                      return
+                    }
                     this.setState({
-                      temp: value as string,
+                      discrimination,
                     })
                   }}
                   onBlur={this.saveTemp}
@@ -277,10 +282,13 @@ export default class SquareRoot extends Component<
                 <TextareaItem
                   style={style.input}
                   autoHeight
-                  value={this.state.temp}
-                  onChange={value => {
+                  value={this.state.syndromeDifferentiation}
+                  onChange={syndromeDifferentiation => {
+                    if (!syndromeDifferentiation) {
+                      return
+                    }
                     this.setState({
-                      temp: value as string,
+                      syndromeDifferentiation,
                     })
                   }}
                   onBlur={this.saveTemp}
@@ -392,10 +400,10 @@ export default class SquareRoot extends Component<
                           style={style.input}
                           autoHeight
                           value={list[drugId].info.signature}
-                          onChange={value => {
-                            this.setState({
-                              temp: value as string,
-                            })
+                          onChange={_ => {
+                            // this.setState({
+                            //   temp: value as string,
+                            // })
                           }}
                           onBlur={this.saveTemp}
                         />
@@ -443,12 +451,12 @@ export default class SquareRoot extends Component<
                 <TextareaItem
                   style={style.input}
                   autoHeight
-                  value={this.state.temp}
-                  onChange={value => {
-                    this.setState({
-                      temp: value as string,
-                    })
-                  }}
+                  // value={this.state.}
+                  // onChange={value => {
+                  //   this.setState({
+                  //     temp: value as string,
+                  //   })
+                  // }}
                   onBlur={this.saveTemp}
                 />
               </View>

@@ -1,24 +1,34 @@
 import global from "@/assets/styles/global"
+import DashLine from "@/components/DashLine"
 import { BASE_URL } from "@/config/api"
-import * as userAction from "@/redux/actions/user"
+import * as wsAction from "@/redux/actions/ws"
 import { AppState } from "@/redux/stores/store"
 import pathMap from "@/routes/pathMap"
+import api, { getRegion } from "@/services/api"
+import { GENDER_ZH } from "@/services/doctor"
 import gImg from "@/utils/img"
-import { TextareaItem, Toast, ImagePicker, Portal } from "@ant-design/react-native"
+import { getPicFullUrl, windowWidth } from "@/utils/utils"
+import { ImagePicker, Portal, TextareaItem, Toast } from "@ant-design/react-native"
 import userApi from "@api/user"
+import wsMsgApi from "@api/wsMsg"
 import sColor from "@styles/color"
 import gStyle from "@utils/style"
 import React, { Component, ReactChild } from "react"
-import { Image, ImageSourcePropType, PixelRatio, RefreshControl, Text, View } from "react-native"
+import {
+  Image,
+  ImageSourcePropType,
+  PixelRatio,
+  RefreshControl,
+  Text,
+  View,
+  Platform,
+  PermissionsAndroid,
+} from "react-native"
 import { TouchableOpacity } from "react-native-gesture-handler"
 import { NavigationScreenProp, ScrollView } from "react-navigation"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
 import { Overwrite } from "utility-types"
-import DashLine from "@/components/DashLine"
-import { windowWidth, getPicFullUrl } from "@/utils/utils"
-import { GENDER_ZH } from "@/services/doctor"
-import api, { getRegion } from "@/services/api"
 const style = gStyle.advisory.advisoryChat
 interface Props {
   navigation: NavigationScreenProp<State>
@@ -86,7 +96,6 @@ interface State {
   patientUid: number
   page: number
   limit: number
-  filter: {}
   sendMsg: string
   info: {
     id: number
@@ -161,8 +170,8 @@ const mapStateToProps = (state: AppState) => {
 }
 const mapDispatchToProps = (dispatch: Dispatch) => {
   return {
-    login: (preload: userAction.UserInfo) => {
-      dispatch(userAction.userLogin(preload))
+    addMsgList: (preload: wsAction.MsgListPreload) => {
+      dispatch(wsAction.addList(preload))
     },
   }
 }
@@ -255,6 +264,8 @@ export default class Chat extends Component<
     this.state = this.getInitState()
   }
   getInitState = (): State => {
+    let patientUid = this.props.navigation.getParam("patientUid")
+
     return {
       hasLoad: false,
       refreshing: false,
@@ -262,8 +273,8 @@ export default class Chat extends Component<
       isShowBottomPicSelect: false,
       hasMoreRecord: false,
       isShowPic: false,
+      patientUid,
       showPicUrl: "",
-      patientUid: 0,
       info: {
         id: 0,
         name: "",
@@ -280,19 +291,39 @@ export default class Chat extends Component<
       },
       page: 1,
       limit: 10,
-      filter: {},
       sendMsg: "",
       region: [],
     }
   }
   componentDidMount() {
     this.init()
+    this.requestReadExteralStorage()
+  }
+  requestReadExteralStorage = async () => {
+    if (Platform.OS === "android") {
+      try {
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+          {
+            title: "Permission To Load Photos From External Storage",
+            message:
+              "Permissions have to be granted in order to list photos on your phones for you to choose.",
+            buttonPositive: "",
+          },
+        )
+
+        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        } else {
+          console.log("READ_EXTERNAL_STORAGE permission denied!")
+        }
+      } catch (err) {
+        console.warn(err)
+      }
+    }
   }
   init = async () => {
-    let patientUid = this.props.navigation.getParam("patientUid")
     let page = this.state.page,
-      limit = this.state.limit,
-      filter = this.state.filter
+      limit = this.state.limit
     await userApi
       .getPersonalInfo()
       .then(json => {
@@ -312,47 +343,37 @@ export default class Chat extends Component<
       .catch(err => {
         console.log(err.msg)
       })
-    await this.getMsgList(page, limit, filter)
+    await this.getMsgList(page, limit)
     this.setState({
       hasLoad: true,
-      patientUid,
     })
   }
-  getMsgList = async (page: number, limit: number, filter = {}) => {
+  getMsgList = async (
+    page: number,
+    limit: number,
+    filter = { patientUid: this.state.patientUid },
+  ) => {
     try {
-      // let {
-      //   data: { list },
-      // } = await wsMsgApi.getMsgList({ page, limit, filter })
-      // console.log(list)
-      // 格式化
-      //   let oriMsgList: Exclude<Overwrite<Msg, { pic: Picture }>, "dom">[] = data.list
-      //   let formatMsg: Msg | undefined
-      //   let msgList = this.props.ws.chatMsg[this.state.patientUid],
-      //     newList: Msg<any>[] = []
-      //   for (let serverMsg of oriMsgList) {
-      //     switch (serverMsg.type) {
-      //       case MsgType.txt:
-      //         formatMsg = this.txtFormat(serverMsg)
-      //         break
-      //       case MsgType.picture:
-      //         formatMsg = this.pictureFormat(serverMsg)
-      //         break
-      //     }
-      //     if (formatMsg) {
-      //       newList.push(formatMsg)
-      //     }
-      //   }
-      //   msgList.unshift(...newList)
-      //   this.setState({
-      //     hasMoreRecord: data.count > msgList.length,
-      //   })
+      let {
+        data: { list: msgList },
+        count,
+      } = await wsMsgApi.getMsgList({ page, limit, filter })
+      let { patientUid } = this.state
+      this.props.addMsgList({
+        uid: patientUid,
+        msgList,
+      })
+      this.setState({
+        hasMoreRecord:
+          this.props.ws.chatMsg[patientUid] && count > this.props.ws.chatMsg[patientUid].length,
+      })
     } catch (err) {
       console.log(err)
     }
   }
   txtFormat = (serverMsg: Exclude<Msg, "dom">) => {
     let msg: Msg = serverMsg
-    let isSelfMsg = msg.sendUser.uid === this.state.info.id
+    let isSelfMsg = msg.sendUser.uid === this.props.uid
     msg.dom = (
       <View>
         {/*  左边文字 */}
@@ -366,7 +387,7 @@ export default class Chat extends Component<
                 style={style.itemImg}
                 source={
                   msg.sendUser.avatar.url
-                    ? { uri: BASE_URL + msg.sendUser.avatar.url }
+                    ? { uri: getPicFullUrl(msg.sendUser.avatar.url) }
                     : gImg.common.defaultAvatar
                 }
               />
@@ -392,7 +413,7 @@ export default class Chat extends Component<
                 style={style.itemImg}
                 source={
                   msg.sendUser.avatar.url
-                    ? { uri: BASE_URL + msg.sendUser.avatar.url }
+                    ? { uri: getPicFullUrl(msg.sendUser.avatar.url) }
                     : gImg.common.defaultAvatar
                 }
               />
@@ -419,7 +440,7 @@ export default class Chat extends Component<
                 style={style.itemImg}
                 source={
                   msg.sendUser.avatar.url
-                    ? { uri: BASE_URL + msg.sendUser.avatar.url }
+                    ? { uri: getPicFullUrl(msg.sendUser.avatar.url) }
                     : gImg.common.defaultAvatar
                 }
               />
@@ -455,7 +476,7 @@ export default class Chat extends Component<
                 style={style.itemImg}
                 source={
                   msg.sendUser.avatar.url
-                    ? { uri: BASE_URL + msg.sendUser.avatar.url }
+                    ? { uri: getPicFullUrl(msg.sendUser.avatar.url) }
                     : gImg.common.defaultAvatar
                 }
               />
@@ -672,23 +693,31 @@ export default class Chat extends Component<
     )
     return msg
   }
-  onRefresh = () => {
+  getMoreMsgList = async () => {
     this.setState({ refreshing: true })
-    new Promise(s =>
-      setTimeout(async () => {
-        // let page = this.state.page + 1,
-        //   limit = this.state.limit,
-        //   filter = this.state.filter
-        // await this.getMsgList(page, limit, filter)
-        s()
-      }, 500),
-    )
-      .then(_ => {
-        this.setState({ refreshing: false })
-      })
-      .catch(err => {
-        Toast.fail("刷新失败,错误信息: " + err.msg)
-      })
+    const {
+      ws: { chatMsg },
+    } = this.props
+    let { patientUid } = this.state
+    let page = 1,
+      limit = 8
+    if (patientUid in chatMsg) {
+      let msgCount = chatMsg[patientUid].length
+      for (let i = 10; i > 0; i--) {
+        if (msgCount % i === 0) {
+          limit = i
+          page = msgCount / limit + 1
+          break
+        }
+      }
+    }
+    try {
+      await this.getMsgList(page, limit)
+      this.setState({ refreshing: false })
+    } catch (err) {
+      this.setState({ refreshing: false })
+      Toast.fail("刷新失败,错误信息: " + err.msg)
+    }
   }
   selectBottomNav = (v: bottomNavItem) => {
     if (v.title === "更多功能") {
@@ -717,12 +746,14 @@ export default class Chat extends Component<
     if (this.state.sendMsg === "") {
       return
     }
-    Toast.info(this.state.sendMsg, 1)
-    setTimeout(() => {
+    const { patientUid } = this.state
+    if (
+      this.props.ws.wsPost({ url: "/ws/sendMsg", data: { msg: this.state.sendMsg, patientUid } })
+    ) {
       this.setState({
         sendMsg: "",
       })
-    }, 1000)
+    }
   }
   openShowPic = (url: string) => {
     this.setState({
@@ -748,7 +779,19 @@ export default class Chat extends Component<
               this.setState({
                 isShowBottomPicSelect: !this.state.isShowBottomPicSelect,
               })
-              console.log(json.data.url, json.data.picId)
+              const { patientUid } = this.state
+              const { url, picId } = json.data
+              this.props.ws.wsPost({
+                url: "/ws/sendMsg",
+                data: {
+                  pic: {
+                    url,
+                    picId,
+                  },
+                  type: MsgType.picture,
+                  patientUid,
+                },
+              })
             } else {
               Portal.remove(key)
               Toast.fail("上传图片失败,错误信息: " + json.msg, 3)
@@ -781,7 +824,7 @@ export default class Chat extends Component<
           <ScrollView
             style={style.content}
             refreshControl={
-              <RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh} />
+              <RefreshControl refreshing={this.state.refreshing} onRefresh={this.getMoreMsgList} />
             }>
             <View style={style.list}>
               <Text
