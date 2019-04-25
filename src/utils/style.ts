@@ -22,6 +22,9 @@ import InvitePatients from "@/assets/styles/index/invitePatients"
 import DiagnosisSettings from "@/assets/styles/index/diagnosisSettings"
 import SquareRoot from "@/assets/styles/advisory/squareRoot"
 import DrugSelect from "@/assets/styles/advisory/drugSelect"
+import InquirySheet from "@/assets/styles/address_book/inquirySheet"
+import MedicalRecord from "@/assets/styles/address_book/medicalRecord"
+import SquareRootDetail from "@/assets/styles/advisory/squareRootDetail"
 export default {
   home,
   global,
@@ -41,6 +44,7 @@ export default {
     advisoryChat,
     SquareRoot,
     DrugSelect,
+    SquareRootDetail,
   },
   addressBook: {
     AddressBookIndex,
@@ -48,6 +52,8 @@ export default {
     AddressBookAddGroup,
     AddressBookGroupDetail,
     PatientDetail,
+    InquirySheet,
+    MedicalRecord,
   },
   personalCenter: {
     personalCenterIndex,

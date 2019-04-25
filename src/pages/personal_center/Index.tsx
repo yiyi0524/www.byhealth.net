@@ -87,6 +87,10 @@ export default class Index extends Component<
         name: "退出登录",
         link: "",
       },
+      {
+        name: "tesst",
+        link: pathMap.SquareRootDetail,
+      },
     ]
     this.state = this.getInitState()
   }

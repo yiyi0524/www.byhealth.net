@@ -165,14 +165,16 @@ export default StyleSheet.create({
     height: 350,
     resizeMode: "center",
   },
-  medicalRecord: {
-    marginTop: 8,
+  medicalRecordList: {
+    marginBottom: 8,
     backgroundColor: sColor.white,
   },
   medicalRecordTitleBox: {
     height: 45,
     borderBottomWidth: 1 / PixelRatio.get(),
     borderBottomColor: sColor.colorDdd,
+    backgroundColor: sColor.white,
+    marginTop: 8,
   },
   medicalRecordIcon: {
     width: 6,
@@ -193,6 +195,7 @@ export default StyleSheet.create({
   },
   medicalRecordItem: {
     padding: 15,
+    paddingBottom: 0,
     marginBottom: 8,
   },
   medicalRecordItemTitle: {
@@ -251,5 +254,43 @@ export default StyleSheet.create({
     borderRadius: 5,
     textAlign: "center",
     lineHeight: 40,
+  },
+  //开方列表
+  squareRootList: {
+    marginTop: 8,
+    marginBottom: 8,
+  },
+  squareRootItem: {
+    padding: 15,
+    paddingBottom: 0,
+    backgroundColor: sColor.white,
+  },
+  squareRootItemTime: {
+    color: sColor.mainBlack,
+    fontWeight: "500",
+  },
+  squareRootItemTheme: {
+    color: sColor.color333,
+    fontWeight: "500",
+    marginBottom: 10,
+  },
+  squareRootItemTitle: {
+    color: sColor.color333,
+    fontWeight: "500",
+  },
+  squareRootItemTitleFa: {
+    marginTop: 8,
+  },
+  squareRootItemDetail: {
+    color: sColor.color666,
+    flex: 1,
+    marginLeft: 8,
+  },
+  squareRootItemViewFa: {
+    height: 50,
+  },
+  squareRootItemView: {
+    color: sColor.color888,
+    marginRight: 3,
   },
 })

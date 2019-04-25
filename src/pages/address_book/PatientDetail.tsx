@@ -1,6 +1,10 @@
 import * as userAction from "@/redux/actions/user"
 import { AppState } from "@/redux/stores/store"
+import pathMap from "@/routes/pathMap"
+import { GENDER, GENDER_ZH } from "@/services/doctor"
+import { getPicFullUrl } from "@/utils/utils"
 import { Icon, Toast } from "@ant-design/react-native"
+import patientApi, { Drug } from "@api/patient"
 import sColor from "@styles/color"
 import gImg from "@utils/img"
 import gStyle from "@utils/style"
@@ -10,22 +14,18 @@ import { TouchableOpacity } from "react-native-gesture-handler"
 import { NavigationScreenProp } from "react-navigation"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
-import patientApi from "@api/patient"
 import { Picture } from "../advisory/Chat"
-import { GENDER, GENDER_ZH } from "@/services/doctor"
-import { getPicFullUrl } from "@/utils/utils"
-import pathMap from "@/routes/pathMap"
+import api from "@/services/api"
 const style = gStyle.addressBook.PatientDetail
 const global = gStyle.global
 /**
  * 患者信息
  */
 export interface PatientInfo {
-  uid: number
   name: string
   avatar: Picture
   gender: number
-  age: number
+  age: 0
   provinceCid: string
   remarks: string
   phone: string
@@ -35,17 +35,24 @@ export interface PatientInfo {
   allergyHistory: string
   medicalHistory: string
   hospitalMedicalRecordPicList: Picture[]
+  medicalRecordList: MedicalRecord[]
 }
-interface Props {
-  navigation: NavigationScreenProp<State>
+// todo 历史病历在接口中没有
+export interface MedicalRecord {
+  consultation: {
+    //复诊
+    PatientState: string //患者自述
+    lingualSurfacePicList: Picture[] //舌照面及其他资料照片
+    dialoguePicList: Picture[] //对话照片
+  }
+  squareRoot: {
+    //开方
+    discrimination: string //诊断,辨病
+    syndromeDifferentiation: string //辩证
+    drugList: Drug[] //治疗的药品列表
+  }
 }
-interface State {
-  hasLoad: boolean
-  refreshing: boolean
-  isShowMode: boolean
-  patientInfo: PatientInfo
-  showImg: any
-}
+
 const mapStateToProps = (state: AppState) => {
   return {
     isLogin: state.user.isLogin,
@@ -59,6 +66,25 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
       dispatch(userAction.userLogin(preload))
     },
   }
+}
+interface Props {
+  navigation: NavigationScreenProp<State>
+}
+interface State {
+  hasLoad: boolean
+  refreshing: boolean
+  isShowMode: boolean
+  uid: number
+  patientInfo: PatientInfo
+  showImg: any
+  region: Region[]
+}
+export interface Region {
+  cid: string
+  value?: string
+  label?: string
+  areaName: string
+  children: Region[]
 }
 @connect(
   mapStateToProps,
@@ -98,6 +124,8 @@ export default class PatientDetail extends Component<
       refreshing: false,
       isShowMode: false,
       showImg: gImg.common.defaultAvatar,
+      uid: this.props.navigation.getParam("patientUid"),
+      region: [],
       patientInfo: {
         name: "",
         age: 0,
@@ -107,31 +135,39 @@ export default class PatientDetail extends Component<
           url: "",
           title: "",
         },
-        gender: GENDER.UNDEFINED,
-        height: 0,
-        hospitalMedicalRecordPicList: [],
         medicalHistory: "",
         phone: "",
         provinceCid: "",
         remarks: "",
         state: "",
-        uid: this.props.navigation.getParam("patientUid"),
         weight: 0,
+        gender: GENDER.UNDEFINED,
+        height: 0,
+        hospitalMedicalRecordPicList: [],
+        medicalRecordList: [],
       },
+    }
+  }
+  init = async () => {
+    let { uid } = this.state
+    try {
+      let { data: patientInfo } = await patientApi.getPatientInfo({
+        uid,
+      })
+      let {
+        data: { region },
+      } = await api.getRegion()
+      this.setState({
+        hasLoad: true,
+        patientInfo,
+        region,
+      })
+    } catch (err) {
+      console.log(err)
     }
   }
   componentDidMount() {
     this.init()
-  }
-  init = async () => {
-    let { uid } = this.state.patientInfo
-    let { data: patientInfo } = await patientApi.getPatientInfo({
-      uid,
-    })
-    this.setState({
-      hasLoad: true,
-      patientInfo,
-    })
   }
   onRefresh = () => {
     this.setState({ refreshing: true })
@@ -143,7 +179,7 @@ export default class PatientDetail extends Component<
         Toast.fail("刷新失败,错误信息: " + err.msg)
       })
   }
-  showMode = (img: any) => {
+  showMode = (img: string) => {
     this.setState({
       isShowMode: true,
       showImg: img,
@@ -188,30 +224,15 @@ export default class PatientDetail extends Component<
                   {GENDER_ZH[patientInfo.gender]}
                 </Text>
                 <Text style={[style.headerDescriptionAge, global.fontSize14, global.fontStyle]}>
-                  {patientInfo.age}岁 {/*. 河北省*/}
+                  {patientInfo.age} 岁{" "}
+                  {this.state.region.map((v: Region) => {
+                    if (patientInfo.provinceCid === v.cid) {
+                      console.log(patientInfo.provinceCid)
+                      return v.areaName
+                    }
+                  })}
                 </Text>
               </View>
-              {/* <View style={[style.headerDescriptionRemarks, global.flex, global.alignItemsCenter]}>
-                <Text
-                  style={[
-                    style.headerDescriptionRemarksTitle,
-                    global.fontSize13,
-                    global.fontStyle,
-                  ]}>
-                  备注名
-                </Text>
-                <View style={[global.flex, global.alignItemsCenter]}>
-                  <Text style={[style.headerDescriptionReamarksName]}>
-                    {patientInfo.remarks || "未备注"}
-                  </Text>
-                  <TouchableOpacity>
-                    <Icon
-                      style={[style.headerDescriptionReamarksIcon, global.fontSize16]}
-                      name="form"
-                    />
-                  </TouchableOpacity>
-                </View>
-              </View> */}
               <View style={[style.headerDescriptionPhone, global.flex, global.alignItemsCenter]}>
                 <Text
                   style={[style.headerDescriptionPhoneTitle, global.fontSize13, global.fontStyle]}>
@@ -248,15 +269,6 @@ export default class PatientDetail extends Component<
                 {patientInfo.weight}kg
               </Text>
             </View>
-            {/* <View style={style.physicalQualityItemLine} /> */}
-            {/* <View style={style.physicalQualityItem}>
-              <Text style={[style.physicalQualityItemTitle, global.fontSize13, global.fontStyle]}>
-                特殊时期
-              </Text>
-              <Text style={[style.physicalQualityItemDetail, global.fontSize14, global.fontStyle]}>
-                无
-              </Text>
-            </View> */}
           </View>
           <View style={style.medicalHistory}>
             <View style={[style.medicalHistoryItem, global.flex, global.alignItemsCenter]}>
@@ -305,6 +317,128 @@ export default class PatientDetail extends Component<
                   </TouchableOpacity>
                 )
               })}
+              {patientInfo.hospitalMedicalRecordPicList.length === 0 ? <Text>暂无</Text> : null}
+            </View>
+          </View>
+          <View
+            style={[
+              style.medicalRecordTitleBox,
+              global.flex,
+              global.alignItemsCenter,
+              global.justifyContentSpaceBetween,
+            ]}>
+            <View style={[global.flex, global.alignItemsCenter]}>
+              <View style={style.medicalRecordIcon} />
+              <Text style={[style.medicalRecordTitle, global.fontSize15, global.fontStyle]}>
+                历史病历
+              </Text>
+            </View>
+          </View>
+          {/* 病历列表 */}
+          <View style={style.medicalRecordList}>
+            <View style={style.medicalRecordItem}>
+              <Text style={[style.medicalRecordItemTitle, global.fontSize15, global.fontStyle]}>
+                2019年03月18日 15:25 复诊
+              </Text>
+              <Text
+                style={[style.medicalRecordItemSecondTitle, global.fontSize14, global.fontStyle]}>
+                患者自述
+              </Text>
+              <Text
+                style={[style.medicalRecordItemDetail, global.fontSize14, global.fontStyle]}
+                numberOfLines={2}>
+                {" "}
+                鬓发这里秃了一点点,很平滑
+              </Text>
+              <Text
+                style={[style.medicalRecordItemSecondTitle, global.fontSize14, global.fontStyle]}>
+                舌面照及其他资料
+              </Text>
+              <View
+                style={[
+                  style.medicalRecordItemPicList,
+                  global.flex,
+                  global.alignItemsCenter,
+                  global.flexWrap,
+                ]}>
+                <TouchableOpacity onPress={() => {}}>
+                  <Image
+                    style={style.medicalRecordImg}
+                    source={{
+                      uri:
+                        "https://www.byhealth.net/uploads/20190315/1cec476d9eaef31971abef5e16716365.png",
+                    }}
+                  />
+                </TouchableOpacity>
+              </View>
+              <Text
+                style={[style.medicalRecordItemSecondTitle, global.fontSize14, global.fontStyle]}>
+                对话照片
+              </Text>
+              <View
+                style={[
+                  style.medicalRecordItemPicList,
+                  global.flex,
+                  global.alignItemsCenter,
+                  global.flexWrap,
+                ]}>
+                <TouchableOpacity onPress={() => {}}>
+                  <Image
+                    style={style.medicalRecordImg}
+                    source={{
+                      uri:
+                        "https://www.byhealth.net/uploads/20190315/1cec476d9eaef31971abef5e16716365.png",
+                    }}
+                  />
+                </TouchableOpacity>
+              </View>
+              <TouchableOpacity
+                onPress={() =>
+                  this.props.navigation.push(pathMap.InquirySheet, { patientUid: this.state.uid })
+                }>
+                <View style={[global.flex, global.alignItemsCenter, global.justifyContentCenter]}>
+                  <Text style={[style.medicalRecordItemReadMore, global.fontSize14]}>
+                    查看问诊单详情
+                  </Text>
+                  <Icon
+                    style={[style.medicalRecordItemReadMoreIcon, global.fontSize14]}
+                    name="right"
+                  />
+                </View>
+              </TouchableOpacity>
+              <Text style={[style.squareRootItemTheme, global.fontSize15]}>医生方案</Text>
+              <View style={[style.squareRootItemTitleFa, global.flex, global.alignItemsCenter]}>
+                <Text style={[style.squareRootItemTitle, global.fontSize14]} numberOfLines={1}>
+                  诊断{" "}
+                </Text>
+                <Text style={[style.squareRootItemDetail, global.fontSize14]} numberOfLines={1}>
+                  病毒性感冒; 头疼流鼻涕 鼻子不通{" "}
+                </Text>
+              </View>
+              <View style={[style.squareRootItemTitleFa, global.flex, global.alignItemsCenter]}>
+                <Text style={[style.squareRootItemTitle, global.fontSize14]} numberOfLines={1}>
+                  治疗{" "}
+                </Text>
+                <Text style={[style.squareRootItemDetail, global.fontSize14]} numberOfLines={1}>
+                  蜜瓜篓子10g 黄连6g 法半夏 10g 黄芩 10g法半夏 10g 黄芩 10g{" "}
+                </Text>
+              </View>
+              {/* //todo 查看病历需要一个处方id  => prescriptionId  */}
+              <TouchableOpacity
+                onPress={() =>
+                  this.props.navigation.push(pathMap.MedicalRecord, { prescriptionId: 1 })
+                }>
+                <View
+                  style={[
+                    style.squareRootItemViewFa,
+                    global.justifyContentCenter,
+                    global.flex,
+                    global.alignItemsCenter,
+                  ]}>
+                  <Text style={[style.squareRootItemView, global.fontSize14]}>查看病历详情</Text>
+                  <Icon style={[style.squareRootItemView, global.fontSize14]} name="right" />
+                </View>
+              </TouchableOpacity>
             </View>
           </View>
         </ScrollView>
@@ -319,7 +453,7 @@ export default class PatientDetail extends Component<
             onPress={() => {
               this.props.navigation.navigate(pathMap.AdvisoryChat, {
                 patientName: this.state.patientInfo.name,
-                patientUid: this.state.patientInfo.uid,
+                patientUid: this.state.uid,
               })
             }}>
             <Text style={[style.bottomTitle, global.fontSize14, global.fontStyle]}>进入对话</Text>
@@ -328,6 +462,7 @@ export default class PatientDetail extends Component<
             <Text style={[style.bottomTitle, global.fontSize14, global.fontStyle]}>开方</Text>
           </TouchableOpacity>
         </View>
+
         {/* 图片查看器 */}
         <View style={this.state.isShowMode ? style.showMode : global.hidden}>
           <TouchableOpacity
@@ -350,174 +485,4 @@ export default class PatientDetail extends Component<
       </View>
     )
   }
-}
-
-{
-  /* //todo 暂时删除既往病史 
-   <View style={style.medicalRecord}>
-<View
-  style={[
-    style.medicalRecordTitleBox,
-    global.flex,
-    global.alignItemsCenter,
-    global.justifyContentSpaceBetween,
-  ]}>
-  <View style={[global.flex, global.alignItemsCenter]}>
-    <View style={style.medicalRecordIcon} />
-    <Text style={[style.medicalRecordTitle, global.fontSize15, global.fontStyle]}>
-      历史病历
-    </Text>
-  </View>
-  <TouchableOpacity>
-    <View style={[global.flex, global.alignItemsCenter]}>
-      <Icon style={[style.medicalRecordAddIcon, global.fontSize16]} name="plus" />
-      <Text style={[style.medicalRecordAdd, global.fontSize13]}>添加病历</Text>
-    </View>
-  </TouchableOpacity>
-</View>
-<View style={style.medicalRecordItem}>
-  <Text style={[style.medicalRecordItemTitle, global.fontSize15, global.fontStyle]}>
-    2019年03月18日 15:25 复诊
-  </Text>
-  <Text
-    style={[style.medicalRecordItemSecondTitle, global.fontSize14, global.fontStyle]}>
-    患者自述
-  </Text>
-  <Text
-    style={[style.medicalRecordItemDetail, global.fontSize14, global.fontStyle]}
-    numberOfLines={2}>
-    {" "}
-    鬓发这里秃了一点点,很平滑
-  </Text>
-  <Text
-    style={[style.medicalRecordItemSecondTitle, global.fontSize14, global.fontStyle]}>
-    舌照面照及其他资料
-  </Text>
-  <View
-    style={[
-      style.medicalRecordItemPicList,
-      global.flex,
-      global.alignItemsCenter,
-      global.flexWrap,
-    ]}>
-    <TouchableOpacity
-      onPress={() =>
-        this.showMode(
-          "https://www.byhealth.net/uploads/20190315/1cec476d9eaef31971abef5e16716365.png",
-        )
-      }>
-      <Image
-        style={style.medicalRecordImg}
-        source={{
-          uri:
-            "https://www.byhealth.net/uploads/20190315/1cec476d9eaef31971abef5e16716365.png",
-        }}
-      />
-    </TouchableOpacity>
-  </View>
-  <Text
-    style={[style.medicalRecordItemSecondTitle, global.fontSize14, global.fontStyle]}>
-    对话照片
-  </Text>
-  <View
-    style={[
-      style.medicalRecordItemPicList,
-      global.flex,
-      global.alignItemsCenter,
-      global.flexWrap,
-    ]}>
-    <TouchableOpacity
-      onPress={() =>
-        this.showMode(
-          "https://www.byhealth.net/uploads/20190315/1cec476d9eaef31971abef5e16716365.png",
-        )
-      }>
-      <Image
-        style={style.medicalRecordImg}
-        source={{
-          uri:
-            "https://www.byhealth.net/uploads/20190315/1cec476d9eaef31971abef5e16716365.png",
-        }}
-      />
-    </TouchableOpacity>
-    <TouchableOpacity
-      onPress={() =>
-        this.showMode(
-          "https://www.byhealth.net/uploads/20190315/1cec476d9eaef31971abef5e16716365.png",
-        )
-      }>
-      <Image
-        style={style.medicalRecordImg}
-        source={{
-          uri:
-            "https://www.byhealth.net/uploads/20190315/1cec476d9eaef31971abef5e16716365.png",
-        }}
-      />
-    </TouchableOpacity>
-  </View>
-  // {/* 医生方案 -诊断/}
-  <Text
-    style={[
-      style.medicalRecordItemTitle,
-      global.fontSize15,
-      global.fontStyle,
-      {
-        marginTop: 10,
-      },
-    ]}>
-    {" "}
-    医生方案
-  </Text>
-  <View style={[style.medicalRecordItemDoctorDiagnosis, global.flex]}>
-    <Text
-      style={[
-        style.medicalRecordItemDoctorDiagnosisTitle,
-        global.fontSize14,
-        global.fontStyle,
-      ]}>
-      诊断
-    </Text>
-    <Text
-      style={[
-        style.medicalRecordItemDoctorDiagnosisDetail,
-        global.fontSize14,
-        global.fontStyle,
-      ]}
-      numberOfLines={3}>
-      斑秃
-    </Text>
-  </View>
-  {/* 医生方案 -治疗/}
-  <View style={[style.medicalRecordItemDoctorDiagnosis, global.flex]}>
-    <Text
-      style={[
-        style.medicalRecordItemDoctorDiagnosisTitle,
-        global.fontSize14,
-        global.fontStyle,
-      ]}>
-      治疗
-    </Text>
-    <Text
-      style={[
-        style.medicalRecordItemDoctorDiagnosisDetail,
-        global.fontSize14,
-        global.fontStyle,
-      ]}
-      numberOfLines={3}>
-      生姜擦拭患处
-    </Text>
-  </View>
-  <TouchableOpacity>
-    <View style={[global.flex, global.alignItemsCenter, global.justifyContentCenter]}>
-      <Text style={[style.medicalRecordItemReadMore, global.fontSize14]}>
-        查看病历详情
-      </Text>
-      <Icon
-        style={[style.medicalRecordItemReadMoreIcon, global.fontSize14]}
-        name="right"
-      />
-    </View>
-  </TouchableOpacity>
-</View>
-</View> */
 }

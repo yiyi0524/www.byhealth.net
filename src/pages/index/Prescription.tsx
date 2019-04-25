@@ -150,13 +150,7 @@ export default class Prescription extends Component<
             <Text style={[style.prescriptionItemHeaderLeftTitle, global.fontSize14]}>{v.name}</Text>
             <Text style={[style.prescriptionItemHeaderLeftDetail, global.fontSize14]}>
               {GENDER_ZH[v.gender]}
-              {v.yearAge !== 0
-                ? v.yearAge + "岁"
-                : v.monthAge !== 0
-                ? v.monthAge > 12
-                  ? Math.floor(v.monthAge / 12) + "岁" + (v.monthAge % 12) + "月"
-                  : v.monthAge + "月"
-                : "未知"}
+              {v.yearAge >= 3 ? v.yearAge + "岁" : v.yearAge + "岁" + v.monthAge + "月"}
             </Text>
           </View>
           <View style={[style.prescriptionItemHeaderRight, global.flex, global.alignItemsCenter]}>

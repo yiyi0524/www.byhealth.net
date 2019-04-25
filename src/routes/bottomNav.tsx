@@ -16,6 +16,9 @@ import AddressBookGroup from "@pages/address_book/Group"
 import AddressBookGroupDetail from "@pages/address_book/GroupDetail"
 import AddressBookIndex from "@pages/address_book/Index"
 import PatientDetail from "@pages/address_book/PatientDetail"
+import InquirySheet from "@pages/address_book/InquirySheet"
+import MedicalRecord from "@pages/address_book/MedicalRecord"
+import SquareRootDetail from "@pages/advisory/SquareRootDetail"
 import Home from "@pages/Home"
 import Test from "@pages/Test"
 import RealNameAuth from "@pages/user/RealNameAuth"
@@ -240,6 +243,15 @@ const StacksOverTabs = createStackNavigator({
   },
   [pathMap.DrugSelect]: {
     screen: DrugSelect,
+  },
+  [pathMap.InquirySheet]: {
+    screen: InquirySheet,
+  },
+  [pathMap.MedicalRecord]: {
+    screen: MedicalRecord,
+  },
+  [pathMap.SquareRootDetail]: {
+    screen: SquareRootDetail,
   },
 })
 export default StacksOverTabs

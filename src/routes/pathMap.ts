@@ -23,4 +23,7 @@ export default {
   DiagnosisSettings: "DiagnosisSettings",
   SquareRoot: "SquareRoot",
   DrugSelect: "DrugSelect",
+  InquirySheet: "InquirySheet",
+  MedicalRecord: "MedicalRecord",
+  SquareRootDetail: "SquareRootDetail",
 }
