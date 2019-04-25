@@ -228,7 +228,6 @@ class Ws extends React.Component<
     this.client.onerror = this.onError
     this.client.onmessage = this.onMessage
     this.client.onclose = this.onClose
-    this.pingTimer = setInterval(this.ping, 30000)
   }
   reConnect = () => {
     if (!this.wsIsConnect()) {
@@ -289,6 +288,7 @@ class Ws extends React.Component<
     if (!client) {
       return
     }
+    this.pingTimer = setInterval(this.ping, 30000)
     this.props.changeWsStatus({ status: client.readyState })
   }
   ping = (): boolean => {

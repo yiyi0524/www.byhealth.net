@@ -13,7 +13,9 @@ export const initState: WsState = {
   chatMsg: {},
   wsGet: ({ url, query = {} }) => {
     console.log(url, query)
-    Toast.info("未连接到服务器,无法发送消息")
+    if (url !== "/ws/ping") {
+      Toast.info("未连接到服务器,无法发送消息")
+    }
     return false
   },
   wsPost: ({ url, data = {} }) => {

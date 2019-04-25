@@ -36,7 +36,7 @@ interface State {
   isSelectDrug: boolean
   hasLoad: boolean
   refreshing: boolean
-  patientId: number
+  patientUid: number
   discrimination: string
   syndromeDifferentiation: string
   medicalRecordPic: Picture[]
@@ -120,7 +120,7 @@ export default class SquareRoot extends Component<
       },
       discrimination: "",
       syndromeDifferentiation: "",
-      patientId: 0,
+      patientUid: 0,
       medicalRecordPic: [],
       chooseDrugInfo: [],
     }
@@ -146,7 +146,7 @@ export default class SquareRoot extends Component<
   //todo 没连数据 没接口 这个页面你来
   getDrugList = () => {}
   init = async () => {
-    let patientId = this.props.navigation.getParam("patientId")
+    let patientUid = this.props.navigation.getParam("patientUid")
     try {
       let {
         data: { list: categoryList },
@@ -156,7 +156,7 @@ export default class SquareRoot extends Component<
       pharmacy.activeId = categoryList[0].id
       this.setState({
         hasLoad: true,
-        patientId,
+        patientUid,
         pharmacy,
       })
     } catch (err) {
@@ -196,15 +196,6 @@ export default class SquareRoot extends Component<
       this.setState({
         medicalRecordPic,
       })
-    }
-  }
-  saveTemp = async () => {
-    // let temp = this.state.temp
-    try {
-      // await user.saveTemp({ temp })
-    } catch (err) {
-      Toast.fail("修改辨病失败, 错误信息: " + err.msg, 3)
-      console.log(err)
     }
   }
   chooseCategory = (id: number) => {
@@ -272,7 +263,8 @@ export default class SquareRoot extends Component<
                       discrimination,
                     })
                   }}
-                  onBlur={this.saveTemp}
+                  // todo 未连
+                  // onBlur={this.saveTemp}
                 />
               </View>
             </View>
@@ -291,7 +283,8 @@ export default class SquareRoot extends Component<
                       syndromeDifferentiation,
                     })
                   }}
-                  onBlur={this.saveTemp}
+                  // todo 未连
+                  // onBlur={this.saveTemp}
                 />
               </View>
             </View>
@@ -405,7 +398,8 @@ export default class SquareRoot extends Component<
                             //   temp: value as string,
                             // })
                           }}
-                          onBlur={this.saveTemp}
+                          // todo 未连
+                          // onBlur={this.saveTemp}
                         />
                       </View>
                     </View>
@@ -457,7 +451,8 @@ export default class SquareRoot extends Component<
                   //     temp: value as string,
                   //   })
                   // }}
-                  onBlur={this.saveTemp}
+                  // todo 未连
+                  // onBlur={this.saveTemp}
                 />
               </View>
             </View>
