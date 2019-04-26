@@ -13,6 +13,7 @@ import { TouchableOpacity } from "react-native-gesture-handler"
 import { NavigationScreenProp } from "react-navigation"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
+import pathMap from "@/routes/pathMap"
 const style = gStyle.index.Prescription
 const global = gStyle.global
 interface Props {
@@ -120,24 +121,19 @@ export default class Prescription extends Component<
         Toast.fail("刷新失败,错误信息: " + err.msg)
       })
   }
-  deleteGroup = (id: number) => {
-    userApi
-      .deletePatientGroup({ id })
-      .then(() => {
-        Toast.success("删除成功", 3)
-        this.init()
-      })
-      .catch(err => {
-        Toast.fail("删除失败, 错误原因: " + err.msg, 3)
-      })
-  }
+
   buildPrescriptionDom = (
     v: prescriptionItem,
     k: number,
     showPayStatus = true,
   ): React.ReactChild => {
     return (
-      <TouchableOpacity key={k} style={style.prescriptionItem}>
+      <TouchableOpacity
+        key={k}
+        style={style.prescriptionItem}
+        onPress={() =>
+          this.props.navigation.push(pathMap.PrescriptionDetail, { prescriptionId: v.id })
+        }>
         <View
           style={[
             style.prescriptionItemHeader,
@@ -176,7 +172,7 @@ export default class Prescription extends Component<
             <Text
               style={[style.prescriptionItemDescriptionTime, global.fontSize14]}
               numberOfLines={1}>
-              {moment(v.ctime).format("YYYY年MM月DD日 HH:mm")}
+              {moment(v.ctime).format("YYYY" + "年" + "MM" + "月" + "DD" + "日 HH:mm")}
             </Text>
             {showPayStatus ? (
               <Text

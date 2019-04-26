@@ -134,7 +134,7 @@ export default class Index extends Component<
                   style={this.state.hasRealNameAuth ? global.hidden : style.searchMode}
                   onPress={() => {
                     if (!this.state.hasRealNameAuth) {
-                      return Toast.info("您未认证", 3)
+                      return Toast.info("您未认证完成", 1)
                     }
                   }}
                 />
@@ -179,7 +179,7 @@ export default class Index extends Component<
             ]}
             onPress={() => {
               if (!this.state.hasRealNameAuth) {
-                return Toast.info("您未认证", 3)
+                return Toast.info("您未认证完成", 1)
               }
               this.props.navigation.push(pathMap.AddressBookGroup)
             }}>
@@ -213,7 +213,7 @@ export default class Index extends Component<
                     ]}
                     onPress={() => {
                       if (!this.state.hasRealNameAuth) {
-                        return Toast.info("您未认证", 3)
+                        return Toast.info("您未认证完成", 1)
                       }
                       this.props.navigation.push(pathMap.PatientDetail, {
                         title: v.name,

@@ -19,6 +19,7 @@ import PatientDetail from "@pages/address_book/PatientDetail"
 import InquirySheet from "@pages/address_book/InquirySheet"
 import MedicalRecord from "@pages/address_book/MedicalRecord"
 import SquareRootDetail from "@pages/advisory/SquareRootDetail"
+import PrescriptionDetail from "@pages/index/PrescriptionDetail"
 import Home from "@pages/Home"
 import Test from "@pages/Test"
 import RealNameAuth from "@pages/user/RealNameAuth"
@@ -252,6 +253,9 @@ const StacksOverTabs = createStackNavigator({
   },
   [pathMap.SquareRootDetail]: {
     screen: SquareRootDetail,
+  },
+  [pathMap.PrescriptionDetail]: {
+    screen: PrescriptionDetail,
   },
 })
 export default StacksOverTabs

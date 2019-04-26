@@ -316,7 +316,7 @@ export default class Home extends Component<
               style={style.prescriptionItem}
               onPress={() => {
                 if (!this.state.hasRealNameAuth) {
-                  return Toast.info("您未认证", 3)
+                  return Toast.info("您未认证完成", 1)
                 }
                 this.props.navigation.push(pathMap.Prescription)
               }}>
@@ -365,7 +365,7 @@ export default class Home extends Component<
                   style={style.categoryItem}
                   onPress={() => {
                     if (!this.state.hasRealNameAuth) {
-                      return Toast.info("您未认证", 3)
+                      return Toast.info("您未认证完成", 1)
                     }
                     this.props.navigation.push(item.link)
                   }}>
@@ -409,7 +409,7 @@ export default class Home extends Component<
                   ]}
                   onPress={() => {
                     if (!this.state.hasRealNameAuth) {
-                      return Toast.info("您未认证", 3)
+                      return Toast.info("您未认证完成", 1)
                     }
                     this.props.navigation.push(v.link)
                   }}>

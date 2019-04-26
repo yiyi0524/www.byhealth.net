@@ -26,4 +26,5 @@ export default {
   InquirySheet: "InquirySheet",
   MedicalRecord: "MedicalRecord",
   SquareRootDetail: "SquareRootDetail",
+  PrescriptionDetail: "PrescriptionDetail",
 }

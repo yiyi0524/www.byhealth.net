@@ -134,19 +134,32 @@ export default StyleSheet.create({
     borderBottomWidth: 1 / PixelRatio.get(),
     borderBottomColor: sColor.colorDdd,
   },
+  drugItemTitle: {
+    color: sColor.color333,
+  },
+  drugItemDetail: {
+    color: sColor.color888,
+  },
+  drugItemFa: {
+    marginBottom: 5,
+  },
   drugItemLeft: {
     flex: 1,
   },
   drugItemLeftTitle: {
     color: sColor.color333,
-    marginBottom: 10,
+  },
+  drugListFa: {
+    marginLeft: 10,
   },
   drugItemLeftDetail: {
     color: sColor.color666,
     marginTop: 5,
   },
   drugItemRight: {},
-  usageDosage: {},
+  usageDosage: {
+    marginTop: 5,
+  },
   drugPrompt: {
     color: sColor.color999,
     marginTop: 15,

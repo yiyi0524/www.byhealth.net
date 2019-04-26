@@ -353,6 +353,112 @@ export async function getSquareRoot({ prescriptionId }: { prescriptionId: number
   // prescriptionId
   // })
 }
+export interface prescriptionDetail {
+  doctor: {
+    name: string
+  }
+  patient: {
+    name: string
+    gender: number
+    yearAge: number
+    monthAge: number
+  }
+  discrimination: string //辨病
+  syndromeDifferentiation: string //辩证
+  advice: string //医嘱
+  drugList: Drug[]
+  cost: {
+    drug: number
+    management: number
+  }
+  time: string
+  status: number
+}
+/**
+ * todo 获取开方详情
+ */
+export async function getPrescriptionDetail({ prescriptionId }: { prescriptionId: number }) {
+  return {
+    data: {
+      detail: {
+        doctor: {
+          name: "孟雷",
+        },
+        patient: {
+          name: "吴大伟",
+          gender: 1,
+          yearAge: 23,
+          monthAge: 0,
+        },
+        discrimination: "感冒", //辨病
+        syndromeDifferentiation: "头疼 流鼻涕", //辩证
+        advice: "多喝水 注意休息", //医嘱
+        drugList: [
+          {
+            categoryId: 1,
+            list: [
+              {
+                detail: {
+                  id: 1,
+                  manufacturer: "南京股份有限公司",
+                  name: "杏仁清热",
+                  price: 1500,
+                  signature: "一天一次,一次一袋",
+                  standard: "6gx12袋(盒)",
+                  unit: "盒",
+                },
+                count: 3,
+                usage: "口服",
+              },
+              {
+                detail: {
+                  id: 2,
+                  manufacturer: "南京股份有限公司",
+                  name: "杏仁清热",
+                  price: 1500,
+                  signature: "一天一次,一次一袋",
+                  standard: "6gx12袋(盒)",
+                  unit: "盒",
+                },
+                count: 4,
+                usage: "口服",
+              },
+            ],
+          },
+          {
+            categoryId: 2,
+            list: [
+              {
+                detail: {
+                  id: 3,
+                  manufacturer: "南京股份有限公司",
+                  name: "杏仁清热",
+                  price: 1500,
+                  signature: "一天一次,一次一袋",
+                  standard: "6gx12袋(盒)",
+                  unit: "盒",
+                },
+                count: 1,
+                usage: "口服",
+              },
+            ],
+          },
+        ],
+        cost: {
+          drug: 4500,
+          management: 2309,
+        },
+        status: 0,
+        time: "2019-04-23 17:44:00",
+      },
+    },
+  }
+  // return bget<{detail:prescriptionDetail}>({
+  //   url: "doctor/getPrescriptionDetail",
+  //   query: {
+  // prescriptionId
+  // })
+}
 export default {
   doctorAuth,
   getMsgList,
@@ -368,4 +474,5 @@ export default {
   listConsultation,
   getWaitAuditDoctorDetail,
   getSquareRoot,
+  getPrescriptionDetail,
 }

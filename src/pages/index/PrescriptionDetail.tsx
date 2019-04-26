@@ -1,8 +1,17 @@
 import global from "@/assets/styles/global"
 import * as userAction from "@/redux/actions/user"
 import { AppState } from "@/redux/stores/store"
-import api, { windowWidth } from "@/services/api"
+import { windowWidth } from "@/services/api"
+import doctor, {
+  GENDER_ZH,
+  squareRoot,
+  prescriptionDetail,
+  PRESCRIPTION_STATUS_ZH,
+  PRESCRIPTION_STATUS,
+} from "@/services/doctor"
+import hospital from "@/services/hospital"
 import { Toast } from "@ant-design/react-native"
+import DashLine from "@components/DashLine"
 import sColor from "@styles/color"
 import gImg from "@utils/img"
 import gStyle from "@utils/style"
@@ -11,11 +20,7 @@ import { Image, PixelRatio, RefreshControl, Text, View } from "react-native"
 import { NavigationScreenProp, ScrollView } from "react-navigation"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
-import DashLine from "@components/DashLine"
-import doctor, { squareRoot, GENDER_ZH } from "@/services/doctor"
-import moment from "moment"
-import hospital from "@/services/hospital"
-const style = gStyle.advisory.SquareRootDetail
+const style = gStyle.index.PrescriptionDetail
 const mapStateToProps = (state: AppState) => {
   return {
     isLogin: state.user.isLogin,
@@ -42,9 +47,8 @@ interface State {
   hasLoad: boolean
   refreshing: boolean
   prescriptionId: number
-  detail: squareRoot
+  detail: prescriptionDetail
   drugCategoryList: drugCategory[]
-  drugList: drugCategory[]
 }
 @connect(
   mapStateToProps,
@@ -56,7 +60,7 @@ export default class SquareRoot extends Component<
 > {
   static navigationOptions = () => {
     return {
-      title: "查看整体治疗方案",
+      title: "开方详情",
       headerStyle: {
         backgroundColor: sColor.white,
         height: 45,
@@ -103,9 +107,9 @@ export default class SquareRoot extends Component<
           management: 0,
         },
         time: "",
+        status: 0,
       },
       drugCategoryList: [],
-      drugList: [],
     }
   }
   componentDidMount() {
@@ -116,19 +120,15 @@ export default class SquareRoot extends Component<
   init = async () => {
     let {
       data: { detail },
-    } = await doctor.getSquareRoot({ prescriptionId: this.state.prescriptionId })
+    } = await doctor.getPrescriptionDetail({ prescriptionId: this.state.prescriptionId })
     let {
       data: { list: drugCategoryList },
     } = await hospital.getDrugCategoryList({ page: -1, limit: -1 })
-    let {
-      data: { list: drugList },
-    } = await hospital.getDrugList({ page: -1, limit: -1 })
     try {
       this.setState({
         hasLoad: true,
         detail,
         drugCategoryList,
-        drugList,
       })
     } catch (err) {
       console.log(err)
@@ -154,7 +154,8 @@ export default class SquareRoot extends Component<
         </View>
       )
     }
-    let { detail } = this.state
+    let { detail } = this.state,
+      status = detail.status
     return (
       <>
         <ScrollView
@@ -162,10 +163,43 @@ export default class SquareRoot extends Component<
           refreshControl={
             <RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh} />
           }>
-          <View style={style.prompt}>
-            <Text style={[style.promptTitle, global.fontSize14]}>
-              {moment(detail.time).format("YYYY" + "年" + "MM" + "月" + "DD" + "日" + "HH:mm")}
-            </Text>
+          <View
+            style={[
+              style.steps,
+              global.flex,
+              global.alignItemsCenter,
+              global.justifyContentSpaceBetween,
+            ]}>
+            <View style={style.step}>
+              <Text style={[style.activeNum, global.fontSize12]}>1</Text>
+              <Text style={[style.activeStepTitle, global.fontSize12]}>已发送</Text>
+            </View>
+            <View style={style.line} />
+            <View style={style.step}>
+              <Text style={[style.activeNum, global.fontSize12]}>2</Text>
+              <Text style={[style.activeStepTitle, global.fontSize12]}>已划价</Text>
+            </View>
+            <View
+              style={status === PRESCRIPTION_STATUS.completePay ? style.activeLine : style.line}
+            />
+            <View style={style.step}>
+              <Text
+                style={[
+                  status === PRESCRIPTION_STATUS.completePay ? style.activeNum : style.num,
+                  global.fontSize12,
+                ]}>
+                3
+              </Text>
+              <Text
+                style={[
+                  status === PRESCRIPTION_STATUS.completePay
+                    ? style.activeStepTitle
+                    : style.stepTitle,
+                  global.fontSize12,
+                ]}>
+                已支付
+              </Text>
+            </View>
           </View>
           {/* 诊断 */}
           <View style={style.diagnosis}>
@@ -309,7 +343,7 @@ export default class SquareRoot extends Component<
             </View>
             <View style={[style.diagnosisItem, global.flex, global.alignItemsCenter]}>
               <Text style={[style.diagnosisItemTitle, global.fontSize14]}>[ 医嘱提醒 ]</Text>
-              <Text style={[style.diagnosisItemTitle, global.fontSize14]}>{detail.advice}</Text>
+              <Text style={[style.diagnosisItemTitle, global.fontSize14]}>多喝水</Text>
             </View>
           </View>
           {/* 明细 */}
@@ -365,11 +399,6 @@ export default class SquareRoot extends Component<
                 ¥ {((detail.cost.drug + detail.cost.management) / 100).toFixed(2)}
               </Text>
             </View>
-          </View>
-          <View style={style.doctor}>
-            <Text style={[style.doctorName, global.fontSize14]}>
-              [ 医生签名 ] {detail.doctor.name}
-            </Text>
           </View>
         </ScrollView>
       </>

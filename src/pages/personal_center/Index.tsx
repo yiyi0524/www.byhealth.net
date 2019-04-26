@@ -87,10 +87,6 @@ export default class Index extends Component<
         name: "退出登录",
         link: "",
       },
-      {
-        name: "tesst",
-        link: pathMap.SquareRootDetail,
-      },
     ]
     this.state = this.getInitState()
   }
@@ -174,7 +170,7 @@ export default class Index extends Component<
                     <TouchableOpacity
                       onPress={() => {
                         if (!this.state.hasRealNameAuth) {
-                          return Toast.info("您未认证", 3)
+                          return Toast.info("您未认证完成", 1)
                         }
                         this.props.navigation.push(v.link)
                       }}
@@ -217,7 +213,7 @@ export default class Index extends Component<
                   onPress={() => {
                     if (v.name === "编辑资料") {
                       if (!this.state.hasRealNameAuth) {
-                        return Toast.info("您未认证", 3)
+                        return Toast.info("您未认证完成", 1)
                       }
                     }
                     this.props.navigation.push(v.link)

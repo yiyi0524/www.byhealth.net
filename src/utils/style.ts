@@ -25,6 +25,7 @@ import DrugSelect from "@/assets/styles/advisory/drugSelect"
 import InquirySheet from "@/assets/styles/address_book/inquirySheet"
 import MedicalRecord from "@/assets/styles/address_book/medicalRecord"
 import SquareRootDetail from "@/assets/styles/advisory/squareRootDetail"
+import PrescriptionDetail from "@/assets/styles/index/PrescriptionDetail"
 export default {
   home,
   global,
@@ -32,6 +33,7 @@ export default {
     Prescription,
     InvitePatients,
     DiagnosisSettings,
+    PrescriptionDetail,
   },
   user: {
     login,

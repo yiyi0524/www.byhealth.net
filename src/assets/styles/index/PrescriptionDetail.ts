@@ -33,8 +33,51 @@ export default StyleSheet.create({
     flex: 1,
     backgroundColor: sColor.mainBgColor,
   },
-  prompt: {
-    height: 50,
+  steps: {
+    paddingTop: 5,
+    paddingBottom: 5,
+    backgroundColor: sColor.white,
+    marginBottom: 8,
+    paddingLeft: 15,
+    paddingRight: 15,
+  },
+  step: {
+    justifyContent: "center",
+    alignItems: "center",
+    marginLeft: 5,
+    marginRight: 5,
+  },
+  activeNum: {
+    width: 20,
+    height: 20,
+    backgroundColor: sColor.mainRed,
+    color: sColor.white,
+    textAlign: "center",
+    borderRadius: 100,
+  },
+  activeStepTitle: {
+    color: sColor.mainRed,
+  },
+  line: {
+    flex: 1,
+    height: 2,
+    backgroundColor: sColor.mainRed,
+  },
+  activeLine: {
+    flex: 1,
+    height: 2,
+    backgroundColor: sColor.color888,
+  },
+  stepTitle: {
+    color: sColor.color888,
+  },
+  num: {
+    width: 20,
+    height: 20,
+    backgroundColor: sColor.color999,
+    color: sColor.white,
+    textAlign: "center",
+    borderRadius: 100,
   },
   promptTitle: {
     lineHeight: 50,
@@ -124,8 +167,23 @@ export default StyleSheet.create({
     marginTop: 8,
   },
   drugList: {},
-  drugItem: {
+  drugCategoryItem: {
     marginTop: 5,
+    marginBottom: 5,
+  },
+  drugItem: {
+    paddingTop: 8,
+    paddingBottom: 8,
+    borderBottomWidth: 1 / PixelRatio.get(),
+    borderBottomColor: sColor.colorDdd,
+  },
+  drugItemTitle: {
+    color: sColor.color333,
+  },
+  drugItemDetail: {
+    color: sColor.color888,
+  },
+  drugItemFa: {
     marginBottom: 5,
   },
   drugItemLeft: {
@@ -134,12 +192,17 @@ export default StyleSheet.create({
   drugItemLeftTitle: {
     color: sColor.color333,
   },
+  drugListFa: {
+    marginLeft: 10,
+  },
   drugItemLeftDetail: {
     color: sColor.color666,
     marginTop: 5,
   },
   drugItemRight: {},
-  usageDosage: {},
+  usageDosage: {
+    marginTop: 5,
+  },
   drugPrompt: {
     color: sColor.color999,
     marginTop: 15,
@@ -188,5 +251,15 @@ export default StyleSheet.create({
     width: windowWidth,
     height: windowHeight,
     backgroundColor: sColor.blackOpa7,
+  },
+  doctor: {
+    marginBottom: 8,
+    marginLeft: 8,
+    marginRight: 8,
+    backgroundColor: sColor.white,
+    padding: 15,
+  },
+  doctorName: {
+    color: sColor.color666,
   },
 })
