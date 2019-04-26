@@ -263,7 +263,7 @@ export default class SquareRoot extends Component<
                       discrimination,
                     })
                   }}
-                  // todo 未连
+                  // todo 未连 以下同这
                   // onBlur={this.saveTemp}
                 />
               </View>
@@ -283,7 +283,6 @@ export default class SquareRoot extends Component<
                       syndromeDifferentiation,
                     })
                   }}
-                  // todo 未连
                   // onBlur={this.saveTemp}
                 />
               </View>
@@ -312,35 +311,6 @@ export default class SquareRoot extends Component<
               <Text style={[style.title, global.fontSize14]}> 开方 </Text>
               <View style={style.titleSpot} />
             </View>
-            {/* <View
-              style={[
-                style.pharmacyName,
-                global.flex,
-                global.alignItemsCenter,
-                global.justifyContentSpaceBetween,
-              ]}>
-              <View style={[style.editPharmacyName, global.flex, global.alignItemsCenter]}>
-                <Text style={[style.pharmacyNameTitle, global.fontSize14]} numberOfLines={1}>
-                  {this.state.pharmacy.activeId === 0 ? "未选择药房" : null}
-                  {this.state.pharmacy.categoryList.map(category => {
-                    if (category.id === this.state.pharmacy.activeId) {
-                      return category.title
-                    }
-                  })}
-                </Text>
-              </View>
-              <TouchableOpacity
-                onPress={() => {
-                  this.setState({
-                    isSelectPharmacy: true,
-                  })
-                }}>
-                <View style={[global.flex, global.alignItemsCenter]}>
-                  <Text style={[style.pharmacyNameTitle, global.fontSize14]}>去更换</Text>
-                  <Icon style={[style.pharmacyNameIcon, global.fontSize14]} name="right" />
-                </View>
-              </TouchableOpacity>
-            </View> */}
             <DashLine len={45} width={windowWidth - 46} backgroundColor={sColor.colorEee} />
             <Text style={[style.drug, global.fontSize24]}>R:</Text>
             <View style={style.drugList}>
@@ -398,7 +368,6 @@ export default class SquareRoot extends Component<
                             //   temp: value as string,
                             // })
                           }}
-                          // todo 未连
                           // onBlur={this.saveTemp}
                         />
                       </View>
@@ -451,7 +420,6 @@ export default class SquareRoot extends Component<
                   //     temp: value as string,
                   //   })
                   // }}
-                  // todo 未连
                   // onBlur={this.saveTemp}
                 />
               </View>

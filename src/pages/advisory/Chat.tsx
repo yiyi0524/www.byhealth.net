@@ -520,10 +520,10 @@ export default class Chat extends Component<
           <Text style={[style.treatmentPlanItem, global.fontSize14]}>
             根据治疗方案购买 服药, 并按时复诊
           </Text>
-          {/* //todo SquareRoot:辩证开方 */}
           <TouchableOpacity
             onPress={() => {
-              this.props.navigation.push(pathMap.SquareRoot)
+              //todo 需要一个开方id
+              this.props.navigation.push(pathMap.SquareRootDetail, { prescriptionId: 1 })
             }}>
             <Text style={[style.treatmentPlanBtn, global.fontSize14]}>点此查看治疗方案</Text>
           </TouchableOpacity>
@@ -541,11 +541,10 @@ export default class Chat extends Component<
     msg.dom = (
       <View style={style.inquirySheet}>
         <Text style={[style.sendTime, global.fontStyle, global.fontSize12]}>{msg.sendTime}</Text>
-        {/* //todo  PatientDetail:患者详情 */}
         <TouchableOpacity
           activeOpacity={0.8}
           onPress={() =>
-            this.props.navigation.push(pathMap.PatientDetail, {
+            this.props.navigation.push(pathMap.InquirySheet, {
               patientUid: msg.extraData.patient.id,
             })
           }
