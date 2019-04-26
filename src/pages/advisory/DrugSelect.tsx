@@ -158,44 +158,6 @@ export default class Pharmacy extends Component<Props, State> {
         },
       }
       let matchDrugList = await this.getDrugList(-1, -1, filter)
-      let matchDrugList2 = [
-        {
-          id: 1,
-          name: "杏仁清热",
-          price: 1500,
-          unit: "盒",
-          standard: "6gx12袋(盒)",
-          signature: "一天一次,一次一袋",
-          manufacturer: "南京股份有限公司",
-        },
-        {
-          id: 2,
-          name: "小柴胡颗粒",
-          price: 1500,
-          unit: "盒",
-          standard: "6gx12袋(盒)",
-          signature: "一天一次,一次一袋",
-          manufacturer: "南京股份有限公司",
-        },
-        {
-          id: 3,
-          name: "小柴胡颗粒1",
-          price: 1500,
-          unit: "盒",
-          standard: "6gx12袋(盒)",
-          signature: "一天一次,一次一袋",
-          manufacturer: "南京股份有限公司",
-        },
-        {
-          id: 4,
-          name: "小柴胡颗粒2",
-          price: 1500,
-          unit: "盒",
-          standard: "6gx12袋(盒)",
-          signature: "一天一次,一次一袋",
-          manufacturer: "南京股份有限公司",
-        },
-      ]
       this.setState({
         matchDrugList,
       })

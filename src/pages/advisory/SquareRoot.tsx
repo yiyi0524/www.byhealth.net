@@ -3,8 +3,9 @@ import { BASE_URL } from "@/config/api"
 import * as userAction from "@/redux/actions/user"
 import { AppState } from "@/redux/stores/store"
 import api, { windowWidth } from "@/services/api"
-import { GENDER, GENDER_ZH } from "@/services/doctor"
+import { GENDER, GENDER_ZH, addPrescription, PrescriptionDrugCategory } from "@/services/doctor"
 import { getPatientInfo } from "@/services/patient"
+import { getPersonalInfo } from "@/services/user"
 import { getPicFullUrl } from "@/utils/utils"
 import { Icon, ImagePicker, TextareaItem, Toast } from "@ant-design/react-native"
 import hospital from "@api/hospital"
@@ -29,6 +30,7 @@ import { NavigationScreenProp, ScrollView } from "react-navigation"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
 import { Picture } from "./Chat"
+import { MsgType } from "../Ws"
 const style = gStyle.advisory.SquareRoot
 interface Props {
   navigation: NavigationScreenProp<State>
@@ -41,6 +43,7 @@ interface State {
   refreshing: boolean
   drugMoney: number
   serviceMoney: number
+  percentageOfCommission: number
   patientInfo: {
     uid: number
     name: string
@@ -52,6 +55,8 @@ interface State {
   discrimination: string
   // 辩证
   syndromeDifferentiation: string
+  // 医嘱
+  advice: string
   // 实体医院病历id列表
   medicalRecordPicList: Picture[]
   // 药店
@@ -83,6 +88,7 @@ const mapStateToProps = (state: AppState) => {
     isLogin: state.user.isLogin,
     name: state.user.name,
     uid: state.user.uid,
+    ws: state.ws,
   }
 }
 const mapDispatchToProps = (dispatch: Dispatch) => {
@@ -134,6 +140,7 @@ export default class SquareRoot extends Component<
       isSelectDrug: false,
       drugMoney: 0,
       serviceMoney: 0,
+      percentageOfCommission: 30,
       pharmacy: {
         activeId: 0,
         categoryList: [],
@@ -149,6 +156,7 @@ export default class SquareRoot extends Component<
       syndromeDifferentiation: "",
       medicalRecordPicList: [],
       chooseDrugInfo: [],
+      advice: "",
     }
   }
   componentDidMount() {
@@ -188,7 +196,14 @@ export default class SquareRoot extends Component<
       let {
         data: { yearAge, monthAge, name, gender, hospitalMedicalRecordPicList },
       } = await getPatientInfo({ uid: patientUid })
-      console.log(await getPatientInfo({ uid: patientUid }))
+      let {
+        data: {
+          doctorInfo: { percentageOfCommission },
+        },
+      } = await getPersonalInfo()
+      if (!percentageOfCommission) {
+        percentageOfCommission = this.state.percentageOfCommission
+      }
       patientInfo = {
         uid: patientUid,
         monthAge,
@@ -206,6 +221,7 @@ export default class SquareRoot extends Component<
         hasLoad: true,
         pharmacy,
         patientInfo,
+        percentageOfCommission,
         medicalRecordPicList: hospitalMedicalRecordPicList,
       })
     } catch (err) {
@@ -267,6 +283,12 @@ export default class SquareRoot extends Component<
       )
     }
     const { patientInfo } = this.state
+    let drugMoney = 0
+    Object.keys(this.state.chooseDrugInfo).map((drugIdStr, _) => {
+      let drugId: number = parseInt(drugIdStr),
+        list = this.state.chooseDrugInfo
+      drugMoney += (list[drugId].info.price / 100) * list[drugId].count
+    })
     return (
       <>
         <ScrollView
@@ -476,12 +498,13 @@ export default class SquareRoot extends Component<
                 <TextareaItem
                   style={style.input}
                   autoHeight
-                  // value={this.state.}
-                  // onChange={value => {
-                  //   this.setState({
-                  //     temp: value as string,
-                  //   })
-                  // }}
+                  value={this.state.advice}
+                  onChange={advice => {
+                    advice &&
+                      this.setState({
+                        advice,
+                      })
+                  }}
                   // onBlur={this.saveTemp}
                 />
               </View>
@@ -509,7 +532,7 @@ export default class SquareRoot extends Component<
               ]}>
               <Text style={[style.diagnosisItemTitle, global.fontSize14]}>药费</Text>
               <Text style={[style.diagnosisItemTitle, global.fontSize14]}>
-                ¥ {this.state.drugMoney / 100}
+                ¥ {drugMoney.toFixed(2)}
               </Text>
             </View>
             <View
@@ -521,7 +544,7 @@ export default class SquareRoot extends Component<
               ]}>
               <Text style={[style.diagnosisItemTitle, global.fontSize14]}>诊后管理费</Text>
               <Text style={[style.diagnosisItemTitle, global.fontSize14]}>
-                ¥{(this.state.serviceMoney / 100).toFixed(2)}
+                ¥ {((drugMoney * this.state.percentageOfCommission) / 100).toFixed(2)}
               </Text>
             </View>
             <DashLine len={45} width={windowWidth - 46} backgroundColor={sColor.colorEee} />
@@ -537,12 +560,12 @@ export default class SquareRoot extends Component<
                 <Text style={[style.diagnosisItemDetail, global.fontSize12]}>( 不含快递费 )</Text>
               </Text>
               <Text style={[style.diagnosisItemAll, global.fontSize15]}>
-                ¥ {((this.state.drugMoney + this.state.serviceMoney) / 100).toFixed(2)}
+                ¥ {(drugMoney + (drugMoney * this.state.percentageOfCommission) / 100).toFixed(2)}
               </Text>
             </View>
             <DashLine len={45} width={windowWidth - 46} backgroundColor={sColor.colorEee} />
           </View>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={this.sendPrescriptionToUser}>
             <Text style={[style.sendPatient, global.fontSize14]}>发送给患者</Text>
           </TouchableOpacity>
         </ScrollView>
@@ -559,5 +582,40 @@ export default class SquareRoot extends Component<
         </View>
       </>
     )
+  }
+  sendPrescriptionToUser = () => {
+    const {
+      advice,
+      discrimination,
+      syndromeDifferentiation,
+      patientInfo: { uid: patientUid },
+    } = this.state
+    // let drugList: PrescriptionDrugCategory[] = []
+    // Object.keys(this.state.chooseDrugInfo).map((drugIdStr, k) => {
+    //   let drugId: number = parseInt(drugIdStr)
+    // })
+    addPrescription({
+      advice,
+      discrimination,
+      patientUid,
+      syndromeDifferentiation,
+      drugList: this.state.chooseDrugInfo,
+    })
+      .then(json => {
+        let prescriptionId = json.data.id
+        this.props.ws.wsPost({
+          url: "ws/sendPrescription",
+          data: {
+            type: MsgType.treatmentPlan,
+            prescriptionId,
+            patientUid,
+          },
+        })
+        this.props.navigation.goBack()
+      })
+      .catch(err => {
+        console.log(err)
+        Toast.fail("发送处方失败, 错误信息: " + err.msg)
+      })
   }
 }

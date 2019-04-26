@@ -3,6 +3,7 @@ import { patientGroupItem } from "@/pages/address_book/Group"
 import { patientItem } from "@/pages/address_book/GroupDetail"
 import { ConsultationItem } from "@/pages/advisory/Index"
 import { Drug } from "./patient"
+import { drugItem } from "@/pages/advisory/SquareRoot"
 export const ALLOW_INQUIRY = {
   FALSE: 0x0,
   TRUE: 0x1,
@@ -459,6 +460,34 @@ export async function getPrescriptionDetail({ prescriptionId }: { prescriptionId
   // prescriptionId
   // })
 }
+/**
+ * 数据库保存的药品信息
+ */
+export interface DbSaveDrugInfo {
+  id: number
+  count: number
+  usage: string
+}
+export interface PrescriptionDrugCategory {
+  category_id: number
+  drug_list: DbSaveDrugInfo[]
+}
+export interface AddPrescriptionParam {
+  patientUid: number
+  discrimination: string
+  syndromeDifferentiation: string
+  advice: string
+  drugList: Record<number, { count: number; info: drugItem }>
+}
+/**
+ * 添加处方
+ */
+export async function addPrescription(data: AddPrescriptionParam) {
+  return bpost<{ id: number }>({
+    url: "api/addPrescription",
+    data,
+  })
+}
 export default {
   doctorAuth,
   getMsgList,
@@ -475,4 +504,5 @@ export default {
   getWaitAuditDoctorDetail,
   getSquareRoot,
   getPrescriptionDetail,
+  addPrescription,
 }

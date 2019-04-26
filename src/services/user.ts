@@ -1,6 +1,6 @@
-import { bget, bpost, GetListParam } from "./api"
 import { Picture } from "@/pages/advisory/Chat"
 import { prescriptionItem } from "@/pages/index/Prescription"
+import { bget, GetListParam } from "./api"
 export interface PersonalInfo {
   info: {
     id: number
@@ -28,6 +28,7 @@ export interface DoctorInfo {
   countyCid?: string
   provinceCid?: string
   hospitalId?: number
+  percentageOfCommission?: number
 }
 
 export async function getPersonalInfo() {

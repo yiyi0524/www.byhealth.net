@@ -42,6 +42,7 @@ export enum MsgType {
   inquirySheet, //问诊单
   patientsThemselves, //患者信息
   treatmentPlan, //治疗方案
+  pong,
 }
 export interface bottomNavItem {
   title: string
@@ -683,8 +684,9 @@ export default class Chat extends Component<
           </Text>
           <TouchableOpacity
             onPress={() => {
-              //todo 需要一个开方id
-              this.props.navigation.push(pathMap.SquareRootDetail, { prescriptionId: 1 })
+              this.props.navigation.push(pathMap.SquareRootDetail, {
+                prescriptionId: msg.extraData.id,
+              })
             }}>
             <Text style={[style.treatmentPlanBtn, global.fontSize14]}>点此查看治疗方案</Text>
           </TouchableOpacity>

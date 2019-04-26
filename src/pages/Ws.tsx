@@ -5,20 +5,10 @@ import * as wsAction from "@redux/actions/ws"
 import { AppState } from "@/redux/stores/store"
 import { WSS_URL } from "@/config/api"
 import storage from "@/utils/storage"
-import { Picture } from "./advisory/Chat"
+import { Picture, MsgType } from "./advisory/Chat"
 import { Overwrite } from "utility-types"
 import { JsonReturnCode } from "@/services/api"
 import { Toast } from "@ant-design/react-native"
-/**
- * 枚举类型
- */
-export enum MsgType {
-  txt,
-  picture,
-  inquirySheet, //问诊单
-  patientsThemselves, //患者信息
-  treatmentPlan, //治疗方案
-}
 /**
  * 一条消息
  */
