@@ -25,7 +25,8 @@ export interface PatientInfo {
   name: string
   avatar: Picture
   gender: number
-  age: 0
+  yearAge: 0
+  monthAge: 0
   provinceCid: string
   remarks: string
   phone: string
@@ -128,7 +129,8 @@ export default class PatientDetail extends Component<
       region: [],
       patientInfo: {
         name: "",
-        age: 0,
+        yearAge: 0,
+        monthAge: 0,
         allergyHistory: "",
         avatar: {
           id: 0,
@@ -224,7 +226,7 @@ export default class PatientDetail extends Component<
                   {GENDER_ZH[patientInfo.gender]}
                 </Text>
                 <Text style={[style.headerDescriptionAge, global.fontSize14, global.fontStyle]}>
-                  {patientInfo.age} 岁{" "}
+                  {patientInfo.yearAge} 岁{" "}
                   {this.state.region.map((v: Region) => {
                     if (patientInfo.provinceCid === v.cid) {
                       console.log(patientInfo.provinceCid)

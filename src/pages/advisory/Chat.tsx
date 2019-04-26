@@ -13,16 +13,16 @@ import userApi from "@api/user"
 import wsMsgApi from "@api/wsMsg"
 import sColor from "@styles/color"
 import gStyle from "@utils/style"
-import React, { Component, ReactChild, version } from "react"
+import React, { Component, ReactChild } from "react"
 import {
   Image,
   ImageSourcePropType,
+  PermissionsAndroid,
   PixelRatio,
+  Platform,
   RefreshControl,
   Text,
   View,
-  Platform,
-  PermissionsAndroid,
 } from "react-native"
 import { TouchableOpacity } from "react-native-gesture-handler"
 import { NavigationScreenProp, ScrollView } from "react-navigation"
@@ -137,6 +137,7 @@ export interface PatientsThemselves {
   }
 }
 interface State {
+  shouldScrollToEnd: boolean
   hasLoad: boolean
   refreshing: boolean
   isShowBottomNav: boolean
@@ -261,6 +262,7 @@ export default class Chat extends Component<
     },
   ]
   myScroll: ScrollView | null = null
+  msgInput: TextareaItem | null = null
   constructor(props: any) {
     super(props)
     this.state = this.getInitState()
@@ -269,6 +271,7 @@ export default class Chat extends Component<
     let patientUid = this.props.navigation.getParam("patientUid")
 
     return {
+      shouldScrollToEnd: true,
       hasLoad: false,
       refreshing: false,
       isShowBottomNav: false,
@@ -302,33 +305,10 @@ export default class Chat extends Component<
   componentDidMount() {
     this.init()
     this.requestReadExteralStorage()
-  }
-  requestReadExteralStorage = async () => {
-    if (Platform.OS === "android") {
-      try {
-        const granted = await PermissionsAndroid.request(
-          PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
-          {
-            title: "Permission To Load Photos From External Storage",
-            message:
-              "Permissions have to be granted in order to list photos on your phones for you to choose.",
-            buttonPositive: "",
-          },
-        )
-
-        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        } else {
-          console.log("READ_EXTERNAL_STORAGE permission denied!")
-        }
-      } catch (err) {
-        console.warn(err)
-      }
-    }
+    setTimeout(() => this.myScroll && this.myScroll.scrollToEnd(), 100)
   }
   init = async () => {
-    let page = this.state.page,
-      limit = this.state.limit
-    await userApi
+    userApi
       .getPersonalInfo()
       .then(json => {
         this.setState({
@@ -338,7 +318,7 @@ export default class Chat extends Component<
       .catch(err => {
         console.log(err.msg)
       })
-    await getRegion()
+    getRegion()
       .then(json => {
         this.setState({
           region: json.data.region,
@@ -347,10 +327,187 @@ export default class Chat extends Component<
       .catch(err => {
         console.log(err.msg)
       })
-    await this.getMsgList(page, limit)
     this.setState({
       hasLoad: true,
     })
+    if (this.state.patientUid in this.props.ws.chatMsg) {
+      if (this.props.ws.chatMsg[this.state.patientUid].length === 0) {
+        this.getMoreMsgList()
+      }
+    } else {
+      this.getMoreMsgList()
+    }
+  }
+  render() {
+    if (!this.state.hasLoad) {
+      return (
+        <View style={style.loading}>
+          <View style={style.loadingPic}>
+            <Image style={style.loadingImg} source={gImg.common.loading} />
+          </View>
+        </View>
+      )
+    }
+    return (
+      <>
+        <View style={style.main}>
+          <ScrollView
+            ref={ref => (this.myScroll = ref)}
+            style={style.content}
+            onContentSizeChange={() => {
+              if (this.myScroll && this.state.shouldScrollToEnd) {
+                this.myScroll.scrollToEnd()
+                this.setState({
+                  shouldScrollToEnd: false,
+                })
+              }
+            }}
+            refreshControl={
+              <RefreshControl refreshing={this.state.refreshing} onRefresh={this.getMoreMsgList} />
+            }>
+            <View style={style.list}>
+              <Text
+                style={[
+                  this.state.hasMoreRecord ? style.downloadMore : global.hidden,
+                  global.fontStyle,
+                  global.fontSize12,
+                ]}>
+                下拉查看更多聊天记录
+              </Text>
+              {Array.isArray(this.props.ws.chatMsg[this.state.patientUid]) &&
+                this.props.ws.chatMsg[this.state.patientUid].map((v: any, k) => {
+                  let formatMsg: Msg | null = null
+                  switch (v.type) {
+                    case MsgType.txt:
+                      formatMsg = this.txtFormat(v)
+                      break
+                    case MsgType.picture:
+                      formatMsg = this.pictureFormat(v)
+                      break
+                    case MsgType.inquirySheet:
+                      formatMsg = this.inquirySheetFormat(v)
+                      break
+                    case MsgType.patientsThemselves:
+                      formatMsg = this.patientsThemselvesFormat(v)
+                      break
+                    case MsgType.treatmentPlan:
+                      formatMsg = this.treatmentPlanFormat(v)
+                      break
+                    default:
+                      break
+                  }
+                  if (formatMsg) {
+                    return <View key={k}>{formatMsg.dom}</View>
+                  }
+                })}
+            </View>
+          </ScrollView>
+          <View style={style.bottom}>
+            <View style={style.bottomNav}>
+              <View
+                style={[
+                  this.state.isShowBottomNav ? style.bottomNavListActive : style.bottomNavList,
+                  global.flex,
+                  global.alignItemsCenter,
+                  global.flexWrap,
+                ]}>
+                {this.bottomNavList.map((v: bottomNavItem, k: number) => {
+                  return (
+                    <TouchableOpacity
+                      onPress={() => this.selectBottomNav(v)}
+                      key={k}
+                      style={style.bottomNavItem}>
+                      <Image style={style.bottomNavItemPic} source={v.icon} />
+                      <Text style={[style.bottomNavItemTitle, global.fontSize13, global.fontStyle]}>
+                        {v.title}
+                      </Text>
+                    </TouchableOpacity>
+                  )
+                })}
+              </View>
+              <View style={style.bottomInputFa}>
+                <View
+                  style={[
+                    style.bottomInput,
+                    global.flex,
+                    global.justifyContentSpaceBetween,
+                    global.alignItemsCenter,
+                  ]}>
+                  <TouchableOpacity>
+                    {/* <Image
+                      style={style.bottomInputImg}
+                      source={gImg.advisory.voice}
+                    /> */}
+                  </TouchableOpacity>
+                  <View style={style.inputFa}>
+                    <TextareaItem
+                      style={style.input}
+                      placeholder="请输入"
+                      autoHeight
+                      clear
+                      last
+                      rows={1}
+                      ref={ref => (this.msgInput = ref)}
+                      value={this.state.sendMsg}
+                      onChange={value => {
+                        this.setState({
+                          sendMsg: value as string,
+                        })
+                      }}
+                    />
+                  </View>
+                  <TouchableOpacity onPress={this.sendMsg}>
+                    <Text style={[style.bottomInputSendBtn, global.fontSize14, global.fontStyle]}>
+                      发送
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+                <View
+                  style={[
+                    this.state.isShowBottomPicSelect ? style.selectPicActive : style.selectPic,
+                    global.flex,
+                    global.alignItemsCenter,
+                    global.justifyContentSpaceAround,
+                  ]}>
+                  <TouchableOpacity style={style.selectPicFa}>
+                    <Image source={gImg.advisory.selectPic} style={style.selectImg} />
+                    <Text style={[style.selectTitle, global.fontSize14, global.fontStyle]}>
+                      图片
+                    </Text>
+                    <View style={style.imgSelector}>
+                      <ImagePicker onChange={this.selectPic} />
+                    </View>
+                  </TouchableOpacity>
+                  <TouchableOpacity style={style.selectPicFa}>
+                    <Image source={gImg.advisory.selectPhoto} style={style.selectImg} />
+                    <Text style={[style.selectTitle, global.fontSize14, global.fontStyle]}>
+                      拍照
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </View>
+          </View>
+        </View>
+        {/* 图片查看器 */}
+        <View style={this.state.isShowPic ? style.showPic : global.hidden}>
+          <TouchableOpacity onPress={this.closeShowPic} activeOpacity={0.8}>
+            <View style={style.howImgFa}>
+              <Image
+                style={style.showImg}
+                source={
+                  this.state.showPicUrl
+                    ? {
+                        uri: getPicFullUrl(this.state.showPicUrl),
+                      }
+                    : gImg.common.defaultPic
+                }
+              />
+            </View>
+          </TouchableOpacity>
+        </View>
+      </>
+    )
   }
   getMsgList = async (
     page: number,
@@ -740,6 +897,7 @@ export default class Chat extends Component<
         isShowBottomPicSelect: !this.state.isShowBottomPicSelect,
       })
     } else {
+      console.log("正在进入开方页")
       this.props.navigation.push(v.link, {
         patientUid: this.state.patientUid,
       })
@@ -757,8 +915,9 @@ export default class Chat extends Component<
         sendMsg: "",
       })
       if (this.myScroll) {
-        this.myScroll.scrollTo({ y: this.state.scrollHeight, animated: true })
+        this.myScroll.scrollToEnd()
       }
+      this.msgInput && this.msgInput.textAreaRef && this.msgInput.textAreaRef.blur()
     }
   }
   openShowPic = (url: string) => {
@@ -814,171 +973,26 @@ export default class Chat extends Component<
         })
     }
   }
-  render() {
-    if (!this.state.hasLoad) {
-      return (
-        <View style={style.loading}>
-          <View style={style.loadingPic}>
-            <Image style={style.loadingImg} source={gImg.common.loading} />
-          </View>
-        </View>
-      )
+  requestReadExteralStorage = async () => {
+    if (Platform.OS === "android") {
+      try {
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+          {
+            title: "Permission To Load Photos From External Storage",
+            message:
+              "Permissions have to be granted in order to list photos on your phones for you to choose.",
+            buttonPositive: "",
+          },
+        )
+
+        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        } else {
+          console.log("READ_EXTERNAL_STORAGE permission denied!")
+        }
+      } catch (err) {
+        console.warn(err)
+      }
     }
-    return (
-      <>
-        <View style={style.main}>
-          <ScrollView
-            ref={ref => (this.myScroll = ref)}
-            style={style.content}
-            onContentSizeChange={(_, scrollHeight) => {
-              this.setState({
-                scrollHeight,
-              })
-            }}
-            refreshControl={
-              <RefreshControl refreshing={this.state.refreshing} onRefresh={this.getMoreMsgList} />
-            }>
-            <View style={style.list}>
-              <Text
-                style={[
-                  this.state.hasMoreRecord ? style.downloadMore : global.hidden,
-                  global.fontStyle,
-                  global.fontSize12,
-                ]}>
-                下拉查看更多聊天记录
-              </Text>
-              {Array.isArray(this.props.ws.chatMsg[this.state.patientUid]) &&
-                this.props.ws.chatMsg[this.state.patientUid].map((v: any, k) => {
-                  let formatMsg: Msg | null = null
-                  switch (v.type) {
-                    case MsgType.txt:
-                      formatMsg = this.txtFormat(v)
-                      break
-                    case MsgType.picture:
-                      formatMsg = this.pictureFormat(v)
-                      break
-                    case MsgType.inquirySheet:
-                      formatMsg = this.inquirySheetFormat(v)
-                      break
-                    case MsgType.patientsThemselves:
-                      formatMsg = this.patientsThemselvesFormat(v)
-                      break
-                    case MsgType.treatmentPlan:
-                      formatMsg = this.treatmentPlanFormat(v)
-                      break
-                    default:
-                      break
-                  }
-                  if (formatMsg) {
-                    return <View key={k}>{formatMsg.dom}</View>
-                  }
-                })}
-            </View>
-          </ScrollView>
-          <View style={style.bottom}>
-            <View style={style.bottomNav}>
-              <View
-                style={[
-                  this.state.isShowBottomNav ? style.bottomNavListActive : style.bottomNavList,
-                  global.flex,
-                  global.alignItemsCenter,
-                  global.flexWrap,
-                ]}>
-                {this.bottomNavList.map((v: bottomNavItem, k: number) => {
-                  return (
-                    <TouchableOpacity
-                      onPress={() => this.selectBottomNav(v)}
-                      key={k}
-                      style={style.bottomNavItem}>
-                      <Image style={style.bottomNavItemPic} source={v.icon} />
-                      <Text style={[style.bottomNavItemTitle, global.fontSize13, global.fontStyle]}>
-                        {v.title}
-                      </Text>
-                    </TouchableOpacity>
-                  )
-                })}
-              </View>
-              <View style={style.bottomInputFa}>
-                <View
-                  style={[
-                    style.bottomInput,
-                    global.flex,
-                    global.justifyContentSpaceBetween,
-                    global.alignItemsCenter,
-                  ]}>
-                  <TouchableOpacity>
-                    {/* <Image
-                      style={style.bottomInputImg}
-                      source={gImg.advisory.voice}
-                    /> */}
-                  </TouchableOpacity>
-                  <View style={style.inputFa}>
-                    <TextareaItem
-                      style={style.input}
-                      placeholder="请输入"
-                      autoHeight
-                      clear
-                      last
-                      rows={1}
-                      value={this.state.sendMsg}
-                      onChange={value => {
-                        this.setState({
-                          sendMsg: value as string,
-                        })
-                      }}
-                    />
-                  </View>
-                  <TouchableOpacity onPress={this.sendMsg}>
-                    <Text style={[style.bottomInputSendBtn, global.fontSize14, global.fontStyle]}>
-                      发送
-                    </Text>
-                  </TouchableOpacity>
-                </View>
-                <View
-                  style={[
-                    this.state.isShowBottomPicSelect ? style.selectPicActive : style.selectPic,
-                    global.flex,
-                    global.alignItemsCenter,
-                    global.justifyContentSpaceAround,
-                  ]}>
-                  <TouchableOpacity style={style.selectPicFa}>
-                    <Image source={gImg.advisory.selectPic} style={style.selectImg} />
-                    <Text style={[style.selectTitle, global.fontSize14, global.fontStyle]}>
-                      图片
-                    </Text>
-                    <View style={style.imgSelector}>
-                      <ImagePicker onChange={this.selectPic} />
-                    </View>
-                  </TouchableOpacity>
-                  <TouchableOpacity style={style.selectPicFa}>
-                    <Image source={gImg.advisory.selectPhoto} style={style.selectImg} />
-                    <Text style={[style.selectTitle, global.fontSize14, global.fontStyle]}>
-                      拍照
-                    </Text>
-                  </TouchableOpacity>
-                </View>
-              </View>
-            </View>
-          </View>
-        </View>
-        {/* 图片查看器 */}
-        <View style={this.state.isShowPic ? style.showPic : global.hidden}>
-          <TouchableOpacity onPress={this.closeShowPic} activeOpacity={0.8}>
-            <View style={style.howImgFa}>
-              <Image
-                style={style.showImg}
-                source={
-                  this.state.showPicUrl
-                    ? {
-                        uri: getPicFullUrl(this.state.showPicUrl),
-                      }
-                    : gImg.common.defaultPic
-                }
-              />
-            </View>
-          </TouchableOpacity>
-        </View>
-      </>
-    )
   }
 }

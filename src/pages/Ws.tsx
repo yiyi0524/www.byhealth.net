@@ -183,7 +183,6 @@ class Ws extends React.Component<
    * 检查登录状态
    */
   checkLoginStatus = () => {
-    console.log("正在检查登录状态")
     // 如果已登录则检查ws连接状态
     if (this.userIsLogin()) {
       if (!this.wsIsConnect()) {
@@ -201,9 +200,7 @@ class Ws extends React.Component<
    * websocket 是否已连接
    */
   wsIsConnect = (): boolean => {
-    console.log(this.client)
     if (this.client) {
-      console.log(this.client.readyState)
     }
     return !!this.client && this.client.readyState === WebSocket.OPEN
   }

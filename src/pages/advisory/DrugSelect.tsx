@@ -18,6 +18,7 @@ import {
 } from "react-native"
 import { NavigationScreenProp } from "react-navigation"
 import { activeDrugItem, drugItem } from "./SquareRoot"
+import { TYPE } from "@/utils/constant"
 const style = gStyle.advisory.DrugSelect
 export interface CategoryItem {
   id: number
@@ -141,16 +142,23 @@ export default class Pharmacy extends Component<Props, State> {
         Toast.fail("刷新失败,错误信息: " + err.msg)
       })
   }
-  search = async (value: string) => {
+  search = async (val: string) => {
     this.setState({
-      search: value,
+      search: val,
     })
     try {
-      // let page = this.state.page,
-      //   limit = this.state.limit,
-      //   filter = {search:value};
-      // let matchDrugList = await this.getDrugList(page, limit, filter)
-      let matchDrugList = [
+      let filter = {
+        name: {
+          condition: TYPE.like,
+          val,
+        },
+        category: {
+          condition: TYPE.eq,
+          val: this.props.navigation.state.params!.activeId || 0,
+        },
+      }
+      let matchDrugList = await this.getDrugList(-1, -1, filter)
+      let matchDrugList2 = [
         {
           id: 1,
           name: "杏仁清热",

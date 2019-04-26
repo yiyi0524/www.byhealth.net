@@ -3,29 +3,32 @@ import { BASE_URL } from "@/config/api"
 import * as userAction from "@/redux/actions/user"
 import { AppState } from "@/redux/stores/store"
 import api, { windowWidth } from "@/services/api"
+import { GENDER, GENDER_ZH } from "@/services/doctor"
+import { getPatientInfo } from "@/services/patient"
+import { getPicFullUrl } from "@/utils/utils"
 import { Icon, ImagePicker, TextareaItem, Toast } from "@ant-design/react-native"
+import hospital from "@api/hospital"
+import DashLine from "@components/DashLine"
+import Pharmacy, { CategoryItem } from "@components/Pharmacy"
+import pathMap from "@routes/pathMap"
 import sColor from "@styles/color"
 import gImg from "@utils/img"
 import gStyle from "@utils/style"
 import React, { Component } from "react"
 import {
+  DeviceEventEmitter,
+  EmitterSubscription,
   Image,
   PixelRatio,
   RefreshControl,
   Text,
   TouchableOpacity,
   View,
-  DeviceEventEmitter,
-  EmitterSubscription,
 } from "react-native"
 import { NavigationScreenProp, ScrollView } from "react-navigation"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
 import { Picture } from "./Chat"
-import DashLine from "@components/DashLine"
-import Pharmacy, { CategoryItem } from "@components/Pharmacy"
-import hospital from "@api/hospital"
-import pathMap from "@routes/pathMap"
 const style = gStyle.advisory.SquareRoot
 interface Props {
   navigation: NavigationScreenProp<State>
@@ -36,14 +39,29 @@ interface State {
   isSelectDrug: boolean
   hasLoad: boolean
   refreshing: boolean
-  patientUid: number
+  drugMoney: number
+  serviceMoney: number
+  patientInfo: {
+    uid: number
+    name: string
+    yearAge: number
+    monthAge: number
+    gender: number
+  }
+  // 辨病
   discrimination: string
+  // 辩证
   syndromeDifferentiation: string
-  medicalRecordPic: Picture[]
+  // 实体医院病历id列表
+  medicalRecordPicList: Picture[]
+  // 药店
   pharmacy: {
+    // 药品顶级分类列表
     categoryList: CategoryItem[]
+    // 当前选中的id
     activeId: number
   }
+  // 选择的药品信息
   chooseDrugInfo: Record<number, { count: number; info: drugItem }>
 }
 export interface activeDrugItem {
@@ -114,19 +132,26 @@ export default class SquareRoot extends Component<
       refreshing: false,
       isSelectPharmacy: false,
       isSelectDrug: false,
+      drugMoney: 0,
+      serviceMoney: 0,
       pharmacy: {
         activeId: 0,
         categoryList: [],
       },
+      patientInfo: {
+        uid: 0,
+        gender: GENDER.UNDEFINED,
+        monthAge: 0,
+        yearAge: 0,
+        name: "",
+      },
       discrimination: "",
       syndromeDifferentiation: "",
-      patientUid: 0,
-      medicalRecordPic: [],
+      medicalRecordPicList: [],
       chooseDrugInfo: [],
     }
   }
-  async componentDidMount() {
-    await this.init()
+  componentDidMount() {
     this.listener = DeviceEventEmitter.addListener(
       pathMap.SquareRoot + "Reload",
       chooseDrugInfo => {
@@ -136,6 +161,7 @@ export default class SquareRoot extends Component<
         // this.init()
       },
     )
+    this.init()
   }
   componentWillUnmount() {
     //移除监听
@@ -150,17 +176,40 @@ export default class SquareRoot extends Component<
     try {
       let {
         data: { list: categoryList },
-      } = await hospital.getDrugCategoryList({ page: -1, limit: -1, filter: {} })
+      } = await hospital.getDrugCategoryList({
+        page: -1,
+        limit: -1,
+        filter: {},
+      })
       let pharmacy = this.state.pharmacy
       pharmacy.categoryList = categoryList
       pharmacy.activeId = categoryList[0].id
+      let { patientInfo } = this.state
+      let {
+        data: { yearAge, monthAge, name, gender, hospitalMedicalRecordPicList },
+      } = await getPatientInfo({ uid: patientUid })
+      console.log(await getPatientInfo({ uid: patientUid }))
+      patientInfo = {
+        uid: patientUid,
+        monthAge,
+        name,
+        gender,
+        yearAge,
+      }
+      if (!hospitalMedicalRecordPicList) {
+        hospitalMedicalRecordPicList = []
+      }
+      for (let k in hospitalMedicalRecordPicList) {
+        hospitalMedicalRecordPicList[k].url = getPicFullUrl(hospitalMedicalRecordPicList[k].url)
+      }
       this.setState({
         hasLoad: true,
-        patientUid,
         pharmacy,
+        patientInfo,
+        medicalRecordPicList: hospitalMedicalRecordPicList,
       })
     } catch (err) {
-      console.log(err)
+      console.log("发送了错误, ", err)
     }
   }
   onRefresh = () => {
@@ -170,22 +219,23 @@ export default class SquareRoot extends Component<
         this.setState({ refreshing: false })
       })
       .catch(err => {
+        this.setState({ refreshing: false })
         Toast.fail("刷新失败,错误信息: " + err.msg)
       })
   }
-  handleFileChange = (medicalRecordPic: any, operationType: string) => {
+  handleFileChange = (medicalRecordPicList: any, operationType: string) => {
     if (operationType === "add") {
       api
-        .uploadImg(medicalRecordPic[medicalRecordPic.length - 1])
+        .uploadImg(medicalRecordPicList[medicalRecordPicList.length - 1])
         .then(json => {
-          let medicalRecordPic = this.state.medicalRecordPic
+          let medicalRecordPicList = this.state.medicalRecordPicList
           let picMode: Picture = { id: 0, title: "", url: "" }
-          medicalRecordPic.push(picMode)
-          medicalRecordPic[medicalRecordPic.length - 1].url = BASE_URL + json.data.url
-          medicalRecordPic[medicalRecordPic.length - 1].id = json.data.picId
-          console.log(medicalRecordPic)
+          medicalRecordPicList.push(picMode)
+          medicalRecordPicList[medicalRecordPicList.length - 1].url = BASE_URL + json.data.url
+          medicalRecordPicList[medicalRecordPicList.length - 1].id = json.data.picId
+          console.log(medicalRecordPicList)
           this.setState({
-            medicalRecordPic,
+            medicalRecordPicList,
           })
         })
         .catch(err => {
@@ -194,7 +244,7 @@ export default class SquareRoot extends Component<
         })
     } else if (operationType === "remove") {
       this.setState({
-        medicalRecordPic,
+        medicalRecordPicList,
       })
     }
   }
@@ -216,6 +266,7 @@ export default class SquareRoot extends Component<
         </View>
       )
     }
+    const { patientInfo } = this.state
     return (
       <>
         <ScrollView
@@ -244,9 +295,15 @@ export default class SquareRoot extends Component<
             </View>
             <View style={[style.diagnosisItem, global.flex, global.alignItemsCenter]}>
               <Text style={[style.diagnosisItemTitle, global.fontSize14]}>患者信息</Text>
-              <Text style={[style.diagnosisItemLineTitle, global.fontSize14]}>孟磊</Text>
-              <Text style={[style.diagnosisItemLineTitle, global.fontSize14]}>男</Text>
-              <Text style={[style.diagnosisItemLineTitle, global.fontSize14]}>23 岁</Text>
+              <Text style={[style.diagnosisItemLineTitle, global.fontSize14]}>
+                {patientInfo.name}
+              </Text>
+              <Text style={[style.diagnosisItemLineTitle, global.fontSize14]}>
+                {GENDER_ZH[patientInfo.gender]}
+              </Text>
+              <Text style={[style.diagnosisItemLineTitle, global.fontSize14]}>
+                {patientInfo.yearAge} 岁
+              </Text>
             </View>
             <View style={[style.diagnosisItem, global.flex, global.alignItemsCenter]}>
               <Text style={[style.diagnosisItemTitle, global.fontSize14]}>辨病</Text>
@@ -256,12 +313,11 @@ export default class SquareRoot extends Component<
                   autoHeight
                   value={this.state.discrimination}
                   onChange={discrimination => {
-                    if (!discrimination) {
-                      return
+                    if (discrimination) {
+                      this.setState({
+                        discrimination,
+                      })
                     }
-                    this.setState({
-                      discrimination,
-                    })
                   }}
                   // todo 未连 以下同这
                   // onBlur={this.saveTemp}
@@ -292,8 +348,10 @@ export default class SquareRoot extends Component<
               <View style={style.diagnosisItemImg}>
                 <ImagePicker
                   onChange={this.handleFileChange}
-                  files={this.state.medicalRecordPic}
-                  selectable={this.state.medicalRecordPic.length < 9}
+                  files={this.state.medicalRecordPicList}
+                  // selectable={this.state.medicalRecordPicList.length < 9}
+                  // todo 先暂时禁止添加
+                  selectable={false}
                 />
               </View>
             </View>
@@ -352,7 +410,7 @@ export default class SquareRoot extends Component<
                         <Text
                           style={[style.drugItemLeftDetail, global.fontSize12]}
                           numberOfLines={1}>
-                          {(list[drugId].info.price / 100) * list[drugId].count}元
+                          {((list[drugId].info.price / 100) * list[drugId].count).toFixed(2)}元
                         </Text>
                       </View>
                     </View>
@@ -363,10 +421,14 @@ export default class SquareRoot extends Component<
                           style={style.input}
                           autoHeight
                           value={list[drugId].info.signature}
-                          onChange={_ => {
-                            // this.setState({
-                            //   temp: value as string,
-                            // })
+                          onChange={signature => {
+                            let chooseDrugInfoList = this.state.chooseDrugInfo
+                            if (signature) {
+                              chooseDrugInfoList[drugId].info.signature = signature
+                            }
+                            this.setState({
+                              chooseDrugInfo: chooseDrugInfoList,
+                            })
                           }}
                           // onBlur={this.saveTemp}
                         />
@@ -446,7 +508,9 @@ export default class SquareRoot extends Component<
                 global.justifyContentSpaceBetween,
               ]}>
               <Text style={[style.diagnosisItemTitle, global.fontSize14]}>药费</Text>
-              <Text style={[style.diagnosisItemTitle, global.fontSize14]}>¥ 0.0</Text>
+              <Text style={[style.diagnosisItemTitle, global.fontSize14]}>
+                ¥ {this.state.drugMoney / 100}
+              </Text>
             </View>
             <View
               style={[
@@ -456,7 +520,9 @@ export default class SquareRoot extends Component<
                 global.justifyContentSpaceBetween,
               ]}>
               <Text style={[style.diagnosisItemTitle, global.fontSize14]}>诊后管理费</Text>
-              <Text style={[style.diagnosisItemTitle, global.fontSize14]}>¥ 0.0</Text>
+              <Text style={[style.diagnosisItemTitle, global.fontSize14]}>
+                ¥{(this.state.serviceMoney / 100).toFixed(2)}
+              </Text>
             </View>
             <DashLine len={45} width={windowWidth - 46} backgroundColor={sColor.colorEee} />
             <View
@@ -470,7 +536,9 @@ export default class SquareRoot extends Component<
                 总计
                 <Text style={[style.diagnosisItemDetail, global.fontSize12]}>( 不含快递费 )</Text>
               </Text>
-              <Text style={[style.diagnosisItemAll, global.fontSize15]}>¥ 0.0</Text>
+              <Text style={[style.diagnosisItemAll, global.fontSize15]}>
+                ¥ {((this.state.drugMoney + this.state.serviceMoney) / 100).toFixed(2)}
+              </Text>
             </View>
             <DashLine len={45} width={windowWidth - 46} backgroundColor={sColor.colorEee} />
           </View>
