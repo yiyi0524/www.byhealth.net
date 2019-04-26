@@ -155,6 +155,8 @@ export default class Register extends Component<
       console.log(hospitalList)
       this.setState({
         hospitalList,
+        hospitalName: "",
+        hospitalId: 0,
       })
     } catch (err) {
       console.log(err.msg)

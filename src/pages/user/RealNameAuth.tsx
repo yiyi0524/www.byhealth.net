@@ -339,8 +339,8 @@ export default class RealNameAuth extends Component<
         hospitalId: detail.hospital_id,
         idCardNo: detail.id_no,
         gender: [detail.gender],
-        technicalTitle: detail.technical_title ? [detail.technical_title] : [-1],
-        departmentId: detail.department_id ? [detail.department_id] : [-1],
+        technicalTitle: detail.technical_title !== null ? [detail.technical_title] : [-1],
+        departmentId: detail.department_id !== null ? [detail.department_id] : [-1],
         profile: detail.profile,
         adeptSymptomIdList: detail.adeptSymptomList,
         practisingCertificatePicList,
@@ -403,6 +403,8 @@ export default class RealNameAuth extends Component<
       })
       this.setState({
         hospitalList,
+        hospitalName: "",
+        hospitalId: 0,
       })
     } catch (err) {
       console.log(err.msg)
@@ -674,7 +676,7 @@ export default class RealNameAuth extends Component<
                 <Text
                   style={[style.fromItemTitle_2, global.fontSize14, global.fontStyle]}
                   numberOfLines={2}>
-                  正面照, 清晰度高, 半身照(胸部以上)
+                  正面照, 清晰度高, 半身照(胸部以上、正方形图片)
                 </Text>
               </View>
               <View style={style.formItem}>

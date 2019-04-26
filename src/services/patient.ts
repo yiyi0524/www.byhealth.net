@@ -22,6 +22,100 @@ export function getPatientInfo({ uid }: { uid: number }) {
     },
   })
 }
+/**
+ *  todo获取患者个人病史列表 filter 中有 patientId
+ */
+export async function listMedicalRecord({ page = -1, limit = -1, filter }: GetListParam) {
+  console.log(page, limit, filter)
+  return {
+    data: {
+      list: [
+        {
+          consultation: {
+            //复诊
+            PatientState: "头疼", //患者自述
+            lingualSurfacePicList: [
+              {
+                id: 5,
+                title: "",
+                url: "/uploads/20190322/e9cf09f8b95064754133810e7776ed81.png",
+              },
+              {
+                id: 5,
+                title: "",
+                url: "/uploads/20190322/e9cf09f8b95064754133810e7776ed81.png",
+              },
+            ], //舌照面及其他资料照片
+            dialoguePicList: [
+              {
+                id: 5,
+                title: "",
+                url: "/uploads/20190322/e9cf09f8b95064754133810e7776ed81.png",
+              },
+            ], //对话照片
+          },
+          squareRoot: {
+            //开方
+            id: 2,
+            discrimination: "感冒", //诊断,辨病
+            syndromeDifferentiation: "头疼 流鼻涕", //辩证
+            drugList: [
+              {
+                categoryId: 1,
+                list: [
+                  {
+                    detail: {
+                      id: 1,
+                      name: "银杏颗粒",
+                    },
+                    count: 3,
+                    usage: "口服",
+                  },
+                  {
+                    detail: {
+                      id: 1,
+                      name: "银杏颗粒",
+                    },
+                    count: 3,
+                    usage: "口服",
+                  },
+                ],
+              },
+              {
+                categoryId: 2,
+                list: [
+                  {
+                    detail: {
+                      id: 1,
+                      name: "银杏颗粒",
+                    },
+                    count: 3,
+                    usage: "口服",
+                  },
+                  {
+                    detail: {
+                      id: 1,
+                      name: "银杏颗粒",
+                    },
+                    count: 3,
+                    usage: "口服",
+                  },
+                ],
+              },
+            ], //治疗的药品列表
+            time: "2019-04-23 15:33:00",
+          },
+        },
+      ],
+    },
+  }
+  // return bget({
+  //   url: "api/listMedicalRecord",
+  //   query: {
+  //    page = -1, limit = -1, filter
+  //   },
+  // })
+}
 //药品列表如下结构
 export interface Drug {
   categoryId: number
@@ -287,4 +381,5 @@ export default {
   getPatientInfo,
   getInquirySheet,
   getMedicalRecord,
+  listMedicalRecord,
 }
