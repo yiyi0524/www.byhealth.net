@@ -12,7 +12,7 @@ import { connect } from "react-redux"
 import { Dispatch } from "redux"
 import api from "@/services/api"
 import pathMap from "@/routes/pathMap"
-const style = gStyle.common.RegisterAgreement
+const style = gStyle.common.LawAgreement
 const global = gStyle.global
 interface NavParams {
   isLogin: boolean
@@ -52,7 +52,7 @@ export default class InvitePatients extends Component<
   }: {
     navigation: NavigationScreenProp<State, NavParams>
   }) => ({
-    title: "医生注册协议",
+    title: "法律申明与隐私政策",
     headerStyle: {
       backgroundColor: sColor.white,
       height: 50,

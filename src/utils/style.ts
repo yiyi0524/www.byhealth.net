@@ -26,6 +26,8 @@ import InquirySheet from "@/assets/styles/address_book/inquirySheet"
 import MedicalRecord from "@/assets/styles/address_book/medicalRecord"
 import SquareRootDetail from "@/assets/styles/advisory/squareRootDetail"
 import PrescriptionDetail from "@/assets/styles/index/PrescriptionDetail"
+import RegisterAgreement from "@/assets/styles/common/registerAgreement"
+import LawAgreement from "@/assets/styles/common/lawAgreement"
 export default {
   home,
   global,
@@ -65,6 +67,9 @@ export default {
     about,
     customerService,
   },
-  common: {},
+  common: {
+    RegisterAgreement,
+    LawAgreement,
+  },
   admin: {},
 }

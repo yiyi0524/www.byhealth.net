@@ -27,4 +27,6 @@ export default {
   MedicalRecord: "MedicalRecord",
   SquareRootDetail: "SquareRootDetail",
   PrescriptionDetail: "PrescriptionDetail",
+  RegisterAgreement: "RegisterAgreement",
+  LawAgreement: "LawAgreement",
 }

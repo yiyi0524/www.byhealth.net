@@ -29,7 +29,7 @@ export default StyleSheet.create({
     flex: 1,
   },
   main: {
-    flex: 0.85,
+    flex: 0.8,
     backgroundColor: sColor.mainBgColor,
     height: windowHeight,
   },
@@ -74,12 +74,14 @@ export default StyleSheet.create({
     color: sColor.color888,
   },
   bottom: {
-    flex: 0.15,
+    flex: 0.2,
     backgroundColor: sColor.mainBgColor,
+    paddingBottom: 10,
   },
   agreement: {
     textAlign: "center",
     color: sColor.mainRed,
+    marginBottom: 8,
   },
   footer: {
     color: sColor.color999,
