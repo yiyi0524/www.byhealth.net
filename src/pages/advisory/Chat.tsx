@@ -13,7 +13,7 @@ import userApi from "@api/user"
 import wsMsgApi from "@api/wsMsg"
 import sColor from "@styles/color"
 import gStyle from "@utils/style"
-import React, { Component, ReactChild } from "react"
+import React, { Component, ReactChild, version } from "react"
 import {
   Image,
   ImageSourcePropType,
@@ -85,30 +85,6 @@ export interface Msg<T = any> {
   sendTime: string
 }
 
-interface State {
-  hasLoad: boolean
-  refreshing: boolean
-  isShowBottomNav: boolean
-  isShowBottomPicSelect: boolean
-  hasMoreRecord: boolean
-  isShowPic: boolean
-  showPicUrl: string
-  patientUid: number
-  page: number
-  limit: number
-  sendMsg: string
-  info: {
-    id: number
-    account: string
-    name: string
-    gender: number
-    phone: string
-    email: string
-    avatar: Picture
-    profile: string
-  }
-  region: Region[]
-}
 /**
  * 治疗方案
  */
@@ -159,6 +135,31 @@ export interface PatientsThemselves {
     medicalRecordPics: Picture[] //病历
     tongueCoatingPics: Picture[] //舌苔照
   }
+}
+interface State {
+  hasLoad: boolean
+  refreshing: boolean
+  isShowBottomNav: boolean
+  isShowBottomPicSelect: boolean
+  hasMoreRecord: boolean
+  isShowPic: boolean
+  showPicUrl: string
+  patientUid: number
+  scrollHeight: number
+  page: number
+  limit: number
+  sendMsg: string
+  info: {
+    id: number
+    account: string
+    name: string
+    gender: number
+    phone: string
+    email: string
+    avatar: Picture
+    profile: string
+  }
+  region: Region[]
 }
 const mapStateToProps = (state: AppState) => {
   return {
@@ -259,6 +260,7 @@ export default class Chat extends Component<
       link: "",
     },
   ]
+  myScroll: ScrollView | null = null
   constructor(props: any) {
     super(props)
     this.state = this.getInitState()
@@ -274,6 +276,7 @@ export default class Chat extends Component<
       hasMoreRecord: false,
       isShowPic: false,
       patientUid,
+      scrollHeight: 0,
       showPicUrl: "",
       info: {
         id: 0,
@@ -295,6 +298,7 @@ export default class Chat extends Component<
       region: [],
     }
   }
+  //todo 第一遍进入时改变了全局变量,再次进入时清除全局后再向全局添加msg,
   componentDidMount() {
     this.init()
     this.requestReadExteralStorage()
@@ -752,6 +756,9 @@ export default class Chat extends Component<
       this.setState({
         sendMsg: "",
       })
+      if (this.myScroll) {
+        this.myScroll.scrollTo({ y: this.state.scrollHeight, animated: true })
+      }
     }
   }
   openShowPic = (url: string) => {
@@ -821,7 +828,13 @@ export default class Chat extends Component<
       <>
         <View style={style.main}>
           <ScrollView
+            ref={ref => (this.myScroll = ref)}
             style={style.content}
+            onContentSizeChange={(_, scrollHeight) => {
+              this.setState({
+                scrollHeight,
+              })
+            }}
             refreshControl={
               <RefreshControl refreshing={this.state.refreshing} onRefresh={this.getMoreMsgList} />
             }>
