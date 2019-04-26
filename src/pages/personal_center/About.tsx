@@ -18,6 +18,7 @@ import {
 import DeviceInfo from "react-native-device-info"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
+import pathMap from "@/routes/pathMap"
 const style = gStyle.personalCenter.about
 const global = gStyle.global
 interface Props {
@@ -144,8 +145,17 @@ export default class About extends Component<
           </View>
         </ScrollView>
         <View style={style.bottom}>
-          <TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              // this.props.navigation.push(pathMap.RegisterAgreement)
+            }}>
             <Text style={[style.agreement, global.fontSize14]}>医生注册协议</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              // this.props.navigation.push(pathMap.LawAgreement)
+            }}>
+            <Text style={[style.agreement, global.fontSize14]}>法律申明与隐私政策</Text>
           </TouchableOpacity>
           <Text style={[style.footer, global.fontSize12]}>©2019 博一健康</Text>
         </View>

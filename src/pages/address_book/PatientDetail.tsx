@@ -1,6 +1,7 @@
 import * as userAction from "@/redux/actions/user"
 import { AppState } from "@/redux/stores/store"
 import pathMap from "@/routes/pathMap"
+import api from "@/services/api"
 import { GENDER, GENDER_ZH } from "@/services/doctor"
 import { getPicFullUrl } from "@/utils/utils"
 import { Icon, Toast } from "@ant-design/react-native"
@@ -15,7 +16,7 @@ import { NavigationScreenProp } from "react-navigation"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
 import { Picture } from "../advisory/Chat"
-import api from "@/services/api"
+import moment from "moment"
 const style = gStyle.addressBook.PatientDetail
 const global = gStyle.global
 /**
@@ -35,10 +36,8 @@ export interface PatientInfo {
   state: string
   allergyHistory: string
   medicalHistory: string
-  hospitalMedicalRecordPicList: Picture[]
-  medicalRecordList: MedicalRecord[]
+  hospitalMedicalRecordPicList: Picture[] //实体医疗机构病历列表
 }
-// todo 历史病历在接口中没有
 export interface MedicalRecord {
   consultation: {
     //复诊
@@ -48,9 +47,11 @@ export interface MedicalRecord {
   }
   squareRoot: {
     //开方
+    id: number
     discrimination: string //诊断,辨病
     syndromeDifferentiation: string //辩证
     drugList: Drug[] //治疗的药品列表
+    time: string
   }
 }
 
@@ -79,6 +80,7 @@ interface State {
   patientInfo: PatientInfo
   showImg: any
   region: Region[]
+  medicalRecordList: MedicalRecord[]
 }
 export interface Region {
   cid: string
@@ -146,8 +148,8 @@ export default class PatientDetail extends Component<
         gender: GENDER.UNDEFINED,
         height: 0,
         hospitalMedicalRecordPicList: [],
-        medicalRecordList: [],
       },
+      medicalRecordList: [],
     }
   }
   init = async () => {
@@ -157,11 +159,19 @@ export default class PatientDetail extends Component<
         uid,
       })
       let {
+        data: { list: medicalRecordList },
+      } = await patientApi.listMedicalRecord({
+        page: -1,
+        limit: -1,
+        filter: { patientId: uid },
+      })
+      let {
         data: { region },
       } = await api.getRegion()
       this.setState({
         hasLoad: true,
         patientInfo,
+        medicalRecordList,
         region,
       })
     } catch (err) {
@@ -338,110 +348,159 @@ export default class PatientDetail extends Component<
           </View>
           {/* 病历列表 */}
           <View style={style.medicalRecordList}>
-            <View style={style.medicalRecordItem}>
-              <Text style={[style.medicalRecordItemTitle, global.fontSize15, global.fontStyle]}>
-                2019年03月18日 15:25 复诊
-              </Text>
-              <Text
-                style={[style.medicalRecordItemSecondTitle, global.fontSize14, global.fontStyle]}>
-                患者自述
-              </Text>
-              <Text
-                style={[style.medicalRecordItemDetail, global.fontSize14, global.fontStyle]}
-                numberOfLines={2}>
-                {" "}
-                鬓发这里秃了一点点,很平滑
-              </Text>
-              <Text
-                style={[style.medicalRecordItemSecondTitle, global.fontSize14, global.fontStyle]}>
-                舌面照及其他资料
-              </Text>
-              <View
-                style={[
-                  style.medicalRecordItemPicList,
-                  global.flex,
-                  global.alignItemsCenter,
-                  global.flexWrap,
-                ]}>
-                <TouchableOpacity onPress={() => {}}>
-                  <Image
-                    style={style.medicalRecordImg}
-                    source={{
-                      uri:
-                        "https://www.byhealth.net/uploads/20190315/1cec476d9eaef31971abef5e16716365.png",
-                    }}
-                  />
-                </TouchableOpacity>
-              </View>
-              <Text
-                style={[style.medicalRecordItemSecondTitle, global.fontSize14, global.fontStyle]}>
-                对话照片
-              </Text>
-              <View
-                style={[
-                  style.medicalRecordItemPicList,
-                  global.flex,
-                  global.alignItemsCenter,
-                  global.flexWrap,
-                ]}>
-                <TouchableOpacity onPress={() => {}}>
-                  <Image
-                    style={style.medicalRecordImg}
-                    source={{
-                      uri:
-                        "https://www.byhealth.net/uploads/20190315/1cec476d9eaef31971abef5e16716365.png",
-                    }}
-                  />
-                </TouchableOpacity>
-              </View>
-              <TouchableOpacity
-                onPress={() =>
-                  this.props.navigation.push(pathMap.InquirySheet, { patientUid: this.state.uid })
-                }>
-                <View style={[global.flex, global.alignItemsCenter, global.justifyContentCenter]}>
-                  <Text style={[style.medicalRecordItemReadMore, global.fontSize14]}>
-                    查看问诊单详情
+            {this.state.medicalRecordList.length === 0 ? <Text>暂无</Text> : null}
+            {this.state.medicalRecordList.map((v: MedicalRecord) => {
+              return (
+                <View style={style.medicalRecordItem} key={v.squareRoot.id}>
+                  <Text style={[style.medicalRecordItemTitle, global.fontSize15, global.fontStyle]}>
+                    {moment(v.squareRoot.time).format("YYYY-MM-DD HH:mm")}
                   </Text>
-                  <Icon
-                    style={[style.medicalRecordItemReadMoreIcon, global.fontSize14]}
-                    name="right"
-                  />
+                  <Text
+                    style={[
+                      style.medicalRecordItemSecondTitle,
+                      global.fontSize14,
+                      global.fontStyle,
+                    ]}>
+                    患者自述
+                  </Text>
+                  <Text
+                    style={[style.medicalRecordItemDetail, global.fontSize14, global.fontStyle]}
+                    numberOfLines={2}>
+                    {" "}
+                    {v.consultation.PatientState}
+                  </Text>
+                  <Text
+                    style={[
+                      style.medicalRecordItemSecondTitle,
+                      global.fontSize14,
+                      global.fontStyle,
+                    ]}>
+                    舌面照及其他资料
+                  </Text>
+                  <View
+                    style={[
+                      style.medicalRecordItemPicList,
+                      global.flex,
+                      global.alignItemsCenter,
+                      global.flexWrap,
+                    ]}>
+                    {v.consultation.lingualSurfacePicList.map((v, k) => {
+                      return (
+                        <TouchableOpacity
+                          key={k}
+                          onPress={() => {
+                            this.showMode(v.url)
+                          }}>
+                          <Image
+                            style={style.medicalRecordImg}
+                            source={
+                              v.url
+                                ? {
+                                    uri: getPicFullUrl(v.url),
+                                  }
+                                : gImg.common.defaultPic
+                            }
+                          />
+                        </TouchableOpacity>
+                      )
+                    })}
+                  </View>
+                  <Text
+                    style={[
+                      style.medicalRecordItemSecondTitle,
+                      global.fontSize14,
+                      global.fontStyle,
+                    ]}>
+                    对话照片
+                  </Text>
+                  <View
+                    style={[
+                      style.medicalRecordItemPicList,
+                      global.flex,
+                      global.alignItemsCenter,
+                      global.flexWrap,
+                    ]}>
+                    {v.consultation.lingualSurfacePicList.map((v, k) => {
+                      return (
+                        <TouchableOpacity
+                          key={k}
+                          onPress={() => {
+                            this.showMode(v.url)
+                          }}>
+                          <Image
+                            style={style.medicalRecordImg}
+                            source={
+                              v.url
+                                ? {
+                                    uri: getPicFullUrl(v.url),
+                                  }
+                                : gImg.common.defaultPic
+                            }
+                          />
+                        </TouchableOpacity>
+                      )
+                    })}
+                  </View>
+                  <TouchableOpacity
+                    onPress={() =>
+                      this.props.navigation.push(pathMap.InquirySheet, {
+                        patientUid: this.state.uid,
+                      })
+                    }>
+                    <View
+                      style={[global.flex, global.alignItemsCenter, global.justifyContentCenter]}>
+                      <Text style={[style.medicalRecordItemReadMore, global.fontSize14]}>
+                        查看问诊单详情
+                      </Text>
+                      <Icon
+                        style={[style.medicalRecordItemReadMoreIcon, global.fontSize14]}
+                        name="right"
+                      />
+                    </View>
+                  </TouchableOpacity>
+                  <Text style={[style.squareRootItemTheme, global.fontSize15]}>医生方案</Text>
+                  <View style={[style.squareRootItemTitleFa, global.flex, global.alignItemsCenter]}>
+                    <Text style={[style.squareRootItemTitle, global.fontSize14]} numberOfLines={1}>
+                      诊断{" "}
+                    </Text>
+                    <Text style={[style.squareRootItemDetail, global.fontSize14]} numberOfLines={1}>
+                      {v.squareRoot.discrimination}; {v.squareRoot.syndromeDifferentiation}
+                    </Text>
+                  </View>
+                  <View style={[style.squareRootItemTitleFa, global.flex, global.alignItemsCenter]}>
+                    <Text style={[style.squareRootItemTitle, global.fontSize14]} numberOfLines={1}>
+                      治疗{" "}
+                    </Text>
+                    <Text style={[style.squareRootItemDetail, global.fontSize14]} numberOfLines={1}>
+                      {v.squareRoot.drugList.map(v => {
+                        v.list.map(v1 => {
+                          return v1.detail.name + "、"
+                        })
+                      })}
+                    </Text>
+                  </View>
+                  <TouchableOpacity
+                    onPress={() =>
+                      this.props.navigation.push(pathMap.MedicalRecord, {
+                        prescriptionId: v.squareRoot.id,
+                      })
+                    }>
+                    <View
+                      style={[
+                        style.squareRootItemViewFa,
+                        global.justifyContentCenter,
+                        global.flex,
+                        global.alignItemsCenter,
+                      ]}>
+                      <Text style={[style.squareRootItemView, global.fontSize14]}>
+                        查看病历详情
+                      </Text>
+                      <Icon style={[style.squareRootItemView, global.fontSize14]} name="right" />
+                    </View>
+                  </TouchableOpacity>
                 </View>
-              </TouchableOpacity>
-              <Text style={[style.squareRootItemTheme, global.fontSize15]}>医生方案</Text>
-              <View style={[style.squareRootItemTitleFa, global.flex, global.alignItemsCenter]}>
-                <Text style={[style.squareRootItemTitle, global.fontSize14]} numberOfLines={1}>
-                  诊断{" "}
-                </Text>
-                <Text style={[style.squareRootItemDetail, global.fontSize14]} numberOfLines={1}>
-                  病毒性感冒; 头疼流鼻涕 鼻子不通{" "}
-                </Text>
-              </View>
-              <View style={[style.squareRootItemTitleFa, global.flex, global.alignItemsCenter]}>
-                <Text style={[style.squareRootItemTitle, global.fontSize14]} numberOfLines={1}>
-                  治疗{" "}
-                </Text>
-                <Text style={[style.squareRootItemDetail, global.fontSize14]} numberOfLines={1}>
-                  蜜瓜篓子10g 黄连6g 法半夏 10g 黄芩 10g法半夏 10g 黄芩 10g{" "}
-                </Text>
-              </View>
-              {/* //todo 查看病历需要一个处方id  => prescriptionId  */}
-              <TouchableOpacity
-                onPress={() =>
-                  this.props.navigation.push(pathMap.MedicalRecord, { prescriptionId: 1 })
-                }>
-                <View
-                  style={[
-                    style.squareRootItemViewFa,
-                    global.justifyContentCenter,
-                    global.flex,
-                    global.alignItemsCenter,
-                  ]}>
-                  <Text style={[style.squareRootItemView, global.fontSize14]}>查看病历详情</Text>
-                  <Icon style={[style.squareRootItemView, global.fontSize14]} name="right" />
-                </View>
-              </TouchableOpacity>
-            </View>
+              )
+            })}
           </View>
         </ScrollView>
         <View
@@ -460,7 +519,10 @@ export default class PatientDetail extends Component<
             }}>
             <Text style={[style.bottomTitle, global.fontSize14, global.fontStyle]}>进入对话</Text>
           </TouchableOpacity>
-          <TouchableOpacity>
+          <TouchableOpacity
+            onPress={() =>
+              this.props.navigation.push(pathMap.SquareRoot, { patientUid: this.state.uid })
+            }>
             <Text style={[style.bottomTitle, global.fontSize14, global.fontStyle]}>开方</Text>
           </TouchableOpacity>
         </View>
@@ -478,7 +540,7 @@ export default class PatientDetail extends Component<
               style={style.showImg}
               source={
                 this.state.showImg !== gImg.common.defaultAvatar
-                  ? { uri: this.state.showImg }
+                  ? { uri: getPicFullUrl(this.state.showImg) }
                   : this.state.showImg
               }
             />

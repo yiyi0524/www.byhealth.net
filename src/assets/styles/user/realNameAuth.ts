@@ -105,6 +105,7 @@ export default StyleSheet.create({
   },
   formItemTextarea: {
     height: 100,
+    fontSize: 14,
     color: sColor.color888,
   },
   formItemPickerImage: {

@@ -155,6 +155,8 @@ export default class Register extends Component<
       console.log(hospitalList)
       this.setState({
         hospitalList,
+        hospitalName: "",
+        hospitalId: 0,
       })
     } catch (err) {
       console.log(err.msg)
@@ -406,12 +408,18 @@ export default class Register extends Component<
             </View>
             <View style={[style.agreement, global.flex, global.alignItemsCenter]}>
               <Text style={[style.theme, global.fontStyle, global.fontSize14]}>注册即同意</Text>
-              <TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => {
+                  // this.props.navigation.navigate(pathMap.RegisterAgreement)
+                }}>
                 <Text style={[style.agreementName, global.fontStyle, global.fontSize14]}>
                   医生注册协议
                 </Text>
               </TouchableOpacity>
-              <TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => {
+                  // this.props.navigation.navigate(pathMap.LawAgreement)
+                }}>
                 <Text style={[style.agreementName, global.fontStyle, global.fontSize14]}>
                   法律声明与隐私政策
                 </Text>
