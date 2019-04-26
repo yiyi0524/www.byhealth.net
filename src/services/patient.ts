@@ -29,7 +29,8 @@ export interface Drug {
   list: DrugItem[]
 }
 export interface DrugItem {
-  detail: DrugInfo
+  id?: number
+  detail?: DrugInfo
   count: number
   usage: string
 }
@@ -80,114 +81,22 @@ export interface option {
   isNormal: boolean
 }
 /**
- * todo 获取问诊单详情
+ *  获取问诊单详情
  */
-export async function getInquirySheet({ uid }: { uid: number }) {
-  return {
-    data: {
-      detail: {
-        name: "孟磊",
-        height: 175,
-        weight: 55,
-        allergyHistory: "无",
-        medicalHistory: "无",
-        state: "头疼 浑身无力",
-        lingualSurfacePicList: [
-          {
-            id: 5,
-            title: "",
-            url: "/uploads/20190322/e9cf09f8b95064754133810e7776ed81.png",
-          },
-          {
-            id: 6,
-            title: "",
-            url: "/uploads/20190322/e9cf09f8b95064754133810e7776ed81.png",
-          },
-          {
-            id: 7,
-            title: "",
-            url: "/uploads/20190322/e9cf09f8b95064754133810e7776ed81.png",
-          },
-          {
-            id: 8,
-            title: "",
-            url: "/uploads/20190322/e9cf09f8b95064754133810e7776ed81.png",
-          },
-        ],
-        dialoguePicList: [
-          {
-            id: 1,
-            title: "",
-            url: "/uploads/20190322/e9cf09f8b95064754133810e7776ed81.png",
-          },
-          {
-            id: 2,
-            title: "",
-            url: "/uploads/20190322/e9cf09f8b95064754133810e7776ed81.png",
-          },
-          {
-            id: 3,
-            title: "",
-            url: "/uploads/20190322/e9cf09f8b95064754133810e7776ed81.png",
-          },
-          {
-            id: 4,
-            title: "",
-            url: "/uploads/20190322/e9cf09f8b95064754133810e7776ed81.png",
-          },
-        ],
-        problems: {
-          type: 1,
-          subjectList: [
-            {
-              title: "冷吗",
-              type: 1,
-              options: [
-                {
-                  title: "冷",
-                  isNormal: false,
-                },
-                {
-                  title: "不冷",
-                  isNormal: true,
-                },
-                {
-                  title: "还好",
-                  isNormal: false,
-                },
-              ],
-              answer: [2],
-            },
-            {
-              title: "孩子的精神状态与同龄孩子相比如何",
-              type: 1,
-              options: [
-                {
-                  title: "精神状况良好",
-                  isNormal: false,
-                },
-                {
-                  title: "精神一般",
-                  isNormal: true,
-                },
-                {
-                  title: "精神萎靡",
-                  isNormal: false,
-                },
-              ],
-              answer: [1, 2],
-            },
-          ],
-        },
-      },
+export async function getInquirySheet({
+  patientUid,
+  consultationId,
+}: {
+  patientUid: number
+  consultationId: number
+}) {
+  return bget<{ detail: inquirySheet }>({
+    url: "patientApi/getAppInquirySheet",
+    query: {
+      patientUid,
+      consultationId,
     },
-  }
-  // return bget<{list:inquirySheet[]}>({
-  //   url: "patient/getInquirySheet",
-  //   query: {
-  //     uid,
-  //   },
-  // })
+  })
 }
 export interface medicalRecord {
   doctor: {
@@ -284,98 +193,17 @@ export async function getMedicalRecord({ prescriptionId }: { prescriptionId: num
   // })
 }
 /**
- *  todo获取患者个人病史列表 filter 中有 patientId
+ *   获取患者个人病史列表 filter 中有 patientId
  */
 export async function listMedicalRecord({ page = -1, limit = -1, filter }: GetListParam) {
-  console.log(page, limit, filter)
-  return {
-    data: {
-      list: [
-        {
-          consultation: {
-            //复诊
-            PatientState: "头疼", //患者自述
-            lingualSurfacePicList: [
-              {
-                id: 5,
-                title: "",
-                url: "/uploads/20190322/e9cf09f8b95064754133810e7776ed81.png",
-              },
-              {
-                id: 5,
-                title: "",
-                url: "/uploads/20190322/e9cf09f8b95064754133810e7776ed81.png",
-              },
-            ], //舌照面及其他资料照片
-            dialoguePicList: [
-              {
-                id: 5,
-                title: "",
-                url: "/uploads/20190322/e9cf09f8b95064754133810e7776ed81.png",
-              },
-            ], //对话照片
-          },
-          squareRoot: {
-            //开方
-            id: 2,
-            discrimination: "感冒", //诊断,辨病
-            syndromeDifferentiation: "头疼 流鼻涕", //辩证
-            drugList: [
-              {
-                categoryId: 1,
-                list: [
-                  {
-                    detail: {
-                      id: 1,
-                      name: "银杏颗粒",
-                    },
-                    count: 3,
-                    usage: "口服",
-                  },
-                  {
-                    detail: {
-                      id: 1,
-                      name: "银杏颗粒",
-                    },
-                    count: 3,
-                    usage: "口服",
-                  },
-                ],
-              },
-              {
-                categoryId: 2,
-                list: [
-                  {
-                    detail: {
-                      id: 1,
-                      name: "银杏颗粒",
-                    },
-                    count: 3,
-                    usage: "口服",
-                  },
-                  {
-                    detail: {
-                      id: 1,
-                      name: "银杏颗粒",
-                    },
-                    count: 3,
-                    usage: "口服",
-                  },
-                ],
-              },
-            ], //治疗的药品列表
-            time: "2019-04-23 15:33:00",
-          },
-        },
-      ],
+  return bget<{ list: MedicalRecord[] }>({
+    url: "patient/listMedicalRecord",
+    query: {
+      page,
+      limit,
+      filter,
     },
-  }
-  // return bget<MedicalRecord>({
-  //   url: "api/listMedicalRecord",
-  //   query: {
-  //    page = -1, limit = -1, filter
-  //   },
-  // })
+  })
 }
 export default {
   getAddressBoolPatientList,

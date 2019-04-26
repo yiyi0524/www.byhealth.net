@@ -38,7 +38,8 @@ interface State {
   hasLoad: boolean
   refreshing: boolean
   isShowMode: boolean
-  uid: number
+  patientUid: number
+  consultationId: number
   showImgUrl: any
   detail: inquirySheet
   region: Region[]
@@ -80,7 +81,8 @@ export default class InquirySheet extends Component<
       hasLoad: false,
       refreshing: false,
       isShowMode: false,
-      uid: this.props.navigation.getParam("patientUid") || 0,
+      patientUid: this.props.navigation.getParam("patientUid") || 0,
+      consultationId: this.props.navigation.getParam("consultationId") || 0,
       showImgUrl: "",
       detail: {
         name: "",
@@ -103,7 +105,10 @@ export default class InquirySheet extends Component<
     try {
       let {
         data: { detail },
-      } = await patient.getInquirySheet({ uid: this.state.uid })
+      } = await patient.getInquirySheet({
+        patientUid: this.state.patientUid,
+        consultationId: this.state.consultationId,
+      })
       let {
         data: { region },
       } = await api.getRegion()
@@ -182,7 +187,7 @@ export default class InquirySheet extends Component<
               <Text style={[style.patientInfoDetail, global.fontSize14]}>{detail.state}</Text>
             </View>
           </View>
-          <View style={style.patientPic}>
+          {/* <View style={style.patientPic}>
             <Text style={[style.patientPicTitle, global.fontSize14]}>舌面照及其他资料</Text>
             <View
               style={[style.patientPicList, global.flex, global.alignItemsCenter, global.flexWrap]}>
@@ -201,7 +206,7 @@ export default class InquirySheet extends Component<
                 )
               })}
             </View>
-          </View>
+          </View> */}
           <View style={style.patientPic}>
             <Text style={[style.patientPicTitle, global.fontSize14]}>对话照片</Text>
             <View

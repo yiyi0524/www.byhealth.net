@@ -17,6 +17,7 @@ import { connect } from "react-redux"
 import { Dispatch } from "redux"
 import { Picture } from "../advisory/Chat"
 import moment from "moment"
+import hospital from "@/services/hospital"
 const style = gStyle.addressBook.PatientDetail
 const global = gStyle.global
 /**
@@ -26,8 +27,7 @@ export interface PatientInfo {
   name: string
   avatar: Picture
   gender: number
-  yearAge: 0
-  monthAge: 0
+  age: 0
   provinceCid: string
   remarks: string
   phone: string
@@ -41,7 +41,8 @@ export interface PatientInfo {
 export interface MedicalRecord {
   consultation: {
     //复诊
-    PatientState: string //患者自述
+    id: number
+    patientState: string //患者自述
     lingualSurfacePicList: Picture[] //舌照面及其他资料照片
     dialoguePicList: Picture[] //对话照片
   }
@@ -81,6 +82,11 @@ interface State {
   showImg: any
   region: Region[]
   medicalRecordList: MedicalRecord[]
+  drugList: drugCategory[]
+}
+interface drugCategory {
+  id: number
+  name: string
 }
 export interface Region {
   cid: string
@@ -131,8 +137,7 @@ export default class PatientDetail extends Component<
       region: [],
       patientInfo: {
         name: "",
-        yearAge: 0,
-        monthAge: 0,
+        age: 0,
         allergyHistory: "",
         avatar: {
           id: 0,
@@ -150,6 +155,7 @@ export default class PatientDetail extends Component<
         hospitalMedicalRecordPicList: [],
       },
       medicalRecordList: [],
+      drugList: [],
     }
   }
   init = async () => {
@@ -163,16 +169,20 @@ export default class PatientDetail extends Component<
       } = await patientApi.listMedicalRecord({
         page: -1,
         limit: -1,
-        filter: { patientId: uid },
+        filter: { patientUid: uid },
       })
       let {
         data: { region },
       } = await api.getRegion()
+      let {
+        data: { list: drugList },
+      } = await hospital.getDrugList({ page: -1, limit: -1 })
       this.setState({
         hasLoad: true,
         patientInfo,
         medicalRecordList,
         region,
+        drugList,
       })
     } catch (err) {
       console.log(err)
@@ -236,7 +246,7 @@ export default class PatientDetail extends Component<
                   {GENDER_ZH[patientInfo.gender]}
                 </Text>
                 <Text style={[style.headerDescriptionAge, global.fontSize14, global.fontStyle]}>
-                  {patientInfo.yearAge} 岁{" "}
+                  {patientInfo.age} 岁{" "}
                   {this.state.region.map((v: Region) => {
                     if (patientInfo.provinceCid === v.cid) {
                       console.log(patientInfo.provinceCid)
@@ -348,7 +358,9 @@ export default class PatientDetail extends Component<
           </View>
           {/* 病历列表 */}
           <View style={style.medicalRecordList}>
-            {this.state.medicalRecordList.length === 0 ? <Text>暂无</Text> : null}
+            {this.state.medicalRecordList.length === 0 ? (
+              <Text style={{ padding: 15 }}>暂无</Text>
+            ) : null}
             {this.state.medicalRecordList.map((v: MedicalRecord) => {
               return (
                 <View style={style.medicalRecordItem} key={v.squareRoot.id}>
@@ -367,9 +379,9 @@ export default class PatientDetail extends Component<
                     style={[style.medicalRecordItemDetail, global.fontSize14, global.fontStyle]}
                     numberOfLines={2}>
                     {" "}
-                    {v.consultation.PatientState}
+                    {v.consultation.patientState}
                   </Text>
-                  <Text
+                  {/* <Text
                     style={[
                       style.medicalRecordItemSecondTitle,
                       global.fontSize14,
@@ -405,6 +417,7 @@ export default class PatientDetail extends Component<
                       )
                     })}
                   </View>
+                   */}
                   <Text
                     style={[
                       style.medicalRecordItemSecondTitle,
@@ -420,19 +433,19 @@ export default class PatientDetail extends Component<
                       global.alignItemsCenter,
                       global.flexWrap,
                     ]}>
-                    {v.consultation.lingualSurfacePicList.map((v, k) => {
+                    {v.consultation.lingualSurfacePicList.map((v1, k) => {
                       return (
                         <TouchableOpacity
                           key={k}
                           onPress={() => {
-                            this.showMode(v.url)
+                            this.showMode(v1.url)
                           }}>
                           <Image
                             style={style.medicalRecordImg}
                             source={
-                              v.url
+                              v1.url
                                 ? {
-                                    uri: getPicFullUrl(v.url),
+                                    uri: getPicFullUrl(v1.url),
                                   }
                                 : gImg.common.defaultPic
                             }
@@ -442,11 +455,12 @@ export default class PatientDetail extends Component<
                     })}
                   </View>
                   <TouchableOpacity
-                    onPress={() =>
+                    onPress={() => {
                       this.props.navigation.push(pathMap.InquirySheet, {
                         patientUid: this.state.uid,
+                        consultationId: v.consultation.id,
                       })
-                    }>
+                    }}>
                     <View
                       style={[global.flex, global.alignItemsCenter, global.justifyContentCenter]}>
                       <Text style={[style.medicalRecordItemReadMore, global.fontSize14]}>
@@ -472,9 +486,13 @@ export default class PatientDetail extends Component<
                       治疗{" "}
                     </Text>
                     <Text style={[style.squareRootItemDetail, global.fontSize14]} numberOfLines={1}>
-                      {v.squareRoot.drugList.map(v => {
-                        v.list.map(v1 => {
-                          return v1.detail.name + "、"
+                      {v.squareRoot.drugList.map(v1 => {
+                        return v1.list.map(v2 => {
+                          for (let v3 of this.state.drugList) {
+                            if (v2.id === v3.id) {
+                              return v3.name + "、"
+                            }
+                          }
                         })
                       })}
                     </Text>
