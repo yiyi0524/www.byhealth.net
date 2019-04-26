@@ -505,6 +505,9 @@ export default class RealNameAuth extends Component<
       await doctorApi.doctorAuth(param)
       Toast.fail("提交成功, 等待审核", 2, () => {})
       DeviceEventEmitter.emit(pathMap.Home + "Reload", null)
+      DeviceEventEmitter.emit(pathMap.AddressBookIndex + "Reload", null)
+      DeviceEventEmitter.emit(pathMap.AdvisoryIndex + "Reload", null)
+      DeviceEventEmitter.emit(pathMap.PersonalCenter + "Reload", null)
       this.props.navigation.goBack()
     } catch (err) {
       console.log(err)

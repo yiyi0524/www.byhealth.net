@@ -2,13 +2,7 @@ import global from "@/assets/styles/global"
 import * as userAction from "@/redux/actions/user"
 import { AppState } from "@/redux/stores/store"
 import { windowWidth } from "@/services/api"
-import doctor, {
-  GENDER_ZH,
-  squareRoot,
-  prescriptionDetail,
-  PRESCRIPTION_STATUS_ZH,
-  PRESCRIPTION_STATUS,
-} from "@/services/doctor"
+import doctor, { GENDER_ZH, prescriptionDetail, PRESCRIPTION_STATUS } from "@/services/doctor"
 import hospital from "@/services/hospital"
 import { Toast } from "@ant-design/react-native"
 import DashLine from "@components/DashLine"
