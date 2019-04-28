@@ -83,7 +83,7 @@ export default class CustomerService extends Component<
       {
         icon: gImg.advisory.customerServicePhone,
         name: "电话: 0523-86057008",
-        link: "052386057008",
+        link: "0523-86057008",
         type: "phone",
       },
       {

@@ -8,7 +8,7 @@ import api, { getRegion } from "@/services/api"
 import { GENDER_ZH, closeInquiry } from "@/services/doctor"
 import gImg from "@/utils/img"
 import { getPicFullUrl, windowWidth } from "@/utils/utils"
-import { ImagePicker, Portal, TextareaItem, Toast } from "@ant-design/react-native"
+import { ImagePicker, Portal, TextareaItem, Toast, Modal } from "@ant-design/react-native"
 import userApi from "@api/user"
 import wsMsgApi from "@api/wsMsg"
 import sColor from "@styles/color"
@@ -1004,13 +1004,25 @@ export default class Chat extends Component<
    */
   closeInquiry = () => {
     const { patientUid } = this.state
-    closeInquiry({ patientUid })
-      .then(() => {
-        DeviceEventEmitter.emit(pathMap.AdvisoryIndex + "Reload")
-        this.props.navigation.navigate(pathMap.Home)
-      })
-      .catch(err => {
-        Toast.fail("关闭失败,错误信息: " + err.msg)
-      })
+    Modal.alert("结束会话", "确认结束会话将无法聊天, 是否结束会话?", [
+      {
+        text: "取消",
+        onPress: () => console.log("cancel"),
+        style: "cancel",
+      },
+      {
+        text: "OK",
+        onPress: () => {
+          closeInquiry({ patientUid })
+            .then(() => {
+              DeviceEventEmitter.emit(pathMap.AdvisoryIndex + "Reload")
+              this.props.navigation.navigate(pathMap.Home)
+            })
+            .catch(err => {
+              Toast.fail("关闭失败,错误信息: " + err.msg)
+            })
+        },
+      },
+    ])
   }
 }

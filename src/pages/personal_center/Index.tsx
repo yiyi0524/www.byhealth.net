@@ -84,6 +84,14 @@ export default class Index extends Component<
         link: pathMap.CustomerService,
       },
       {
+        name: "医生注册协议",
+        link: pathMap.RegisterAgreement,
+      },
+      {
+        name: "法律声明与隐私政策",
+        link: pathMap.LawAgreement,
+      },
+      {
         name: "退出登录",
         link: "",
       },
