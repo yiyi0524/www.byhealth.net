@@ -360,7 +360,7 @@ export default class SquareRoot extends Component<
             </View>
             <View style={[style.diagnosisItem, global.flex, global.alignItemsCenter]}>
               <Text style={[style.diagnosisItemTitle, global.fontSize14]}>[ 医嘱提醒 ]</Text>
-              <Text style={[style.diagnosisItemTitle, global.fontSize14]}>多喝水</Text>
+              <Text style={[style.diagnosisItemTitle, global.fontSize14]}>{detail.advice}</Text>
             </View>
           </View>
           {/* 明细 */}
