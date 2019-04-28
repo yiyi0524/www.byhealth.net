@@ -501,6 +501,7 @@ export default class PatientDetail extends Component<
                     onPress={() =>
                       this.props.navigation.push(pathMap.MedicalRecord, {
                         prescriptionId: v.squareRoot.id,
+                        patientUid: this.state.uid,
                       })
                     }>
                     <View

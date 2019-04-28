@@ -106,7 +106,7 @@ export default StyleSheet.create({
     marginBottom: 15,
   },
   problem: {
-    marginBottom: 10,
+    marginBottom: 15,
   },
   problemTitle: {
     color: sColor.color888,

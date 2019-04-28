@@ -34,6 +34,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
 }
 interface drugCategory {
   id: number
+  unit: string
   name: string
 }
 interface Props {
@@ -43,6 +44,7 @@ interface State {
   hasLoad: boolean
   refreshing: boolean
   prescriptionId: number
+  patientUid: number
   detail: medicalRecord
   drugCategoryList: drugCategory[]
   drugList: drugCategory[]
@@ -85,6 +87,7 @@ export default class InquirySheet extends Component<
       hasLoad: false,
       refreshing: false,
       prescriptionId: this.props.navigation.getParam("prescriptionId") || 0,
+      patientUid: this.props.navigation.getParam("patientUid") || 0,
       detail: {
         doctor: {
           name: "",
@@ -105,8 +108,9 @@ export default class InquirySheet extends Component<
         drugList: [],
         time: "",
         cost: {
-          drug: 0,
-          management: 0,
+          totalFee: 0,
+          doctorServiceCost: 0,
+          expressCost: 0,
         },
       },
       drugCategoryList: [],
@@ -117,7 +121,10 @@ export default class InquirySheet extends Component<
     try {
       let {
         data: { detail },
-      } = await patient.getMedicalRecord({ prescriptionId: this.state.prescriptionId })
+      } = await patient.getMedicalRecord({
+        patientUid: this.state.patientUid,
+        prescriptionId: this.state.prescriptionId,
+      })
       let {
         data: { list: drugCategoryList },
       } = await hospital.getDrugCategoryList({ page: -1, limit: -1 })
@@ -190,7 +197,6 @@ export default class InquirySheet extends Component<
                 {detail.patient.yearAge >= 3
                   ? detail.patient.yearAge + "岁"
                   : detail.patient.yearAge + "岁" + detail.patient.monthAge + "月"}
-                岁
               </Text>
             </View>
           </View>
@@ -215,17 +221,19 @@ export default class InquirySheet extends Component<
                     <Text style={[style.drugCategoryTitle, global.fontSize14]}>{categoryName}</Text>
                     <View style={style.drugList}>
                       {v.list.map((v1, k1) => {
-                        let drugName = ""
+                        let drugName = "",
+                          unit = ""
                         for (let drug of this.state.drugList) {
-                          if (drug.id === v1.detail.id) {
+                          if (drug.id === v1.id) {
                             drugName = drug.name
+                            unit = drug.unit
                           }
                         }
                         return (
                           <View style={style.drugItem} key={k1}>
                             <Text style={[style.drugName, global.fontSize14]}>
                               {drugName}: {v1.count}
-                              {v1.detail.unit}
+                              {unit}
                             </Text>
                             <Text style={[style.drugDetail, global.fontSize14]}>
                               用法用量: {v1.usage}
@@ -250,7 +258,11 @@ export default class InquirySheet extends Component<
               ]}>
               <Text style={[style.costTitle, global.fontSize14]}>药费</Text>
               <Text style={[style.costTitle, global.fontSize14]}>
-                ¥ {(detail.cost.drug / 100).toFixed(2)}
+                ¥{" "}
+                {(
+                  (detail.cost.totalFee - detail.cost.doctorServiceCost - detail.cost.expressCost) /
+                  100
+                ).toFixed(2)}
               </Text>
             </View>
             <View
@@ -260,9 +272,21 @@ export default class InquirySheet extends Component<
                 global.alignItemsCenter,
                 global.justifyContentSpaceBetween,
               ]}>
-              <Text style={[style.costTitle, global.fontSize14]}>诊后病程管理费</Text>
+              <Text style={[style.costTitle, global.fontSize14]}>医生服务费</Text>
               <Text style={[style.costTitle, global.fontSize14]}>
-                ¥ {(detail.cost.management / 100).toFixed(2)}
+                ¥ {(detail.cost.doctorServiceCost / 100).toFixed(2)}
+              </Text>
+            </View>
+            <View
+              style={[
+                style.costItem,
+                global.flex,
+                global.alignItemsCenter,
+                global.justifyContentSpaceBetween,
+              ]}>
+              <Text style={[style.costTitle, global.fontSize14]}>邮费</Text>
+              <Text style={[style.costTitle, global.fontSize14]}>
+                ¥ {(detail.cost.expressCost / 100).toFixed(2)}
               </Text>
             </View>
             <View
@@ -273,10 +297,10 @@ export default class InquirySheet extends Component<
                 global.justifyContentSpaceBetween,
               ]}>
               <Text style={[style.costTitle, global.fontSize14]}>
-                总计<Text style={[style.costDetail, global.fontSize12]}>(不含代煎、快递费)</Text>
+                总计<Text style={[style.costDetail, global.fontSize12]}>(不含代煎)</Text>
               </Text>
               <Text style={[style.costTitle, global.fontSize14]}>
-                ¥ {((detail.cost.drug + detail.cost.management) / 100).toFixed(2)}
+                ¥ {(detail.cost.totalFee / 100).toFixed(2)}
               </Text>
             </View>
           </View>

@@ -99,8 +99,9 @@ export default class SquareRoot extends Component<
         advice: "", //医嘱
         drugList: [],
         cost: {
-          drug: 0,
-          management: 0,
+          totalFee: 0,
+          doctorServiceCost: 0,
+          expressCost: 0,
         },
         time: "",
       },
@@ -232,6 +233,20 @@ export default class SquareRoot extends Component<
                       </Text>
                       <View style={style.drugListFa}>
                         {v.list.map((v, k) => {
+                          let drugItem = "",
+                            unit = "",
+                            standard = "",
+                            price = 0,
+                            manufacturer = ""
+                          for (let v1 of this.state.drugList) {
+                            if (v.id === v1.id) {
+                              drugItem = v1.name || "未命名"
+                              unit = v1.unit || "盒"
+                              standard = v1.standard || "暂无地址"
+                              price = v1.price || 0
+                              manufacturer = v1.manufacturer || "暂无规格"
+                            }
+                          }
                           return (
                             <View key={k} style={style.drugItem}>
                               <View
@@ -244,12 +259,12 @@ export default class SquareRoot extends Component<
                                 <Text
                                   style={[style.drugItemTitle, global.fontSize14]}
                                   numberOfLines={1}>
-                                  {v.detail.name}
+                                  {drugItem}
                                 </Text>
                                 <Text
                                   style={[style.drugItemTitle, global.fontSize12]}
                                   numberOfLines={1}>
-                                  {v.count} {v.detail.unit}
+                                  {v.count} {unit}
                                 </Text>
                               </View>
                               <View
@@ -262,18 +277,18 @@ export default class SquareRoot extends Component<
                                 <Text
                                   style={[style.drugItemDetail, global.fontSize14]}
                                   numberOfLines={1}>
-                                  {v.detail.standard}
+                                  {standard}
                                 </Text>
                                 <Text
                                   style={[style.drugItemDetail, global.fontSize12]}
                                   numberOfLines={1}>
-                                  {(v.detail.price! / 100).toFixed(2)}元
+                                  {(price / 100).toFixed(2)}元
                                 </Text>
                               </View>
                               <Text
                                 style={[style.drugItemDetail, global.fontSize12]}
                                 numberOfLines={1}>
-                                {v.detail.manufacturer}
+                                {manufacturer}
                               </Text>
                               <View
                                 style={[style.usageDosage, global.flex, global.alignItemsCenter]}>
@@ -334,7 +349,11 @@ export default class SquareRoot extends Component<
               ]}>
               <Text style={[style.diagnosisItemTitle, global.fontSize14]}>药费</Text>
               <Text style={[style.diagnosisItemTitle, global.fontSize14]}>
-                ¥ {(detail.cost.drug / 100).toFixed(2)}
+                ¥{" "}
+                {(
+                  (detail.cost.totalFee - detail.cost.doctorServiceCost - detail.cost.expressCost) /
+                  100
+                ).toFixed(2)}
               </Text>
             </View>
             <View
@@ -344,9 +363,21 @@ export default class SquareRoot extends Component<
                 global.alignItemsCenter,
                 global.justifyContentSpaceBetween,
               ]}>
-              <Text style={[style.diagnosisItemTitle, global.fontSize14]}>诊后管理费</Text>
+              <Text style={[style.diagnosisItemTitle, global.fontSize14]}>医生服务费</Text>
               <Text style={[style.diagnosisItemTitle, global.fontSize14]}>
-                ¥ {(detail.cost.management / 100).toFixed(2)}
+                ¥ {(detail.cost.doctorServiceCost / 100).toFixed(2)}
+              </Text>
+            </View>
+            <View
+              style={[
+                style.diagnosisItem,
+                global.flex,
+                global.alignItemsCenter,
+                global.justifyContentSpaceBetween,
+              ]}>
+              <Text style={[style.diagnosisItemTitle, global.fontSize14]}>邮费</Text>
+              <Text style={[style.diagnosisItemTitle, global.fontSize14]}>
+                ¥ {(detail.cost.expressCost / 100).toFixed(2)}
               </Text>
             </View>
             <DashLine len={45} width={windowWidth - 46} backgroundColor={sColor.colorEee} />
@@ -362,7 +393,7 @@ export default class SquareRoot extends Component<
                 <Text style={[style.diagnosisItemDetail, global.fontSize12]}>( 不含快递费 )</Text>
               </Text>
               <Text style={[style.diagnosisItemAll, global.fontSize15]}>
-                ¥ {((detail.cost.drug + detail.cost.management) / 100).toFixed(2)}
+                ¥ {(detail.cost.totalFee / 100).toFixed(2)}
               </Text>
             </View>
           </View>

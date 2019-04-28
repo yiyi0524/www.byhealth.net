@@ -109,6 +109,7 @@ export default class InquirySheet extends Component<
         patientUid: this.state.patientUid,
         consultationId: this.state.consultationId,
       })
+      console.log(detail)
       let {
         data: { region },
       } = await api.getRegion()

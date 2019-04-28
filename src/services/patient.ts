@@ -113,84 +113,29 @@ export interface medicalRecord {
   syndromeDifferentiation: string //辩证
   drugList: Drug[]
   cost: {
-    drug: number
-    management: number
+    totalFee: number
+    doctorServiceCost: number
+    expressCost: number
   }
   time: string
 }
 /**
- * todo 获取病历详情
+ *  获取病历详情
  */
-export async function getMedicalRecord({ prescriptionId }: { prescriptionId: number }) {
-  return {
-    data: {
-      detail: {
-        doctor: {
-          name: "孟雷",
-        },
-        patient: {
-          name: "吴大伟",
-          avatar: {
-            id: 1,
-            title: "头像",
-            url: "/uploads/20190322/e9cf09f8b95064754133810e7776ed81.png",
-          },
-          gender: 1,
-          yearAge: 2,
-          monthAge: 6,
-        },
-        discrimination: "感冒", //辨病
-        syndromeDifferentiation: "流鼻涕 发烧", //辩证
-        time: "2019-04-12 17:34:00",
-        drugList: [
-          {
-            categoryId: 1,
-            list: [
-              {
-                detail: {
-                  id: 1,
-                  unit: "盒",
-                },
-                count: 3,
-                usage: "口服",
-              },
-              {
-                detail: {
-                  id: 2,
-                  unit: "瓶",
-                },
-                count: 4,
-                usage: "口服",
-              },
-            ],
-          },
-          {
-            categoryId: 2,
-            list: [
-              {
-                detail: {
-                  id: 3,
-                  unit: "盒",
-                },
-                count: 1,
-                usage: "口服",
-              },
-            ],
-          },
-        ],
-        cost: {
-          drug: 5600,
-          management: 1500,
-        },
-      },
+export async function getMedicalRecord({
+  prescriptionId,
+  patientUid,
+}: {
+  prescriptionId: number
+  patientUid: number
+}) {
+  return bget<{ detail: medicalRecord }>({
+    url: "patientApi/getMedicalRecord",
+    query: {
+      prescriptionId,
+      patientUid,
     },
-  }
-  // return bget<{ detail: medicalRecord }>({
-  //   url: "patient/getInquirySheet",
-  //   query: {
-  //     prescriptionId,
-  //   },
-  // })
+  })
 }
 /**
  *   获取患者个人病史列表 filter 中有 patientId

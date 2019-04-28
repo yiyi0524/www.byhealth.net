@@ -61,12 +61,12 @@ export default StyleSheet.create({
   line: {
     flex: 1,
     height: 2,
-    backgroundColor: sColor.mainRed,
+    backgroundColor: sColor.color888,
   },
   activeLine: {
     flex: 1,
     height: 2,
-    backgroundColor: sColor.color888,
+    backgroundColor: sColor.mainRed,
   },
   stepTitle: {
     color: sColor.color888,
