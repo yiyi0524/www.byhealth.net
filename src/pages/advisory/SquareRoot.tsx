@@ -3,7 +3,7 @@ import { BASE_URL } from "@/config/api"
 import * as userAction from "@/redux/actions/user"
 import { AppState } from "@/redux/stores/store"
 import api, { windowWidth } from "@/services/api"
-import { GENDER, GENDER_ZH, addPrescription, PrescriptionDrugCategory } from "@/services/doctor"
+import { addPrescription, GENDER, GENDER_ZH } from "@/services/doctor"
 import { getPatientInfo } from "@/services/patient"
 import { getPersonalInfo } from "@/services/user"
 import { getPicFullUrl } from "@/utils/utils"
@@ -29,13 +29,11 @@ import {
 import { NavigationScreenProp, ScrollView } from "react-navigation"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
-import { Picture } from "./Chat"
-import { MsgType } from "../Ws"
+import { MsgType, Picture } from "./Chat"
 const style = gStyle.advisory.SquareRoot
 interface Props {
   navigation: NavigationScreenProp<State>
 }
-
 interface State {
   isSelectPharmacy: boolean
   isSelectDrug: boolean
@@ -615,7 +613,7 @@ export default class SquareRoot extends Component<
       })
       .catch(err => {
         console.log(err)
-        Toast.fail("发送处方失败, 错误信息: " + err.msg)
+        Toast.fail("发送处方失败, 错误信息: " + err.msg || err)
       })
   }
 }

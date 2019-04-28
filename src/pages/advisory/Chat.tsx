@@ -5,7 +5,7 @@ import * as wsAction from "@/redux/actions/ws"
 import { AppState } from "@/redux/stores/store"
 import pathMap from "@/routes/pathMap"
 import api, { getRegion } from "@/services/api"
-import { GENDER_ZH } from "@/services/doctor"
+import { GENDER_ZH, closeInquiry } from "@/services/doctor"
 import gImg from "@/utils/img"
 import { getPicFullUrl, windowWidth } from "@/utils/utils"
 import { ImagePicker, Portal, TextareaItem, Toast } from "@ant-design/react-native"
@@ -23,6 +23,7 @@ import {
   RefreshControl,
   Text,
   View,
+  DeviceEventEmitter,
 } from "react-native"
 import { TouchableOpacity } from "react-native-gesture-handler"
 import { NavigationScreenProp, ScrollView } from "react-navigation"
@@ -270,7 +271,6 @@ export default class Chat extends Component<
   }
   getInitState = (): State => {
     let patientUid = this.props.navigation.getParam("patientUid")
-
     return {
       shouldScrollToEnd: true,
       hasLoad: false,
@@ -898,6 +898,8 @@ export default class Chat extends Component<
       this.setState({
         isShowBottomPicSelect: !this.state.isShowBottomPicSelect,
       })
+    } else if (v.title === "结束对话") {
+      this.closeInquiry()
     } else {
       console.log("正在进入开方页")
       this.props.navigation.push(v.link, {
@@ -996,5 +998,19 @@ export default class Chat extends Component<
         console.warn(err)
       }
     }
+  }
+  /**
+   * 关闭问诊
+   */
+  closeInquiry = () => {
+    const { patientUid } = this.state
+    closeInquiry({ patientUid })
+      .then(() => {
+        DeviceEventEmitter.emit(pathMap.AdvisoryIndex + "Reload")
+        this.props.navigation.navigate(pathMap.Home)
+      })
+      .catch(err => {
+        Toast.fail("关闭失败,错误信息: " + err.msg)
+      })
   }
 }

@@ -120,7 +120,7 @@ export default class InvitePatients extends Component<
       doctorId: data.doctorInfo.id,
       name: data.info.name,
       technicalTitle: data.doctorInfo.technicalTitle as number,
-      inviteUrl: "https://www.byhealth.net/doctor?id=" + data.doctorInfo.id,
+      inviteUrl: "https://www.byhealth.net/doctor/inquiry?id=" + data.doctorInfo.id,
     })
   }
   onRefresh = () => {
@@ -174,11 +174,11 @@ export default class InvitePatients extends Component<
             </View>
           </View>
         </ScrollView>
-        <View style={style.share}>
+        {/* <View style={style.share}>
           <TouchableOpacity onPress={this.shareBusinessCard}>
             <Text style={[style.shareTitle, global.fontSize14]}>分享二维码名片</Text>
           </TouchableOpacity>
-        </View>
+        </View> */}
       </View>
     )
   }

@@ -343,7 +343,17 @@ export async function addPrescription(data: AddPrescriptionParam) {
     data,
   })
 }
+/**
+ * 关闭问诊
+ */
+export async function closeInquiry(data: { patientUid: number }) {
+  return bpost<{ id: number }>({
+    url: "api/closeInquiry",
+    data,
+  })
+}
 export default {
+  closeInquiry,
   doctorAuth,
   getMsgList,
   getBalance,

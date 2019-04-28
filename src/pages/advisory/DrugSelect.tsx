@@ -76,7 +76,7 @@ export default class Pharmacy extends Component<Props, State> {
       headerLeft: (
         <TouchableOpacity
           onPress={() => {
-            let chooseDrugInfo = navigation.state.params!.navigatePress()
+            let chooseDrugInfo = navigation.state.params!.chooseDrugInfo
             DeviceEventEmitter.emit(pathMap.SquareRoot + "Reload", chooseDrugInfo)
             navigation.goBack()
           }}>

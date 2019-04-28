@@ -8,7 +8,16 @@ import * as wsAction from "@redux/actions/ws"
 import gImg from "@utils/img"
 import gStyle from "@utils/style"
 import React, { Component } from "react"
-import { Image, RefreshControl, ScrollView, Text, TouchableOpacity, View } from "react-native"
+import {
+  Image,
+  RefreshControl,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
+  DeviceEventEmitter,
+  EmitterSubscription,
+} from "react-native"
 import { NavigationScreenProp } from "react-navigation"
 import { Dispatch } from "redux"
 import { Picture } from "./Chat"
@@ -59,6 +68,7 @@ export default class Index extends Component<
   Props & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
   State
 > {
+  subscription?: EmitterSubscription
   constructor(props: any) {
     super(props)
     this.state = this.getInitState()
@@ -72,6 +82,14 @@ export default class Index extends Component<
   }
   componentDidMount() {
     this.init()
+    this.subscription = DeviceEventEmitter.addListener(pathMap.AdvisoryIndex + "Reload", _ => {
+      this.init()
+    })
+  }
+  componentWillUnmount() {
+    if (this.subscription) {
+      this.subscription.remove()
+    }
   }
   init = async () => {
     this.setState({ hasLoad: false })
