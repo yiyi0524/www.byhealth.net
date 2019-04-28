@@ -662,7 +662,7 @@ export default class InvitePatients extends Component<
     <div style="font-size:14px;margin-bottom:8px;">1）如对本声明和隐私内容有任何疑问、意见或建议；</div>
     
     <div style="font-size:14px;margin-bottom:8px;">2）如发现个人信息可能被泄露；</div>
-    <div style="font-size:14px;margin-bottom:8px;">如果您对我们的回复不满意，特别是您认为我们的个人信息处理行为损害了您的合法权益，您还可以通过向青海省海东市平安区有管辖权的法院提起诉讼来寻求解决方案。</div>
+    <div style="font-size:14px;margin-bottom:8px;">如果您对我们的回复不满意，特别是您认为我们的个人信息处理行为损害了您的合法权益，您还可以通过向上海市平安区有管辖权的法院提起诉讼来寻求解决方案。</div>
 </div>
 `
     return (
