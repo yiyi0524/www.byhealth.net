@@ -9,6 +9,7 @@ import { Picture, MsgType } from "./advisory/Chat"
 import { Overwrite } from "utility-types"
 import { JsonReturnCode } from "@/services/api"
 import { Toast } from "@ant-design/react-native"
+import { AppState as RnAppState } from "react-native"
 /**
  * 一条消息
  */
@@ -173,6 +174,9 @@ class Ws extends React.Component<
    * 检查登录状态
    */
   checkLoginStatus = () => {
+    if (RnAppState.currentState !== "active") {
+      return
+    }
     // 如果已登录则检查ws连接状态
     if (this.userIsLogin()) {
       if (!this.wsIsConnect()) {
