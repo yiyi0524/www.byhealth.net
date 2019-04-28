@@ -15,6 +15,7 @@ import DashLine from "@components/DashLine"
 import doctor, { squareRoot, GENDER_ZH } from "@/services/doctor"
 import moment from "moment"
 import hospital from "@/services/hospital"
+import { DrugInfo } from "@/services/patient"
 const style = gStyle.advisory.SquareRootDetail
 const mapStateToProps = (state: AppState) => {
   return {
@@ -44,7 +45,7 @@ interface State {
   prescriptionId: number
   detail: squareRoot
   drugCategoryList: drugCategory[]
-  drugList: drugCategory[]
+  drugList: DrugInfo[]
 }
 @connect(
   mapStateToProps,
