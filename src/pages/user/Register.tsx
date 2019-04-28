@@ -241,7 +241,7 @@ export default class Register extends Component<
     }
     try {
       await api.register(param)
-      Toast.fail("注册成功", 2, () => {
+      Toast.success("注册成功", 2, () => {
         this.props.navigation.navigate(pathMap.Login)
       })
     } catch (err) {
