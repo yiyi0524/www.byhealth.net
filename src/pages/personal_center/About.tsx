@@ -8,7 +8,6 @@ import React, { Component } from "react"
 import {
   Image,
   PixelRatio,
-  Platform,
   RefreshControl,
   ScrollView,
   Text,
@@ -147,13 +146,13 @@ export default class About extends Component<
         <View style={style.bottom}>
           <TouchableOpacity
             onPress={() => {
-              // this.props.navigation.push(pathMap.RegisterAgreement)
+              this.props.navigation.push(pathMap.RegisterAgreement)
             }}>
             <Text style={[style.agreement, global.fontSize14]}>医生注册协议</Text>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => {
-              // this.props.navigation.push(pathMap.LawAgreement)
+              this.props.navigation.push(pathMap.LawAgreement)
             }}>
             <Text style={[style.agreement, global.fontSize14]}>法律申明与隐私政策</Text>
           </TouchableOpacity>

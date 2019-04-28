@@ -27,6 +27,9 @@ export default StyleSheet.create({
   },
   main: {
     flex: 0.9,
-    backgroundColor: sColor.mainBgColor,
+    backgroundColor: sColor.white,
+  },
+  article: {
+    padding: 15,
   },
 })
