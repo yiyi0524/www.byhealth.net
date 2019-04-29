@@ -155,6 +155,18 @@ class Ws extends React.Component<
   }
   componentDidMount() {
     this.checkIsLoginTimer = setInterval(this.checkLoginStatus, 1000)
+    RnAppState.addEventListener("change", state => {
+      if (state === "active") {
+        if (!this.checkIsLoginTimer) {
+          this.checkIsLoginTimer = setInterval(this.checkLoginStatus, 1000)
+        }
+      } else {
+        if (this.checkIsLoginTimer) {
+          clearInterval(this.checkIsLoginTimer)
+          this.checkIsLoginTimer = undefined
+        }
+      }
+    })
     this.props.setWsFn({
       wsGet: this.wsGet,
       wsPost: this.wsPost,
@@ -165,6 +177,10 @@ class Ws extends React.Component<
     let { checkIsLoginTimer, pingTimer } = this
     checkIsLoginTimer && clearInterval(checkIsLoginTimer)
     pingTimer && clearInterval(pingTimer)
+    RnAppState.removeEventListener("change", state => {
+      // 我不知道这里为什么会要回调函数
+      console.log(state)
+    })
   }
   init = async () => {
     let session = await storage.get("session")
