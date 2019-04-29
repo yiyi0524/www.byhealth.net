@@ -64,9 +64,9 @@ export interface inquirySheet {
   state: string //用户情况,症状与病情
   lingualSurfacePicList: Picture[] //舌面照
   dialoguePicList: Picture[] //对话照片
-  problems: Problem //问题列表
+  problems: InquirySheet //问题列表
 }
-export interface Problem {
+export interface InquirySheet {
   type: number
   subjectList: subject[]
 }
@@ -153,11 +153,11 @@ export async function listMedicalRecord({ page = -1, limit = -1, filter }: GetLi
 /**
  *   获取患者问诊单问题
  */
-export async function inquirySheet({ uid }: { uid: number }) {
-  return bget<{ detail: Problem }>({
-    url: "InquirySheet",
+export async function inquirySheet({ consultationId }: { consultationId: number }) {
+  return bget<{ detail: InquirySheet }>({
+    url: "patient/inquirySheet",
     query: {
-      uid,
+      consultationId,
     },
   })
 }

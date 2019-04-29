@@ -304,7 +304,6 @@ export default StyleSheet.create({
     flex: 1,
     borderBottomWidth: 1 / PixelRatio.get(),
     borderBottomColor: sColor.colorDdd,
-    marginBottom: 8,
   },
   inquirySheetName: {
     color: sColor.color888,
@@ -313,7 +312,9 @@ export default StyleSheet.create({
     color: sColor.color888,
     paddingLeft: 20,
   },
-  inquirySheetList: {},
+  inquirySheetList: {
+    marginTop: 8,
+  },
   inquirySheetItem: {
     marginBottom: 8,
   },

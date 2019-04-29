@@ -543,14 +543,14 @@ export default class PatientDetail extends Component<
             })}
           </View>
         </ScrollView>
-        {/*<View
+        {/* <View
           style={[
             style.bottomBtn,
             global.flex,
             global.alignItemsCenter,
             global.justifyContentSpaceBetween,
           ]}>
-           <TouchableOpacity
+          <TouchableOpacity
             onPress={() => {
               this.props.navigation.navigate(pathMap.AdvisoryChat, {
                 patientName: this.state.patientInfo.name,
@@ -564,8 +564,8 @@ export default class PatientDetail extends Component<
               this.props.navigation.push(pathMap.SquareRoot, { patientUid: this.state.uid })
             }>
             <Text style={[style.bottomTitle, global.fontSize14, global.fontStyle]}>开方</Text>
-          </TouchableOpacity> 
-        </View>*/}
+          </TouchableOpacity>
+        </View> */}
 
         {/* 图片查看器 */}
         <View style={this.state.isShowMode ? style.showMode : global.hidden}>
