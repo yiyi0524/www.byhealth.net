@@ -238,8 +238,10 @@ class Ws extends React.Component<
     }
     this.props.changeWsStatus({ status: WebSocket.CLOSED })
     if (this.shouldReConnect) {
-      console.log("正在重连")
-      setTimeout(this.reConnect, 1000)
+      if (!this.client || (this.client && this.client.readyState === WebSocket.CLOSED)) {
+        console.log("正在重连")
+        setTimeout(this.reConnect, 1000)
+      }
     }
   }
   onError = (evt: Event) => {
