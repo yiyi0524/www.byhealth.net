@@ -30,6 +30,7 @@ export interface communicationItem {
   ctime: string
   consultStyle: number
   isInquiryPatient: boolean
+  consultationId: number
 }
 interface State {
   hasLoad: boolean
@@ -216,10 +217,18 @@ export default class Index extends Component<
                       if (!this.state.hasRealNameAuth) {
                         return Toast.info("您未认证完成", 1)
                       }
-                      this.props.navigation.push(pathMap.PatientDetail, {
-                        title: v.name,
-                        patientUid: v.uid,
-                      })
+                      if (v.isInquiryPatient) {
+                        this.props.navigation.push(pathMap.AdvisoryMedicalRecord, {
+                          title: v.name,
+                          patientUid: v.uid,
+                          consultationId: v.consultationId,
+                        })
+                      } else {
+                        this.props.navigation.push(pathMap.PatientDetail, {
+                          title: v.name,
+                          patientUid: v.uid,
+                        })
+                      }
                     }}>
                     <View style={style.communicationItemPicture}>
                       <Image

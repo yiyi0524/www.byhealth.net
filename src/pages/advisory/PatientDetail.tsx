@@ -178,12 +178,12 @@ export default class PatientDetail extends Component<
       let { data: patientInfo } = await patientApi.getPatientInfo({
         uid,
       })
+      let { consultationId } = this.state
       let {
         data: { detail: inquirySheet },
       } = await patientApi.inquirySheet({
-        consultationId: this.state.consultationId,
+        consultationId,
       })
-      console.log(patientInfo)
       let {
         data: { list: medicalRecordList },
       } = await patientApi.listMedicalRecord({
@@ -378,12 +378,10 @@ export default class PatientDetail extends Component<
           <View style={style.inquirySheet}>
             <TouchableOpacity
               onPress={() => {
-                if (this.state.showInquirySheet) {
-                  this.setState({
-                    showInquirySheet: !this.state.showInquirySheet,
-                    inquirySheetIcon: this.state.showInquirySheet ? "up" : "down",
-                  })
-                }
+                this.setState({
+                  showInquirySheet: !this.state.showInquirySheet,
+                  inquirySheetIcon: this.state.showInquirySheet ? "down" : "up",
+                })
               }}>
               <View
                 style={[

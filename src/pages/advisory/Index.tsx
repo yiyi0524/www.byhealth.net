@@ -201,6 +201,7 @@ export default class Index extends Component<
                     this.props.navigation.push(pathMap.AdvisoryChat, {
                       patientUid: consultation.patientUid,
                       patientName: consultation.name,
+                      consultationId: consultation.id,
                     })
                   }>
                   <View style={style.baseInformation}>
