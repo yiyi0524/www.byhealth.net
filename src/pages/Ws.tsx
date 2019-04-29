@@ -327,7 +327,9 @@ class Ws extends React.Component<
   }
   sendMsg = (frame: SendFrame): boolean => {
     if (!this.client || !this.wsIsConnect()) {
-      Toast.fail("未连接,无法发送消息")
+      if (frame.url !== "/ws/ping") {
+        Toast.fail("未连接,无法发送消息")
+      }
       return false
     }
     frame.arguments = frame.arguments || {}
