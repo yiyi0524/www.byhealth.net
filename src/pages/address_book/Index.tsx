@@ -29,6 +29,7 @@ export interface communicationItem {
   phone: string
   ctime: string
   consultStyle: number
+  isInquiryPatient: boolean
 }
 interface State {
   hasLoad: boolean
