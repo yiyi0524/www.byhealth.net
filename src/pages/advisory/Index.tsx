@@ -199,7 +199,7 @@ export default class Index extends Component<
                   ]}
                   onPress={() =>
                     this.props.navigation.push(pathMap.AdvisoryChat, {
-                      patientUid: consultation.patientUid,
+                      consultationId: consultation.id,
                       patientName: consultation.name,
                     })
                   }>

@@ -18,6 +18,7 @@ import {
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
 import gImg from "@utils/img"
+import { customerServicePhone, customerServiceQq, customerServiceWeChat } from "@/config/api"
 const style = gStyle.personalCenter.customerService
 const global = gStyle.global
 interface Props {
@@ -82,20 +83,20 @@ export default class CustomerService extends Component<
     this.list = [
       {
         icon: gImg.advisory.customerServicePhone,
-        name: "电话: 0523-86057008",
-        link: "0523-86057008",
+        name: "电话: " + customerServicePhone,
+        link: customerServicePhone,
         type: "phone",
       },
       {
         icon: gImg.advisory.customerServiceQQ,
-        name: "QQ: 23455666777",
-        link: "23455666777",
+        name: "QQ: " + customerServiceQq,
+        link: customerServiceQq,
         type: "qq",
       },
       {
         icon: gImg.advisory.customerServiceWeixin,
-        name: "微信: 23455666777",
-        link: "23455666777",
+        name: "微信: " + customerServiceWeChat,
+        link: customerServiceWeChat,
         type: "weixin",
       },
     ]

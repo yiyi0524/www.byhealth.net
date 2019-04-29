@@ -28,6 +28,7 @@ import SquareRootDetail from "@/assets/styles/advisory/squareRootDetail"
 import PrescriptionDetail from "@/assets/styles/index/PrescriptionDetail"
 import RegisterAgreement from "@/assets/styles/common/registerAgreement"
 import LawAgreement from "@/assets/styles/common/lawAgreement"
+import AdvisoryPatientDetail from "@/assets/styles/advisory/patientDetail"
 export default {
   home,
   global,
@@ -49,6 +50,7 @@ export default {
     SquareRoot,
     DrugSelect,
     SquareRootDetail,
+    AdvisoryPatientDetail,
   },
   addressBook: {
     AddressBookIndex,

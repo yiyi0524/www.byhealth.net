@@ -212,8 +212,9 @@ export default class Chat extends Component<
       headerRight: (
         <TouchableOpacity
           onPress={() =>
-            navigation.push(pathMap.PatientDetail, {
+            navigation.push(pathMap.AdvisoryMedicalRecord, {
               patientUid: navigation.getParam("patientUid"),
+              consultationId: navigation.getParam("consultationId"),
             })
           }>
           <Text style={[style.headerRight, global.fontSize14, global.fontStyle]}>病历</Text>
@@ -891,6 +892,7 @@ export default class Chat extends Component<
     } else if (v.title === "收起") {
       this.setState({
         isShowBottomNav: false,
+        isShowBottomPicSelect: false,
       })
       v.title = "更多功能"
       v.icon = gImg.advisory.show

@@ -17,6 +17,8 @@ import {
   View,
   DeviceEventEmitter,
   EmitterSubscription,
+  BackHandler,
+  NativeEventSubscription,
 } from "react-native"
 import { NavigationScreenProp } from "react-navigation"
 import { connect } from "react-redux"
@@ -79,6 +81,7 @@ export default class Home extends Component<
 > {
   shortcutList: ShortcutItem[] = []
   subscription?: EmitterSubscription
+  loginStatus?: NativeEventSubscription
   constructor(props: any) {
     super(props)
     this.state = this.getInitState()
@@ -155,11 +158,24 @@ export default class Home extends Component<
       console.log("首页被刷新")
       this.init()
     })
+    this.loginStatus = BackHandler.addEventListener(
+      "hardwareBackPress",
+      this.addEventListenerLoginStatus,
+    )
     this.init()
   }
   componentWillUnmount() {
     if (this.subscription) {
       this.subscription.remove()
+    }
+    if (this.loginStatus) {
+      this.loginStatus.remove()
+    }
+  }
+  addEventListenerLoginStatus = async () => {
+    let isLogin = await api.isLogin()
+    if (!isLogin) {
+      this.props.navigation.navigate(pathMap.Login)
     }
   }
   init = async () => {

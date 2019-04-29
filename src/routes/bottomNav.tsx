@@ -22,6 +22,7 @@ import SquareRootDetail from "@pages/advisory/SquareRootDetail"
 import PrescriptionDetail from "@pages/index/PrescriptionDetail"
 import RegisterAgreement from "@pages/common/RegisterAgreement"
 import LawAgreement from "@pages/common/LawAgreement"
+import AdvisoryMedicalRecord from "@pages/advisory/PatientDetail"
 import Home from "@pages/Home"
 import Test from "@pages/Test"
 import RealNameAuth from "@pages/user/RealNameAuth"
@@ -264,6 +265,9 @@ const StacksOverTabs = createStackNavigator({
   },
   [pathMap.LawAgreement]: {
     screen: LawAgreement,
+  },
+  [pathMap.AdvisoryMedicalRecord]: {
+    screen: AdvisoryMedicalRecord,
   },
 })
 export default StacksOverTabs

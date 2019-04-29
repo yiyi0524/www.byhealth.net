@@ -30,7 +30,7 @@ export default StyleSheet.create({
   },
   main: {
     backgroundColor: sColor.mainBgColor,
-    flex: 1,
+    flex: 0.9,
   },
   header: {
     padding: 15,

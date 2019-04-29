@@ -29,4 +29,5 @@ export default {
   PrescriptionDetail: "PrescriptionDetail",
   RegisterAgreement: "RegisterAgreement",
   LawAgreement: "LawAgreement",
+  AdvisoryMedicalRecord: "AdvisoryMedicalRecord",
 }

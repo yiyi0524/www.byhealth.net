@@ -81,7 +81,6 @@ export default StyleSheet.create({
   subBtn: {
     marginLeft: 15,
     marginRight: 15,
-    flex: 1,
   },
   subBtnName: {
     height: 45,

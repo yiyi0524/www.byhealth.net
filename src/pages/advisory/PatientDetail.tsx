@@ -3,15 +3,12 @@ import { AppState } from "@/redux/stores/store"
 import pathMap from "@/routes/pathMap"
 import api from "@/services/api"
 import { GENDER, GENDER_ZH } from "@/services/doctor"
-import hospital from "@/services/hospital"
 import { getPicFullUrl } from "@/utils/utils"
 import { Icon, Toast } from "@ant-design/react-native"
-import { IconNames } from "@ant-design/react-native/lib/icon"
-import patientApi, { Drug } from "@api/patient"
+import patientApi, { Drug, Problem } from "@api/patient"
 import sColor from "@styles/color"
 import gImg from "@utils/img"
 import gStyle from "@utils/style"
-import moment from "moment"
 import React, { Component } from "react"
 import { Image, PixelRatio, RefreshControl, ScrollView, Text, View } from "react-native"
 import { TouchableOpacity } from "react-native-gesture-handler"
@@ -19,7 +16,10 @@ import { NavigationScreenProp } from "react-navigation"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
 import { Picture } from "../advisory/Chat"
-const style = gStyle.addressBook.PatientDetail
+import moment from "moment"
+import hospital from "@/services/hospital"
+import { IconNames } from "@ant-design/react-native/lib/icon"
+const style = gStyle.advisory.AdvisoryPatientDetail
 const global = gStyle.global
 /**
  * 患者信息
@@ -87,6 +87,7 @@ interface State {
   region: Region[]
   medicalRecordList: MedicalRecord[]
   drugList: drugCategory[]
+  inquirySheet: Problem
 }
 interface drugCategory {
   id: number
@@ -108,7 +109,7 @@ export default class PatientDetail extends Component<
   State
 > {
   static navigationOptions = () => ({
-    title: "患者档案",
+    title: "病历",
     headerStyle: {
       backgroundColor: sColor.white,
       height: 50,
@@ -163,12 +164,21 @@ export default class PatientDetail extends Component<
       },
       medicalRecordList: [],
       drugList: [],
+      inquirySheet: {
+        type: 0,
+        subjectList: [],
+      },
     }
   }
   init = async () => {
     let { uid } = this.state
     try {
       let { data: patientInfo } = await patientApi.getPatientInfo({
+        uid,
+      })
+      let {
+        data: { detail: inquirySheet },
+      } = await patientApi.inquirySheet({
         uid,
       })
       console.log(patientInfo)
@@ -191,6 +201,7 @@ export default class PatientDetail extends Component<
         medicalRecordList,
         region,
         drugList,
+        inquirySheet,
       })
     } catch (err) {
       console.log(err)
@@ -277,7 +288,7 @@ export default class PatientDetail extends Component<
               </View>
             </View>
           </View>
-          {/* <View
+          <View
             style={[
               style.physicalQuality,
               global.flex,
@@ -334,7 +345,6 @@ export default class PatientDetail extends Component<
               </Text>
             </View>
           </View>
-          */}
           <View style={style.medicalRecordPic}>
             <View style={style.medicalRecordPicTitle}>
               <Text style={[style.medicalRecordPicTitleName, global.fontSize14, global.fontStyle]}>
@@ -362,6 +372,51 @@ export default class PatientDetail extends Component<
               })}
               {patientInfo.hospitalMedicalRecordPicList.length === 0 ? <Text>暂无</Text> : null}
             </View>
+          </View>
+          <View style={style.inquirySheet}>
+            <TouchableOpacity
+              onPress={() => {
+                if (this.state.showInquirySheet) {
+                  this.setState({
+                    showInquirySheet: !this.state.showInquirySheet,
+                    inquirySheetIcon: this.state.showInquirySheet ? "up" : "down",
+                  })
+                }
+              }}>
+              <View
+                style={[
+                  style.inquirySheetTitle,
+                  global.flex,
+                  global.alignItemsCenter,
+                  global.justifyContentSpaceBetween,
+                ]}>
+                <Text style={[style.inquirySheetName, global.fontSize14, global.fontStyle]}>
+                  问诊单问题
+                </Text>
+                <Icon
+                  style={[style.inquirySheetIcon, global.fontSize16]}
+                  name={this.state.inquirySheetIcon}
+                />
+              </View>
+              <View style={this.state.showInquirySheet ? style.inquirySheetList : global.hidden}>
+                {this.state.inquirySheet.subjectList.map((v, k) => {
+                  return (
+                    <View style={style.inquirySheetItem} key={k}>
+                      <Text style={[global.fontSize14, style.inquirySheetQuestion]}>{v.title}</Text>
+                      <Text style={[global.fontSize14, style.inquirySheetAnswer]}>
+                        {v.answer.map(v1 => {
+                          for (let i = 0; i < v.options.length; i++) {
+                            if (i === v1) {
+                              return v.options[i].title + "、"
+                            }
+                          }
+                        })}
+                      </Text>
+                    </View>
+                  )
+                })}
+              </View>
+            </TouchableOpacity>
           </View>
           <View
             style={[
@@ -543,14 +598,14 @@ export default class PatientDetail extends Component<
             })}
           </View>
         </ScrollView>
-        {/*<View
+        <View
           style={[
             style.bottomBtn,
             global.flex,
             global.alignItemsCenter,
             global.justifyContentSpaceBetween,
           ]}>
-           <TouchableOpacity
+          <TouchableOpacity
             onPress={() => {
               this.props.navigation.navigate(pathMap.AdvisoryChat, {
                 patientName: this.state.patientInfo.name,
@@ -564,8 +619,8 @@ export default class PatientDetail extends Component<
               this.props.navigation.push(pathMap.SquareRoot, { patientUid: this.state.uid })
             }>
             <Text style={[style.bottomTitle, global.fontSize14, global.fontStyle]}>开方</Text>
-          </TouchableOpacity> 
-        </View>*/}
+          </TouchableOpacity>
+        </View>
 
         {/* 图片查看器 */}
         <View style={this.state.isShowMode ? style.showMode : global.hidden}>

@@ -150,10 +150,22 @@ export async function listMedicalRecord({ page = -1, limit = -1, filter }: GetLi
     },
   })
 }
+/**
+ *   获取患者问诊单问题
+ */
+export async function inquirySheet({ uid }: { uid: number }) {
+  return bget<{ detail: Problem }>({
+    url: "InquirySheet",
+    query: {
+      uid,
+    },
+  })
+}
 export default {
   getAddressBoolPatientList,
   getPatientInfo,
   getInquirySheet,
   getMedicalRecord,
   listMedicalRecord,
+  inquirySheet,
 }
