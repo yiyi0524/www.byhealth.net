@@ -157,6 +157,7 @@ export function getInquirySetup() {
     allowInquiry: number
     initialPrice: number
     followUpPrice: number
+    percentageOfCommission: number
   }>({
     url: "api/getInquirySetup",
   })
@@ -164,18 +165,15 @@ export function getInquirySetup() {
 /**
  * 设置复诊规则
  */
-export function setInquirySetup({
-  allowInquiry,
-  initialPrice,
-  followUpPrice,
-}: {
+export function setInquirySetup(data: {
   allowInquiry: number
   initialPrice: number
   followUpPrice: number
+  percentageOfCommission: number
 }) {
   return bpost({
     url: "api/setInquirySetup",
-    data: { allowInquiry, initialPrice, followUpPrice },
+    data,
   })
 }
 /**

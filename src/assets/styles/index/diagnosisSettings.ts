@@ -74,10 +74,20 @@ export default StyleSheet.create({
     color: sColor.color333,
     flex: 1,
   },
+  itemInputTitle: {
+    color: sColor.color333,
+    flex: 1,
+  },
   itemDescription: {
     color: sColor.color888,
   },
   itemDetail: {},
+  itemInput: {
+    width: 70,
+    fontSize: 14,
+    color: sColor.mainRed,
+    textAlign: "right",
+  },
   important: {
     color: sColor.mainRed,
   },

@@ -1,7 +1,7 @@
 import * as userAction from "@/redux/actions/user"
 import { AppState } from "@/redux/stores/store"
 import doctor, { ALLOW_INQUIRY } from "@/services/doctor"
-import { Icon, Switch, Toast } from "@ant-design/react-native"
+import { Icon, Switch, Toast, InputItem } from "@ant-design/react-native"
 import sColor from "@styles/color"
 import gImg from "@utils/img"
 import gStyle from "@utils/style"
@@ -24,6 +24,7 @@ interface State {
   allowInquiry: number // 开启问诊
   isSelectDisturbanceFreePeriod: boolean
   initialPrice: number
+  percentageOfCommission: string
   followUpPrice: number
   isSelectInitialPrice: boolean
   isSelectFollowUpPrice: boolean
@@ -92,7 +93,8 @@ export default class DiagnosisSettings extends Component<
       ],
       // prettier-ignore
       followUpReviewPriceList: [1,2,3,4,5,6,7,8,9,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100,110,120,130,140,150,160,170,180,190,200,210,220,230,240,250,260,270,280,290,300,350,400,450,500,600,700,800,900,1000,1100,1200,1300,1400,1500,1600,1700,1800,1900,2000,
-      ]
+      ],
+      percentageOfCommission: "0",
     }
   }
   componentDidMount() {
@@ -100,13 +102,15 @@ export default class DiagnosisSettings extends Component<
   }
   init = async () => {
     const {
-      data: { allowInquiry, followUpPrice, initialPrice },
+      data: { allowInquiry, followUpPrice, initialPrice, percentageOfCommission },
     } = await doctor.getInquirySetup()
+    console.log(allowInquiry, followUpPrice, initialPrice, percentageOfCommission)
     this.setState({
       hasLoad: true,
       allowInquiry,
       followUpPrice,
       initialPrice,
+      percentageOfCommission: percentageOfCommission + "",
     })
   }
   onRefresh = () => {
@@ -126,11 +130,16 @@ export default class DiagnosisSettings extends Component<
       allowInquiry,
     })
     try {
-      let { followUpPrice, initialPrice } = this.state
+      let { followUpPrice, initialPrice, percentageOfCommission, allowInquiry } = this.state
+      let percentageOfCommissionInt = parseInt(percentageOfCommission)
+      if (isNaN(percentageOfCommissionInt)) {
+        percentageOfCommissionInt = 1
+      }
       await doctor.setInquirySetup({
-        allowInquiry,
         followUpPrice,
         initialPrice,
+        percentageOfCommission: percentageOfCommissionInt,
+        allowInquiry,
       })
       DeviceEventEmitter.emit(pathMap.Home + "Reload")
       Toast.success("设置成功", 1)
@@ -146,11 +155,16 @@ export default class DiagnosisSettings extends Component<
   }
   setInitialPrice = async () => {
     try {
-      let { allowInquiry, followUpPrice, initialPrice } = this.state
+      let { allowInquiry, followUpPrice, initialPrice, percentageOfCommission } = this.state
+      let percentageOfCommissionInt = parseInt(percentageOfCommission)
+      if (isNaN(percentageOfCommissionInt)) {
+        percentageOfCommissionInt = 1
+      }
       await doctor.setInquirySetup({
         allowInquiry,
         followUpPrice,
         initialPrice,
+        percentageOfCommission: percentageOfCommissionInt,
       })
       Toast.success("设置复诊价格成功", 1)
     } catch (err) {
@@ -160,11 +174,16 @@ export default class DiagnosisSettings extends Component<
   }
   setFollowUpReviewPrice = async () => {
     try {
-      let { allowInquiry, followUpPrice, initialPrice } = this.state
+      let { allowInquiry, followUpPrice, initialPrice, percentageOfCommission } = this.state
+      let percentageOfCommissionInt = parseInt(percentageOfCommission)
+      if (isNaN(percentageOfCommissionInt)) {
+        percentageOfCommissionInt = 1
+      }
       await doctor.setInquirySetup({
         allowInquiry,
         followUpPrice,
         initialPrice,
+        percentageOfCommission: percentageOfCommissionInt,
       })
       Toast.success("设置后续复诊价格成功", 1)
     } catch (err) {
@@ -272,6 +291,46 @@ export default class DiagnosisSettings extends Component<
                 </View>
               </View>
             </TouchableOpacity>
+            <View
+              style={[
+                style.item,
+                global.flex,
+                global.alignItemsCenter,
+                global.justifyContentSpaceBetween,
+              ]}>
+              <Text style={[style.itemInputTitle, global.fontSize14]}>请输入药品抽成费比率(%)</Text>
+              <View
+                style={[global.flex, global.alignItemsCenter, global.justifyContentSpaceBetween]}>
+                <View style={style.itemInput}>
+                  <InputItem
+                    type="digit"
+                    style={style.itemInput}
+                    last
+                    placeholder="0"
+                    value={this.state.percentageOfCommission}
+                    onChange={percentageOfCommission => {
+                      let percentageOfCommissionVal = parseInt(percentageOfCommission)
+                      if (isNaN(percentageOfCommissionVal)) {
+                        this.setState({
+                          percentageOfCommission: "",
+                        })
+                        return
+                      }
+                      if (percentageOfCommissionVal < 1) {
+                        percentageOfCommissionVal = 1
+                      } else if (percentageOfCommissionVal > 100) {
+                        percentageOfCommissionVal = 100
+                      }
+                      this.setState({
+                        percentageOfCommission: percentageOfCommissionVal + "",
+                      })
+                    }}
+                    onBlur={this.setFollowUpReviewPrice}
+                  />
+                </View>
+                <Icon style={[style.itemIcon, global.fontSize14]} name="right" />
+              </View>
+            </View>
           </View>
         </ScrollView>
         {/* 选择复诊价格 */}
