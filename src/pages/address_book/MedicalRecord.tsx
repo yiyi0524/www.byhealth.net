@@ -108,7 +108,7 @@ export default class InquirySheet extends Component<
         drugList: [],
         time: "",
         cost: {
-          totalFee: 0,
+          drugCost: 0,
           doctorServiceCost: 0,
           expressCost: 0,
         },
@@ -258,11 +258,7 @@ export default class InquirySheet extends Component<
               ]}>
               <Text style={[style.costTitle, global.fontSize14]}>药费</Text>
               <Text style={[style.costTitle, global.fontSize14]}>
-                ¥{" "}
-                {(
-                  (detail.cost.totalFee - detail.cost.doctorServiceCost - detail.cost.expressCost) /
-                  100
-                ).toFixed(2)}
+                ¥ {(detail.cost.drugCost / 100).toFixed(2)}
               </Text>
             </View>
             <View
@@ -300,7 +296,11 @@ export default class InquirySheet extends Component<
                 总计<Text style={[style.costDetail, global.fontSize12]}>(不含代煎)</Text>
               </Text>
               <Text style={[style.costTitle, global.fontSize14]}>
-                ¥ {(detail.cost.totalFee / 100).toFixed(2)}
+                ¥{" "}
+                {(
+                  (detail.cost.drugCost + detail.cost.doctorServiceCost + detail.cost.expressCost) /
+                  100
+                ).toFixed(2)}
               </Text>
             </View>
           </View>

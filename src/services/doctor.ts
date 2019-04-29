@@ -265,7 +265,7 @@ export interface squareRoot {
   advice: string //医嘱
   drugList: Drug[]
   cost: {
-    totalFee: number
+    drugCost: number
     doctorServiceCost: number
     expressCost: number
   }
@@ -297,7 +297,7 @@ export interface prescriptionDetail {
   advice: string //医嘱
   drugList: Drug[]
   cost: {
-    totalFee: number
+    drugCost: number
     doctorServiceCost: number
     expressCost: number
   }

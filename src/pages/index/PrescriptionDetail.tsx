@@ -99,7 +99,7 @@ export default class SquareRoot extends Component<
         advice: "", //医嘱
         drugList: [],
         cost: {
-          totalFee: 0,
+          drugCost: 0,
           doctorServiceCost: 0,
           expressCost: 0,
         },
@@ -385,11 +385,7 @@ export default class SquareRoot extends Component<
               ]}>
               <Text style={[style.diagnosisItemTitle, global.fontSize14]}>药费</Text>
               <Text style={[style.diagnosisItemTitle, global.fontSize14]}>
-                ¥{" "}
-                {(
-                  (detail.cost.totalFee - detail.cost.doctorServiceCost - detail.cost.expressCost) /
-                  100
-                ).toFixed(2)}
+                ¥ {(detail.cost.drugCost / 100).toFixed(2)}
               </Text>
             </View>
             <View
@@ -426,7 +422,11 @@ export default class SquareRoot extends Component<
               ]}>
               <Text style={[style.diagnosisItemTitle, global.fontSize14]}>总计</Text>
               <Text style={[style.diagnosisItemAll, global.fontSize15]}>
-                ¥ {(detail.cost.totalFee / 100).toFixed(2)}
+                ¥{" "}
+                {(
+                  (detail.cost.doctorServiceCost + detail.cost.drugCost + detail.cost.expressCost) /
+                  100
+                ).toFixed(2)}
               </Text>
             </View>
           </View>

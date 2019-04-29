@@ -113,7 +113,7 @@ export interface medicalRecord {
   syndromeDifferentiation: string //辩证
   drugList: Drug[]
   cost: {
-    totalFee: number
+    drugCost: number
     doctorServiceCost: number
     expressCost: number
   }
