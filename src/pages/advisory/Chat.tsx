@@ -1011,7 +1011,7 @@ export default class Chat extends Component<
         style: "cancel",
       },
       {
-        text: "OK",
+        text: "确认",
         onPress: () => {
           closeInquiry({ patientUid })
             .then(() => {

@@ -1,32 +1,45 @@
 import global from "@/assets/styles/global"
 import * as userAction from "@/redux/actions/user"
 import { AppState } from "@/redux/stores/store"
+import pathMap from "@/routes/pathMap"
 import {
+  Icon,
+  ImagePicker,
+  InputItem,
+  Picker,
+  Portal,
+  TextareaItem,
+  Toast,
+} from "@ant-design/react-native"
+import api, { TYPE } from "@api/api"
+import doctorApi, {
+  authParam,
+  GENDER,
+  GENDER_ZH,
+  STATUS,
+  TECHNICAL_TITLE,
+  TECHNICAL_TITLE_ZH,
+} from "@api/doctor"
+import hospitalApi from "@api/hospital"
+import { BASE_URL } from "@config/api"
+import sColor from "@styles/color"
+import gImg from "@utils/img"
+import gStyle from "@utils/style"
+import React, { Component } from "react"
+import {
+  DeviceEventEmitter,
+  Image,
+  PermissionsAndroid,
+  Platform,
   ScrollView,
   Text,
   TouchableOpacity,
   View,
-  Platform,
-  PermissionsAndroid,
-  Image,
-  DeviceEventEmitter,
 } from "react-native"
-import { Icon, InputItem, Picker, Toast, ImagePicker, TextareaItem } from "@ant-design/react-native"
-import api, { TYPE } from "@api/api"
-import doctorApi, { authParam, STATUS } from "@api/doctor"
-import { BASE_URL } from "@config/api"
-import hospitalApi from "@api/hospital"
-import gStyle from "@utils/style"
-import React, { Component } from "react"
 import { NavigationScreenProp } from "react-navigation"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
-import sColor from "@styles/color"
-import gImg from "@utils/img"
-import { GENDER, GENDER_ZH, TECHNICAL_TITLE, TECHNICAL_TITLE_ZH } from "@api/doctor"
-import user from "@/services/user"
 import { Picture } from "../advisory/Chat"
-import pathMap from "@/routes/pathMap"
 const style = gStyle.user.realNameAuth
 interface Props {
   navigation: NavigationScreenProp<State>
@@ -517,6 +530,7 @@ export default class RealNameAuth extends Component<
   handleFileChange = (avatar: any, operationType: string) => {
     let avatarSelectable = avatar.length < 1
     if (operationType === "add") {
+      const key = Toast.loading("正在上传头像")
       api
         .uploadImg(avatar[avatar.length - 1])
         .then(json => {
@@ -529,8 +543,11 @@ export default class RealNameAuth extends Component<
             avatar,
             avatarSelectable,
           })
+          Portal.remove(key)
         })
         .catch(err => {
+          Portal.remove(key)
+          Toast.fail("上传失败, 图片过大或网络失败, 请重新上传 ", 3)
           console.log(err)
         })
     } else if (operationType === "remove") {
@@ -547,6 +564,7 @@ export default class RealNameAuth extends Component<
   ) => {
     let practisingCertificatePicIdSelectable = practisingCertificatePicList.length < 2
     if (operationType === "add") {
+      const key = Toast.loading("正在上传中")
       api
         .uploadImg(practisingCertificatePicList[practisingCertificatePicList.length - 1])
         .then(json => {
@@ -558,8 +576,11 @@ export default class RealNameAuth extends Component<
             practisingCertificatePicList,
             practisingCertificatePicIdSelectable,
           })
+          Portal.remove(key)
         })
         .catch(err => {
+          Portal.remove(key)
+          Toast.fail("上传失败", 3)
           console.log(err)
         })
     } else if (operationType === "remove") {
@@ -575,6 +596,7 @@ export default class RealNameAuth extends Component<
   ) => {
     let qualificationCertificatePicIdSelectable = qualificationCertificatePicList.length < 2
     if (operationType === "add") {
+      const key = Toast.loading("正在上传中")
       api
         .uploadImg(qualificationCertificatePicList[qualificationCertificatePicList.length - 1])
         .then(json => {
@@ -586,8 +608,11 @@ export default class RealNameAuth extends Component<
             qualificationCertificatePicList,
             qualificationCertificatePicIdSelectable,
           })
+          Portal.remove(key)
         })
         .catch(err => {
+          Portal.remove(key)
+          Toast.fail("上传失败", 3)
           console.log(err)
         })
     } else if (operationType === "remove") {
@@ -604,6 +629,7 @@ export default class RealNameAuth extends Component<
     let technicalqualificationCertificatePicIdSelectable =
       technicalqualificationCertificatePicList.length < 9
     if (operationType === "add") {
+      const key = Toast.loading("正在上传中")
       api
         .uploadImg(
           technicalqualificationCertificatePicList[
@@ -621,8 +647,11 @@ export default class RealNameAuth extends Component<
             technicalqualificationCertificatePicList,
             technicalqualificationCertificatePicIdSelectable,
           })
+          Portal.remove(key)
         })
         .catch(err => {
+          Portal.remove(key)
+          Toast.fail("上传失败", 3)
           console.log(err)
         })
     } else if (operationType === "remove") {

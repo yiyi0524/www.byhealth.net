@@ -407,17 +407,17 @@ export default class SquareRoot extends Component<
                         <Text
                           style={[style.drugItemLeftTitle, global.fontSize14]}
                           numberOfLines={1}>
-                          {list[drugId].info.name}
+                          {list[drugId].info.name || "未命名"}
                         </Text>
                         <Text
                           style={[style.drugItemLeftDetail, global.fontSize12]}
                           numberOfLines={1}>
-                          {list[drugId].info.standard}
+                          {list[drugId].info.standard || "暂无规格"}
                         </Text>
                         <Text
                           style={[style.drugItemLeftDetail, global.fontSize12]}
                           numberOfLines={1}>
-                          {list[drugId].info.manufacturer}
+                          {list[drugId].info.manufacturer || "暂无厂商"}
                         </Text>
                       </View>
                       <View style={style.drugItemRight}>
