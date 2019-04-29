@@ -5,7 +5,7 @@ import api from "@/services/api"
 import { GENDER, GENDER_ZH } from "@/services/doctor"
 import { getPicFullUrl } from "@/utils/utils"
 import { Icon, Toast } from "@ant-design/react-native"
-import patientApi, { Drug, Problem } from "@api/patient"
+import patientApi, { Drug, InquirySheet } from "@api/patient"
 import sColor from "@styles/color"
 import gImg from "@utils/img"
 import gStyle from "@utils/style"
@@ -81,13 +81,14 @@ interface State {
   refreshing: boolean
   isShowMode: boolean
   uid: number
+  consultationId: number
   inquirySheetIcon: IconNames
   patientInfo: PatientInfo
   showImg: any
   region: Region[]
   medicalRecordList: MedicalRecord[]
   drugList: drugCategory[]
-  inquirySheet: Problem
+  inquirySheet: InquirySheet
 }
 interface drugCategory {
   id: number
@@ -141,6 +142,7 @@ export default class PatientDetail extends Component<
       inquirySheetIcon: "down",
       showImg: gImg.common.defaultAvatar,
       uid: this.props.navigation.getParam("patientUid"),
+      consultationId: this.props.navigation.getParam("consultationId"),
       region: [],
       patientInfo: {
         name: "",
@@ -179,7 +181,7 @@ export default class PatientDetail extends Component<
       let {
         data: { detail: inquirySheet },
       } = await patientApi.inquirySheet({
-        uid,
+        consultationId: this.state.consultationId,
       })
       console.log(patientInfo)
       let {
