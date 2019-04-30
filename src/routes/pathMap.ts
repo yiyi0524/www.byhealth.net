@@ -30,4 +30,8 @@ export default {
   RegisterAgreement: "RegisterAgreement",
   LawAgreement: "LawAgreement",
   AdvisoryMedicalRecord: "AdvisoryMedicalRecord",
+  ServiceSettings: "ServiceSettings",
+  InvisiblePatients: "InvisiblePatients",
+  InviteDoctors: "InviteDoctors",
+  QuickReply: "QuickReply",
 }

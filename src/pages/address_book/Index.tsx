@@ -3,7 +3,16 @@ import { AppState } from "@/redux/stores/store"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
 import * as userAction from "@/redux/actions/user"
-import { ScrollView, Text, View, Image, TouchableOpacity, RefreshControl } from "react-native"
+import {
+  ScrollView,
+  Text,
+  View,
+  Image,
+  TouchableOpacity,
+  RefreshControl,
+  EmitterSubscription,
+  DeviceEventEmitter,
+} from "react-native"
 import { Toast, Icon, InputItem } from "@ant-design/react-native"
 import gStyle from "@utils/style"
 import gImg from "@utils/img"
@@ -61,6 +70,7 @@ export default class Index extends Component<
   Props & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
   State
 > {
+  subscription?: EmitterSubscription
   constructor(props: any) {
     super(props)
     this.state = this.getInitState()
@@ -75,7 +85,16 @@ export default class Index extends Component<
     }
   }
   componentDidMount() {
+    this.subscription = DeviceEventEmitter.addListener(pathMap.Home + "Reload", _ => {
+      console.log("首页被刷新")
+      this.init()
+    })
     this.init()
+  }
+  componentWillUnmount() {
+    if (this.subscription) {
+      this.subscription.remove()
+    }
   }
   init = async () => {
     try {

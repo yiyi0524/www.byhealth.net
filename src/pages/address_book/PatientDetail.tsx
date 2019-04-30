@@ -2,10 +2,10 @@ import * as userAction from "@/redux/actions/user"
 import { AppState } from "@/redux/stores/store"
 import pathMap from "@/routes/pathMap"
 import api from "@/services/api"
-import { GENDER, GENDER_ZH } from "@/services/doctor"
+import doctor, { GENDER, GENDER_ZH } from "@/services/doctor"
 import hospital from "@/services/hospital"
 import { getPicFullUrl } from "@/utils/utils"
-import { Icon, Toast } from "@ant-design/react-native"
+import { Icon, Toast, Modal } from "@ant-design/react-native"
 import { IconNames } from "@ant-design/react-native/lib/icon"
 import patientApi, { Drug } from "@api/patient"
 import sColor from "@styles/color"
@@ -13,7 +13,15 @@ import gImg from "@utils/img"
 import gStyle from "@utils/style"
 import moment from "moment"
 import React, { Component } from "react"
-import { Image, PixelRatio, RefreshControl, ScrollView, Text, View } from "react-native"
+import {
+  Image,
+  PixelRatio,
+  RefreshControl,
+  ScrollView,
+  Text,
+  View,
+  DeviceEventEmitter,
+} from "react-native"
 import { TouchableOpacity } from "react-native-gesture-handler"
 import { NavigationScreenProp } from "react-navigation"
 import { connect } from "react-redux"
@@ -215,6 +223,17 @@ export default class PatientDetail extends Component<
       showImg: img,
     })
   }
+  setInvisiblePatients = async () => {
+    try {
+      console.log(this.state.uid)
+      await doctor.setInvisiblePatients({ patientUid: this.state.uid })
+      Toast.success("设置成功", 2)
+      DeviceEventEmitter.emit(pathMap.AddressBookIndex + "Reload", null)
+      DeviceEventEmitter.emit(pathMap.AdvisoryIndex + "Reload", null)
+    } catch (err) {
+      Toast.fail("设置失败, 错误信息: " + err.msg, 3)
+    }
+  }
   render() {
     const { patientInfo } = this.state
 
@@ -246,34 +265,73 @@ export default class PatientDetail extends Component<
               />
             </View>
             <View style={style.headerDescription}>
-              <View style={[style.headerDescriptionTitle, global.flex, global.alignItemsCenter]}>
-                <Text style={[style.headerDescriptionName, global.fontSize15, global.fontStyle]}>
-                  {patientInfo.name}
-                </Text>
-                <Text style={[style.headerDescriptionGender, global.fontSize14, global.fontStyle]}>
-                  {GENDER_ZH[patientInfo.gender]}
-                </Text>
-                <Text style={[style.headerDescriptionAge, global.fontSize14, global.fontStyle]}>
-                  {patientInfo.yearAge >= 3
-                    ? patientInfo.yearAge + "岁"
-                    : patientInfo.yearAge + "岁" + patientInfo.monthAge + "月"}
-                  {this.state.region.map((v: Region) => {
-                    if (patientInfo.provinceCid === v.cid) {
-                      console.log(patientInfo.provinceCid)
-                      return v.areaName
-                    }
-                  })}
-                </Text>
-              </View>
-              <View style={[style.headerDescriptionPhone, global.flex, global.alignItemsCenter]}>
-                <Text
-                  style={[style.headerDescriptionPhoneTitle, global.fontSize13, global.fontStyle]}>
-                  手机号
-                </Text>
-                <Text
-                  style={[style.headerDescriptionPhoneDetail, global.fontSize13, global.fontStyle]}>
-                  {patientInfo.phone}
-                </Text>
+              <View
+                style={[
+                  style.headerDescriptionTitle,
+                  global.flex,
+                  global.alignItemsCenter,
+                  global.justifyContentSpaceBetween,
+                ]}>
+                <View style={[global.flex, global.alignItemsCenter, { flex: 1 }]}>
+                  <Text style={[style.headerDescriptionName, global.fontSize15, global.fontStyle]}>
+                    {patientInfo.name}
+                  </Text>
+                  <Text
+                    style={[style.headerDescriptionGender, global.fontSize14, global.fontStyle]}>
+                    {GENDER_ZH[patientInfo.gender]}
+                  </Text>
+                  <Text style={[style.headerDescriptionAge, global.fontSize14, global.fontStyle]}>
+                    {patientInfo.yearAge >= 3
+                      ? patientInfo.yearAge + "岁"
+                      : patientInfo.yearAge + "岁" + patientInfo.monthAge + "月"}
+                    {this.state.region.map((v: Region) => {
+                      if (patientInfo.provinceCid === v.cid) {
+                        console.log(patientInfo.provinceCid)
+                        return v.areaName
+                      }
+                    })}
+                  </Text>
+                </View>
+                <View style={[style.headerDescriptionPhone, global.flex, global.alignItemsCenter]}>
+                  <Text
+                    style={[
+                      style.headerDescriptionPhoneTitle,
+                      global.fontSize13,
+                      global.fontStyle,
+                    ]}>
+                    手机号
+                  </Text>
+                  <Text
+                    style={[
+                      style.headerDescriptionPhoneDetail,
+                      global.fontSize13,
+                      global.fontStyle,
+                    ]}>
+                    {patientInfo.phone}
+                  </Text>
+                </View>
+                <TouchableOpacity
+                  onPress={() => {
+                    Modal.alert(
+                      "提示",
+                      "设置不可见后, 患者将不能在博一健康找到您, 也无法购买您的复诊服务。您可在设置菜单中找到这些患者。",
+                      [
+                        {
+                          text: "取消",
+                          onPress: () => {},
+                          style: "cancel",
+                        },
+                        {
+                          text: "确定",
+                          onPress: () => {
+                            this.setInvisiblePatients()
+                          },
+                        },
+                      ],
+                    )
+                  }}>
+                  <Text style={[style.invisiblePatients, global.fontSize14]}>设置不可见</Text>
+                </TouchableOpacity>
               </View>
             </View>
           </View>

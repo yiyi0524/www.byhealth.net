@@ -57,4 +57,5 @@ export default {
     group: require("@img/address_book/group.png"),
     phone: require("@img/address_book/phone.png"),
   },
+  personalCenter: {},
 }

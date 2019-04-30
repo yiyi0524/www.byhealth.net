@@ -49,6 +49,7 @@ export default StyleSheet.create({
   },
   headerDescription: {
     marginLeft: 10,
+    flex: 1,
   },
   headerDescriptionTitle: {},
   headerDescriptionName: {
@@ -324,5 +325,9 @@ export default StyleSheet.create({
   },
   inquirySheetAnswer: {
     color: sColor.color666,
+  },
+
+  invisiblePatients: {
+    color: sColor.white,
   },
 })

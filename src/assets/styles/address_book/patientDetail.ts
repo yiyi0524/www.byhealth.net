@@ -324,4 +324,10 @@ export default StyleSheet.create({
   inquirySheetAnswer: {
     color: sColor.color666,
   },
+  invisiblePatientFa: {
+    width: 50,
+  },
+  invisiblePatients: {
+    color: sColor.white,
+  },
 })

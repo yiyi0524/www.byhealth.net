@@ -4,7 +4,12 @@ import { patientItem } from "@/pages/address_book/GroupDetail"
 import { ConsultationItem } from "@/pages/advisory/Index"
 import { Drug } from "./patient"
 import { drugItem } from "@/pages/advisory/SquareRoot"
+import { Picture } from "@/pages/advisory/Chat"
 export const ALLOW_INQUIRY = {
+  FALSE: 0x0,
+  TRUE: 0x1,
+}
+export const ALLOW_SEARCH_ME = {
   FALSE: 0x0,
   TRUE: 0x1,
 }
@@ -69,6 +74,23 @@ export interface authParam {
   technicalQualificationCertificatePicIdList: [number]
   hospitalId?: number
   hospitalName?: string
+}
+/**
+ * 快捷回复
+ */
+export const QUICKE_REPLY_TYPE = {
+  text: 0x0,
+  common: 0x1,
+  inquiry: 0x2,
+  drugAndShipping: 0x3,
+  advice: 0x4,
+}
+export const QUICKE_REPLY_TYPE_ZH = {
+  [QUICKE_REPLY_TYPE.text]: "文字随访",
+  [QUICKE_REPLY_TYPE.common]: "常用回复",
+  [QUICKE_REPLY_TYPE.inquiry]: "诊中问题",
+  [QUICKE_REPLY_TYPE.drugAndShipping]: "药材与快递",
+  [QUICKE_REPLY_TYPE.advice]: "调理建议",
 }
 /**
  * 注册
@@ -350,6 +372,78 @@ export async function closeInquiry(data: { patientUid: number }) {
     data,
   })
 }
+/**
+ * todo 服务设置
+ */
+export async function getServiceSettings() {
+  return { data: { allowSearch: 1 } }
+  // return bget<{ allowSearch: number }>({
+  //   url: "doctor/getServiceSettings",
+  //   query,
+  // })
+}
+/**
+ * todo 服务设置
+ */
+export function setServiceSettings(data: { allowSearch: number }) {
+  return bpost<{ allowSearch: number }>({
+    url: "doctor/setServiceSettings",
+    data,
+  })
+}
+/**
+ * todo 医生设置患者不可见(患者无法找到医生)
+ */
+export function setInvisiblePatients(data: { patientUid: number }) {
+  return bpost({
+    url: "doctor/setInvisiblePatients",
+    data,
+  })
+}
+/**
+ * todo 获取不可见患者
+ */
+export interface InvisiblePatient {
+  uid: number
+  name: string
+  gender: number
+  yearAge: number
+  monthAge: number
+  avatar: Picture
+  time: string
+}
+export function ListInvisiblePatient({ page, limit, filter = {} }: GetListParam) {
+  return bget<{ list: InvisiblePatient }>({
+    url: "doctor/ListInvisiblePatient",
+    query: {
+      page,
+      limit,
+      filter,
+    },
+  })
+}
+export interface QuickReply {
+  type: number
+  list: QuickReplyMsg[]
+  isChecked: boolean
+}
+export interface QuickReplyMsg {
+  id: number
+  msg: string
+}
+/**
+ * todo 获取快捷回复信息列表 isChecked 全为false
+ */
+export function ListQuickReply({ page, limit, filter = {} }: GetListParam) {
+  return bget<{ list: QuickReply[] }>({
+    url: "doctor/ListQuickReply",
+    query: {
+      page,
+      limit,
+      filter,
+    },
+  })
+}
 export default {
   closeInquiry,
   doctorAuth,
@@ -368,4 +462,9 @@ export default {
   getSquareRoot,
   getPrescriptionDetail,
   addPrescription,
+  setServiceSettings,
+  getServiceSettings,
+  setInvisiblePatients,
+  ListInvisiblePatient,
+  ListQuickReply,
 }

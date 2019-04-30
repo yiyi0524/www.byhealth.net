@@ -24,6 +24,7 @@ import {
   Text,
   View,
   DeviceEventEmitter,
+  EmitterSubscription,
 } from "react-native"
 import { TouchableOpacity } from "react-native-gesture-handler"
 import { NavigationScreenProp, ScrollView } from "react-navigation"
@@ -152,6 +153,7 @@ interface State {
   page: number
   limit: number
   sendMsg: string
+  quickReplyMsg: string
   info: {
     id: number
     account: string
@@ -244,21 +246,21 @@ export default class Chat extends Component<
       title: "更多功能",
       link: "",
     },
-    {
-      icon: gImg.advisory.inquirySheet,
-      title: "补填问诊单",
-      link: "",
-    },
+    // {
+    //   icon: gImg.advisory.inquirySheet,
+    //   title: "补填问诊单",
+    //   link: "",
+    // },
     {
       icon: gImg.advisory.picture,
       title: "图片",
       link: "",
     },
-    {
-      icon: gImg.advisory.givingquestions,
-      title: "赠送提问",
-      link: "",
-    },
+    // {
+    //   icon: gImg.advisory.givingquestions,
+    //   title: "赠送提问",
+    //   link: "",
+    // },
     {
       icon: gImg.advisory.sittingInformation,
       title: "坐诊信息",
@@ -267,6 +269,7 @@ export default class Chat extends Component<
   ]
   myScroll: ScrollView | null = null
   msgInput: TextareaItem | null = null
+  listener?: EmitterSubscription
   constructor(props: any) {
     super(props)
     this.state = this.getInitState()
@@ -283,6 +286,7 @@ export default class Chat extends Component<
       isShowPic: false,
       patientUid,
       scrollHeight: 0,
+      quickReplyMsg: "",
       showPicUrl: "",
       info: {
         id: 0,
@@ -306,9 +310,21 @@ export default class Chat extends Component<
   }
   //todo 第一遍进入时改变了全局变量,再次进入时清除全局后再向全局添加msg,
   componentDidMount() {
+    this.listener = DeviceEventEmitter.addListener(pathMap.SquareRoot + "Reload", quickReplyMsg => {
+      this.setState({
+        quickReplyMsg,
+      })
+      // this.init()
+    })
     this.init()
     this.requestReadExteralStorage()
     setTimeout(() => this.myScroll && this.myScroll.scrollToEnd(), 100)
+  }
+  componentWillUnmount() {
+    //移除监听
+    if (this.listener) {
+      this.listener.remove()
+    }
   }
   init = async () => {
     userApi
@@ -903,6 +919,8 @@ export default class Chat extends Component<
       })
     } else if (v.title === "结束对话") {
       this.closeInquiry()
+    } else if (v.title === "快捷回复") {
+      this.QuickReply()
     } else {
       console.log("正在进入开方页")
       this.props.navigation.push(v.link, {
@@ -911,6 +929,9 @@ export default class Chat extends Component<
     }
   }
   sendMsg = () => {
+    this.setState({
+      shouldScrollToEnd: true,
+    })
     if (this.state.sendMsg === "") {
       return
     }
@@ -921,8 +942,11 @@ export default class Chat extends Component<
       this.setState({
         sendMsg: "",
       })
-      if (this.myScroll) {
+      if (this.myScroll && this.state.shouldScrollToEnd) {
         this.myScroll.scrollToEnd()
+        this.setState({
+          shouldScrollToEnd: false,
+        })
       }
       this.msgInput && this.msgInput.textAreaRef && this.msgInput.textAreaRef.blur()
     }
@@ -1027,5 +1051,13 @@ export default class Chat extends Component<
         },
       },
     ])
+  }
+  /**
+   * 快捷回复
+   */
+  QuickReply = () => {
+    // this.props.navigation.push(pathMap.QuickReply, {
+    //   msg: this.state.quickReplyMsg,
+    // })
   }
 }

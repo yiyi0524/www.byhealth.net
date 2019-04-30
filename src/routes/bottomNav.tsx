@@ -23,6 +23,10 @@ import PrescriptionDetail from "@pages/index/PrescriptionDetail"
 import RegisterAgreement from "@pages/common/RegisterAgreement"
 import LawAgreement from "@pages/common/LawAgreement"
 import AdvisoryMedicalRecord from "@pages/advisory/PatientDetail"
+import ServiceSettings from "@pages/index/ServiceSettings"
+import InvisiblePatients from "@pages/personal_center/InvisiblePatients"
+import InviteDoctors from "@pages/personal_center/InviteDoctors"
+import QuickReply from "@pages/advisory/QuickReply"
 import Home from "@pages/Home"
 import Test from "@pages/Test"
 import RealNameAuth from "@pages/user/RealNameAuth"
@@ -268,6 +272,18 @@ const StacksOverTabs = createStackNavigator({
   },
   [pathMap.AdvisoryMedicalRecord]: {
     screen: AdvisoryMedicalRecord,
+  },
+  [pathMap.ServiceSettings]: {
+    screen: ServiceSettings,
+  },
+  [pathMap.InvisiblePatients]: {
+    screen: InvisiblePatients,
+  },
+  [pathMap.InviteDoctors]: {
+    screen: InviteDoctors,
+  },
+  [pathMap.QuickReply]: {
+    screen: QuickReply,
   },
 })
 export default StacksOverTabs

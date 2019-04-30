@@ -16,6 +16,8 @@ import {
   View,
   Image,
   Platform,
+  DeviceEventEmitter,
+  EmitterSubscription,
 } from "react-native"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
@@ -60,6 +62,7 @@ export default class Index extends Component<
   State
 > {
   functionList: functionItem[] = []
+  subscription?: EmitterSubscription
   constructor(props: any) {
     super(props)
     this.functionList = [
@@ -75,6 +78,14 @@ export default class Index extends Component<
         name: "修改密码",
         link: pathMap.ChangePwd,
       },
+      {
+        name: "患者不可见",
+        link: pathMap.InvisiblePatients,
+      },
+      // {
+      //   name: "邀请医生",
+      //   link: pathMap.InviteDoctors,
+      // },
       {
         name: "关于我们",
         link: pathMap.About,
@@ -109,8 +120,17 @@ export default class Index extends Component<
       },
     }
   }
-  async componentDidMount() {
-    await this.init()
+  componentDidMount() {
+    this.subscription = DeviceEventEmitter.addListener(pathMap.Home + "Reload", _ => {
+      console.log("首页被刷新")
+      this.init()
+    })
+    this.init()
+  }
+  componentWillUnmount() {
+    if (this.subscription) {
+      this.subscription.remove()
+    }
   }
   init = async () => {
     try {
@@ -219,7 +239,7 @@ export default class Index extends Component<
               return (
                 <TouchableOpacity
                   onPress={() => {
-                    if (v.name === "编辑资料") {
+                    if (v.name === "编辑资料" || v.name === "患者不可见" || v.name === "邀请医生") {
                       if (!this.state.hasRealNameAuth) {
                         return Toast.info("您未认证完成", 1)
                       }

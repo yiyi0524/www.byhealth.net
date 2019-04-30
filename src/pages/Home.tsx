@@ -112,22 +112,22 @@ export default class Home extends Component<
           description: "未开启在线复诊",
           link: pathMap.DiagnosisSettings,
         },
+        // 二期
+        {
+          name: "服务设置",
+          description: "",
+          link: pathMap.ServiceSettings,
+        },
         // {
-        //   name: "处方及服务配置",
+        //   name: "问诊设置",
         //   description: "",
         //   link: "",
         // },
-        //todo 二期
-        // {
-        //   name: "自定义问诊单设置",
-        //   description: "已开启自动发送",
-        //   link: ""
-        // },
         // {
         //   name: "欢迎语设置",
-        //   description: "已开启自动发送",
-        //   link: ""
-        // }
+        //   description: "",
+        //   link: "",
+        // },
       ],
       bannerList: [
         {
@@ -158,19 +158,19 @@ export default class Home extends Component<
       console.log("首页被刷新")
       this.init()
     })
-    this.loginStatus = BackHandler.addEventListener(
-      "hardwareBackPress",
-      this.addEventListenerLoginStatus,
-    )
+    // this.loginStatus = BackHandler.addEventListener(
+    //   "hardwareBackPress",
+    //   this.addEventListenerLoginStatus,
+    // )
     this.init()
   }
   componentWillUnmount() {
     if (this.subscription) {
       this.subscription.remove()
     }
-    if (this.loginStatus) {
-      this.loginStatus.remove()
-    }
+    // if (this.loginStatus) {
+    //   this.loginStatus.remove()
+    // }
   }
   addEventListenerLoginStatus = async () => {
     let isLogin = await api.isLogin()

@@ -3,7 +3,7 @@ import { AppState } from "@/redux/stores/store"
 import gStyle from "@utils/style"
 import storage from "@utils/storage"
 import React, { Component } from "react"
-import { TouchableOpacity, View, Text } from "react-native"
+import { TouchableOpacity, View, Text, NativeEventSubscription, BackHandler } from "react-native"
 import { InputItem, Checkbox, Toast } from "@ant-design/react-native"
 import pathMap from "@routes/pathMap"
 // import { LocalStorage as storage } from "jsbdk";
@@ -52,6 +52,7 @@ export default class Login extends Component<
   Props & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
   State
 > {
+  loginStatus?: NativeEventSubscription
   constructor(props: any) {
     super(props)
     this.state = this.getInitState()
@@ -67,6 +68,23 @@ export default class Login extends Component<
       verificationCodeMsg: "获取验证码",
       verificationCodeUuid: "",
       selectLoginStyle: "verificationCodeLogin",
+    }
+  }
+  componentDidMount() {
+    this.loginStatus = BackHandler.addEventListener(
+      "hardwareBackPress",
+      this.addEventListenerLoginStatus,
+    )
+  }
+  componentWillUnmount() {
+    if (this.loginStatus) {
+      this.loginStatus.remove()
+    }
+  }
+  addEventListenerLoginStatus = async () => {
+    let isLogin = await api.isLogin()
+    if (!isLogin) {
+      this.props.navigation.navigate(pathMap.Login)
     }
   }
   getVerificationCode = () => {

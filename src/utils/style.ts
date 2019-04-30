@@ -25,10 +25,14 @@ import DrugSelect from "@/assets/styles/advisory/drugSelect"
 import InquirySheet from "@/assets/styles/address_book/inquirySheet"
 import MedicalRecord from "@/assets/styles/address_book/medicalRecord"
 import SquareRootDetail from "@/assets/styles/advisory/squareRootDetail"
-import PrescriptionDetail from "@/assets/styles/index/PrescriptionDetail"
+import PrescriptionDetail from "@/assets/styles/index/prescriptionDetail"
 import RegisterAgreement from "@/assets/styles/common/registerAgreement"
 import LawAgreement from "@/assets/styles/common/lawAgreement"
 import AdvisoryPatientDetail from "@/assets/styles/advisory/patientDetail"
+import ServiceSettings from "@/assets/styles/index/serviceSettings"
+import InvisiblePatients from "@/assets/styles/personal_center/invisiblePatients"
+import InviteDoctors from "@/assets/styles/personal_center/inviteDoctors"
+import QuickReply from "@/assets/styles/advisory/quickReply"
 export default {
   home,
   global,
@@ -37,6 +41,7 @@ export default {
     InvitePatients,
     DiagnosisSettings,
     PrescriptionDetail,
+    ServiceSettings,
   },
   user: {
     login,
@@ -51,6 +56,7 @@ export default {
     DrugSelect,
     SquareRootDetail,
     AdvisoryPatientDetail,
+    QuickReply,
   },
   addressBook: {
     AddressBookIndex,
@@ -68,6 +74,8 @@ export default {
     editInformation,
     about,
     customerService,
+    InvisiblePatients,
+    InviteDoctors,
   },
   common: {
     RegisterAgreement,
