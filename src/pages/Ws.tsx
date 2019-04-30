@@ -154,14 +154,21 @@ class Ws extends React.Component<
     return {}
   }
   componentDidMount() {
+    this.checkLoginStatus()
+    // console.log("正在设置tick 定时器")
+    // setInterval(() => console.log("tick"), 1000)
     this.checkIsLoginTimer = setInterval(this.checkLoginStatus, 1000)
+
     RnAppState.addEventListener("change", state => {
+      console.log("状态改变", state)
       if (state === "active") {
         if (!this.checkIsLoginTimer) {
+          console.log("正在开启定时器")
           this.checkIsLoginTimer = setInterval(this.checkLoginStatus, 1000)
         }
       } else {
         if (this.checkIsLoginTimer) {
+          console.log("正在关闭定时器")
           clearInterval(this.checkIsLoginTimer)
           this.checkIsLoginTimer = undefined
         }
@@ -190,12 +197,16 @@ class Ws extends React.Component<
    * 检查登录状态
    */
   checkLoginStatus = () => {
+    // console.log("正在检查登录状态")
     if (RnAppState.currentState !== "active") {
+      console.log("当前未激活 返回")
       return
     }
     // 如果已登录则检查ws连接状态
     if (this.userIsLogin()) {
-      if (!this.wsIsConnect()) {
+      // console.log("用户已登录")
+      if (!this.wsIsConnect() && !this.clientIsConnect) {
+        // console.log("当前ws 未连接,正在初始化wsClient")
         this.initClient()
       }
     }
@@ -210,8 +221,6 @@ class Ws extends React.Component<
    * websocket 是否已连接
    */
   wsIsConnect = (): boolean => {
-    if (this.client) {
-    }
     return !!this.client && this.client.readyState === WebSocket.OPEN
   }
   receiveMsg = (frame: ReceiveFrame<Exclude<Overwrite<Msg, MsgOptionalDataToRequired>, "dom">>) => {
@@ -224,11 +233,12 @@ class Ws extends React.Component<
   initClient = async () => {
     console.log("正在初始化ws客户端")
     if (this.clientIsConnect) {
+      console.log("客户端正在连接,已取消本次初始化client")
       return
     }
+    this.clientIsConnect = true
     let sessionId = await storage.get("session")
     let wsUrl = WSS_URL + "?sessionId=" + sessionId
-    this.clientIsConnect = true
     this.client = new WebSocket(wsUrl)
     this.clientIsConnect = false
     this.client.onopen = this.onOpen
@@ -253,12 +263,12 @@ class Ws extends React.Component<
       clearInterval(this.pingTimer)
     }
     this.props.changeWsStatus({ status: WebSocket.CLOSED })
-    if (this.shouldReConnect) {
-      if (!this.client || (this.client && this.client.readyState === WebSocket.CLOSED)) {
-        console.log("正在重连")
-        setTimeout(this.reConnect, 1000)
-      }
-    }
+    // if (this.shouldReConnect) {
+    //   if (!this.client || (this.client && this.client.readyState === WebSocket.CLOSED)) {
+    //     console.log("正在重连")
+    //     setTimeout(this.reConnect, 1000)
+    //   }
+    // }
   }
   onError = (evt: Event) => {
     console.log("socket 有错误", evt)
@@ -297,7 +307,9 @@ class Ws extends React.Component<
     if (!client) {
       return
     }
-    this.pingTimer = setInterval(this.ping, 30000)
+    if (!this.pingTimer) {
+      this.pingTimer = setInterval(this.ping, 30000)
+    }
     this.props.changeWsStatus({ status: client.readyState })
   }
   ping = (): boolean => {
@@ -306,6 +318,9 @@ class Ws extends React.Component<
   close = () => {
     this.shouldReConnect = false
     this.client && this.client.close()
+    if (this.pingTimer) {
+      clearInterval(this.pingTimer)
+    }
   }
   wsGet = ({ url, query = {} }: { url: string; query?: {} }): boolean => {
     let frame: SendFrame = {
