@@ -126,9 +126,14 @@ export default class DiagnosisSettings extends Component<
   changeAllowInquiry = async () => {
     let allowInquiry =
       this.state.allowInquiry === ALLOW_INQUIRY.FALSE ? ALLOW_INQUIRY.TRUE : ALLOW_INQUIRY.FALSE
-    this.setState({
-      allowInquiry,
-    })
+    await new Promise(s =>
+      this.setState(
+        {
+          allowInquiry,
+        },
+        s,
+      ),
+    )
     try {
       let { followUpPrice, initialPrice, percentageOfCommission, allowInquiry } = this.state
       let percentageOfCommissionInt = parseInt(percentageOfCommission)
