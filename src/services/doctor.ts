@@ -422,18 +422,20 @@ export function listInvisiblePatient({ page, limit, filter = {} }: GetListParam)
 }
 export interface QuickReply {
   type: number
+  name: string
   list: QuickReplyMsg[]
   isChecked: boolean
 }
 export interface QuickReplyMsg {
   id: number
+  type: number
   msg: string
 }
 /**
  * 获取快捷回复信息列表 isChecked 全为false
  */
 export function listQuickReply({ page, limit, filter = {} }: GetListParam) {
-  return bget<{ list: QuickReply[] }>({
+  return bget<{ list: QuickReplyMsg[] }>({
     url: "api/listQuickReply",
     query: {
       page,
@@ -469,7 +471,65 @@ export function editQuickReply(data: { id: number; msg: string }) {
     data,
   })
 }
+export interface MedicalInstitution {
+  id: number
+  address: {
+    provinceCid: string
+    whole: string
+  }
+  hospitalName: string
+  hospitalId: number
+}
+/**
+ * todo 医疗机构列表
+ */
+export function ListMedicalInstitution({ page, limit, filter = {} }: GetListParam) {
+  console.log(page, limit, filter)
+  return {
+    data: {
+      list: [
+        {
+          id: 1,
+          address: {
+            provinceCid: "11111",
+            whole: "上海市阳关花园",
+          },
+          hospitalId: 1,
+          hospitalName: "ssssssss",
+        },
+        {
+          id: 2,
+          address: {
+            provinceCid: "11111",
+            whole: "上海市阳关花园",
+          },
+          hospitalId: 1,
+          hospitalName: "ssssssss",
+        },
+      ],
+    },
+  }
+  // return bget<{ list: MedicalInstitution[] }>({
+  //   url: "doctor/ListMedicalInstitution",
+  //   query: {
+  //     page,
+  //     limit,
+  //     filter,
+  //   },
+  // })
+}
+/**
+ * todo 删除医疗机构
+ */
+export function deleteMedicalInstitution(data: { id: number }) {
+  return bpost({
+    url: "doctor/deleteMedicalInstitution",
+    data,
+  })
+}
 export default {
+  ListMedicalInstitution,
+  deleteMedicalInstitution,
   closeInquiry,
   doctorAuth,
   getMsgList,

@@ -20,6 +20,7 @@ import {
 } from "react-native"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
+import { getPicFullUrl } from "@/utils/utils"
 const style = gStyle.personalCenter.InvisiblePatients
 const global = gStyle.global
 interface Props {
@@ -147,10 +148,17 @@ export default class Index extends Component<
                 return (
                   <View key={k} style={[style.item, global.flex, global.alignItemsCenter]}>
                     <View style={style.avatar}>
-                      <Image style={style.avatarImg} source={gImg.common.defaultAvatar} />
+                      <Image
+                        style={style.avatarImg}
+                        source={
+                          v.avatar.url
+                            ? { uri: getPicFullUrl(v.avatar.url) }
+                            : gImg.common.defaultAvatar
+                        }
+                      />
                     </View>
                     <View style={style.itemCenter}>
-                      <Text style={[style.name, global.fontSize16]}>{v.name}</Text>
+                      <Text style={[style.name, global.fontSize16]}>{v.name || "未命名"}</Text>
                       <View style={[global.flex, global.alignItemsCenter]}>
                         <Text style={[style.time, global.fontSize14]}>{v.time.substr(0, 10)} </Text>
                         <Image

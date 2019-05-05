@@ -451,22 +451,22 @@ export default class PatientDetail extends Component<
               </TouchableOpacity>
               <View style={this.state.showInquirySheet ? style.inquirySheetList : global.hidden}>
                 {this.state.inquirySheet.subjectList.map((v, k) => {
+                  let str = ""
+                  {
+                    v.answer.map(v1 => {
+                      for (let i = 0; i < v.options.length; i++) {
+                        if (i === v1) {
+                          str += v.options[i].title + "、"
+                        }
+                      }
+                      return str
+                    })
+                  }
+                  str = str.substr(0, str.lastIndexOf("、"))
                   return (
                     <View style={style.inquirySheetItem} key={k}>
                       <Text style={[global.fontSize14, style.inquirySheetQuestion]}>{v.title}</Text>
-                      <Text style={[global.fontSize14, style.inquirySheetAnswer]}>
-                        {v.answer.map(v1 => {
-                          let str = ""
-                          for (let i = 0; i < v.options.length; i++) {
-                            if (i === v1) {
-                              str += v.options[i].title + "、"
-                            }
-                          }
-                          let idx = str.lastIndexOf("、")
-                          str = str.substring(0, idx)
-                          return str
-                        })}
-                      </Text>
+                      <Text style={[global.fontSize14, style.inquirySheetAnswer]}>{str}</Text>
                     </View>
                   )
                 })}

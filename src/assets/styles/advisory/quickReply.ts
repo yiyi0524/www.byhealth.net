@@ -1,5 +1,5 @@
 import sColor from "@styles/color"
-import { StyleSheet } from "react-native"
+import { StyleSheet, PixelRatio } from "react-native"
 import { windowHeight, windowWidth } from "@/utils/utils"
 export default StyleSheet.create({
   loading: {
@@ -71,6 +71,10 @@ export default StyleSheet.create({
   },
   msgItem: {
     padding: 8,
+    paddingTop: 15,
+    paddingBottom: 15,
+    borderTopWidth: 1 / PixelRatio.get(),
+    borderTopColor: sColor.colorEee,
   },
   msgItemIcon: {
     marginRight: 16,

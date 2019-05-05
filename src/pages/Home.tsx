@@ -1,7 +1,9 @@
 import global from "@/assets/styles/global"
+import { BASE_URL } from "@/config/api"
 import * as userAction from "@/redux/actions/user"
 import { AppState } from "@/redux/stores/store"
 import pathMap from "@/routes/pathMap"
+import { ALLOW_INQUIRY } from "@/services/doctor"
 import { Icon, Toast } from "@ant-design/react-native"
 import api from "@api/api"
 import userApi from "@api/user"
@@ -9,23 +11,20 @@ import gImg from "@utils/img"
 import gStyle from "@utils/style"
 import React, { Component } from "react"
 import {
+  DeviceEventEmitter,
+  EmitterSubscription,
   Image,
+  NativeEventSubscription,
   RefreshControl,
   ScrollView,
   Text,
   TouchableOpacity,
   View,
-  DeviceEventEmitter,
-  EmitterSubscription,
-  BackHandler,
-  NativeEventSubscription,
 } from "react-native"
 import { NavigationScreenProp } from "react-navigation"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
 import { Picture } from "./advisory/Chat"
-import { BASE_URL } from "@/config/api"
-import { ALLOW_INQUIRY } from "@/services/doctor"
 const style = gStyle.home
 const globalStyle = gStyle.global
 interface Props {

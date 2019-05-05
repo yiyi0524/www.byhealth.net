@@ -81,5 +81,10 @@ export default StyleSheet.create({
     color: sColor.color333,
     marginLeft: 10,
   },
-  calendar: {},
+  calendar: {
+    marginTop: 8,
+    paddingLeft: 15,
+    paddingRight: 15,
+    backgroundColor: sColor.white,
+  },
 })

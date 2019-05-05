@@ -1,23 +1,17 @@
 import * as userAction from "@/redux/actions/user"
 import { AppState } from "@/redux/stores/store"
-import { Toast, Icon } from "@ant-design/react-native"
+import pathMap from "@/routes/pathMap"
+import { Icon, Toast } from "@ant-design/react-native"
+import Calendar from "@components/Calendar"
 import sColor from "@styles/color"
 import gImg from "@utils/img"
 import gStyle from "@utils/style"
 import React, { Component } from "react"
-import {
-  Image,
-  PixelRatio,
-  RefreshControl,
-  Text,
-  View,
-  TouchableNativeFeedback,
-} from "react-native"
-import { ScrollView, TouchableOpacity, TouchableHighlight } from "react-native-gesture-handler"
+import { Image, PixelRatio, RefreshControl, Text, View } from "react-native"
+import { ScrollView, TouchableOpacity } from "react-native-gesture-handler"
 import { NavigationScreenProp } from "react-navigation"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
-import pathMap from "@/routes/pathMap"
 const style = gStyle.index.SittingInformation
 const global = gStyle.global
 interface NavParams {
@@ -171,7 +165,9 @@ export default class SittingInformation extends Component<
                 </View>
               </View>
             </View>
-            <View style={style.calendar} />
+            <View style={style.calendar}>
+              <Calendar />
+            </View>
           </View>
         </ScrollView>
       </>

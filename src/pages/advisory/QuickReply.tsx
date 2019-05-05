@@ -1,11 +1,13 @@
 import global from "@/assets/styles/global"
-import doctor, { QUICK_REPLY_TYPE, QUICK_REPLY_TYPE_ZH, QuickReply } from "@/services/doctor"
-import { Icon, Toast, TextareaItem } from "@ant-design/react-native"
+import pathMap from "@/routes/pathMap"
+import doctor, { QuickReply, QUICK_REPLY_TYPE, QUICK_REPLY_TYPE_ZH } from "@/services/doctor"
+import { Icon, TextareaItem, Toast } from "@ant-design/react-native"
 import sColor from "@styles/color"
 import gImg from "@utils/img"
 import gStyle from "@utils/style"
 import React, { Component } from "react"
 import {
+  DeviceEventEmitter,
   Image,
   PixelRatio,
   RefreshControl,
@@ -13,10 +15,8 @@ import {
   Text,
   TouchableOpacity,
   View,
-  DeviceEventEmitter,
 } from "react-native"
 import { NavigationScreenProp } from "react-navigation"
-import pathMap from "@/routes/pathMap"
 const style = gStyle.advisory.QuickReply
 interface NavParams {
   navigatePress: () => void
@@ -38,6 +38,7 @@ interface State {
   addMsg: string
   quickReplyList: QuickReply[]
 }
+
 export default class Pharmacy extends Component<Props, State> {
   static navigationOptions = ({
     navigation,
@@ -92,36 +93,7 @@ export default class Pharmacy extends Component<Props, State> {
       addType: 0,
       editMsg: "",
       addMsg: "",
-      quickReplyList: [
-        {
-          type: 1,
-          isChecked: true,
-          list: [
-            {
-              id: 1,
-              msg: "1上次纠正后身体状况怎么样了? 用药效果如何?",
-            },
-            {
-              id: 2,
-              msg: "2上次纠正后身体状况怎么样了? 用药效果如何?",
-            },
-          ],
-        },
-        {
-          type: 2,
-          isChecked: false,
-          list: [
-            {
-              id: 3,
-              msg: "3上次纠正后身体状况怎么样了? 用药效果如何?",
-            },
-            {
-              id: 4,
-              msg: "4上次纠正后身体状况怎么样了? 用药效果如何?",
-            },
-          ],
-        },
-      ],
+      quickReplyList: [],
     }
   }
   componentDidMount() {
@@ -134,15 +106,55 @@ export default class Pharmacy extends Component<Props, State> {
   init = async () => {
     try {
       let {
-        data: { list: quickReplyList },
+        data: { list },
       } = await doctor.listQuickReply({ page: -1, limit: -1 })
-      for (let v of quickReplyList) {
-        v.isChecked = false
+      let { quickReplyList } = this.state
+      quickReplyList = [
+        {
+          type: QUICK_REPLY_TYPE.text,
+          name: QUICK_REPLY_TYPE_ZH[QUICK_REPLY_TYPE.text],
+          isChecked: true,
+          list: [],
+        },
+        {
+          type: QUICK_REPLY_TYPE.common,
+          name: QUICK_REPLY_TYPE_ZH[QUICK_REPLY_TYPE.common],
+          isChecked: false,
+          list: [],
+        },
+        {
+          type: QUICK_REPLY_TYPE.inquiry,
+          name: QUICK_REPLY_TYPE_ZH[QUICK_REPLY_TYPE.inquiry],
+          isChecked: false,
+          list: [],
+        },
+        {
+          type: QUICK_REPLY_TYPE.drugAndShipping,
+          name: QUICK_REPLY_TYPE_ZH[QUICK_REPLY_TYPE.drugAndShipping],
+          isChecked: false,
+          list: [],
+        },
+        {
+          type: QUICK_REPLY_TYPE.advice,
+          name: QUICK_REPLY_TYPE_ZH[QUICK_REPLY_TYPE.advice],
+          isChecked: false,
+          list: [],
+        },
+      ]
+      for (let v of list) {
+        for (let v1 of quickReplyList) {
+          if (v.type === v1.type) {
+            v1.list.push({
+              id: v.id,
+              type: v.type,
+              msg: v.msg,
+            })
+          }
+        }
       }
-      quickReplyList[0].isChecked = true
       this.setState({
-        quickReplyList,
         hasLoad: true,
+        quickReplyList,
       })
     } catch (err) {
       console.log(err)
@@ -239,24 +251,6 @@ export default class Pharmacy extends Component<Props, State> {
           <View style={[global.flex]}>
             <View>
               {this.state.quickReplyList.map((v, k) => {
-                let type = ""
-                switch (v.type) {
-                  case QUICK_REPLY_TYPE.text:
-                    type = QUICK_REPLY_TYPE_ZH[QUICK_REPLY_TYPE.text]
-                    break
-                  case QUICK_REPLY_TYPE.common:
-                    type = QUICK_REPLY_TYPE_ZH[QUICK_REPLY_TYPE.common]
-                    break
-                  case QUICK_REPLY_TYPE.inquiry:
-                    type = QUICK_REPLY_TYPE_ZH[QUICK_REPLY_TYPE.inquiry]
-                    break
-                  case QUICK_REPLY_TYPE.drugAndShipping:
-                    type = QUICK_REPLY_TYPE_ZH[QUICK_REPLY_TYPE.drugAndShipping]
-                    break
-                  case QUICK_REPLY_TYPE.advice:
-                    type = QUICK_REPLY_TYPE_ZH[QUICK_REPLY_TYPE.advice]
-                    break
-                }
                 return (
                   <View style={style.type} key={k}>
                     <TouchableOpacity onPress={() => this.selectType(k)}>
@@ -265,7 +259,7 @@ export default class Pharmacy extends Component<Props, State> {
                           v.isChecked ? style.typeTitleActive : style.typeTitle,
                           global.fontSize14,
                         ]}>
-                        {type}
+                        {v.name}
                       </Text>
                     </TouchableOpacity>
                   </View>
