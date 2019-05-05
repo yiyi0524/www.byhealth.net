@@ -27,6 +27,7 @@ import ServiceSettings from "@pages/index/ServiceSettings"
 import InvisiblePatients from "@pages/personal_center/InvisiblePatients"
 import InviteDoctors from "@pages/personal_center/InviteDoctors"
 import QuickReply from "@pages/advisory/QuickReply"
+import SittingInformation from "@pages/index/SittingInformation"
 import Home from "@pages/Home"
 import Test from "@pages/Test"
 import RealNameAuth from "@pages/user/RealNameAuth"
@@ -284,6 +285,9 @@ const StacksOverTabs = createStackNavigator({
   },
   [pathMap.QuickReply]: {
     screen: QuickReply,
+  },
+  [pathMap.SittingInformation]: {
+    screen: SittingInformation,
   },
 })
 export default StacksOverTabs

@@ -78,19 +78,19 @@ export interface authParam {
 /**
  * 快捷回复
  */
-export const QUICKE_REPLY_TYPE = {
+export const QUICK_REPLY_TYPE = {
   text: 0x0,
   common: 0x1,
   inquiry: 0x2,
   drugAndShipping: 0x3,
   advice: 0x4,
 }
-export const QUICKE_REPLY_TYPE_ZH = {
-  [QUICKE_REPLY_TYPE.text]: "文字随访",
-  [QUICKE_REPLY_TYPE.common]: "常用回复",
-  [QUICKE_REPLY_TYPE.inquiry]: "诊中问题",
-  [QUICKE_REPLY_TYPE.drugAndShipping]: "药材与快递",
-  [QUICKE_REPLY_TYPE.advice]: "调理建议",
+export const QUICK_REPLY_TYPE_ZH = {
+  [QUICK_REPLY_TYPE.text]: "文字随访",
+  [QUICK_REPLY_TYPE.common]: "常用回复",
+  [QUICK_REPLY_TYPE.inquiry]: "诊中问题",
+  [QUICK_REPLY_TYPE.drugAndShipping]: "药材与快递",
+  [QUICK_REPLY_TYPE.advice]: "调理建议",
 }
 /**
  * 注册

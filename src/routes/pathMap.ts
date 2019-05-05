@@ -34,4 +34,5 @@ export default {
   InvisiblePatients: "InvisiblePatients",
   InviteDoctors: "InviteDoctors",
   QuickReply: "QuickReply",
+  SittingInformation: "SittingInformation",
 }

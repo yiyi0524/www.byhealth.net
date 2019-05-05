@@ -33,6 +33,7 @@ import ServiceSettings from "@/assets/styles/index/serviceSettings"
 import InvisiblePatients from "@/assets/styles/personal_center/invisiblePatients"
 import InviteDoctors from "@/assets/styles/personal_center/inviteDoctors"
 import QuickReply from "@/assets/styles/advisory/quickReply"
+import SittingInformation from "@/assets/styles/index/sittingInformation"
 export default {
   home,
   global,
@@ -42,6 +43,7 @@ export default {
     DiagnosisSettings,
     PrescriptionDetail,
     ServiceSettings,
+    SittingInformation,
   },
   user: {
     login,

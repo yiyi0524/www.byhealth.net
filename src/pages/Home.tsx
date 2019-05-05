@@ -91,6 +91,11 @@ export default class Home extends Component<
         title: "邀请患者",
         link: pathMap.InvitePatients,
       },
+      {
+        icon: gImg.home.sittingInformation,
+        title: "坐诊信息",
+        link: pathMap.SittingInformation,
+      },
     ]
   }
   getInitState = (): State => {

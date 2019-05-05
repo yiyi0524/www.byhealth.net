@@ -1,5 +1,5 @@
 import global from "@/assets/styles/global"
-import doctor, { QUICKE_REPLY_TYPE, QUICKE_REPLY_TYPE_ZH, QuickReply } from "@/services/doctor"
+import doctor, { QUICK_REPLY_TYPE, QUICK_REPLY_TYPE_ZH, QuickReply } from "@/services/doctor"
 import { Icon, Toast, TextareaItem } from "@ant-design/react-native"
 import sColor from "@styles/color"
 import gImg from "@utils/img"
@@ -31,8 +31,11 @@ interface State {
   refreshing: boolean
   isChangeMode: boolean
   isEditMsg: boolean
+  isAddMsg: boolean
   editId: number
+  addType: number
   editMsg: string
+  addMsg: string
   quickReplyList: QuickReply[]
 }
 export default class Pharmacy extends Component<Props, State> {
@@ -84,8 +87,11 @@ export default class Pharmacy extends Component<Props, State> {
       refreshing: false,
       isEditMsg: false,
       isChangeMode: false,
+      isAddMsg: false,
       editId: 0,
+      addType: 0,
       editMsg: "",
+      addMsg: "",
       quickReplyList: [
         {
           type: 1,
@@ -157,9 +163,6 @@ export default class Pharmacy extends Component<Props, State> {
       quickReplyList,
     })
   }
-  addQuickReplayMsg = async (type: number) => {
-    Toast.info(type + "", 1)
-  }
   deleteMsg = async (id: number) => {
     try {
       await doctor.deleteQuickReply({ id })
@@ -179,6 +182,19 @@ export default class Pharmacy extends Component<Props, State> {
       this.init()
     } catch (err) {
       Toast.fail("编辑失败, 错误信息: " + err.msg, 3)
+    }
+  }
+
+  addQuickReplayMsg = async () => {
+    this.setState({
+      isAddMsg: false,
+    })
+    try {
+      await doctor.addQuickReply({ type: this.state.addType, msg: this.state.addMsg })
+      Toast.success("添加成功", 1)
+      this.init()
+    } catch (err) {
+      Toast.fail("添加失败, 错误信息: " + err.msg, 3)
     }
   }
   selectMsg = (msg: string, id: number) => {
@@ -225,20 +241,20 @@ export default class Pharmacy extends Component<Props, State> {
               {this.state.quickReplyList.map((v, k) => {
                 let type = ""
                 switch (v.type) {
-                  case QUICKE_REPLY_TYPE.text:
-                    type = QUICKE_REPLY_TYPE_ZH[QUICKE_REPLY_TYPE.text]
+                  case QUICK_REPLY_TYPE.text:
+                    type = QUICK_REPLY_TYPE_ZH[QUICK_REPLY_TYPE.text]
                     break
-                  case QUICKE_REPLY_TYPE.common:
-                    type = QUICKE_REPLY_TYPE_ZH[QUICKE_REPLY_TYPE.common]
+                  case QUICK_REPLY_TYPE.common:
+                    type = QUICK_REPLY_TYPE_ZH[QUICK_REPLY_TYPE.common]
                     break
-                  case QUICKE_REPLY_TYPE.inquiry:
-                    type = QUICKE_REPLY_TYPE_ZH[QUICKE_REPLY_TYPE.inquiry]
+                  case QUICK_REPLY_TYPE.inquiry:
+                    type = QUICK_REPLY_TYPE_ZH[QUICK_REPLY_TYPE.inquiry]
                     break
-                  case QUICKE_REPLY_TYPE.drugAndShipping:
-                    type = QUICKE_REPLY_TYPE_ZH[QUICKE_REPLY_TYPE.drugAndShipping]
+                  case QUICK_REPLY_TYPE.drugAndShipping:
+                    type = QUICK_REPLY_TYPE_ZH[QUICK_REPLY_TYPE.drugAndShipping]
                     break
-                  case QUICKE_REPLY_TYPE.advice:
-                    type = QUICKE_REPLY_TYPE_ZH[QUICKE_REPLY_TYPE.advice]
+                  case QUICK_REPLY_TYPE.advice:
+                    type = QUICK_REPLY_TYPE_ZH[QUICK_REPLY_TYPE.advice]
                     break
                 }
                 return (
@@ -259,7 +275,13 @@ export default class Pharmacy extends Component<Props, State> {
             {this.state.quickReplyList.map((v, k) => {
               return (
                 <View key={k} style={v.isChecked ? style.msgList : global.hidden}>
-                  <TouchableOpacity onPress={() => this.addQuickReplayMsg(v.type)}>
+                  <TouchableOpacity
+                    onPress={() => {
+                      this.setState({
+                        isAddMsg: true,
+                        addType: v.type,
+                      })
+                    }}>
                     <View style={[style.msgAdd, global.flex, global.alignItemsCenter]}>
                       <Icon style={[style.msgIcon, global.fontSize18]} name="plus-circle" />
                       <Text style={[style.addTitle, global.fontSize14]}>添加随访时说的话</Text>
@@ -308,20 +330,21 @@ export default class Pharmacy extends Component<Props, State> {
           </TouchableOpacity>
         </View>
         {/* 添加 */}
-        <View style={this.state.isEditMsg ? style.edit : global.hidden}>
+        <View style={this.state.isAddMsg ? style.edit : global.hidden}>
           <TextareaItem
             style={style.input}
             rows={6}
-            value={this.state.editMsg}
-            onChange={editMsg => {
-              if (editMsg || editMsg === "") {
+            placeholder="请输入您要添加的快捷回复内容"
+            value={this.state.addMsg}
+            onChange={addMsg => {
+              if (addMsg || addMsg === "") {
                 this.setState({
-                  editMsg,
+                  addMsg,
                 })
               }
             }}
           />
-          <TouchableOpacity onPress={this.editQuickReplayMsg}>
+          <TouchableOpacity onPress={this.addQuickReplayMsg}>
             <Text style={[style.editBtn, global.fontSize14]}>完成</Text>
           </TouchableOpacity>
         </View>
