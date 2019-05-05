@@ -1,29 +1,46 @@
 import global from "@/assets/styles/global"
-import pathMap from "@/routes/pathMap"
-import { Icon, Toast } from "@ant-design/react-native"
+import doctor, { QUICKE_REPLY_TYPE, QUICKE_REPLY_TYPE_ZH, QuickReply } from "@/services/doctor"
+import { Icon, Toast, TextareaItem } from "@ant-design/react-native"
 import sColor from "@styles/color"
+import gImg from "@utils/img"
 import gStyle from "@utils/style"
 import React, { Component } from "react"
 import {
-  DeviceEventEmitter,
+  Image,
   PixelRatio,
+  RefreshControl,
   ScrollView,
   Text,
   TouchableOpacity,
   View,
+  DeviceEventEmitter,
 } from "react-native"
 import { NavigationScreenProp } from "react-navigation"
-import doctor, { QuickReply, QUICKE_REPLY_TYPE, QUICKE_REPLY_TYPE_ZH } from "@/services/doctor"
+import pathMap from "@/routes/pathMap"
 const style = gStyle.advisory.QuickReply
+interface NavParams {
+  navigatePress: () => void
+  mode: "delete" | "done"
+}
 interface Props {
   navigation: NavigationScreenProp<State>
   msg: string
 }
 interface State {
+  hasLoad: boolean
+  refreshing: boolean
+  isChangeMode: boolean
+  isEditMsg: boolean
+  editId: number
+  editMsg: string
   quickReplyList: QuickReply[]
 }
 export default class Pharmacy extends Component<Props, State> {
-  static navigationOptions = ({ navigation }: { navigation: NavigationScreenProp<State> }) => {
+  static navigationOptions = ({
+    navigation,
+  }: {
+    navigation: NavigationScreenProp<State, NavParams>
+  }) => {
     return {
       title: "快捷回复",
       headerStyle: {
@@ -42,8 +59,17 @@ export default class Pharmacy extends Component<Props, State> {
         textAlign: "center",
       },
       headerRight: (
-        <TouchableOpacity>
-          <Text style={style.headerRight}>管理</Text>
+        <TouchableOpacity
+          onPress={() => {
+            let oriMode = navigation.getParam("mode")
+            navigation.setParams({
+              mode: oriMode === "done" ? "delete" : "done",
+            })
+            navigation.state.params!.navigatePress()
+          }}>
+          <Text style={style.headerRight}>
+            {navigation.state.params && navigation.state.params!.mode === "done" ? "编辑" : "完成"}
+          </Text>
         </TouchableOpacity>
       ),
     }
@@ -54,10 +80,16 @@ export default class Pharmacy extends Component<Props, State> {
   }
   getInitState = (): State => {
     return {
+      hasLoad: false,
+      refreshing: false,
+      isEditMsg: false,
+      isChangeMode: false,
+      editId: 0,
+      editMsg: "",
       quickReplyList: [
         {
           type: 1,
-          isChecked: false,
+          isChecked: true,
           list: [
             {
               id: 1,
@@ -88,19 +120,32 @@ export default class Pharmacy extends Component<Props, State> {
   }
   componentDidMount() {
     this.init()
+    this.props.navigation.setParams({
+      mode: "done",
+      navigatePress: this.editMsg,
+    })
   }
   init = async () => {
     try {
-      let {
-        data: { list: quickReplyList },
-      } = await doctor.ListQuickReply({ page: -1, limit: -1 })
-      quickReplyList[0].isChecked = true
+      // let {
+      //   data: { list: quickReplyList },
+      // } = await doctor.ListQuickReply({ page: -1, limit: -1 })
+      // for (let v of quickReplyList) {
+      //   v.isChecked = false
+      // }
+      // quickReplyList[0].isChecked = true
       this.setState({
         // quickReplyList,
+        hasLoad: true,
       })
     } catch (err) {
       console.log(err)
     }
+  }
+  editMsg = () => {
+    this.setState({
+      isChangeMode: !this.state.isChangeMode,
+    })
   }
   selectType = (idx: number) => {
     let quickReplyList = this.state.quickReplyList
@@ -112,19 +157,69 @@ export default class Pharmacy extends Component<Props, State> {
       quickReplyList,
     })
   }
-  addMsg = (type: number) => {
+  addQuickReplayMsg = async (type: number) => {
     Toast.info(type + "", 1)
   }
-  deleteMsg = (type: number) => {
-    Toast.info(type + "", 1)
+  deleteMsg = async (id: number) => {
+    try {
+      await doctor.deleteQuickReply({ id })
+      Toast.success("删除成功", 1)
+      this.init()
+    } catch (err) {
+      Toast.fail("删除失败, 错误信息: " + err.msg, 3)
+    }
   }
-  selectMsg = (msg: string) => {
-    Toast.info(msg, 1)
+  editQuickReplayMsg = async () => {
+    this.setState({
+      isEditMsg: false,
+    })
+    try {
+      await doctor.editQuickReply({ id: this.state.editId, msg: this.state.editMsg })
+      Toast.success("编辑成功", 1)
+      this.init()
+    } catch (err) {
+      Toast.fail("编辑失败, 错误信息: " + err.msg, 3)
+    }
+  }
+  selectMsg = (msg: string, id: number) => {
+    if (!this.state.isChangeMode) {
+      DeviceEventEmitter.emit(pathMap.SquareRoot + "Reload", msg)
+      this.props.navigation.goBack()
+    } else {
+      this.setState({
+        isEditMsg: true,
+        editId: id,
+        editMsg: msg,
+      })
+    }
+  }
+  onRefresh = () => {
+    this.setState({ refreshing: true })
+    Promise.all([this.init(), new Promise(s => setTimeout(s, 500))])
+      .then(_ => {
+        this.setState({ refreshing: false })
+      })
+      .catch(err => {
+        Toast.fail("刷新失败,错误信息: " + err.msg)
+      })
   }
   render() {
+    if (!this.state.hasLoad) {
+      return (
+        <View style={style.loading}>
+          <View style={style.loadingPic}>
+            <Image style={style.loadingImg} source={gImg.common.loading} />
+          </View>
+        </View>
+      )
+    }
     return (
       <>
-        <ScrollView style={style.main}>
+        <ScrollView
+          style={style.main}
+          refreshControl={
+            <RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh} />
+          }>
           <View style={[global.flex]}>
             <View>
               {this.state.quickReplyList.map((v, k) => {
@@ -164,19 +259,26 @@ export default class Pharmacy extends Component<Props, State> {
             {this.state.quickReplyList.map((v, k) => {
               return (
                 <View key={k} style={v.isChecked ? style.msgList : global.hidden}>
-                  <TouchableOpacity onPress={() => this.addMsg(v.type)}>
+                  <TouchableOpacity onPress={() => this.addQuickReplayMsg(v.type)}>
                     <View style={[style.msgAdd, global.flex, global.alignItemsCenter]}>
-                      <Icon style={[style.msgIcon, global.fontSize16]} name="plus" />
+                      <Icon style={[style.msgIcon, global.fontSize18]} name="plus-circle" />
                       <Text style={[style.addTitle, global.fontSize14]}>添加随访时说的话</Text>
                     </View>
                   </TouchableOpacity>
                   {v.list.map((v1, k1) => {
                     return (
-                      <View style={[style.msgItem, global.flex, global.alignItemsCenter]}>
-                        <TouchableOpacity>
-                          <Icon style={[style.msgItemIcon, global.fontSize15]} name="plus" />
+                      <View style={[style.msgItem, global.flex, global.alignItemsCenter]} key={k1}>
+                        <TouchableOpacity
+                          style={!this.state.isChangeMode ? global.hidden : null}
+                          onPress={() => this.deleteMsg(v1.id)}>
+                          <Icon
+                            style={[style.msgItemIcon, global.fontSize18]}
+                            name="minus-circle"
+                          />
                         </TouchableOpacity>
-                        <TouchableOpacity key={k1} onPress={() => this.selectMsg(v1.msg)}>
+                        <TouchableOpacity
+                          style={{ flex: 1 }}
+                          onPress={() => this.selectMsg(v1.msg, v1.id)}>
                           <Text style={[style.msgTitle, global.fontSize14]}>{v1.msg}</Text>
                         </TouchableOpacity>
                       </View>
@@ -187,6 +289,42 @@ export default class Pharmacy extends Component<Props, State> {
             })}
           </View>
         </ScrollView>
+        {/* 编辑 */}
+        <View style={this.state.isEditMsg ? style.edit : global.hidden}>
+          <TextareaItem
+            style={style.input}
+            rows={6}
+            value={this.state.editMsg}
+            onChange={editMsg => {
+              if (editMsg || editMsg === "") {
+                this.setState({
+                  editMsg,
+                })
+              }
+            }}
+          />
+          <TouchableOpacity onPress={this.editQuickReplayMsg}>
+            <Text style={[style.editBtn, global.fontSize14]}>完成</Text>
+          </TouchableOpacity>
+        </View>
+        {/* 添加 */}
+        <View style={this.state.isEditMsg ? style.edit : global.hidden}>
+          <TextareaItem
+            style={style.input}
+            rows={6}
+            value={this.state.editMsg}
+            onChange={editMsg => {
+              if (editMsg || editMsg === "") {
+                this.setState({
+                  editMsg,
+                })
+              }
+            }}
+          />
+          <TouchableOpacity onPress={this.editQuickReplayMsg}>
+            <Text style={[style.editBtn, global.fontSize14]}>完成</Text>
+          </TouchableOpacity>
+        </View>
       </>
     )
   }

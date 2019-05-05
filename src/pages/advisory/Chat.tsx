@@ -153,7 +153,6 @@ interface State {
   page: number
   limit: number
   sendMsg: string
-  quickReplyMsg: string
   info: {
     id: number
     account: string
@@ -286,7 +285,6 @@ export default class Chat extends Component<
       isShowPic: false,
       patientUid,
       scrollHeight: 0,
-      quickReplyMsg: "",
       showPicUrl: "",
       info: {
         id: 0,
@@ -312,9 +310,8 @@ export default class Chat extends Component<
   componentDidMount() {
     this.listener = DeviceEventEmitter.addListener(pathMap.SquareRoot + "Reload", quickReplyMsg => {
       this.setState({
-        quickReplyMsg,
+        sendMsg: quickReplyMsg,
       })
-      // this.init()
     })
     this.init()
     this.requestReadExteralStorage()
@@ -465,7 +462,6 @@ export default class Chat extends Component<
                       autoHeight
                       clear
                       last
-                      rows={1}
                       ref={ref => (this.msgInput = ref)}
                       value={this.state.sendMsg}
                       onChange={value => {
@@ -1056,8 +1052,6 @@ export default class Chat extends Component<
    * 快捷回复
    */
   QuickReply = () => {
-    // this.props.navigation.push(pathMap.QuickReply, {
-    //   msg: this.state.quickReplyMsg,
-    // })
+    this.props.navigation.push(pathMap.QuickReply)
   }
 }

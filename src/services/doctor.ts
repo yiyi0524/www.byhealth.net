@@ -432,7 +432,7 @@ export interface QuickReplyMsg {
   msg: string
 }
 /**
- * todo 获取快捷回复信息列表 isChecked 全为false
+ * todo 获取快捷回复信息列表
  */
 export function ListQuickReply({ page, limit, filter = {} }: GetListParam) {
   return bget<{ list: QuickReply[] }>({
@@ -442,6 +442,33 @@ export function ListQuickReply({ page, limit, filter = {} }: GetListParam) {
       limit,
       filter,
     },
+  })
+}
+/**
+ * todo 删除快捷回复消息
+ */
+export function deleteQuickReply(data: { id: number }) {
+  return bpost({
+    url: "doctor/deleteQuickReply",
+    data,
+  })
+}
+/**
+ * todo 添加快捷回复消息
+ */
+export function addQuickReply(data: { type: number; msg: string }) {
+  return bpost({
+    url: "doctor/addQuickReply",
+    data,
+  })
+}
+/**
+ * todo 编辑快捷回复消息
+ */
+export function editQuickReply(data: { id: number; msg: string }) {
+  return bpost({
+    url: "doctor/editQuickReply",
+    data,
   })
 }
 export default {
@@ -467,4 +494,7 @@ export default {
   setInvisiblePatients,
   ListInvisiblePatient,
   ListQuickReply,
+  deleteQuickReply,
+  editQuickReply,
+  addQuickReply,
 }

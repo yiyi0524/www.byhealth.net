@@ -333,14 +333,13 @@ export default class SquareRoot extends Component<
                   autoHeight
                   value={this.state.discrimination}
                   onChange={discrimination => {
-                    if (discrimination) {
+                    if (discrimination || discrimination === "") {
                       this.setState({
                         discrimination,
                       })
+                      console.log(discrimination)
                     }
                   }}
-                  // todo 未连 以下同这
-                  // onBlur={this.saveTemp}
                 />
               </View>
             </View>
@@ -352,12 +351,11 @@ export default class SquareRoot extends Component<
                   autoHeight
                   value={this.state.syndromeDifferentiation}
                   onChange={syndromeDifferentiation => {
-                    if (!syndromeDifferentiation) {
-                      return
+                    if (syndromeDifferentiation || syndromeDifferentiation === "") {
+                      this.setState({
+                        syndromeDifferentiation,
+                      })
                     }
-                    this.setState({
-                      syndromeDifferentiation,
-                    })
                   }}
                   // onBlur={this.saveTemp}
                 />
@@ -443,7 +441,7 @@ export default class SquareRoot extends Component<
                           value={list[drugId].info.signature}
                           onChange={signature => {
                             let chooseDrugInfoList = this.state.chooseDrugInfo
-                            if (signature) {
+                            if (signature || signature === "") {
                               chooseDrugInfoList[drugId].info.signature = signature
                             }
                             this.setState({
@@ -498,10 +496,11 @@ export default class SquareRoot extends Component<
                   autoHeight
                   value={this.state.advice}
                   onChange={advice => {
-                    advice &&
+                    if (advice || advice === "") {
                       this.setState({
                         advice,
                       })
+                    }
                   }}
                   // onBlur={this.saveTemp}
                 />

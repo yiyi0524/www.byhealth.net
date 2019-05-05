@@ -245,6 +245,7 @@ export default StyleSheet.create({
     borderColor: sColor.colorDdd,
     borderRadius: 5,
     marginRight: 8,
+    paddingTop: 12,
   },
   selectPic: {
     height: 0,
