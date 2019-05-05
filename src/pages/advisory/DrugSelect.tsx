@@ -15,6 +15,7 @@ import {
   Text,
   TouchableOpacity,
   View,
+  TextInput,
 } from "react-native"
 import { NavigationScreenProp } from "react-navigation"
 import { activeDrugItem, drugItem } from "./SquareRoot"
@@ -35,7 +36,7 @@ interface State {
   chatKey: string
   filter: {}
   // 当前已经选择的药品信息
-  chooseDrugInfo: Record<number, { count: number; info: drugItem }>
+  chooseDrugInfo: Record<number, { count: string; info: drugItem }>
   // 与搜索匹配的药品列表
   matchDrugList: drugItem[]
   search: string
@@ -256,8 +257,10 @@ export default class Pharmacy extends Component<Props, State> {
                       <TouchableOpacity
                         onPress={() => {
                           let { chooseDrugInfo } = this.state
-                          if (chooseDrugInfo[drugId].count > 1) {
-                            chooseDrugInfo[drugId].count--
+                          if (parseInt(chooseDrugInfo[drugId].count) > 1) {
+                            let count = parseInt(chooseDrugInfo[drugId].count)
+                            count--
+                            chooseDrugInfo[drugId].count = count + ""
                           }
                           this.setState({
                             chooseDrugInfo,
@@ -265,11 +268,54 @@ export default class Pharmacy extends Component<Props, State> {
                         }}>
                         <Text style={[style.btn, global.fontSize18]}>-</Text>
                       </TouchableOpacity>
-                      <Text style={[style.count, global.fontSize14]}>{list[drugId].count}</Text>
+                      <View
+                        style={{
+                          width: 60,
+                          textAlign: "center",
+                        }}>
+                        <InputItem
+                          last
+                          type="number"
+                          placeholder="0"
+                          style={[style.count, global.fontSize14]}
+                          value={list[drugId].count + ""}
+                          onChange={val => {
+                            let chooseDrugInfo = this.state.chooseDrugInfo
+                            if (val) {
+                              let count = parseInt(val)
+                              if (!isNaN(count)) {
+                                chooseDrugInfo[drugId].count = count + ""
+                              }
+                            } else if (val === "") {
+                              chooseDrugInfo[drugId].count = ""
+                            }
+                            this.setState({
+                              chooseDrugInfo,
+                            })
+                          }}
+                          onBlur={val => {
+                            let chooseDrugInfo = this.state.chooseDrugInfo
+                            if (val === "") {
+                              chooseDrugInfo[drugId].count = 1 + ""
+                            }
+                            this.setState({
+                              chooseDrugInfo,
+                            })
+                          }}
+                        />
+                      </View>
                       <TouchableOpacity
                         onPress={() => {
                           let { chooseDrugInfo } = this.state
-                          chooseDrugInfo[drugId].count++
+                          let count = 0
+                          if (chooseDrugInfo[drugId].count === "") {
+                            count = 0
+                            count++
+                          } else {
+                            count = parseInt(chooseDrugInfo[drugId].count)
+                            count++
+                          }
+                          chooseDrugInfo[drugId].count = count + ""
                           this.setState({
                             chooseDrugInfo,
                           })
@@ -320,10 +366,12 @@ export default class Pharmacy extends Component<Props, State> {
                 onPress={() => {
                   let { chooseDrugInfo } = this.state
                   if (drug.id in chooseDrugInfo) {
-                    chooseDrugInfo[drug.id].count++
+                    let count = parseInt(chooseDrugInfo[drug.id].count)
+                    count++
+                    chooseDrugInfo[drug.id].count = count + ""
                   } else {
                     chooseDrugInfo[drug.id] = {
-                      count: 1,
+                      count: 1 + "",
                       info: drug,
                     }
                   }

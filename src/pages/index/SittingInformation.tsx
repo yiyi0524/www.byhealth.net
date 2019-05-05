@@ -1,18 +1,23 @@
 import * as userAction from "@/redux/actions/user"
 import { AppState } from "@/redux/stores/store"
-import { TECHNICAL_TITLE_ZH } from "@/services/doctor"
-import { Toast } from "@ant-design/react-native"
-import userApi from "@api/user"
+import { Toast, Icon } from "@ant-design/react-native"
 import sColor from "@styles/color"
 import gImg from "@utils/img"
 import gStyle from "@utils/style"
 import React, { Component } from "react"
-import { Image, PixelRatio, RefreshControl, Text, View } from "react-native"
-import { ScrollView, TouchableOpacity } from "react-native-gesture-handler"
+import {
+  Image,
+  PixelRatio,
+  RefreshControl,
+  Text,
+  View,
+  TouchableNativeFeedback,
+} from "react-native"
+import { ScrollView, TouchableOpacity, TouchableHighlight } from "react-native-gesture-handler"
 import { NavigationScreenProp } from "react-navigation"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
-import QRCode from "react-native-qrcode"
+import pathMap from "@/routes/pathMap"
 const style = gStyle.index.SittingInformation
 const global = gStyle.global
 interface NavParams {
@@ -131,7 +136,43 @@ export default class SittingInformation extends Component<
           refreshControl={
             <RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh} />
           }>
-          <View style={style.content} />
+          <View style={style.content}>
+            <View style={style.medicalInstitution}>
+              <View style={[style.header, global.flex, global.alignItemsCenter]}>
+                <Text style={[style.selectMedicalInstitutionTitle, global.fontSize14]}>
+                  医疗机构
+                </Text>
+                <TouchableOpacity
+                  onPress={() => this.props.navigation.push(pathMap.MedicalInstitutionList)}>
+                  <View
+                    style={[style.selectMedicalInstitution, global.flex, global.alignItemsCenter]}>
+                    <Text style={[style.selectMedicalInstitutionTheme, global.fontSize14]}>
+                      添加医疗机构
+                    </Text>
+                    <Icon
+                      style={[style.selectMedicalInstitutionIcon, global.fontSize14]}
+                      name="right"
+                    />
+                  </View>
+                </TouchableOpacity>
+              </View>
+              <View style={style.medicalInstitutionList}>
+                <View style={[style.medicalInstitutionItem, global.flex, global.alignItemsCenter]}>
+                  <View style={style.medicalInstitutionIcon} />
+                  <Text style={[style.medicalInstitutionTitle, global.fontSize14]}>
+                    广东省第二中医院
+                  </Text>
+                </View>
+                <View style={[style.medicalInstitutionItem, global.flex, global.alignItemsCenter]}>
+                  <View style={style.medicalInstitutionIcon} />
+                  <Text style={[style.medicalInstitutionTitle, global.fontSize14]}>
+                    广东省第二中医院
+                  </Text>
+                </View>
+              </View>
+            </View>
+            <View style={style.calendar} />
+          </View>
         </ScrollView>
       </>
     )

@@ -149,7 +149,7 @@ export default StyleSheet.create({
     marginTop: 5,
   },
   setCount: {
-    width: 120,
+    width: 130,
   },
   btn: {
     width: 35,
@@ -161,6 +161,12 @@ export default StyleSheet.create({
     textAlign: "center",
   },
   count: {
+    width: 70,
+    margin: 0,
+    padding: 0,
     color: sColor.color666,
+    textAlign: "center",
+    borderBottomWidth: 1 / PixelRatio.get(),
+    borderBottomColor: sColor.colorDdd,
   },
 })

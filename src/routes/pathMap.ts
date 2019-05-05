@@ -35,4 +35,5 @@ export default {
   InviteDoctors: "InviteDoctors",
   QuickReply: "QuickReply",
   SittingInformation: "SittingInformation",
+  MedicalInstitutionList: "MedicalInstitutionList",
 }

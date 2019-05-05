@@ -200,7 +200,7 @@ export default class RealNameAuth extends Component<
       name: "",
       idCardNo: "",
       profile: "",
-      gender: [0],
+      gender: [GENDER.MAN],
       technicalTitle: [-1],
       filter: {},
       region: [],

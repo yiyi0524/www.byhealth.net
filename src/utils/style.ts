@@ -34,6 +34,7 @@ import InvisiblePatients from "@/assets/styles/personal_center/invisiblePatients
 import InviteDoctors from "@/assets/styles/personal_center/inviteDoctors"
 import QuickReply from "@/assets/styles/advisory/quickReply"
 import SittingInformation from "@/assets/styles/index/sittingInformation"
+import MedicalInstitutionList from "@/assets/styles/index/medicalInstitutionList"
 export default {
   home,
   global,
@@ -44,6 +45,7 @@ export default {
     PrescriptionDetail,
     ServiceSettings,
     SittingInformation,
+    MedicalInstitutionList,
   },
   user: {
     login,
