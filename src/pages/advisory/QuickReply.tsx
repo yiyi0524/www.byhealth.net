@@ -133,15 +133,15 @@ export default class Pharmacy extends Component<Props, State> {
   }
   init = async () => {
     try {
-      // let {
-      //   data: { list: quickReplyList },
-      // } = await doctor.ListQuickReply({ page: -1, limit: -1 })
-      // for (let v of quickReplyList) {
-      //   v.isChecked = false
-      // }
-      // quickReplyList[0].isChecked = true
+      let {
+        data: { list: quickReplyList },
+      } = await doctor.listQuickReply({ page: -1, limit: -1 })
+      for (let v of quickReplyList) {
+        v.isChecked = false
+      }
+      quickReplyList[0].isChecked = true
       this.setState({
-        // quickReplyList,
+        quickReplyList,
         hasLoad: true,
       })
     } catch (err) {

@@ -373,35 +373,33 @@ export async function closeInquiry(data: { patientUid: number }) {
   })
 }
 /**
- * todo 服务设置
+ * 获取服务设置
  */
 export async function getServiceSettings() {
-  return { data: { allowSearch: 1 } }
-  // return bget<{ allowSearch: number }>({
-  //   url: "doctor/getServiceSettings",
-  //   query,
-  // })
+  return bget<{ allowSearch: number }>({
+    url: "api/getServiceSettings",
+  })
 }
 /**
- * todo 服务设置
+ * 编辑服务设置
  */
 export function setServiceSettings(data: { allowSearch: number }) {
-  return bpost<{ allowSearch: number }>({
-    url: "doctor/setServiceSettings",
+  return bpost({
+    url: "api/setServiceSettings",
     data,
   })
 }
 /**
- * todo 医生设置患者不可见(患者无法找到医生)
+ * 医生设置患者不可见(患者无法找到医生)
  */
 export function setInvisiblePatients(data: { patientUid: number }) {
   return bpost({
-    url: "doctor/setInvisiblePatients",
+    url: "api/setInvisiblePatient",
     data,
   })
 }
 /**
- * todo 获取不可见患者
+ * 获取不可见患者列表
  */
 export interface InvisiblePatient {
   uid: number
@@ -412,9 +410,9 @@ export interface InvisiblePatient {
   avatar: Picture
   time: string
 }
-export function ListInvisiblePatient({ page, limit, filter = {} }: GetListParam) {
-  return bget<{ list: InvisiblePatient }>({
-    url: "doctor/ListInvisiblePatient",
+export function listInvisiblePatient({ page, limit, filter = {} }: GetListParam) {
+  return bget<{ list: InvisiblePatient[] }>({
+    url: "api/listInvisiblePatient",
     query: {
       page,
       limit,
@@ -432,11 +430,11 @@ export interface QuickReplyMsg {
   msg: string
 }
 /**
- * todo 获取快捷回复信息列表
+ * 获取快捷回复信息列表 isChecked 全为false
  */
-export function ListQuickReply({ page, limit, filter = {} }: GetListParam) {
+export function listQuickReply({ page, limit, filter = {} }: GetListParam) {
   return bget<{ list: QuickReply[] }>({
-    url: "doctor/ListQuickReply",
+    url: "api/listQuickReply",
     query: {
       page,
       limit,
@@ -445,29 +443,29 @@ export function ListQuickReply({ page, limit, filter = {} }: GetListParam) {
   })
 }
 /**
- * todo 删除快捷回复消息
+ *  删除快捷回复消息
  */
 export function deleteQuickReply(data: { id: number }) {
   return bpost({
-    url: "doctor/deleteQuickReply",
+    url: "api/deleteQuickReply",
     data,
   })
 }
 /**
- * todo 添加快捷回复消息
+ * 添加快捷回复消息
  */
 export function addQuickReply(data: { type: number; msg: string }) {
   return bpost({
-    url: "doctor/addQuickReply",
+    url: "api/addQuickReply",
     data,
   })
 }
 /**
- * todo 编辑快捷回复消息
+ * 编辑快捷回复消息
  */
 export function editQuickReply(data: { id: number; msg: string }) {
   return bpost({
-    url: "doctor/editQuickReply",
+    url: "api/editQuickReply",
     data,
   })
 }
@@ -492,8 +490,8 @@ export default {
   setServiceSettings,
   getServiceSettings,
   setInvisiblePatients,
-  ListInvisiblePatient,
-  ListQuickReply,
+  listInvisiblePatient,
+  listQuickReply,
   deleteQuickReply,
   editQuickReply,
   addQuickReply,

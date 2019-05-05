@@ -1,27 +1,26 @@
+import Empty from "@/components/Empty"
 import * as userAction from "@/redux/actions/user"
 import { AppState } from "@/redux/stores/store"
+import pathMap from "@/routes/pathMap"
+import doctor, { GENDER, InvisiblePatient } from "@/services/doctor"
 import { Toast } from "@ant-design/react-native"
-import userApi from "@api/user"
+import sColor from "@styles/color"
 import gImg from "@utils/img"
 import gStyle from "@utils/style"
 import React, { Component } from "react"
 import {
+  DeviceEventEmitter,
   Image,
+  PixelRatio,
   RefreshControl,
   ScrollView,
-  View,
-  PixelRatio,
   Text,
   TouchableOpacity,
-  DeviceEventEmitter,
+  View,
 } from "react-native"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
 const style = gStyle.personalCenter.InvisiblePatients
-import sColor from "@styles/color"
-import Empty from "@/components/Empty"
-import doctor, { InvisiblePatient, GENDER } from "@/services/doctor"
-import pathMap from "@/routes/pathMap"
 const global = gStyle.global
 interface Props {
   navigation: any
@@ -92,7 +91,7 @@ export default class Index extends Component<
     try {
       let {
         data: { list },
-      } = await doctor.ListInvisiblePatient({ page: -1, limit: -1 })
+      } = await doctor.listInvisiblePatient({ page: -1, limit: -1 })
       this.setState({
         hasLoad: true,
         list,
