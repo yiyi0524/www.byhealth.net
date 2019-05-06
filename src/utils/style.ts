@@ -36,6 +36,7 @@ import QuickReply from "@/assets/styles/advisory/quickReply"
 import SittingHospital from "@/assets/styles/index/sittingHospital"
 import SittingHospitalList from "@/assets/styles/index/sittingHospitalList"
 import AddSittingHospital from "@/assets/styles/index/addSittingHospital"
+import EditSittingHospital from "@/assets/styles/index/editSittingHospital"
 export default {
   home,
   global,
@@ -48,6 +49,7 @@ export default {
     SittingHospital,
     SittingHospitalList,
     AddSittingHospital,
+    EditSittingHospital,
   },
   user: {
     login,

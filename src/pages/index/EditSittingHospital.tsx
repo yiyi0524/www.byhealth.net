@@ -15,7 +15,7 @@ import hospital from "@/services/hospital"
 import { TYPE } from "@/utils/constant"
 import doctor from "@/services/doctor"
 import pathMap from "@/routes/pathMap"
-const style = gStyle.index.AddSittingHospital
+const style = gStyle.index.EditSittingHospital
 const global = gStyle.global
 interface NavParams {
   navigatePress: () => void

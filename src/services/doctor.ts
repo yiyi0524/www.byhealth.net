@@ -518,7 +518,18 @@ export function addSittingHospital(data: {
   })
 }
 /**
- * 修改医疗机构
+ *  添加医疗机构
+ */
+export function getSittingHospital({ id }: { id: number }) {
+  return bget({
+    url: "api/getSittingHospital",
+    query: {
+      id,
+    },
+  })
+}
+/**
+ * todo获取某条医疗机构
  */
 export function editSittingHospital(data: {
   id: number
@@ -548,6 +559,7 @@ export async function editSittingInfo(data: SittingInfo) {
   })
 }
 export default {
+  getSittingHospital,
   addSittingHospital,
   editSittingHospital,
   listSittingHospital,

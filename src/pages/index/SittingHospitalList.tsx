@@ -5,7 +5,15 @@ import sColor from "@styles/color"
 import gImg from "@utils/img"
 import gStyle from "@utils/style"
 import React, { Component } from "react"
-import { Image, PixelRatio, RefreshControl, Text, View } from "react-native"
+import {
+  Image,
+  PixelRatio,
+  RefreshControl,
+  Text,
+  View,
+  DeviceEventEmitter,
+  EmitterSubscription,
+} from "react-native"
 import { ScrollView, TouchableOpacity } from "react-native-gesture-handler"
 import { NavigationScreenProp } from "react-navigation"
 import { connect } from "react-redux"
@@ -72,6 +80,7 @@ export default class DiagnosisSettings extends Component<
     headerRight: <Text />,
   })
   medicalInstitutionMapColor: string[]
+  subscription?: EmitterSubscription
   constructor(props: any) {
     super(props)
     this.medicalInstitutionMapColor = [
@@ -94,7 +103,18 @@ export default class DiagnosisSettings extends Component<
     }
   }
   componentDidMount() {
+    this.subscription = DeviceEventEmitter.addListener(
+      pathMap.SittingHospitalList + "Reload",
+      _ => {
+        this.init()
+      },
+    )
     this.init()
+  }
+  componentWillUnmount() {
+    if (this.subscription) {
+      this.subscription.remove()
+    }
   }
   init = async () => {
     try {
@@ -190,7 +210,10 @@ export default class DiagnosisSettings extends Component<
                       }}>
                       <Text style={[style.itemBtnTitle, global.fontSize15]}>删除</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => {}}>
+                    <TouchableOpacity
+                      onPress={() => {
+                        this.props.navigation.push(pathMap.EditSittingHospital, { id: v.id })
+                      }}>
                       <Text style={[style.itemBtnTitle, global.fontSize15]}>编辑</Text>
                     </TouchableOpacity>
                   </View>

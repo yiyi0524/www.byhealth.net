@@ -37,4 +37,5 @@ export default {
   SittingHospital: "SittingHospital",
   SittingHospitalList: "SittingHospitalList",
   AddSittingHospital: "AddSittingHospital",
+  EditSittingHospital: "EditSittingHospital",
 }

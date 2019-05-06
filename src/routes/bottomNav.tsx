@@ -30,6 +30,7 @@ import QuickReply from "@pages/advisory/QuickReply"
 import SittingHospital from "@/pages/index/SittingHospital"
 import SittingHospitalList from "@/pages/index/SittingHospitalList"
 import AddSittingHospital from "@/pages/index/AddSittingHospital"
+import EditSittingHospital from "@/pages/index/EditSittingHospital"
 import Home from "@pages/Home"
 import Test from "@pages/Test"
 import RealNameAuth from "@pages/user/RealNameAuth"
@@ -296,6 +297,9 @@ const StacksOverTabs = createStackNavigator({
   },
   [pathMap.AddSittingHospital]: {
     screen: AddSittingHospital,
+  },
+  [pathMap.EditSittingHospital]: {
+    screen: EditSittingHospital,
   },
 })
 export default StacksOverTabs
