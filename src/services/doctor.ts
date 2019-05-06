@@ -502,7 +502,38 @@ export function deleteSittingHospital(data: { id: number }) {
     data,
   })
 }
+/**
+ * 添加医疗机构
+ */
+export function addSittingHospital(data: {
+  countyCid: number
+  hospitalId: number
+  hospitalName: string
+  detail: string
+}) {
+  return bpost({
+    url: "api/addSittingHospital",
+    data,
+  })
+}
+/**
+ * 修改医疗机构
+ */
+export function editSittingHospital(data: {
+  id: number
+  countyCid: number
+  hospitalId: number
+  hospitalName: string
+  detail: string
+}) {
+  return bpost({
+    url: "api/editSittingHospital",
+    data,
+  })
+}
 export default {
+  addSittingHospital,
+  editSittingHospital,
   listSittingHospital,
   deleteSittingHospital,
   closeInquiry,
