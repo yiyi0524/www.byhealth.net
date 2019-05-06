@@ -12,7 +12,8 @@ import { connect } from "react-redux"
 import { Dispatch } from "redux"
 import doctor, { MedicalInstitution } from "@/services/doctor"
 import hospital from "@/services/hospital"
-const style = gStyle.index.MedicalInstitutionList
+import pathMap from "@/routes/pathMap"
+const style = gStyle.index.SittingMedicalInstitutionList
 const global = gStyle.global
 
 interface Props {
@@ -96,17 +97,21 @@ export default class DiagnosisSettings extends Component<
     this.init()
   }
   init = async () => {
-    let {
-      data: { list: hospitalList },
-    } = await hospital.getList({ page: -1, limit: -1, filter: {} })
-    let {
-      data: { list },
-    } = await doctor.ListMedicalInstitution({ page: -1, limit: -1, filter: {} })
-    this.setState({
-      hasLoad: true,
-      list,
-      hospitalList,
-    })
+    try {
+      let {
+        data: { list: hospitalList },
+      } = await hospital.getList({ page: -1, limit: -1, filter: {} })
+      let {
+        data: { list },
+      } = await doctor.ListMedicalInstitution({ page: -1, limit: -1, filter: {} })
+      this.setState({
+        hasLoad: true,
+        list,
+        hospitalList,
+      })
+    } catch (err) {
+      console.log(err)
+    }
   }
   onRefresh = () => {
     this.setState({ refreshing: true })
@@ -201,7 +206,10 @@ export default class DiagnosisSettings extends Component<
               )
             })}
           </View>
-          <TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              this.props.navigation.push(pathMap.AddSittingMedicalInstitution)
+            }}>
             <View style={[style.btn, global.flex, global.alignItemsCenter]}>
               <Icon name="plus-circle" style={[style.btnIcon, global.fontSize20]} />
               <Text style={[style.btnTitle, global.fontSize14]}>添加医疗机构</Text>

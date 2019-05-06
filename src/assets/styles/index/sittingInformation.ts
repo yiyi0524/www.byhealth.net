@@ -83,8 +83,7 @@ export default StyleSheet.create({
   },
   calendar: {
     marginTop: 8,
-    paddingLeft: 15,
-    paddingRight: 15,
+    paddingTop: 0,
     backgroundColor: sColor.white,
   },
 })

@@ -28,7 +28,8 @@ import InvisiblePatients from "@pages/personal_center/InvisiblePatients"
 import InviteDoctors from "@pages/personal_center/InviteDoctors"
 import QuickReply from "@pages/advisory/QuickReply"
 import SittingInformation from "@pages/index/SittingInformation"
-import MedicalInstitutionList from "@pages/index/MedicalInstitutionList"
+import SittingMedicalInstitutionList from "@/pages/index/SittingMedicalInstitutionList"
+import AddSittingMedicalInstitution from "@/pages/index/AddSittingMedicalInstitution"
 import Home from "@pages/Home"
 import Test from "@pages/Test"
 import RealNameAuth from "@pages/user/RealNameAuth"
@@ -290,8 +291,11 @@ const StacksOverTabs = createStackNavigator({
   [pathMap.SittingInformation]: {
     screen: SittingInformation,
   },
-  [pathMap.MedicalInstitutionList]: {
-    screen: MedicalInstitutionList,
+  [pathMap.SittingMedicalInstitutionList]: {
+    screen: SittingMedicalInstitutionList,
+  },
+  [pathMap.AddSittingMedicalInstitution]: {
+    screen: AddSittingMedicalInstitution,
   },
 })
 export default StacksOverTabs

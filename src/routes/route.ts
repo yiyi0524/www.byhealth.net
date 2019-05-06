@@ -1,9 +1,9 @@
-import { Platform } from "react-native";
-import bottomNav from "./bottomNav";
-import { StackNavigatorConfig, NavigationRouteConfigMap } from "react-navigation";
-import Login from "@pages/user/Login";
-import Register from "@pages/user/Register";
-import ForgetPwd from "@pages/user/ForgetPwd";
+import { Platform } from "react-native"
+import bottomNav from "./bottomNav"
+import { StackNavigatorConfig, NavigationRouteConfigMap } from "react-navigation"
+import Login from "@pages/user/Login"
+import Register from "@pages/user/Register"
+import ForgetPwd from "@pages/user/ForgetPwd"
 const config: [NavigationRouteConfigMap, StackNavigatorConfig] = [
   {
     Index: {
@@ -24,5 +24,5 @@ const config: [NavigationRouteConfigMap, StackNavigatorConfig] = [
     headerMode: "none",
     mode: Platform.OS === "ios" ? "modal" : "card",
   },
-];
-export default config;
+]
+export default config
