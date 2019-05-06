@@ -2,9 +2,8 @@ import React, { Fragment } from "react"
 import moment from "moment"
 import { View, StyleSheet, Text, PixelRatio, TouchableOpacity } from "react-native"
 import { windowWidth } from "@/utils/utils"
-import { Toast } from "@ant-design/react-native"
 // 一天的时间段
-enum DayStage {
+export enum DayStage {
   morning,
   afterroom,
   night,

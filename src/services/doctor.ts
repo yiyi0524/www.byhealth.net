@@ -5,6 +5,7 @@ import { ConsultationItem } from "@/pages/advisory/Index"
 import { Drug } from "./patient"
 import { drugItem } from "@/pages/advisory/SquareRoot"
 import { Picture } from "@/pages/advisory/Chat"
+import { DayStage } from "@/components/Calendar"
 export const ALLOW_INQUIRY = {
   FALSE: 0x0,
   TRUE: 0x1,
@@ -503,7 +504,7 @@ export function deleteSittingHospital(data: { id: number }) {
   })
 }
 /**
- *  todo 添加医疗机构
+ *  添加医疗机构
  */
 export function addSittingHospital(data: {
   countyCid: number
@@ -517,7 +518,7 @@ export function addSittingHospital(data: {
   })
 }
 /**
- * todo 修改医疗机构
+ * 修改医疗机构
  */
 export function editSittingHospital(data: {
   id: number
@@ -528,6 +529,21 @@ export function editSittingHospital(data: {
 }) {
   return bpost({
     url: "api/editSittingHospital",
+    data,
+  })
+}
+interface SittingInfo {
+  time: string //2019-05-05 00:00:00
+  stage: DayStage
+  sittingHospitalId: number //坐诊医院id
+  isSitting: boolean
+}
+/**
+ * 编辑坐诊信息
+ */
+export async function editSittingInfo(data: SittingInfo) {
+  return bpost({
+    url: "api/editSittingInfo",
     data,
   })
 }
