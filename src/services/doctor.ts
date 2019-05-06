@@ -570,7 +570,27 @@ export async function editSittingInfo(data: SittingInfo) {
     data,
   })
 }
+export interface sittingRecord {
+  id: number
+  time: string
+  stage: number
+  hospitalId: number
+}
+/**
+ *  坐诊信息列表
+ */
+export function listSittingRecord({ page, limit, filter = {} }: GetListParam) {
+  return bget<{ list: sittingRecord[] }>({
+    url: "api/listSittingRecord",
+    query: {
+      page,
+      limit,
+      filter,
+    },
+  })
+}
 export default {
+  listSittingRecord,
   getSittingHospital,
   addSittingHospital,
   editSittingHospital,

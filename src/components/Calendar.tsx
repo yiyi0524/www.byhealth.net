@@ -77,30 +77,7 @@ class CalendarMode extends React.Component<Props, State> {
     this.state = {
       isSitting: 0,
       hospitalIdMapColor: {},
-      hospitalList: [
-        {
-          id: 1,
-          name: "北京邻米中医院",
-          address: {
-            provinceCid: "",
-            cityCid: "",
-            countyCid: "",
-            detail: "",
-            whole: "", // 这个whole 没什么用,备用
-          },
-        },
-        {
-          id: 2,
-          name: "上海邻米中医院",
-          address: {
-            provinceCid: "",
-            cityCid: "",
-            countyCid: "",
-            detail: "",
-            whole: "", // 这个whole 没什么用,备用
-          },
-        },
-      ],
+      hospitalList: [],
       //坐诊记录列表
       sittingRecordList: [],
       timeMapSittingRecord: {},
@@ -146,25 +123,11 @@ class CalendarMode extends React.Component<Props, State> {
         day: 0,
       })
     }
-    let { hospitalIdMapColor } = this.state
-    for (let i = 0; i < this.state.hospitalList.length && i < 7; i++) {
-      hospitalIdMapColor[this.state.hospitalList[i].id] = this.hospitalColorList[i]
-    }
-    let { timeMapSittingRecord, sittingRecordList } = this.state
-    sittingRecordList = [
-      {
-        id: 1, //id 用来编辑
-        time: "2019-05-05 10:00:00", //取数据的时候 13:00:00 不需要用到,我们计算时间段用stage
-        stage: 0x0, // 0 上午,1下午,2 晚上
-        hospitalId: 1,
-      },
-      {
-        id: 2, //id 用来编辑
-        time: "2019-05-13 17:00:00", //取数据的时候 13:00:00 不需要用到,我们计算时间段用stage
-        stage: 0x1, // 0 上午,1下午,2 晚上
-        hospitalId: 2,
-      },
-    ]
+    let { timeMapSittingRecord } = this.state
+    //坐诊列表
+    let {
+      data: { list: sittingRecordList },
+    } = await doctor.listSittingRecord({ page: -1, limit: -1, filter: {} })
     for (let i = 0; i < sittingRecordList.length; i++) {
       let timeStage = sittingRecordList[i].time.substr(0, 10) + "-" + sittingRecordList[i].stage
       timeMapSittingRecord[timeStage] = sittingRecordList[i].hospitalId
@@ -172,9 +135,14 @@ class CalendarMode extends React.Component<Props, State> {
     let {
       data: { list },
     } = await doctor.listSittingHospital({ page: -1, limit: -1, filter: {} })
+    //医院列表
     let {
       data: { list: hospitalList },
     } = await hospital.getList({ page: -1, limit: -1, filter: {} })
+    //坐诊医院列表
+    let {
+      data: { list: listSittingHospital },
+    } = await doctor.listSittingHospital({ page: -1, limit: -1, filter: {} })
     let { sittingHospitalList, sittingHospitalMapList } = this.state
     for (let v of list) {
       let hospitalName = v.hospitalName
@@ -189,8 +157,13 @@ class CalendarMode extends React.Component<Props, State> {
       })
       sittingHospitalMapList[v.id] = hospitalName
     }
+    let { hospitalIdMapColor } = this.state
+    for (let i = 0; i < listSittingHospital.length && i < 7; i++) {
+      hospitalIdMapColor[listSittingHospital[i].id] = this.hospitalColorList[i]
+    }
     this.setState({
       calendar,
+      hospitalList: listSittingHospital,
       sittingHospitalList,
       sittingHospitalMapList,
       hospitalIdMapColor,
