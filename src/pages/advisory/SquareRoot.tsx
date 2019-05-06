@@ -591,6 +591,15 @@ export default class SquareRoot extends Component<
     // Object.keys(this.state.chooseDrugInfo).map((drugIdStr, k) => {
     //   let drugId: number = parseInt(drugIdStr)
     // })
+    if (discrimination === "") {
+      return Toast.info("请输入辨病", 3)
+    }
+    if (syndromeDifferentiation === "") {
+      return Toast.info("请输入辨证", 3)
+    }
+    if (Object.keys(this.state.chooseDrugInfo).length === 0) {
+      return Toast.info("请选择药材", 3)
+    }
     addPrescription({
       advice,
       discrimination,
