@@ -518,10 +518,20 @@ export function addSittingHospital(data: {
   })
 }
 /**
- *  添加医疗机构
+ *  获取某条医疗机构
  */
 export function getSittingHospital({ id }: { id: number }) {
-  return bget({
+  return bget<{
+    detail: {
+      id: number
+      provinceCid: string
+      cityCid: string
+      countyCid: string
+      hospitalId: number
+      hospitalName: string
+      detail: string
+    }
+  }>({
     url: "api/getSittingHospital",
     query: {
       id,
@@ -529,7 +539,7 @@ export function getSittingHospital({ id }: { id: number }) {
   })
 }
 /**
- * todo获取某条医疗机构
+ * 编辑医疗机构
  */
 export function editSittingHospital(data: {
   id: number
