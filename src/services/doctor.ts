@@ -503,7 +503,7 @@ export function deleteSittingHospital(data: { id: number }) {
   })
 }
 /**
- * 添加医疗机构
+ *  todo 添加医疗机构
  */
 export function addSittingHospital(data: {
   countyCid: number
@@ -517,7 +517,7 @@ export function addSittingHospital(data: {
   })
 }
 /**
- * 修改医疗机构
+ * todo 修改医疗机构
  */
 export function editSittingHospital(data: {
   id: number
