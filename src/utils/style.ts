@@ -33,9 +33,9 @@ import ServiceSettings from "@/assets/styles/index/serviceSettings"
 import InvisiblePatients from "@/assets/styles/personal_center/invisiblePatients"
 import InviteDoctors from "@/assets/styles/personal_center/inviteDoctors"
 import QuickReply from "@/assets/styles/advisory/quickReply"
-import SittingInformation from "@/assets/styles/index/sittingInformation"
-import SittingMedicalInstitutionList from "@/assets/styles/index/sittingMedicalInstitutionList"
-import AddSittingMedicalInstitution from "@/assets/styles/index/addSittingMedicalInstitution"
+import SittingHospital from "@/assets/styles/index/sittingHospital"
+import SittingHospitalList from "@/assets/styles/index/sittingHospitalList"
+import AddSittingHospital from "@/assets/styles/index/addSittingHospital"
 export default {
   home,
   global,
@@ -45,9 +45,9 @@ export default {
     DiagnosisSettings,
     PrescriptionDetail,
     ServiceSettings,
-    SittingInformation,
-    SittingMedicalInstitutionList,
-    AddSittingMedicalInstitution,
+    SittingHospital,
+    SittingHospitalList,
+    AddSittingHospital,
   },
   user: {
     login,

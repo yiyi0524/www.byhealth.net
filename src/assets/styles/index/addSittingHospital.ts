@@ -35,4 +35,15 @@ export default StyleSheet.create({
   },
   list: {},
   item: {},
+  title: {
+    color: sColor.color666,
+    fontSize: 14,
+  },
+  input: {
+    fontSize: 14,
+    color: sColor.color666,
+  },
+  icon: {
+    color: sColor.color888,
+  },
 })

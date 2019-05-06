@@ -27,9 +27,9 @@ import ServiceSettings from "@pages/index/ServiceSettings"
 import InvisiblePatients from "@pages/personal_center/InvisiblePatients"
 import InviteDoctors from "@pages/personal_center/InviteDoctors"
 import QuickReply from "@pages/advisory/QuickReply"
-import SittingInformation from "@pages/index/SittingInformation"
-import SittingMedicalInstitutionList from "@/pages/index/SittingMedicalInstitutionList"
-import AddSittingMedicalInstitution from "@/pages/index/AddSittingMedicalInstitution"
+import SittingHospital from "@/pages/index/SittingHospital"
+import SittingHospitalList from "@/pages/index/SittingHospitalList"
+import AddSittingHospital from "@/pages/index/AddSittingHospital"
 import Home from "@pages/Home"
 import Test from "@pages/Test"
 import RealNameAuth from "@pages/user/RealNameAuth"
@@ -288,14 +288,14 @@ const StacksOverTabs = createStackNavigator({
   [pathMap.QuickReply]: {
     screen: QuickReply,
   },
-  [pathMap.SittingInformation]: {
-    screen: SittingInformation,
+  [pathMap.SittingHospital]: {
+    screen: SittingHospital,
   },
-  [pathMap.SittingMedicalInstitutionList]: {
-    screen: SittingMedicalInstitutionList,
+  [pathMap.SittingHospitalList]: {
+    screen: SittingHospitalList,
   },
-  [pathMap.AddSittingMedicalInstitution]: {
-    screen: AddSittingMedicalInstitution,
+  [pathMap.AddSittingHospital]: {
+    screen: AddSittingHospital,
   },
 })
 export default StacksOverTabs

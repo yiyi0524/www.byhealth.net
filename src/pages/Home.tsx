@@ -93,7 +93,7 @@ export default class Home extends Component<
       {
         icon: gImg.home.sittingInformation,
         title: "坐诊信息",
-        link: pathMap.SittingInformation,
+        link: pathMap.SittingHospital,
       },
     ]
   }

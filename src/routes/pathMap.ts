@@ -34,7 +34,7 @@ export default {
   InvisiblePatients: "InvisiblePatients",
   InviteDoctors: "InviteDoctors",
   QuickReply: "QuickReply",
-  SittingInformation: "SittingInformation",
-  SittingMedicalInstitutionList: "SittingMedicalInstitutionList",
-  AddSittingMedicalInstitution: "AddSittingMedicalInstitution",
+  SittingHospital: "SittingHospital",
+  SittingHospitalList: "SittingHospitalList",
+  AddSittingHospital: "AddSittingHospital",
 }

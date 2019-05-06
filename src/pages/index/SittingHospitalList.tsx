@@ -10,10 +10,10 @@ import { ScrollView, TouchableOpacity } from "react-native-gesture-handler"
 import { NavigationScreenProp } from "react-navigation"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
-import doctor, { MedicalInstitution } from "@/services/doctor"
+import doctor, { SittingHospital } from "@/services/doctor"
 import hospital from "@/services/hospital"
 import pathMap from "@/routes/pathMap"
-const style = gStyle.index.SittingMedicalInstitutionList
+const style = gStyle.index.SittingHospitalList
 const global = gStyle.global
 
 interface Props {
@@ -22,7 +22,7 @@ interface Props {
 interface State {
   hasLoad: boolean
   refreshing: boolean
-  list: MedicalInstitution[]
+  list: SittingHospital[]
   hospitalList: Hospital[]
 }
 interface Hospital {
@@ -103,7 +103,7 @@ export default class DiagnosisSettings extends Component<
       } = await hospital.getList({ page: -1, limit: -1, filter: {} })
       let {
         data: { list },
-      } = await doctor.ListMedicalInstitution({ page: -1, limit: -1, filter: {} })
+      } = await doctor.listSittingHospital({ page: -1, limit: -1, filter: {} })
       this.setState({
         hasLoad: true,
         list,
@@ -157,7 +157,7 @@ export default class DiagnosisSettings extends Component<
                   </View>
                   <View style={[global.flex, global.alignItemsCenter]}>
                     <Icon style={[style.itemImg, global.fontSize20]} name="environment" />
-                    <Text style={[style.itemTitle, global.fontSize14]}>{v.address.whole}</Text>
+                    <Text style={[style.itemTitle, global.fontSize14]}>{v.address.detail}</Text>
                   </View>
                   <View
                     style={[
@@ -177,7 +177,7 @@ export default class DiagnosisSettings extends Component<
                             text: "确定",
                             onPress: async () => {
                               try {
-                                await doctor.deleteMedicalInstitution({ id: v.id })
+                                await doctor.deleteSittingHospital({ id: v.id })
                                 await this.init()
                                 Toast.success("删除成功", 2)
                               } catch (err) {
@@ -208,7 +208,7 @@ export default class DiagnosisSettings extends Component<
           </View>
           <TouchableOpacity
             onPress={() => {
-              this.props.navigation.push(pathMap.AddSittingMedicalInstitution)
+              this.props.navigation.push(pathMap.AddSittingHospital)
             }}>
             <View style={[style.btn, global.flex, global.alignItemsCenter]}>
               <Icon name="plus-circle" style={[style.btnIcon, global.fontSize20]} />
