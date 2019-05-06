@@ -2,36 +2,16 @@
   "compilerOptions": {
     "baseUrl": "./src",
     "paths": {
-      "@/*": [
-        "./*"
-      ],
-      "@routes/*": [
-        "./routes/*"
-      ],
-      "@config/*": [
-        "./config/*"
-      ],
-      "@utils/*": [
-        "./utils/*"
-      ],
-      "@pages/*": [
-        "./pages/*"
-      ],
-      "@components/*": [
-        "./components/*"
-      ],
-      "@styles/*": [
-        "./assets/styles/*"
-      ],
-      "@img/*": [
-        "./assets/images/*"
-      ],
-      "@api/*": [
-        "./services/*"
-      ],
-      "@redux/*": [
-        "./redux/*"
-      ]
+      "@/*": ["./*"],
+      "@routes/*": ["./routes/*"],
+      "@config/*": ["./config/*"],
+      "@utils/*": ["./utils/*"],
+      "@pages/*": ["./pages/*"],
+      "@components/*": ["./components/*"],
+      "@styles/*": ["./assets/styles/*"],
+      "@img/*": ["./assets/images/*"],
+      "@api/*": ["./services/*"],
+      "@redux/*": ["./redux/*"]
     }
   }
 }

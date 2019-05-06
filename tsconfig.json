@@ -10,23 +10,13 @@
     "experimentalDecorators": true,
     "module": "commonjs",
     "jsx": "react-native",
-    "lib": [
-      "es6",
-      "dom"
-    ],
+    "lib": ["es6", "dom"],
     "moduleResolution": "node",
     "noEmit": true,
     "strict": true,
     "target": "esnext",
-    "typeRoots": [
-      "typings"
-    ]
+    "typeRoots": ["typings"]
   },
-  "exclude": [
-    "node_modules",
-    "babel.config.js",
-    "metro.config.js",
-    "jest.config.js"
-  ],
+  "exclude": ["node_modules", "babel.config.js", "metro.config.js", "jest.config.js"],
   "extends": "./tsconfig.paths.json"
 }
