@@ -474,6 +474,8 @@ export function editQuickReply(data: { id: number; msg: string }) {
 }
 export interface SittingHospital {
   id: number
+  value?: number
+  label?: string
   address: {
     provinceCid: string
     detail: string

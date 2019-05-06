@@ -38,6 +38,7 @@ interface State {
   hasLoad: boolean
   refreshing: boolean
   hospitalId: number
+  sittingHospitalId: number
   hospitalName: string
   detail: string
   page: number
@@ -111,6 +112,7 @@ export default class DiagnosisSettings extends Component<
       hasLoad: false,
       refreshing: false,
       isSelectHospital: false,
+      sittingHospitalId: this.props.navigation.getParam("id"),
       hospitalId: 0,
       hospitalName: "",
       detail: "",
@@ -126,13 +128,21 @@ export default class DiagnosisSettings extends Component<
   componentDidMount() {
     this.init()
     this.props.navigation.setParams({
-      navigatePress: this.addSittingHospital,
+      navigatePress: this.editSittingHospital,
     })
   }
   init = async () => {
     try {
       let region = [],
         regionCidMapAreaName: RegionCidMapAreaName = {}
+      let {
+        data: { detail: info },
+      } = await doctor.getSittingHospital({ id: this.state.sittingHospitalId })
+      let { detail, cityInfo, hospitalId, hospitalName } = this.state
+      detail = info.detail
+      cityInfo = [info.provinceCid, info.cityCid, info.countyCid]
+      hospitalId = info.hospitalId
+      hospitalName = info.hospitalName
       let {
         data: { region: oriRegion },
       } = await api.getRegion()
@@ -141,6 +151,10 @@ export default class DiagnosisSettings extends Component<
       this.setState({
         region,
         regionCidMapAreaName,
+        detail,
+        cityInfo,
+        hospitalId,
+        hospitalName,
       })
     } catch (err) {
       console.log(err.msg)
@@ -174,7 +188,7 @@ export default class DiagnosisSettings extends Component<
     }
     return regionCidMapAreaName
   }
-  addSittingHospital = async () => {
+  editSittingHospital = async () => {
     try {
       if (this.state.cityInfo.length === 0) {
         return Toast.fail("请选择地区", 3)
@@ -188,7 +202,8 @@ export default class DiagnosisSettings extends Component<
         return Toast.fail("请输入您的地址", 3)
       }
       doctor
-        .addSittingHospital({
+        .editSittingHospital({
+          id: this.state.sittingHospitalId,
           countyCid: parseInt(this.state.cityInfo[2]),
           hospitalId: this.state.hospitalId,
           hospitalName: this.state.hospitalName,

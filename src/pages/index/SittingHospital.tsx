@@ -81,7 +81,7 @@ export default class SittingInformation extends Component<
         onPress={() => {
           navigation.state.params!.navigatePress()
         }}>
-        <Text style={[style.headerRight, global.fontSize14]}>分享</Text>
+        {/* <Text style={[style.headerRight, global.fontSize14]}>分享</Text> */}
       </TouchableOpacity>
     ),
   })
