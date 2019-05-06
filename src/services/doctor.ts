@@ -471,65 +471,40 @@ export function editQuickReply(data: { id: number; msg: string }) {
     data,
   })
 }
-export interface MedicalInstitution {
+export interface SittingHospital {
   id: number
   address: {
     provinceCid: string
-    whole: string
+    detail: string
   }
   hospitalName: string
   hospitalId: number
 }
 /**
- * todo 医疗机构列表
+ *  坐诊医院列表
  */
-export function ListMedicalInstitution({ page, limit, filter = {} }: GetListParam) {
-  console.log(page, limit, filter)
-  return {
-    data: {
-      list: [
-        {
-          id: 1,
-          address: {
-            provinceCid: "11111",
-            whole: "上海市阳关花园",
-          },
-          hospitalId: 1,
-          hospitalName: "ssssssss",
-        },
-        {
-          id: 2,
-          address: {
-            provinceCid: "11111",
-            whole: "上海市阳关花园",
-          },
-          hospitalId: 1,
-          hospitalName: "ssssssss",
-        },
-      ],
+export function listSittingHospital({ page, limit, filter = {} }: GetListParam) {
+  return bget<{ list: SittingHospital[] }>({
+    url: "api/listSittingHospital",
+    query: {
+      page,
+      limit,
+      filter,
     },
-  }
-  // return bget<{ list: MedicalInstitution[] }>({
-  //   url: "doctor/ListMedicalInstitution",
-  //   query: {
-  //     page,
-  //     limit,
-  //     filter,
-  //   },
-  // })
+  })
 }
 /**
- * todo 删除医疗机构
+ * 删除医疗机构
  */
-export function deleteMedicalInstitution(data: { id: number }) {
+export function deleteSittingHospital(data: { id: number }) {
   return bpost({
-    url: "doctor/deleteMedicalInstitution",
+    url: "api/deleteSittingHospital",
     data,
   })
 }
 export default {
-  ListMedicalInstitution,
-  deleteMedicalInstitution,
+  listSittingHospital,
+  deleteSittingHospital,
   closeInquiry,
   doctorAuth,
   getMsgList,
