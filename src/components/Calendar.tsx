@@ -136,8 +136,8 @@ class CalendarMode extends React.Component<Props, State> {
           day: i + 1,
         })
       }
-      let firstLineInsertCount = firstDayWeekday - 1
-      let lastLineInsertCount = 7 - ((dayCount - 7 + firstDayWeekday - 1) % 7)
+      let firstLineInsertCount = firstDayWeekday
+      let lastLineInsertCount = 7 - ((dayCount - 7 + firstDayWeekday - 1) % 7) - 1
       for (let i = 0; i < firstLineInsertCount; i++) {
         calendar.dateList.unshift({
           day: 0,
