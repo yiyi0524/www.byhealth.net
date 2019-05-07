@@ -157,9 +157,6 @@ class CalendarMode extends React.Component<Props, State> {
         let timeStage = sittingRecordList[i].time.substr(0, 10) + "-" + sittingRecordList[i].stage
         timeMapSittingRecord[timeStage] = sittingRecordList[i].hospitalId
       }
-      let {
-        data: { list },
-      } = await doctor.listSittingHospital({ page: -1, limit: -1, filter: {} })
       //医院列表
       let {
         data: { list: hospitalList },
@@ -170,7 +167,7 @@ class CalendarMode extends React.Component<Props, State> {
       } = await doctor.listSittingHospital({ page: -1, limit: -1, filter: {} })
       let sittingHospitalList: picker[] = [],
         sittingHospitalMapList: sittingHospitalMapList = {}
-      for (let v of list) {
+      for (let v of listSittingHospital) {
         let hospitalName = v.hospitalName
         for (let v1 of hospitalList) {
           if (v1.id === v.hospitalId) {
