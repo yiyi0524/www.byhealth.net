@@ -126,7 +126,7 @@ class CalendarMode extends React.Component<Props, State> {
         { calendar } = this.state,
         firstDayWeekday = moment()
           .year(calendar.year)
-          .month(calendar.month)
+          .month(calendar.month - 1)
           .isoWeekday()
       calendar.year = dMoment.year()
       calendar.month = dMoment.month() + 1
@@ -148,7 +148,7 @@ class CalendarMode extends React.Component<Props, State> {
           day: 0,
         })
       }
-      let { timeMapSittingRecord } = this.state
+      let timeMapSittingRecord: Record<string, SittingRecordId> = {}
       //坐诊列表
       let {
         data: { list: sittingRecordList },
@@ -168,7 +168,8 @@ class CalendarMode extends React.Component<Props, State> {
       let {
         data: { list: listSittingHospital },
       } = await doctor.listSittingHospital({ page: -1, limit: -1, filter: {} })
-      let { sittingHospitalList, sittingHospitalMapList } = this.state
+      let sittingHospitalList: picker[] = [],
+        sittingHospitalMapList: sittingHospitalMapList = {}
       for (let v of list) {
         let hospitalName = v.hospitalName
         for (let v1 of hospitalList) {
@@ -195,7 +196,6 @@ class CalendarMode extends React.Component<Props, State> {
         sittingRecordList,
         timeMapSittingRecord,
       })
-      console.log(sittingRecordList)
     } catch (err) {
       console.log(err)
     }
@@ -361,6 +361,7 @@ class CalendarMode extends React.Component<Props, State> {
     let { isSitting, timeMapSittingRecord, selectHospital } = this.state
     isSitting = time + "-" + stage in timeMapSittingRecord ? SITTING.TRUE : SITTING.FALSE
     selectHospital = isSitting === SITTING.TRUE ? [timeMapSittingRecord[time + "-" + stage]] : []
+    console.log(timeMapSittingRecord[time + "-" + stage])
     this.setState({
       day: time,
       stage,
@@ -371,6 +372,9 @@ class CalendarMode extends React.Component<Props, State> {
   }
   editSittingInfo = async () => {
     try {
+      if (this.state.selectHospital.length === 0 || this.state.selectHospital[0] === 0) {
+        return Toast.info("请选择医疗机构", 3)
+      }
       await doctor.editSittingInfo({
         time: this.state.day + " 00:00:00",
         stage: this.state.stage,
@@ -379,12 +383,13 @@ class CalendarMode extends React.Component<Props, State> {
       })
       Toast.success("设置成功", 1)
       DeviceEventEmitter.emit(pathMap.SittingHospital + "Reload", null)
-      DeviceEventEmitter.emit(pathMap.Calendar + "Reload", null)
+      // DeviceEventEmitter.emit(pathMap.Calendar + "Reload", null)
       this.setState({
         isShowMode: false,
         selectHospital: [],
         isSitting: SITTING.FALSE,
       })
+      await this.init()
     } catch (err) {
       Toast.success("设置失败, 错误信息: " + err.msg, 1)
       console.log(err)
@@ -456,7 +461,6 @@ class CalendarMode extends React.Component<Props, State> {
                   cols={1}
                   value={this.state.selectHospital}
                   onChange={selectHospital => {
-                    console.log(selectHospital)
                     this.setState({
                       selectHospital: selectHospital as [number],
                     })

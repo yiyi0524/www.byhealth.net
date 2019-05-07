@@ -31,8 +31,8 @@ export default StyleSheet.create({
   header: {
     paddingLeft: 15,
     paddingRight: 15,
-    paddingTop: 10,
-    paddingBottom: 10,
+    paddingTop: 20,
+    paddingBottom: 20,
   },
   headerAvatarCircle: {
     width: 60,
