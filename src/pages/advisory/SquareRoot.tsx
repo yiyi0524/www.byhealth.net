@@ -285,7 +285,7 @@ export default class SquareRoot extends Component<
     Object.keys(this.state.chooseDrugInfo).map((drugIdStr, _) => {
       let drugId: number = parseInt(drugIdStr),
         list = this.state.chooseDrugInfo
-      drugMoney += (list[drugId].info.price / 100) * list[drugId].count
+      drugMoney += (list[drugId].info.price / 1000) * list[drugId].count
     })
     return (
       <>
@@ -428,7 +428,7 @@ export default class SquareRoot extends Component<
                         <Text
                           style={[style.drugItemLeftDetail, global.fontSize12]}
                           numberOfLines={1}>
-                          {((list[drugId].info.price / 100) * list[drugId].count).toFixed(2)}元
+                          {((list[drugId].info.price / 1000) * list[drugId].count).toFixed(2)}元
                         </Text>
                       </View>
                     </View>

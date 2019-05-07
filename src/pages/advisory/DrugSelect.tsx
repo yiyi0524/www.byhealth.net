@@ -1,6 +1,7 @@
 import global from "@/assets/styles/global"
 import pathMap from "@/routes/pathMap"
 import hospital from "@/services/hospital"
+import { TYPE } from "@/utils/constant"
 import { Icon, InputItem, Toast } from "@ant-design/react-native"
 import sColor from "@styles/color"
 import gImg from "@utils/img"
@@ -15,11 +16,9 @@ import {
   Text,
   TouchableOpacity,
   View,
-  TextInput,
 } from "react-native"
 import { NavigationScreenProp } from "react-navigation"
 import { activeDrugItem, drugItem } from "./SquareRoot"
-import { TYPE } from "@/utils/constant"
 const style = gStyle.advisory.DrugSelect
 export interface CategoryItem {
   id: number
@@ -326,7 +325,7 @@ export default class Pharmacy extends Component<Props, State> {
                   </View>
                   <View style={[style.itemCenterDetail, global.flex, global.alignItemsCenter]}>
                     <Text style={[style.itemCenterDetailTitle, global.fontSize12]}>
-                      {list[drugId].info.price / 100}元/{list[drugId].info.unit}
+                      {list[drugId].info.price / 1000}元/{list[drugId].info.unit}
                     </Text>
                     <View style={style.littleSpot} />
                     <Text style={[style.itemCenterDetailTitle, global.fontSize12]}>
@@ -383,7 +382,7 @@ export default class Pharmacy extends Component<Props, State> {
                   </Text>
                   <View style={[style.drugDetail, global.flex, global.alignItemsCenter]}>
                     <Text style={[style.drugDescription, global.fontSize12]}>
-                      {drug.price / 100}元/{drug.unit}
+                      {drug.price / 1000}元/{drug.unit}
                     </Text>
                     <View style={style.littleSpot} />
                     <Text style={[style.drugDescription, global.fontSize12]}>{drug.standard}</Text>

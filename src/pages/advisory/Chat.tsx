@@ -464,9 +464,10 @@ export default class Chat extends Component<
                       last
                       ref={ref => (this.msgInput = ref)}
                       value={this.state.sendMsg}
-                      onChange={value => {
+                      onChange={val => {
+                        val = val || ""
                         this.setState({
-                          sendMsg: value as string,
+                          sendMsg: val,
                         })
                       }}
                     />

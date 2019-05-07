@@ -283,7 +283,7 @@ export default class SquareRoot extends Component<
                                 <Text
                                   style={[style.drugItemDetail, global.fontSize12]}
                                   numberOfLines={1}>
-                                  {(price / 100).toFixed(2)}元
+                                  {((price / 1000) * v.count).toFixed(2)}元
                                 </Text>
                               </View>
                               <Text
