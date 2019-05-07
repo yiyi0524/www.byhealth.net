@@ -93,6 +93,24 @@ export const QUICK_REPLY_TYPE_ZH = {
   [QUICK_REPLY_TYPE.drugAndShipping]: "药材与快递",
   [QUICK_REPLY_TYPE.advice]: "调理建议",
 }
+export const STAGE = {
+  morning: 0x0,
+  afternoon: 0x1,
+  night: 0x2,
+}
+export const STAGE_ZH = {
+  [STAGE.morning]: "上午",
+  [STAGE.afternoon]: "下午",
+  [STAGE.night]: "晚上",
+}
+export const SITTING = {
+  FALSE: 0x0,
+  TRUE: 0x1,
+}
+export const SITTING_ZH = {
+  [SITTING.FALSE]: "坐诊",
+  [SITTING.TRUE]: "不坐诊",
+}
 /**
  * 注册
  */
@@ -621,4 +639,5 @@ export default {
   deleteQuickReply,
   editQuickReply,
   addQuickReply,
+  editSittingInfo,
 }

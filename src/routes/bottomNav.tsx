@@ -31,6 +31,7 @@ import SittingHospital from "@/pages/index/SittingHospital"
 import SittingHospitalList from "@/pages/index/SittingHospitalList"
 import AddSittingHospital from "@/pages/index/AddSittingHospital"
 import EditSittingHospital from "@/pages/index/EditSittingHospital"
+import Calendar from "@/components/Calendar"
 import Home from "@pages/Home"
 import Test from "@pages/Test"
 import RealNameAuth from "@pages/user/RealNameAuth"
@@ -300,6 +301,9 @@ const StacksOverTabs = createStackNavigator({
   },
   [pathMap.EditSittingHospital]: {
     screen: EditSittingHospital,
+  },
+  [pathMap.Calendar]: {
+    screen: Calendar,
   },
 })
 export default StacksOverTabs

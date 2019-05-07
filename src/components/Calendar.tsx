@@ -1,10 +1,20 @@
-import doctor from "@/services/doctor"
+import doctor, { STAGE, SITTING, STAGE_ZH } from "@/services/doctor"
 import hospital from "@/services/hospital"
 import { windowWidth } from "@/utils/utils"
-import { Radio } from "@ant-design/react-native"
+import { Radio, Modal, Picker, Icon, Toast } from "@ant-design/react-native"
 import moment from "moment"
 import React, { Fragment } from "react"
-import { PixelRatio, StyleSheet, Text, TouchableOpacity, View } from "react-native"
+import {
+  PixelRatio,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  DeviceEventEmitter,
+  EmitterSubscription,
+} from "react-native"
+import global from "@/assets/styles/global"
+import pathMap from "@/routes/pathMap"
 const RadioItem = Radio.RadioItem
 // 一天的时间段
 export enum DayStage {
@@ -15,6 +25,7 @@ export enum DayStage {
 interface Props {}
 interface sittingHospitalMapList extends Record<string, string> {}
 interface State {
+  isShowMode: boolean
   // 医院id 映射 颜色 不同的医生的坐诊信息颜色不一样
   hospitalIdMapColor: Record<number, string>
   // 坐诊医院列表
@@ -29,9 +40,10 @@ interface State {
   //医院列表
   sittingHospitalList: picker[]
   sittingHospitalMapList: sittingHospitalMapList
-  selectHospital: [number]
+  selectHospital: number[]
   isSitting: number
   day: string
+  stage: number
 }
 interface picker {
   value: number
@@ -72,10 +84,13 @@ interface Address {
 }
 class CalendarMode extends React.Component<Props, State> {
   hospitalColorList = ["#f2878d", "#d68db5", "#ac84bf", "#9b9fc5", "#8fb2d4", "#82c6c9", "#71c797"]
+  subscription?: EmitterSubscription
   constructor(props: any) {
     super(props)
     this.state = {
+      isShowMode: false,
       isSitting: 0,
+      stage: 0,
       day: "",
       hospitalIdMapColor: {},
       hospitalList: [],
@@ -90,11 +105,19 @@ class CalendarMode extends React.Component<Props, State> {
       },
       sittingHospitalList: [],
       sittingHospitalMapList: {},
-      selectHospital: [0],
+      selectHospital: [],
     }
   }
   componentDidMount() {
+    this.subscription = DeviceEventEmitter.addListener(pathMap.SittingHospital + "Reload", _ => {
+      this.init()
+    })
     this.init()
+  }
+  componentWillUnmount() {
+    if (this.subscription) {
+      this.subscription.remove()
+    }
   }
   init = async () => {
     try {
@@ -172,6 +195,7 @@ class CalendarMode extends React.Component<Props, State> {
         sittingRecordList,
         timeMapSittingRecord,
       })
+      console.log(sittingRecordList)
     } catch (err) {
       console.log(err)
     }
@@ -206,7 +230,9 @@ class CalendarMode extends React.Component<Props, State> {
                 <Text style={style.currMonthItem}>{v.day}</Text>
                 <TouchableOpacity
                   onPress={() => {
-                    this.setSitting(dateFmt, DayStage.morning)
+                    // let isSitting = false,
+                    //   sittingHospitalId = 0
+                    this.setSitting(dateFmt, STAGE.morning)
                   }}>
                   <Text
                     style={[
@@ -223,7 +249,7 @@ class CalendarMode extends React.Component<Props, State> {
                 </TouchableOpacity>
                 <TouchableOpacity
                   onPress={() => {
-                    this.setSitting(dateFmt, DayStage.afterroom)
+                    this.setSitting(dateFmt, STAGE.afternoon)
                   }}>
                   <Text
                     style={[
@@ -240,7 +266,7 @@ class CalendarMode extends React.Component<Props, State> {
                 </TouchableOpacity>
                 <TouchableOpacity
                   onPress={() => {
-                    this.setSitting(dateFmt, DayStage.night)
+                    this.setSitting(dateFmt, STAGE.night)
                   }}>
                   <Text
                     style={[
@@ -276,7 +302,7 @@ class CalendarMode extends React.Component<Props, State> {
             <Text style={style.currMonthItem}>{v.day}</Text>
             <TouchableOpacity
               onPress={() => {
-                this.setSitting(dateFmt, DayStage.morning)
+                this.setSitting(dateFmt, STAGE.morning)
               }}>
               <Text
                 style={[
@@ -293,7 +319,7 @@ class CalendarMode extends React.Component<Props, State> {
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => {
-                this.setSitting(dateFmt, DayStage.afterroom)
+                this.setSitting(dateFmt, STAGE.afternoon)
               }}>
               <Text
                 style={[
@@ -310,7 +336,7 @@ class CalendarMode extends React.Component<Props, State> {
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => {
-                this.setSitting(dateFmt, DayStage.night)
+                this.setSitting(dateFmt, STAGE.night)
               }}>
               <Text
                 style={[
@@ -332,7 +358,41 @@ class CalendarMode extends React.Component<Props, State> {
   }
   //设置是否坐诊
   setSitting = (time: string, stage: number) => {
-    let day = ""
+    let { isSitting, timeMapSittingRecord, selectHospital } = this.state
+    isSitting = time + "-" + stage in timeMapSittingRecord ? SITTING.TRUE : SITTING.FALSE
+    selectHospital = isSitting === SITTING.TRUE ? [timeMapSittingRecord[time + "-" + stage]] : []
+    this.setState({
+      day: time,
+      stage,
+      isShowMode: true,
+      isSitting,
+      selectHospital,
+    })
+  }
+  editSittingInfo = async () => {
+    try {
+      await doctor.editSittingInfo({
+        time: this.state.day + " 00:00:00",
+        stage: this.state.stage,
+        sittingHospitalId: this.state.selectHospital[0],
+        isSitting: this.state.isSitting === SITTING.TRUE,
+      })
+      Toast.success("设置成功", 1)
+      DeviceEventEmitter.emit(pathMap.SittingHospital + "Reload", null)
+      DeviceEventEmitter.emit(pathMap.Calendar + "Reload", null)
+      this.setState({
+        isShowMode: false,
+        selectHospital: [],
+        isSitting: SITTING.FALSE,
+      })
+    } catch (err) {
+      Toast.success("设置失败, 错误信息: " + err.msg, 1)
+      console.log(err)
+    }
+  }
+  render() {
+    let day = "",
+      time = this.state.day
     switch (moment(time).format("d")) {
       case "0":
         day = "星期一"
@@ -356,21 +416,6 @@ class CalendarMode extends React.Component<Props, State> {
         day = "星期天"
         break
     }
-    this.setState({
-      day: moment(time).format("M月D日 ") + day,
-    })
-    let { timeMapSittingRecord } = this.state
-    let isSitting = false,
-      sittingHospitalId = 0
-    if (`${time}-${stage}` in timeMapSittingRecord) {
-      isSitting = true
-    } else {
-      isSitting = false
-    }
-    console.log(time, stage, isSitting, sittingHospitalId)
-  }
-
-  render() {
     return (
       <View style={style.main}>
         <View style={style.head}>
@@ -384,6 +429,76 @@ class CalendarMode extends React.Component<Props, State> {
           <Text style={style.headerItem}>日</Text>
         </View>
         <View style={style.calendar}>{this.buildCalendar()}</View>
+        <Modal
+          title={moment(this.state.day).format("M月D日 ") + day + " " + STAGE_ZH[this.state.stage]}
+          transparent
+          onClose={() =>
+            this.setState({
+              isShowMode: false,
+            })
+          }
+          maskClosable
+          visible={this.state.isShowMode}
+          closable>
+          <View style={style.mode}>
+            <View
+              style={[
+                style.modeItem,
+                global.flex,
+                global.alignItemsCenter,
+                global.justifyContentSpaceBetween,
+              ]}>
+              <Text style={[style.modeItemTitle, global.fontSize14]}>医疗机构</Text>
+              <View>
+                <Picker
+                  style={style.modeItemPicker}
+                  data={this.state.sittingHospitalList}
+                  cols={1}
+                  value={this.state.selectHospital}
+                  onChange={selectHospital => {
+                    console.log(selectHospital)
+                    this.setState({
+                      selectHospital: selectHospital as [number],
+                    })
+                  }}>
+                  <TouchableOpacity>
+                    <View style={[global.flex, global.alignItemsCenter]}>
+                      <Text style={[style.pickerItem, global.fontStyle, global.fontSize14]}>
+                        {this.state.selectHospital.length === 0
+                          ? "请选择"
+                          : this.state.sittingHospitalMapList[this.state.selectHospital[0]]}
+                      </Text>
+                      <Icon name="right" style={[style.pickerIcon, global.fontSize16]} />
+                    </View>
+                  </TouchableOpacity>
+                </Picker>
+              </View>
+            </View>
+            <View style={style.modeItem}>
+              <RadioItem
+                checked={this.state.isSitting === SITTING.TRUE}
+                onChange={(evt: any) => {
+                  if (evt.target.checked) {
+                    this.setState({ isSitting: SITTING.TRUE })
+                  }
+                }}>
+                坐诊
+              </RadioItem>
+              <RadioItem
+                checked={this.state.isSitting === SITTING.FALSE}
+                onChange={(evt: any) => {
+                  if (evt.target.checked) {
+                    this.setState({ isSitting: SITTING.FALSE })
+                  }
+                }}>
+                不作诊
+              </RadioItem>
+            </View>
+          </View>
+          <TouchableOpacity onPress={this.editSittingInfo}>
+            <Text style={[style.btn, global.fontSize14]}>保存修改</Text>
+          </TouchableOpacity>
+        </Modal>
       </View>
     )
   }
@@ -471,55 +586,30 @@ const style = StyleSheet.create({
   isSitting: {
     flex: 1,
   },
+  mode: {
+    padding: 15,
+    height: 200,
+  },
+  modeItem: {
+    height: 45,
+  },
+  modeItemTitle: {
+    color: "#333",
+  },
+  modeItemPicker: {
+    textAlign: "right",
+    fontSize: 14,
+    color: "#666",
+  },
+  btn: {
+    paddingLeft: 15,
+    paddingRight: 15,
+    height: 45,
+    lineHeight: 45,
+    backgroundColor: "#fd8469",
+    borderRadius: 5,
+    textAlign: "center",
+    color: "#fff",
+  },
 })
 export default CalendarMode
-{
-  /* <View>
-
-</View>,
-<View style={style.select}>
-<View style={[style.picker, global.flex, global.alignItemsCenter]}>
-  <Text style={[style.item, global.fontSize14]}>医疗机构</Text>
-  <Picker
-    cols={1}
-    data={this.state.sittingHospitalList}
-    value={this.state.selectHospital}
-    onChange={selectHospital => {
-      this.setState({
-        selectHospital: selectHospital as [number],
-      })
-    }}>
-    <TouchableOpacity>
-      <View style={[global.flex, global.alignItemsCenter]}>
-        <Text style={[style.pickerItem, global.fontStyle, global.fontSize14]}>
-          {this.state.selectHospital[0] === 0
-            ? "请选择"
-            : this.state.sittingHospitalMapList[this.state.selectHospital[0]]}
-        </Text>
-        <Icon name="right" style={[style.pickerIcon, global.fontSize16]} />
-      </View>
-    </TouchableOpacity>
-  </Picker>
-</View>
-<View style={style.isSitting}>
-  <RadioItem
-    checked={this.state.isSitting === 1}
-    onChange={(evt: any) => {
-      if (evt.target.checked) {
-        this.setState({ isSitting: 1 })
-      }
-    }}>
-    诊断
-  </RadioItem>
-  <RadioItem
-    checked={this.state.isSitting === 2}
-    onChange={(evt: any) => {
-      if (evt.target.checked) {
-        this.setState({ isSitting: 2 })
-      }
-    }}>
-    不诊断
-  </RadioItem>
-</View>
-</View>, */
-}

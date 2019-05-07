@@ -63,7 +63,11 @@ export default class Pharmacy extends Component<Props, State> {
                   })
                   this.props.closeChooseCategory()
                 }}>
-                <Text style={[styles.listRightTitle, global.fontSize14]}>精选药房</Text>
+                <Text style={[styles.listRightTitle, global.fontSize14]}>
+                  点击选择
+                  <Text style={[global.fontSize14, { color: sColor.mainRed }]}>博一自营</Text>
+                  药房药品
+                </Text>
               </TouchableOpacity>
             </View>
           </View>

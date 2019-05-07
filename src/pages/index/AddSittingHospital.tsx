@@ -1,20 +1,20 @@
 import * as userAction from "@/redux/actions/user"
 import { AppState } from "@/redux/stores/store"
-import api, { windowWidth } from "@/services/api"
-import { Icon, InputItem, List, Picker, Toast } from "@ant-design/react-native"
+import pathMap from "@/routes/pathMap"
+import api from "@/services/api"
+import doctor from "@/services/doctor"
+import hospital from "@/services/hospital"
+import { TYPE } from "@/utils/constant"
+import { Icon, InputItem, Picker, Toast } from "@ant-design/react-native"
 import sColor from "@styles/color"
 import gImg from "@utils/img"
 import gStyle from "@utils/style"
 import React, { Component } from "react"
-import { Image, PixelRatio, RefreshControl, Text, View, DeviceEventEmitter } from "react-native"
+import { DeviceEventEmitter, Image, PixelRatio, RefreshControl, Text, View } from "react-native"
 import { ScrollView, TouchableOpacity } from "react-native-gesture-handler"
 import { NavigationScreenProp } from "react-navigation"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
-import hospital from "@/services/hospital"
-import { TYPE } from "@/utils/constant"
-import doctor from "@/services/doctor"
-import pathMap from "@/routes/pathMap"
 const style = gStyle.index.AddSittingHospital
 const global = gStyle.global
 interface NavParams {
@@ -197,6 +197,8 @@ export default class DiagnosisSettings extends Component<
         .then(() => {
           Toast.success("添加成功", 2)
           DeviceEventEmitter.emit(pathMap.SittingHospitalList + "Reload", null)
+          DeviceEventEmitter.emit(pathMap.SittingHospital + "Reload", null)
+          DeviceEventEmitter.emit(pathMap.Calendar + "Reload", null)
           this.props.navigation.goBack()
         })
     } catch (err) {
@@ -364,7 +366,6 @@ export default class DiagnosisSettings extends Component<
               }}
             />
             <TouchableOpacity
-              style={[this.state.hospitalName !== "" ? null : global.hidden]}
               onPress={() => {
                 if (this.state.hospitalName === "") {
                   return
@@ -376,7 +377,7 @@ export default class DiagnosisSettings extends Component<
               }}>
               <View
                 style={[
-                  style.addHospital,
+                  this.state.hospitalName === "" ? global.hidden : style.addHospital,
                   global.flex,
                   global.alignItemsCenter,
                   global.justifyContentCenter,

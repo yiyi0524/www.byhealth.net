@@ -210,12 +210,14 @@ export default class DiagnosisSettings extends Component<
           detail: this.state.detail,
         })
         .then(() => {
-          Toast.success("添加成功", 2)
+          Toast.success("修改成功", 2)
+          DeviceEventEmitter.emit(pathMap.SittingHospital + "Reload", null)
           DeviceEventEmitter.emit(pathMap.SittingHospitalList + "Reload", null)
+          DeviceEventEmitter.emit(pathMap.Calendar + "Reload", null)
           this.props.navigation.goBack()
         })
     } catch (err) {
-      Toast.fail("添加失败, 错误信息: " + err.msg, 3)
+      Toast.fail("修改失败, 错误信息: " + err.msg, 3)
       console.log(err)
     }
   }

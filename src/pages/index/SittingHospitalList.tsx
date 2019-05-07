@@ -200,6 +200,7 @@ export default class DiagnosisSettings extends Component<
                                 await doctor.deleteSittingHospital({ id: v.id })
                                 await this.init()
                                 Toast.success("删除成功", 2)
+                                DeviceEventEmitter.emit(pathMap.SittingHospital + "Reload", null)
                               } catch (err) {
                                 Toast.fail("删除失败, 错误信息: " + err.msg, 3)
                                 console.log(err)

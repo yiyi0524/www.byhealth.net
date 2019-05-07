@@ -138,14 +138,15 @@ export default StyleSheet.create({
     alignItems: "center",
   },
   categoryItemPic: {
-    width: 30,
-    height: 30,
+    width: 35,
+    height: 35,
     resizeMode: "center",
+    borderRadius: 7,
   },
   categoryItemTitle: {
     textAlign: "center",
     color: sColor.mainBlack,
-    marginTop: 3,
+    marginTop: 8,
   },
   /**
    * banner

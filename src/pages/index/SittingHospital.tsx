@@ -7,7 +7,15 @@ import sColor from "@styles/color"
 import gImg from "@utils/img"
 import gStyle from "@utils/style"
 import React, { Component } from "react"
-import { Image, PixelRatio, RefreshControl, Text, View } from "react-native"
+import {
+  Image,
+  PixelRatio,
+  RefreshControl,
+  Text,
+  View,
+  DeviceEventEmitter,
+  EmitterSubscription,
+} from "react-native"
 import { ScrollView, TouchableOpacity } from "react-native-gesture-handler"
 import { NavigationScreenProp } from "react-navigation"
 import { connect } from "react-redux"
@@ -86,6 +94,7 @@ export default class SittingInformation extends Component<
     ),
   })
   sittingInfoMapColor: string[]
+  subscription?: EmitterSubscription
   constructor(props: any) {
     super(props)
     this.sittingInfoMapColor = [
@@ -108,10 +117,18 @@ export default class SittingInformation extends Component<
     }
   }
   async componentDidMount() {
+    this.subscription = DeviceEventEmitter.addListener(pathMap.SittingHospital + "Reload", _ => {
+      this.init()
+    })
     await this.init()
     this.props.navigation.setParams({
       navigatePress: this.shareInformation,
     })
+  }
+  componentWillUnmount() {
+    if (this.subscription) {
+      this.subscription.remove()
+    }
   }
 
   shareInformation = () => {
