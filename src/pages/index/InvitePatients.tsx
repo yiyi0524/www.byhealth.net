@@ -13,6 +13,7 @@ import { NavigationScreenProp } from "react-navigation"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
 import QRCode from "react-native-qrcode"
+import { BASE_URL } from "@/config/api"
 const style = gStyle.index.InvitePatients
 const global = gStyle.global
 interface NavParams {
@@ -94,7 +95,7 @@ export default class InvitePatients extends Component<
       doctorId: 0,
       technicalTitle: 0,
       name: "",
-      inviteUrl: "https://www.byhealth.net/doctor",
+      inviteUrl: BASE_URL + "/doctor",
     }
   }
   async componentDidMount() {
@@ -120,7 +121,7 @@ export default class InvitePatients extends Component<
       doctorId: data.doctorInfo.id,
       name: data.info.name,
       technicalTitle: data.doctorInfo.technicalTitle as number,
-      inviteUrl: "https://www.byhealth.net/doctor/inquiry?id=" + data.doctorInfo.id,
+      inviteUrl: BASE_URL + "/doctor/inquiry?source=scan&id=" + data.doctorInfo.id,
     })
   }
   onRefresh = () => {
