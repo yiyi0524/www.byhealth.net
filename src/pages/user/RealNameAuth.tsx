@@ -351,7 +351,7 @@ export default class RealNameAuth extends Component<
         hospitalName,
         hospitalId: detail.hospital_id,
         idCardNo: detail.id_no,
-        gender: [detail.gender],
+        gender: [detail.gender ? detail.gender : GENDER.MAN],
         technicalTitle: detail.technical_title !== null ? [detail.technical_title] : [-1],
         departmentId: detail.department_id !== null ? [detail.department_id] : [-1],
         profile: detail.profile,
@@ -1213,13 +1213,23 @@ export default class RealNameAuth extends Component<
                                     v2 => v2.id !== v1.id,
                                   )
                                 }
-                                this.setState({
-                                  hospitalDepartmentSymptom,
-                                  adeptSymptomIdList,
-                                })
                               } else {
-                                Toast.info("选择擅长治疗疾病不超过10个", 1)
+                                if (!hospitalDepartmentSymptom[k].symptomList[k1].isChecked) {
+                                  Toast.info("选择擅长治疗疾病不超过10个", 1)
+                                } else {
+                                  hospitalDepartmentSymptom[k].symptomList[
+                                    k1
+                                  ].isChecked = !v1.isChecked
+
+                                  adeptSymptomIdList = adeptSymptomIdList.filter(
+                                    v2 => v2.id !== v1.id,
+                                  )
+                                }
                               }
+                              this.setState({
+                                hospitalDepartmentSymptom,
+                                adeptSymptomIdList,
+                              })
                             }}>
                             <Text
                               style={[

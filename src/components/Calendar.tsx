@@ -1,11 +1,10 @@
-import global from "@/assets/styles/global"
 import doctor from "@/services/doctor"
+import hospital from "@/services/hospital"
 import { windowWidth } from "@/utils/utils"
-import { Modal, Picker, Radio, Icon } from "@ant-design/react-native"
+import { Radio } from "@ant-design/react-native"
 import moment from "moment"
 import React, { Fragment } from "react"
 import { PixelRatio, StyleSheet, Text, TouchableOpacity, View } from "react-native"
-import hospital from "@/services/hospital"
 const RadioItem = Radio.RadioItem
 // 一天的时间段
 export enum DayStage {
@@ -32,6 +31,7 @@ interface State {
   sittingHospitalMapList: sittingHospitalMapList
   selectHospital: [number]
   isSitting: number
+  day: string
 }
 interface picker {
   value: number
@@ -76,6 +76,7 @@ class CalendarMode extends React.Component<Props, State> {
     super(props)
     this.state = {
       isSitting: 0,
+      day: "",
       hospitalIdMapColor: {},
       hospitalList: [],
       //坐诊记录列表
@@ -96,80 +97,84 @@ class CalendarMode extends React.Component<Props, State> {
     this.init()
   }
   init = async () => {
-    let dMoment = moment(),
-      dayCount = dMoment.daysInMonth(),
-      { calendar } = this.state,
-      firstDayWeekday = moment()
-        .year(calendar.year)
-        .month(calendar.month)
-        .isoWeekday()
-    calendar.year = dMoment.year()
-    calendar.month = dMoment.month() + 1
-    calendar.dateList = []
-    for (let i = 0; i < dayCount; i++) {
-      calendar.dateList.push({
-        day: i + 1,
-      })
-    }
-    let firstLineInsertCount = firstDayWeekday - 1
-    let lastLineInsertCount = 7 - ((dayCount - 7 + firstDayWeekday - 1) % 7)
-    for (let i = 0; i < firstLineInsertCount; i++) {
-      calendar.dateList.unshift({
-        day: 0,
-      })
-    }
-    for (let i = 0; i < lastLineInsertCount; i++) {
-      calendar.dateList.push({
-        day: 0,
-      })
-    }
-    let { timeMapSittingRecord } = this.state
-    //坐诊列表
-    let {
-      data: { list: sittingRecordList },
-    } = await doctor.listSittingRecord({ page: -1, limit: -1, filter: {} })
-    for (let i = 0; i < sittingRecordList.length; i++) {
-      let timeStage = sittingRecordList[i].time.substr(0, 10) + "-" + sittingRecordList[i].stage
-      timeMapSittingRecord[timeStage] = sittingRecordList[i].hospitalId
-    }
-    let {
-      data: { list },
-    } = await doctor.listSittingHospital({ page: -1, limit: -1, filter: {} })
-    //医院列表
-    let {
-      data: { list: hospitalList },
-    } = await hospital.getList({ page: -1, limit: -1, filter: {} })
-    //坐诊医院列表
-    let {
-      data: { list: listSittingHospital },
-    } = await doctor.listSittingHospital({ page: -1, limit: -1, filter: {} })
-    let { sittingHospitalList, sittingHospitalMapList } = this.state
-    for (let v of list) {
-      let hospitalName = v.hospitalName
-      for (let v1 of hospitalList) {
-        if (v1.id === v.hospitalId) {
-          hospitalName = v1.name
-        }
+    try {
+      let dMoment = moment(),
+        dayCount = dMoment.daysInMonth(),
+        { calendar } = this.state,
+        firstDayWeekday = moment()
+          .year(calendar.year)
+          .month(calendar.month)
+          .isoWeekday()
+      calendar.year = dMoment.year()
+      calendar.month = dMoment.month() + 1
+      calendar.dateList = []
+      for (let i = 0; i < dayCount; i++) {
+        calendar.dateList.push({
+          day: i + 1,
+        })
       }
-      sittingHospitalList.push({
-        value: v.id,
-        label: hospitalName,
+      let firstLineInsertCount = firstDayWeekday - 1
+      let lastLineInsertCount = 7 - ((dayCount - 7 + firstDayWeekday - 1) % 7)
+      for (let i = 0; i < firstLineInsertCount; i++) {
+        calendar.dateList.unshift({
+          day: 0,
+        })
+      }
+      for (let i = 0; i < lastLineInsertCount; i++) {
+        calendar.dateList.push({
+          day: 0,
+        })
+      }
+      let { timeMapSittingRecord } = this.state
+      //坐诊列表
+      let {
+        data: { list: sittingRecordList },
+      } = await doctor.listSittingRecord({ page: -1, limit: -1, filter: {} })
+      for (let i = 0; i < sittingRecordList.length; i++) {
+        let timeStage = sittingRecordList[i].time.substr(0, 10) + "-" + sittingRecordList[i].stage
+        timeMapSittingRecord[timeStage] = sittingRecordList[i].hospitalId
+      }
+      let {
+        data: { list },
+      } = await doctor.listSittingHospital({ page: -1, limit: -1, filter: {} })
+      //医院列表
+      let {
+        data: { list: hospitalList },
+      } = await hospital.getList({ page: -1, limit: -1, filter: {} })
+      //坐诊医院列表
+      let {
+        data: { list: listSittingHospital },
+      } = await doctor.listSittingHospital({ page: -1, limit: -1, filter: {} })
+      let { sittingHospitalList, sittingHospitalMapList } = this.state
+      for (let v of list) {
+        let hospitalName = v.hospitalName
+        for (let v1 of hospitalList) {
+          if (v1.id === v.hospitalId) {
+            hospitalName = v1.name
+          }
+        }
+        sittingHospitalList.push({
+          value: v.id,
+          label: hospitalName,
+        })
+        sittingHospitalMapList[v.id] = hospitalName
+      }
+      let { hospitalIdMapColor } = this.state
+      for (let i = 0; i < listSittingHospital.length && i < 7; i++) {
+        hospitalIdMapColor[listSittingHospital[i].id] = this.hospitalColorList[i]
+      }
+      this.setState({
+        calendar,
+        hospitalList: listSittingHospital,
+        sittingHospitalList,
+        sittingHospitalMapList,
+        hospitalIdMapColor,
+        sittingRecordList,
+        timeMapSittingRecord,
       })
-      sittingHospitalMapList[v.id] = hospitalName
+    } catch (err) {
+      console.log(err)
     }
-    let { hospitalIdMapColor } = this.state
-    for (let i = 0; i < listSittingHospital.length && i < 7; i++) {
-      hospitalIdMapColor[listSittingHospital[i].id] = this.hospitalColorList[i]
-    }
-    this.setState({
-      calendar,
-      hospitalList: listSittingHospital,
-      sittingHospitalList,
-      sittingHospitalMapList,
-      hospitalIdMapColor,
-      sittingRecordList,
-      timeMapSittingRecord,
-    })
   }
   buildCalendar = () => {
     let { timeMapSittingRecord } = this.state
@@ -351,7 +356,9 @@ class CalendarMode extends React.Component<Props, State> {
         day = "星期天"
         break
     }
-
+    this.setState({
+      day: moment(time).format("M月D日 ") + day,
+    })
     let { timeMapSittingRecord } = this.state
     let isSitting = false,
       sittingHospitalId = 0
