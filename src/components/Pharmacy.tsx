@@ -35,7 +35,7 @@ export default class Pharmacy extends Component<Props, State> {
         <TouchableOpacity onPress={this.props.closeChooseCategory}>
           <Icon style={styles.close} name="close" />
         </TouchableOpacity>
-        <Text style={[styles.theme, global.fontSize14]}>请选择药房</Text>
+        <Text style={[styles.theme, global.fontSize14]}>请选择药品分类</Text>
         <ScrollView>
           <View style={[styles.list, global.flex, global.justifyContentSpaceBetween]}>
             <View style={styles.listLeft}>
@@ -44,7 +44,15 @@ export default class Pharmacy extends Component<Props, State> {
                   <TouchableOpacity
                     key={category.id}
                     style={this.props.activeId === category.id ? styles.itemActive : styles.item}
-                    onPress={() => this.props.chooseCategory(category.id)}>
+                    onPress={async () => {
+                      await this.props.chooseCategory(category.id)
+                      await this.props.navigation.push(pathMap.DrugSelect, {
+                        categoryList: this.props.categoryList,
+                        activeId: this.props.activeId,
+                        chooseDrugInfo: this.props.chooseDrugInfo,
+                      })
+                      await this.props.closeChooseCategory()
+                    }}>
                     <Text style={[styles.title, global.fontSize14]} key={category.id}>
                       {category.name}
                     </Text>
@@ -52,7 +60,7 @@ export default class Pharmacy extends Component<Props, State> {
                 )
               })}
             </View>
-            <View style={styles.listRight}>
+            {/* <View style={styles.listRight}>
               <TouchableOpacity
                 style={styles.listRightItem}
                 onPress={() => {
@@ -69,7 +77,7 @@ export default class Pharmacy extends Component<Props, State> {
                   药房药品
                 </Text>
               </TouchableOpacity>
-            </View>
+            </View> */}
           </View>
         </ScrollView>
       </View>
@@ -102,7 +110,8 @@ const styles = StyleSheet.create({
     backgroundColor: sColor.white,
   },
   listLeft: {
-    width: 100,
+    // width: 100,
+    flex: 1,
     backgroundColor: sColor.mainBgColor,
   },
   listRight: {
@@ -113,6 +122,8 @@ const styles = StyleSheet.create({
     height: 50,
     alignItems: "center",
     justifyContent: "center",
+    borderBottomWidth: 1 / PixelRatio.get(),
+    borderBottomColor: sColor.colorEee,
   },
   itemActive: {
     height: 50,

@@ -189,7 +189,7 @@ export default class SquareRoot extends Component<
       })
       let pharmacy = this.state.pharmacy
       pharmacy.categoryList = categoryList
-      pharmacy.activeId = categoryList[0].id
+      // pharmacy.activeId = categoryList[0].id
       let { patientInfo } = this.state
       let {
         data: { yearAge, monthAge, name, gender, hospitalMedicalRecordPicList },

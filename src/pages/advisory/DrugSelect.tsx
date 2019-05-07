@@ -30,6 +30,7 @@ interface Props {
 interface State {
   hasLoad: boolean
   refreshing: boolean
+  currDrugId: number
   page: number
   limit: number
   chatKey: string
@@ -98,6 +99,7 @@ export default class Pharmacy extends Component<Props, State> {
       hasLoad: false,
       refreshing: false,
       chatKey: "",
+      currDrugId: 0,
       page: -1,
       limit: -1,
       filter: {},
@@ -146,6 +148,9 @@ export default class Pharmacy extends Component<Props, State> {
     this.setState({
       search: val,
     })
+    if (!val) {
+      return
+    }
     try {
       let filter = {
         name: {
@@ -216,6 +221,9 @@ export default class Pharmacy extends Component<Props, State> {
           {Object.keys(this.state.chooseDrugInfo).map((drugIdStr, k) => {
             let drugId: number = parseInt(drugIdStr),
               list = this.state.chooseDrugInfo
+            if (this.state.currDrugId === drugId) {
+              // this.refs.textInput334.focus()
+            }
             return (
               <View
                 key={k}
@@ -274,6 +282,7 @@ export default class Pharmacy extends Component<Props, State> {
                         }}>
                         <InputItem
                           last
+                          ref={"textInput" + drugId}
                           type="number"
                           placeholder="0"
                           style={[style.count, global.fontSize14]}
@@ -374,7 +383,12 @@ export default class Pharmacy extends Component<Props, State> {
                       info: drug,
                     }
                   }
-                  this.setState({ chooseDrugInfo, matchDrugList: [], search: "" })
+                  this.setState({
+                    chooseDrugInfo,
+                    matchDrugList: [],
+                    search: "",
+                    currDrugId: drug.id,
+                  })
                 }}>
                 <View style={style.drugItem}>
                   <Text style={[style.drugTitle, global.fontSize14]} numberOfLines={1}>
