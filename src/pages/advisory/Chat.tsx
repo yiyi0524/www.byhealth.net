@@ -8,7 +8,15 @@ import api, { getRegion } from "@/services/api"
 import { GENDER_ZH, closeInquiry } from "@/services/doctor"
 import gImg from "@/utils/img"
 import { getPicFullUrl, windowWidth } from "@/utils/utils"
-import { ImagePicker, Portal, TextareaItem, Toast, Modal } from "@ant-design/react-native"
+import {
+  ImagePicker,
+  Portal,
+  TextareaItem,
+  Toast,
+  Modal,
+  Button,
+  Icon,
+} from "@ant-design/react-native"
 import userApi from "@api/user"
 import wsMsgApi from "@api/wsMsg"
 import sColor from "@styles/color"
@@ -31,6 +39,7 @@ import { NavigationScreenProp, ScrollView } from "react-navigation"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
 import { Overwrite } from "utility-types"
+import ImageViewer from "react-native-image-zoom-viewer"
 const style = gStyle.advisory.advisoryChat
 interface Props {
   navigation: NavigationScreenProp<State>
@@ -164,6 +173,11 @@ interface State {
     profile: string
   }
   region: Region[]
+  imagesViewer: imagesViewer[]
+  imageIdx: number
+}
+interface imagesViewer {
+  url: string
 }
 const mapStateToProps = (state: AppState) => {
   return {
@@ -304,9 +318,14 @@ export default class Chat extends Component<
       limit: 10,
       sendMsg: "",
       region: [],
+      imagesViewer: [
+        {
+          url: "https://www.byhealth.net/static/media/collapsed_logo.db8ef9b3.png",
+        },
+      ],
+      imageIdx: 0,
     }
   }
-  //todo 第一遍进入时改变了全局变量,再次进入时清除全局后再向全局添加msg,
   componentDidMount() {
     this.listener = DeviceEventEmitter.addListener(pathMap.SquareRoot + "Reload", quickReplyMsg => {
       this.setState({
@@ -506,7 +525,7 @@ export default class Chat extends Component<
           </View>
         </View>
         {/* 图片查看器 */}
-        <View style={this.state.isShowPic ? style.showPic : global.hidden}>
+        {/* <View style={this.state.isShowPic ? style.showPic : global.hidden}>
           <TouchableOpacity onPress={this.closeShowPic} activeOpacity={0.8}>
             <View style={style.howImgFa}>
               <Image
@@ -521,6 +540,33 @@ export default class Chat extends Component<
               />
             </View>
           </TouchableOpacity>
+        </View> */}
+        <View style={this.state.isShowPic ? style.showPic : global.hidden}>
+          <View style={style.howImgFa}>
+            <View style={style.close}>
+              <Icon
+                onPress={() => {
+                  this.setState({
+                    imagesViewer: [
+                      {
+                        url: "https://www.byhealth.net/static/media/collapsed_logo.db8ef9b3.png",
+                      },
+                    ],
+                    isShowPic: false,
+                  })
+                }}
+                style={style.closeIcon}
+                name="close"
+              />
+            </View>
+            <ImageViewer
+              saveToLocalByLongPress={false}
+              imageUrls={this.state.imagesViewer}
+              index={this.state.imageIdx}
+              maxOverflow={0}
+              onCancel={() => {}}
+            />
+          </View>
         </View>
       </>
     )
@@ -950,8 +996,13 @@ export default class Chat extends Component<
   }
   openShowPic = (url: string) => {
     this.setState({
+      showPicUrl: getPicFullUrl(url),
+      imagesViewer: [
+        {
+          url: getPicFullUrl(url),
+        },
+      ],
       isShowPic: true,
-      showPicUrl: url,
     })
   }
   closeShowPic = () => {

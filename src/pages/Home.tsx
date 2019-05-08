@@ -317,6 +317,7 @@ export default class Home extends Component<
               style={style.headerHelp}
               onPress={() => {
                 this.props.navigation.push(pathMap.CustomerService)
+                // this.props.navigation.push(pathMap.Test)
               }}>
               <Text style={[globalStyle.fontSize14, globalStyle.fontStyle, style.headerHelpTitle]}>
                 帮助

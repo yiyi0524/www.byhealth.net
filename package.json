@@ -32,6 +32,7 @@
     "react-native-gesture-handler": "^1.1.0",
     "react-native-gifted-chat": "^0.7.2",
     "react-native-htmlview": "^0.14.0",
+    "react-native-image-zoom-viewer": "^2.2.25",
     "react-native-qrcode": "^0.2.7",
     "react-native-video": "^4.4.1",
     "react-native-view-shot": "^2.5.0",
