@@ -48,6 +48,7 @@ interface Params {
   chooseDrugList: (id: number, count: number) => void
 }
 export default class Pharmacy extends Component<Props, State> {
+  refs: any
   static navigationOptions = ({ navigation }: { navigation: NavigationScreenProp<State> }) => {
     let title = "先择药材"
     let params = navigation.state.params as Params
@@ -73,7 +74,6 @@ export default class Pharmacy extends Component<Props, State> {
         fontSize: 14,
         textAlign: "center",
       },
-      headerRight: <Text />,
       headerLeft: (
         <TouchableOpacity
           onPress={() => {
@@ -82,6 +82,16 @@ export default class Pharmacy extends Component<Props, State> {
             navigation.goBack()
           }}>
           <Icon style={[style.headerLeft, global.fontSize16]} name="left" />
+        </TouchableOpacity>
+      ),
+      headerRight: (
+        <TouchableOpacity
+          onPress={() => {
+            let chooseDrugInfo = navigation.state.params!.chooseDrugInfo
+            DeviceEventEmitter.emit(pathMap.SquareRoot + "Reload", chooseDrugInfo)
+            navigation.goBack()
+          }}>
+          <Text style={[global.fontSize16, { color: sColor.mainRed, paddingRight: 15 }]}>完成</Text>
         </TouchableOpacity>
       ),
     }
@@ -221,9 +231,15 @@ export default class Pharmacy extends Component<Props, State> {
           {Object.keys(this.state.chooseDrugInfo).map((drugIdStr, k) => {
             let drugId: number = parseInt(drugIdStr),
               list = this.state.chooseDrugInfo
-            if (this.state.currDrugId === drugId) {
-              // this.refs.textInput334.focus()
-            }
+            setTimeout(() => {
+              if (this.state.currDrugId === drugId) {
+                try {
+                  this.refs["input" + drugId].focus()
+                } catch (e) {
+                  console.log(e)
+                }
+              }
+            }, 500)
             return (
               <View
                 key={k}
@@ -282,7 +298,7 @@ export default class Pharmacy extends Component<Props, State> {
                         }}>
                         <InputItem
                           last
-                          ref={"textInput" + drugId}
+                          ref={"input" + drugId}
                           type="number"
                           placeholder="0"
                           style={[style.count, global.fontSize14]}
@@ -302,6 +318,9 @@ export default class Pharmacy extends Component<Props, State> {
                             })
                           }}
                           onBlur={val => {
+                            this.setState({
+                              currDrugId: 0,
+                            })
                             let chooseDrugInfo = this.state.chooseDrugInfo
                             if (val === "") {
                               chooseDrugInfo[drugId].count = 1 + ""

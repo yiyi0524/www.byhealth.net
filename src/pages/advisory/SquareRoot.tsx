@@ -175,7 +175,6 @@ export default class SquareRoot extends Component<
       this.listener.remove()
     }
   }
-  //todo 没连数据 没接口 这个页面你来
   getDrugList = () => {}
   init = async () => {
     let patientUid = this.props.navigation.getParam("patientUid")

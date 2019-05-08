@@ -43,7 +43,7 @@ export default class Pharmacy extends Component<Props, State> {
                 return (
                   <TouchableOpacity
                     key={category.id}
-                    style={this.props.activeId === category.id ? styles.itemActive : styles.item}
+                    style={this.props.activeId === category.id ? styles.item : styles.item}
                     onPress={async () => {
                       await this.props.chooseCategory(category.id)
                       await this.props.navigation.push(pathMap.DrugSelect, {
