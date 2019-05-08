@@ -455,7 +455,7 @@ export default class SquareRoot extends Component<
                 )
               })}
               <Text style={[style.drugPrompt, global.fontSize12]}>
-                *单个处方中药成分不宜超过
+                *单个处方西药成分不宜超过
                 <Text style={[style.important, global.fontSize12]}>5种</Text>
               </Text>
               <TouchableOpacity
