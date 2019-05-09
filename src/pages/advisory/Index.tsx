@@ -2,7 +2,7 @@ import { AppState } from "@/redux/stores/store"
 import pathMap from "@/routes/pathMap"
 import doctor, { GENDER } from "@/services/doctor"
 import { getPicFullUrl } from "@/utils/utils"
-import { Toast } from "@ant-design/react-native"
+import { Toast, Badge } from "@ant-design/react-native"
 import Empty from "@components/Empty"
 import * as wsAction from "@redux/actions/ws"
 import gImg from "@utils/img"
@@ -22,12 +22,15 @@ import { NavigationScreenProp } from "react-navigation"
 import { Dispatch } from "redux"
 import { Picture } from "./Chat"
 import { connect } from "react-redux"
+import global from "@/assets/styles/global"
 
 const style = gStyle.advisory.advisoryIndex
 const globalStyle = gStyle.global
 
 export interface ConsultationItem {
   id: number
+  isWaitReply: boolean
+  isWaitBuyDrug: boolean
   gender: number
   patientUid: number
   year_age: number
@@ -254,11 +257,23 @@ export default class Index extends Component<
                         {currMsgInfo.currMsgTime.substr(0, 10)}
                       </Text>
                     </View>
-                    <Text
-                      style={[style.msgDescription, globalStyle.fontSize14, globalStyle.fontStyle]}
-                      numberOfLines={1}>
-                      {currMsgInfo.currMsg || "无消息"}
-                    </Text>
+                    <View style={[style.msgDetail, global.flex, global.alignItemsCenter]}>
+                      <Text
+                        style={[
+                          style.msgDescription,
+                          globalStyle.fontSize14,
+                          globalStyle.fontStyle,
+                        ]}
+                        numberOfLines={1}>
+                        {currMsgInfo.currMsg || "无消息"}
+                      </Text>
+                      <Badge dot style={[consultation.isWaitReply ? null : global.hidden]}>
+                        <Text style={[style.replay, global.fontSize12]}>待回复</Text>
+                      </Badge>
+                      <Badge dot style={[consultation.isWaitBuyDrug ? null : global.hidden]}>
+                        <Text style={[style.replay, global.fontSize12]}>待购药</Text>
+                      </Badge>
+                    </View>
                   </View>
                 </TouchableOpacity>
               )

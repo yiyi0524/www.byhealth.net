@@ -101,7 +101,14 @@ export default StyleSheet.create({
   msgTime: {
     color: sColor.color888,
   },
+  msgDetail: {},
   msgDescription: {
     color: sColor.mainBlack,
+    flex: 1,
+  },
+  replay: {
+    marginLeft: 10,
+    marginRight: 10,
+    color: sColor.color888,
   },
 })

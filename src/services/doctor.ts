@@ -607,6 +607,7 @@ export function listSittingRecord({ page, limit, filter = {} }: GetListParam) {
     },
   })
 }
+
 export default {
   listSittingRecord,
   getSittingHospital,

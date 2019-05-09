@@ -303,7 +303,7 @@ export default class DiagnosisSettings extends Component<
                 global.alignItemsCenter,
                 global.justifyContentSpaceBetween,
               ]}>
-              <Text style={[style.itemInputTitle, global.fontSize14]}>请输入药品抽成费比率(%)</Text>
+              <Text style={[style.itemInputTitle, global.fontSize14]}>请输入诊后服务费比率(%)</Text>
               <View
                 style={[global.flex, global.alignItemsCenter, global.justifyContentSpaceBetween]}>
                 <View style={style.itemInput}>
