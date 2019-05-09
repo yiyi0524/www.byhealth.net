@@ -1,6 +1,7 @@
+import { BASE_URL } from "@/config/api"
 import * as userAction from "@/redux/actions/user"
 import { AppState } from "@/redux/stores/store"
-import { TECHNICAL_TITLE_ZH } from "@/services/doctor"
+import { getMyInvitePatientQrCode, TECHNICAL_TITLE_ZH } from "@/services/doctor"
 import { Toast } from "@ant-design/react-native"
 import userApi from "@api/user"
 import sColor from "@styles/color"
@@ -9,11 +10,10 @@ import gStyle from "@utils/style"
 import React, { Component } from "react"
 import { Image, PixelRatio, RefreshControl, Text, View } from "react-native"
 import { ScrollView, TouchableOpacity } from "react-native-gesture-handler"
+import QRCode from "react-native-qrcode"
 import { NavigationScreenProp } from "react-navigation"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
-import QRCode from "react-native-qrcode"
-import { BASE_URL } from "@/config/api"
 const style = gStyle.index.InvitePatients
 const global = gStyle.global
 interface NavParams {
@@ -115,13 +115,18 @@ export default class InvitePatients extends Component<
     Toast.info("保存成功", 1)
   }
   init = async () => {
-    let { data } = await userApi.getPersonalInfo()
+    let getPersonalInfoPromise = userApi.getPersonalInfo(),
+      getMyInvitePatientQrCodePromise = getMyInvitePatientQrCode()
+    let { data } = await getPersonalInfoPromise,
+      {
+        data: { url },
+      } = await getMyInvitePatientQrCodePromise
     this.setState({
       hasLoad: true,
       doctorId: data.doctorInfo.id,
       name: data.info.name,
       technicalTitle: data.doctorInfo.technicalTitle as number,
-      inviteUrl: BASE_URL + "/doctor/inquiry?source=scan&id=" + data.doctorInfo.id,
+      inviteUrl: url,
     })
   }
   onRefresh = () => {

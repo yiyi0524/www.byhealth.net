@@ -12,4 +12,7 @@ project(':@react-native-community_async-storage').projectDir = new File(rootProj
 include ':react-native-gesture-handler'
 project(':react-native-gesture-handler').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-gesture-handler/android')
 
+include ':react-native-update'
+project(':react-native-update').projectDir = new File(rootProject.projectDir, 	'../node_modules/react-native-update/android')
+
 include ':app'

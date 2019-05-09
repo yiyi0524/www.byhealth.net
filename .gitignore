@@ -66,3 +66,4 @@ __tests__
 .expo/
 juiceNote
 yarn.lock
+*.update

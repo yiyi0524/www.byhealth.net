@@ -136,6 +136,7 @@ export default class Register extends Component<
     return cityList
   }
   chooseCityId = async (cityId: any) => {
+    console.log("正在改变城市id")
     this.setState({
       cityId,
     })
@@ -169,8 +170,9 @@ export default class Register extends Component<
     if (!/^1[3456789]\d{9}$/.test(this.state.phone)) {
       return Toast.fail("请输入正确的手机号码", 2)
     }
-    api
-      .sendPhoneRegisterVerifyCode({ phone: this.state.phone })
+    // api
+    //   .sendPhoneRegisterVerifyCode({ phone: this.state.phone })
+    Promise.resolve({ data: { uuid: "2323" } })
       .then(json => {
         Toast.info("发送成功", 1)
         let timeout = 60

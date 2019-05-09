@@ -5,13 +5,15 @@
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start",
     "test": "jest",
+    "link": "react-native link",
     "android": "react-native run-android",
     "build-android": "cd android && ./gradlew assembleRelease",
+    "pushy-bundle-android": "pushy bundle --platform android --entryFile index.tsx",
     "clean": "cd android && ./gradlew clean",
     "reset-cache": "./node_modules/react-native/scripts/packager.sh start --resetCache"
   },
   "dependencies": {
-    "@ant-design/react-native": "^3.1.5",
+    "@ant-design/react-native": "^3.1.8",
     "@react-native-community/async-storage": "^1.2.1",
     "@react-native-community/slider": "^1.0.4",
     "@react-native-community/viewpager": "^1.1.6",
@@ -34,6 +36,7 @@
     "react-native-htmlview": "^0.14.0",
     "react-native-image-zoom-viewer": "^2.2.25",
     "react-native-qrcode": "^0.2.7",
+    "react-native-update": "5.x",
     "react-native-video": "^4.4.1",
     "react-native-view-shot": "^2.5.0",
     "react-navigation": "^3.4.1",

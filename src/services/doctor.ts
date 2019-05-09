@@ -607,8 +607,17 @@ export function listSittingRecord({ page, limit, filter = {} }: GetListParam) {
     },
   })
 }
+/**
+ *  获取我的邀请患者二维码
+ */
+export function getMyInvitePatientQrCode() {
+  return bget<{ url: string }>({
+    url: "api/getMyInvitePatientQrCode",
+  })
+}
 
 export default {
+  getMyInvitePatientQrCode,
   listSittingRecord,
   getSittingHospital,
   addSittingHospital,

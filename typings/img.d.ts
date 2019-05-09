@@ -14,3 +14,4 @@ declare module "*.gif" {
   const value: any
   export default value
 }
+declare module "react-native-update"
