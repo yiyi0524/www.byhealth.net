@@ -75,6 +75,12 @@ export default StyleSheet.create({
     color: sColor.color666,
     marginRight: 15,
   },
+  percentageOfCommission: {
+    width: 100,
+  },
+  percentageOfCommissionInput: {
+    width: 100,
+  },
   diagnosisItemAll: {
     color: sColor.color333,
     marginRight: 15,

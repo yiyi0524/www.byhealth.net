@@ -7,7 +7,7 @@ import { addPrescription, GENDER, GENDER_ZH } from "@/services/doctor"
 import { getPatientInfo } from "@/services/patient"
 import { getPersonalInfo } from "@/services/user"
 import { getPicFullUrl } from "@/utils/utils"
-import { Icon, ImagePicker, TextareaItem, Toast } from "@ant-design/react-native"
+import { Icon, ImagePicker, TextareaItem, Toast, InputItem } from "@ant-design/react-native"
 import hospital from "@api/hospital"
 import DashLine from "@components/DashLine"
 import Pharmacy, { CategoryItem } from "@components/Pharmacy"
@@ -40,7 +40,7 @@ interface State {
   hasLoad: boolean
   refreshing: boolean
   drugMoney: number
-  serviceMoney: number
+  serviceMoney: string
   percentageOfCommission: number
   patientInfo: {
     uid: number
@@ -137,8 +137,8 @@ export default class SquareRoot extends Component<
       isSelectPharmacy: false,
       isSelectDrug: false,
       drugMoney: 0,
-      serviceMoney: 0,
-      percentageOfCommission: 30,
+      serviceMoney: "",
+      percentageOfCommission: 0,
       pharmacy: {
         activeId: 0,
         categoryList: [],
@@ -198,9 +198,6 @@ export default class SquareRoot extends Component<
           doctorInfo: { percentageOfCommission },
         },
       } = await getPersonalInfo()
-      if (!percentageOfCommission) {
-        percentageOfCommission = this.state.percentageOfCommission
-      }
       patientInfo = {
         uid: patientUid,
         monthAge,
@@ -218,7 +215,7 @@ export default class SquareRoot extends Component<
         hasLoad: true,
         pharmacy,
         patientInfo,
-        percentageOfCommission,
+        percentageOfCommission: percentageOfCommission ? percentageOfCommission : 0,
         medicalRecordPicList: hospitalMedicalRecordPicList,
       })
     } catch (err) {
@@ -454,10 +451,10 @@ export default class SquareRoot extends Component<
                   </View>
                 )
               })}
-              <Text style={[style.drugPrompt, global.fontSize12]}>
+              {/* <Text style={[style.drugPrompt, global.fontSize12]}>
                 *单个处方西药成分不宜超过
                 <Text style={[style.important, global.fontSize12]}>5种</Text>
-              </Text>
+              </Text> */}
               <TouchableOpacity
                 onPress={() => {
                   this.setState({
@@ -539,9 +536,30 @@ export default class SquareRoot extends Component<
                 global.justifyContentSpaceBetween,
               ]}>
               <Text style={[style.diagnosisItemTitle, global.fontSize14]}>诊后管理费</Text>
-              <Text style={[style.diagnosisItemTitle, global.fontSize14]}>
-                ¥ {((drugMoney * this.state.percentageOfCommission) / 100).toFixed(2)}
-              </Text>
+              <View style={style.percentageOfCommission}>
+                <InputItem
+                  labelNumber={1}
+                  style={style.percentageOfCommissionInput}
+                  placeholder="0.00"
+                  value={
+                    this.state.serviceMoney
+                      ? ((drugMoney * this.state.percentageOfCommission) / 100).toFixed(2)
+                      : this.state.serviceMoney
+                  }
+                  onChange={val => {
+                    console.log(val)
+                    this.setState({
+                      serviceMoney: !isNaN(parseFloat(val)) ? val : "",
+                    })
+                  }}
+                  onBlur={val => {
+                    this.setState({
+                      serviceMoney: val ? parseFloat(val) + "" : 0 + "",
+                    })
+                  }}>
+                  ¥
+                </InputItem>
+              </View>
             </View>
             <DashLine len={45} width={windowWidth - 46} backgroundColor={sColor.colorEee} />
             <View
@@ -556,7 +574,10 @@ export default class SquareRoot extends Component<
                 <Text style={[style.diagnosisItemDetail, global.fontSize12]}>( 不含快递费 )</Text>
               </Text>
               <Text style={[style.diagnosisItemAll, global.fontSize15]}>
-                ¥ {(drugMoney + (drugMoney * this.state.percentageOfCommission) / 100).toFixed(2)}
+                ¥{" "}
+                {this.state.serviceMoney
+                  ? (drugMoney + (drugMoney * this.state.percentageOfCommission) / 100).toFixed(2)
+                  : (drugMoney + parseFloat(this.state.serviceMoney)).toFixed(2)}
               </Text>
             </View>
             <DashLine len={45} width={windowWidth - 46} backgroundColor={sColor.colorEee} />
