@@ -127,6 +127,7 @@ class CalendarMode extends React.Component<Props, State> {
         firstDayWeekday = moment()
           .year(calendar.year)
           .month(calendar.month - 1)
+          .date(1)
           .isoWeekday()
       calendar.year = dMoment.year()
       calendar.month = dMoment.month() + 1
@@ -136,8 +137,8 @@ class CalendarMode extends React.Component<Props, State> {
           day: i + 1,
         })
       }
-      let firstLineInsertCount = firstDayWeekday
-      let lastLineInsertCount = 7 - ((dayCount - 7 + firstDayWeekday - 1) % 7) - 1
+      let firstLineInsertCount = firstDayWeekday - 1
+      let lastLineInsertCount = 7 - ((dayCount - 7 + firstDayWeekday - 1) % 7)
       for (let i = 0; i < firstLineInsertCount; i++) {
         calendar.dateList.unshift({
           day: 0,
@@ -372,6 +373,12 @@ class CalendarMode extends React.Component<Props, State> {
       if (this.state.selectHospital.length === 0 || this.state.selectHospital[0] === 0) {
         return Toast.info("请选择医疗机构", 3)
       }
+      console.log({
+        time: this.state.day + " 00:00:00",
+        stage: this.state.stage,
+        sittingHospitalId: this.state.selectHospital[0],
+        isSitting: this.state.isSitting === SITTING.TRUE,
+      })
       await doctor.editSittingInfo({
         time: this.state.day + " 00:00:00",
         stage: this.state.stage,
