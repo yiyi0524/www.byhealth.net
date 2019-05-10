@@ -130,6 +130,7 @@ export default StyleSheet.create({
   drug: {
     color: sColor.mainBlack,
     marginTop: 8,
+    marginBottom: 8,
   },
   drugList: {},
   drugItem: {
@@ -196,5 +197,25 @@ export default StyleSheet.create({
     width: windowWidth,
     height: windowHeight,
     backgroundColor: sColor.blackOpa7,
+  },
+  // 中药
+  chooseCategoryDrugList: {
+    flex: 1,
+  },
+  chooseCategoryItem: {},
+  traditionalChineseMedicine: {},
+  chooseDrugList: {
+    paddingLeft: 10,
+  },
+  chooseDrugItem: {
+    marginBottom: 8,
+    marginRight: 15,
+  },
+  chooseDrugTitle: {
+    color: sColor.color666,
+    marginRight: 8,
+  },
+  chooseDrugCount: {
+    color: sColor.color333,
   },
 })

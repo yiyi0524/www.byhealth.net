@@ -39,6 +39,7 @@ interface State {
   isSelectDrug: boolean
   hasLoad: boolean
   refreshing: boolean
+  isChangeServiceMoney: boolean
   drugMoney: number
   serviceMoney: string
   percentageOfCommission: number
@@ -66,6 +67,16 @@ interface State {
   }
   // 选择的药品信息
   chooseDrugInfo: Record<number, { count: number; info: drugItem }>
+  chooseDrugMapList: chooseDrug[]
+}
+interface chooseDrug {
+  id: number
+  name: string
+  drugList: drugInfo[]
+}
+interface drugInfo {
+  count: number
+  info: drugItem
 }
 export interface activeDrugItem {
   id: number
@@ -136,8 +147,9 @@ export default class SquareRoot extends Component<
       refreshing: false,
       isSelectPharmacy: false,
       isSelectDrug: false,
+      isChangeServiceMoney: false,
       drugMoney: 0,
-      serviceMoney: "",
+      serviceMoney: "0.00",
       percentageOfCommission: 0,
       pharmacy: {
         activeId: 0,
@@ -154,17 +166,44 @@ export default class SquareRoot extends Component<
       syndromeDifferentiation: "",
       medicalRecordPicList: [],
       chooseDrugInfo: [],
+      chooseDrugMapList: [],
       advice: "",
     }
   }
   componentDidMount() {
     this.listener = DeviceEventEmitter.addListener(
       pathMap.SquareRoot + "Reload",
-      chooseDrugInfo => {
+      async chooseDrugInfo => {
+        let chooseDrugMapList: chooseDrug[] = []
+        for (let v of chooseDrugInfo) {
+          if (v) {
+            let isCategoryExist =
+              chooseDrugMapList.filter(v2 => v2.id === v.info.category.id).length > 0
+            if (!isCategoryExist) {
+              chooseDrugMapList.push({
+                id: v.info.category.id,
+                name: v.info.category.name,
+                drugList: [],
+              })
+            }
+          }
+        }
+        for (let v of chooseDrugInfo) {
+          if (v) {
+            for (let v1 of chooseDrugMapList) {
+              if (v1.id === v.info.category.id) {
+                v1.drugList.push({
+                  count: v.count,
+                  info: v.info,
+                })
+              }
+            }
+          }
+        }
         this.setState({
           chooseDrugInfo,
+          chooseDrugMapList,
         })
-        // this.init()
       },
     )
     this.init()
@@ -283,6 +322,7 @@ export default class SquareRoot extends Component<
         list = this.state.chooseDrugInfo
       drugMoney += (list[drugId].info.price / 1000) * list[drugId].count
     })
+
     return (
       <>
         <ScrollView
@@ -333,7 +373,6 @@ export default class SquareRoot extends Component<
                       this.setState({
                         discrimination,
                       })
-                      console.log(discrimination)
                     }
                   }}
                 />
@@ -384,9 +423,8 @@ export default class SquareRoot extends Component<
               <View style={style.titleSpot} />
             </View>
             <DashLine len={45} width={windowWidth - 46} backgroundColor={sColor.colorEee} />
-            <Text style={[style.drug, global.fontSize24]}>R:</Text>
-            <View style={style.drugList}>
-              {Object.keys(this.state.chooseDrugInfo).map((drugIdStr, k) => {
+            {/*<View style={style.drugList}>
+               {Object.keys(this.state.chooseDrugInfo).map((drugIdStr, k) => {
                 let drugId: number = parseInt(drugIdStr),
                   list = this.state.chooseDrugInfo
                 return (
@@ -451,25 +489,151 @@ export default class SquareRoot extends Component<
                   </View>
                 )
               })}
-              {/* <Text style={[style.drugPrompt, global.fontSize12]}>
-                *单个处方西药成分不宜超过
-                <Text style={[style.important, global.fontSize12]}>5种</Text>
-              </Text> */}
-              <TouchableOpacity
-                onPress={() => {
-                  this.setState({
-                    isSelectPharmacy: true,
-                  })
-                }}>
-                <View style={[style.editDrug, global.flex, global.alignItemsCenter]}>
-                  <Icon
-                    style={[style.editDrugIcon, style.important, global.fontSize16]}
-                    name="form"
-                  />
-                  <Text style={[style.important, global.fontSize14]}>编辑药材</Text>
-                </View>
-              </TouchableOpacity>
+              </View> */}
+            <View style={style.chooseCategoryDrugList}>
+              {this.state.chooseDrugMapList.map((category, k) => {
+                if (category.id === 1 || category.id === 2) {
+                  {
+                    /* 中药 */
+                  }
+                  return (
+                    <View
+                      key={k}
+                      style={[
+                        category.drugList.length !== 0 ? style.chooseCategoryItem : global.hidden,
+                        style.traditionalChineseMedicine,
+                      ]}>
+                      <Text style={[style.drug, global.fontSize16]}>{category.name}</Text>
+                      <View
+                        style={[
+                          style.chooseDrugList,
+                          global.flex,
+                          global.alignItemsCenter,
+                          global.flexWrap,
+                        ]}>
+                        {category.drugList.map((drug, k1) => {
+                          return (
+                            <View
+                              style={[style.chooseDrugItem, global.flex, global.alignItemsCenter]}
+                              key={k1}>
+                              <Text
+                                style={[style.chooseDrugTitle, global.fontSize14]}
+                                numberOfLines={1}>
+                                {drug.info.name}
+                              </Text>
+                              <Text style={[style.chooseDrugCount, global.fontSize14]}>
+                                {drug.count} {drug.info.unit}
+                              </Text>
+                            </View>
+                          )
+                        })}
+                      </View>
+                    </View>
+                  )
+                } else {
+                  {
+                    /* 西药 */
+                  }
+                  return (
+                    <View
+                      style={
+                        category.drugList.length !== 0 ? style.chooseCategoryItem : global.hidden
+                      }
+                      key={k}>
+                      <Text style={[style.drug, global.fontSize16]}>{category.name}</Text>
+                      <View style={style.chooseDrugList}>
+                        {category.drugList.map((drug, k1) => {
+                          return (
+                            <View style={style.drugItem} key={k1}>
+                              <View
+                                style={[
+                                  global.flex,
+                                  global.alignItemsCenter,
+                                  global.justifyContentSpaceBetween,
+                                ]}>
+                                <View style={style.drugItemLeft}>
+                                  <Text
+                                    style={[style.drugItemLeftTitle, global.fontSize14]}
+                                    numberOfLines={1}>
+                                    {drug.info.name || "未命名"}
+                                  </Text>
+                                  <Text
+                                    style={[style.drugItemLeftDetail, global.fontSize12]}
+                                    numberOfLines={1}>
+                                    {drug.info.standard || "暂无规格"}
+                                  </Text>
+                                  <Text
+                                    style={[style.drugItemLeftDetail, global.fontSize12]}
+                                    numberOfLines={1}>
+                                    {drug.info.manufacturer || "暂无厂商"}
+                                  </Text>
+                                </View>
+                                <View style={style.drugItemRight}>
+                                  <Text
+                                    style={[style.drugItemLeftTitle, global.fontSize14]}
+                                    numberOfLines={1}>
+                                    {drug.count}
+                                    {drug.info.unit}
+                                  </Text>
+                                  <Text
+                                    style={[style.drugItemLeftDetail, global.fontSize12]}
+                                    numberOfLines={1}>
+                                    {((drug.info.price / 1000) * drug.count).toFixed(2)}元
+                                  </Text>
+                                </View>
+                              </View>
+                              <View
+                                style={[style.usageDosage, global.flex, global.alignItemsCenter]}>
+                                <Text style={[style.diagnosisItemTitle, global.fontSize14]}>
+                                  用法用量
+                                </Text>
+                                <View style={style.diagnosisItemInput}>
+                                  <TextareaItem
+                                    style={style.input}
+                                    autoHeight
+                                    value={drug.info.signature}
+                                    onChange={signature => {
+                                      let { chooseDrugMapList } = this.state
+                                      if (signature || signature === "") {
+                                        chooseDrugMapList[k].drugList[k1].info.signature = signature
+                                      }
+                                      this.setState({
+                                        chooseDrugMapList: chooseDrugMapList,
+                                      })
+                                      let chooseDrugInfoList = this.state.chooseDrugInfo
+                                      if (signature || signature === "") {
+                                        chooseDrugInfoList[drug.info.id].info.signature = signature
+                                      }
+                                      this.setState({
+                                        chooseDrugInfo: chooseDrugInfoList,
+                                      })
+                                    }}
+                                  />
+                                </View>
+                              </View>
+                            </View>
+                          )
+                        })}
+                      </View>
+                    </View>
+                  )
+                }
+              })}
             </View>
+            <TouchableOpacity
+              onPress={() => {
+                this.setState({
+                  isSelectPharmacy: true,
+                })
+              }}>
+              <View style={[style.editDrug, global.flex, global.alignItemsCenter]}>
+                <Icon
+                  style={[style.editDrugIcon, style.important, global.fontSize16]}
+                  name="form"
+                />
+                <Text style={[style.important, global.fontSize14]}>编辑药材</Text>
+              </View>
+            </TouchableOpacity>
           </View>
           {/* 选填 */}
           <View style={style.diagnosis}>
@@ -539,23 +703,30 @@ export default class SquareRoot extends Component<
               <View style={style.percentageOfCommission}>
                 <InputItem
                   labelNumber={1}
+                  disabled={this.state.chooseDrugMapList.length === 0}
                   style={style.percentageOfCommissionInput}
                   placeholder="0.00"
                   value={
-                    this.state.serviceMoney
-                      ? ((drugMoney * this.state.percentageOfCommission) / 100).toFixed(2)
-                      : this.state.serviceMoney
+                    this.state.isChangeServiceMoney
+                      ? this.state.serviceMoney
+                      : ((drugMoney * this.state.percentageOfCommission) / 100).toFixed(2)
                   }
                   onChange={val => {
-                    console.log(val)
                     this.setState({
-                      serviceMoney: !isNaN(parseFloat(val)) ? val : "",
+                      serviceMoney: val,
+                      isChangeServiceMoney: true,
                     })
                   }}
                   onBlur={val => {
-                    this.setState({
-                      serviceMoney: val ? parseFloat(val) + "" : 0 + "",
-                    })
+                    if (val) {
+                      this.setState({
+                        serviceMoney: !isNaN(parseFloat(val)) ? parseFloat(val) + "" : 0 + "",
+                      })
+                    } else {
+                      this.setState({
+                        isChangeServiceMoney: false,
+                      })
+                    }
                   }}>
                   ¥
                 </InputItem>
@@ -575,9 +746,9 @@ export default class SquareRoot extends Component<
               </Text>
               <Text style={[style.diagnosisItemAll, global.fontSize15]}>
                 ¥{" "}
-                {this.state.serviceMoney
-                  ? (drugMoney + (drugMoney * this.state.percentageOfCommission) / 100).toFixed(2)
-                  : (drugMoney + parseFloat(this.state.serviceMoney)).toFixed(2)}
+                {this.state.isChangeServiceMoney
+                  ? (drugMoney + parseFloat(this.state.serviceMoney)).toFixed(2)
+                  : (drugMoney + (drugMoney * this.state.percentageOfCommission) / 100).toFixed(2)}
               </Text>
             </View>
             <DashLine len={45} width={windowWidth - 46} backgroundColor={sColor.colorEee} />
@@ -607,10 +778,13 @@ export default class SquareRoot extends Component<
       syndromeDifferentiation,
       patientInfo: { uid: patientUid },
     } = this.state
-    // let drugList: PrescriptionDrugCategory[] = []
-    // Object.keys(this.state.chooseDrugInfo).map((drugIdStr, k) => {
-    //   let drugId: number = parseInt(drugIdStr)
-    // })
+    console.log({
+      advice,
+      discrimination,
+      patientUid,
+      syndromeDifferentiation,
+      drugList: this.state.chooseDrugInfo,
+    })
     if (discrimination === "") {
       return Toast.info("请输入辨病", 3)
     }
