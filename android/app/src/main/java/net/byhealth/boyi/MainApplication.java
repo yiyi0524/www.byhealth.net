@@ -17,6 +17,7 @@ import cn.reactnative.modules.update.UpdatePackage;
 import java.util.Arrays;
 import java.util.List;
 import cn.reactnative.modules.update.UpdateContext;
+import net.byhealth.boyi.buffge.BuffPackage;
 
 public class MainApplication extends Application implements ReactApplication {
 
@@ -35,7 +36,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(new MainReactPackage(), new RNViewShotPackage(), new RNDeviceInfo(),
           new ReactSliderPackage(), new RNCViewPagerPackage(), new AsyncStoragePackage(), new RNGestureHandlerPackage(),
-          new UpdatePackage());
+          new UpdatePackage(), new BuffPackage());
     }
 
     @Override
