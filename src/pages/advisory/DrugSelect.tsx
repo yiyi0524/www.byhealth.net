@@ -50,7 +50,7 @@ interface Params {
 export default class Pharmacy extends Component<Props, State> {
   refs: any
   static navigationOptions = ({ navigation }: { navigation: NavigationScreenProp<State> }) => {
-    let title = "先择药材"
+    let title = "选择药材"
     let params = navigation.state.params as Params
     for (let v of params.categoryList) {
       if (v.id === params.activeId) {
@@ -79,6 +79,7 @@ export default class Pharmacy extends Component<Props, State> {
           onPress={() => {
             let chooseDrugInfo = navigation.state.params!.chooseDrugInfo
             DeviceEventEmitter.emit(pathMap.SquareRoot + "Reload", chooseDrugInfo)
+            DeviceEventEmitter.emit(pathMap.AddPrescriptionTpl + "Reload", chooseDrugInfo)
             navigation.goBack()
           }}>
           <Icon style={[style.headerLeft, global.fontSize16]} name="left" />
@@ -89,6 +90,7 @@ export default class Pharmacy extends Component<Props, State> {
           onPress={() => {
             let chooseDrugInfo = navigation.state.params!.chooseDrugInfo
             DeviceEventEmitter.emit(pathMap.SquareRoot + "Reload", chooseDrugInfo)
+            DeviceEventEmitter.emit(pathMap.AddPrescriptionTpl + "Reload", chooseDrugInfo)
             navigation.goBack()
           }}>
           <Text style={[global.fontSize16, { color: sColor.mainRed, paddingRight: 15 }]}>完成</Text>

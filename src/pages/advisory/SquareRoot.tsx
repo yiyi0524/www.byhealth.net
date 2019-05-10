@@ -68,7 +68,7 @@ interface State {
   chooseDrugInfo: Record<number, { count: number; info: drugItem }>
   chooseDrugMapList: chooseDrug[]
 }
-interface chooseDrug {
+export interface chooseDrug {
   id: number
   name: string
   drugList: drugInfo[]

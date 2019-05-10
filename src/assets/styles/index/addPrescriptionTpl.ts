@@ -51,7 +51,6 @@ export default StyleSheet.create({
   },
   drugCategoryList: {
     marginTop: 8,
-    marginBottom: 8,
     backgroundColor: sColor.white,
     padding: 15,
   },
@@ -60,7 +59,7 @@ export default StyleSheet.create({
     marginRight: 15,
   },
   drugCategoryItem: {
-    marginBottom: 15,
+    marginTop: 15,
   },
   drugCategoryName: {
     color: sColor.color333,
@@ -73,11 +72,61 @@ export default StyleSheet.create({
     marginBottom: 8,
     marginRight: 15,
   },
+  drugTitle: {
+    color: sColor.color333,
+  },
   drugName: {
     color: sColor.color666,
   },
   editDrug: {
     color: sColor.mainRed,
+    marginTop: 8,
+    marginRight: 8,
   },
-  addPrescriptionTplBtn: {},
+  drugCategoryTitle: {
+    marginBottom: 15,
+  },
+  spot: {
+    width: 3,
+    height: 3,
+    borderRadius: 100,
+    backgroundColor: sColor.color333,
+    marginLeft: 15,
+    marginRight: 15,
+  },
+  drugCategoryTheme: {
+    color: sColor.color333,
+  },
+  addPrescriptionTplBtn: {
+    marginTop: 15,
+    marginLeft: 15,
+    marginRight: 15,
+    height: 45,
+    lineHeight: 45,
+    textAlign: "center",
+    color: sColor.white,
+    backgroundColor: sColor.mainRed,
+    borderRadius: 5,
+    marginBottom: 15,
+  },
+  drugItemLeft: {
+    flex: 1,
+  },
+  drugItemRight: {
+    width: 70,
+  },
+  drugItemRightTitle: {
+    color: sColor.color333,
+    textAlign: "right",
+    marginBottom: 8,
+  },
+  drugMarginBottom: {
+    marginBottom: 8,
+  },
+  empty: {
+    fontSize: 14,
+    textAlign: "center",
+    color: sColor.color888,
+    marginTop: 8,
+  },
 })
