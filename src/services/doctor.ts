@@ -1,11 +1,11 @@
-import { bget, bpost, GetListParam } from "./api"
+import { DayStage } from "@/components/Calendar"
 import { patientGroupItem } from "@/pages/address_book/Group"
 import { patientItem } from "@/pages/address_book/GroupDetail"
-import { ConsultationItem } from "@/pages/advisory/Index"
-import { Drug } from "./patient"
-import { drugItem } from "@/pages/advisory/SquareRoot"
 import { Picture } from "@/pages/advisory/Chat"
-import { DayStage } from "@/components/Calendar"
+import { ConsultationItem } from "@/pages/advisory/Index"
+import { drugItem } from "@/pages/advisory/SquareRoot"
+import { bget, bpost, GetListParam } from "./api"
+import { Drug } from "./patient"
 export const ALLOW_INQUIRY = {
   FALSE: 0x0,
   TRUE: 0x1,
@@ -615,8 +615,210 @@ export function getMyInvitePatientQrCode() {
     url: "api/getMyInvitePatientQrCode",
   })
 }
+/**
+ *  todo 获取处方模板列列表
+ *  filter:{
+ *    categoryId:{
+ *      condiction:TYPE.eq,
+ *      val:categoryId
+ *    }
+ *  }
+ */
+export interface PrescriptionTpl {
+  id: number
+  name: string
+  ctime: string
+  advice: string
+  drugList: PrescriptionTplDrugInfo[]
+}
+interface PrescriptionTplDrugInfo {
+  id: number
+  count: number
+  name: string
+  price: number
+  unit: string
+  standard: string
+  signature: string
+  manufacturer: string
+}
+export async function listPrescriptionTpl({ page, limit, filter }: GetListParam) {
+  return {
+    data: {
+      list: [
+        {
+          id: 1,
+          name: "模板咦",
+          ctime: "2019-04-12 19:00:00",
+          advice: "多喝水",
+          drugList: [
+            {
+              id: 1,
+              count: 2,
+              name: "还钱1",
+              price: 1.5,
+              unit: "g",
+              standard: "",
+              signature: "",
+              manufacturer: "",
+            },
+            {
+              id: 2,
+              count: 4,
+              name: "还钱2",
+              price: 1.5,
+              unit: "g",
+              standard: "",
+              signature: "",
+              manufacturer: "",
+            },
+            {
+              id: 3,
+              count: 5,
+              name: "还钱3",
+              price: 1.5,
+              unit: "g",
+              standard: "",
+              signature: "",
+              manufacturer: "",
+            },
+          ],
+        },
+        {
+          id: 2,
+          name: "模板二",
+          ctime: "2019-04-12 19:00:00",
+          advice: "多喝水",
+          drugList: [
+            {
+              id: 1,
+              count: 2,
+              name: "还钱1",
+              price: 1.5,
+              unit: "g",
+              standard: "",
+              signature: "",
+              manufacturer: "",
+            },
+            {
+              id: 2,
+              count: 4,
+              name: "还钱2",
+              price: 1.5,
+              unit: "g",
+              standard: "",
+              signature: "",
+              manufacturer: "",
+            },
+            {
+              id: 3,
+              count: 5,
+              name: "还钱3",
+              price: 1.5,
+              unit: "g",
+              standard: "",
+              signature: "",
+              manufacturer: "",
+            },
+          ],
+        },
+      ],
+    },
+  }
+  return bget<{ list: PrescriptionTpl[] }>({
+    url: "api/listPrescriptionTpl",
+    query: {
+      page,
+      limit,
+      filter,
+    },
+  })
+}
+/**
+ * todo获取开方模板详情
+ */
+export async function getPrescriptionTpl({ id }: { id: number }) {
+  return {
+    data: {
+      detail: {
+        id: 1,
+        name: "模板咦",
+        ctime: "2019-04-12 19:00:00",
+        advice: "多喝水",
+        drugList: [
+          {
+            id: 1,
+            count: 2,
+            name: "还钱1",
+            price: 1.5,
+            unit: "g",
+            standard: "",
+            signature: "",
+            manufacturer: "",
+          },
+          {
+            id: 2,
+            count: 4,
+            name: "还钱2",
+            price: 1.5,
+            unit: "g",
+            standard: "",
+            signature: "",
+            manufacturer: "",
+          },
+          {
+            id: 3,
+            count: 5,
+            name: "还钱3",
+            price: 1.5,
+            unit: "g",
+            standard: "",
+            signature: "",
+            manufacturer: "",
+          },
+        ],
+      },
+    },
+  }
+  return bget<{ detail: PrescriptionTpl }>({
+    url: "api/getPrescriptionTpl",
+    query: {
+      id,
+    },
+  })
+}
+/**
+ * todo 添加开方模板详情
+ */
+export function addPrescriptionTpl(data: {
+  categoryId: number
+  name: string
+  advice: string
+  drugList: PrescriptionTplDrugInfo[]
+}) {
+  return bpost<{ detail: PrescriptionTpl }>({
+    url: "api/addPrescriptionTpl",
+    data,
+  })
+}
+/**
+ * todo 编辑开方模板详情
+ */
+export function editPrescriptionTpl(data: {
+  id: number
+  name: string
+  advice: string
+  drugList: PrescriptionTplDrugInfo[]
+}) {
+  return bpost<{ detail: PrescriptionTpl }>({
+    url: "api/editPrescriptionTpl",
+    data,
+  })
+}
 
 export default {
+  editPrescriptionTpl,
+  addPrescriptionTpl,
+  listPrescriptionTpl,
   getMyInvitePatientQrCode,
   listSittingRecord,
   getSittingHospital,

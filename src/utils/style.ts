@@ -37,6 +37,10 @@ import SittingHospital from "@/assets/styles/index/sittingHospital"
 import SittingHospitalList from "@/assets/styles/index/sittingHospitalList"
 import AddSittingHospital from "@/assets/styles/index/addSittingHospital"
 import EditSittingHospital from "@/assets/styles/index/editSittingHospital"
+import PrescriptionTpl from "@/assets/styles/index/prescriptionTpl"
+import PrescriptionTplList from "@/assets/styles/index/prescriptionTplList"
+import AddPrescriptionTpl from "@/assets/styles/index/addPrescriptionTpl"
+import EditPrescriptionTpl from "@/assets/styles/index/editPrescriptionTpl"
 export default {
   home,
   global,
@@ -50,6 +54,10 @@ export default {
     SittingHospitalList,
     AddSittingHospital,
     EditSittingHospital,
+    PrescriptionTpl,
+    PrescriptionTplList,
+    AddPrescriptionTpl,
+    EditPrescriptionTpl,
   },
   user: {
     login,

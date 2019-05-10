@@ -39,4 +39,8 @@ export default {
   AddSittingHospital: "AddSittingHospital",
   EditSittingHospital: "EditSittingHospital",
   Calendar: "Calendar",
+  PrescriptionTpl: "PrescriptionTpl",
+  PrescriptionTplList: "PrescriptionTplList",
+  AddPrescriptionTpl: "AddPrescriptionTpl",
+  EditPrescriptionTpl: "EditPrescriptionTpl",
 }

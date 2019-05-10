@@ -31,6 +31,10 @@ import SittingHospital from "@/pages/index/SittingHospital"
 import SittingHospitalList from "@/pages/index/SittingHospitalList"
 import AddSittingHospital from "@/pages/index/AddSittingHospital"
 import EditSittingHospital from "@/pages/index/EditSittingHospital"
+import PrescriptionTpl from "@/pages/index/PrescriptionTpl"
+import PrescriptionTplList from "@/pages/index/PrescriptionTplList"
+import AddPrescriptionTpl from "@/pages/index/AddPrescriptionTpl"
+import EditPrescriptionTpl from "@/pages/index/EditPrescriptionTpl"
 import Calendar from "@/components/Calendar"
 import Home from "@pages/Home"
 import Test from "@pages/Test"
@@ -304,6 +308,18 @@ const StacksOverTabs = createStackNavigator({
   },
   [pathMap.Calendar]: {
     screen: Calendar,
+  },
+  [pathMap.PrescriptionTpl]: {
+    screen: PrescriptionTpl,
+  },
+  [pathMap.PrescriptionTplList]: {
+    screen: PrescriptionTplList,
+  },
+  [pathMap.EditPrescriptionTpl]: {
+    screen: EditPrescriptionTpl,
+  },
+  [pathMap.AddPrescriptionTpl]: {
+    screen: AddPrescriptionTpl,
   },
 })
 export default StacksOverTabs
