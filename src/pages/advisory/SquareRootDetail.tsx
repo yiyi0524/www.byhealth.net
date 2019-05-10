@@ -34,6 +34,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
 interface drugCategory {
   id: number
   name: string
+  child: drugCategory[]
 }
 interface Props {
   navigation: NavigationScreenProp<State>
@@ -116,16 +117,16 @@ export default class SquareRoot extends Component<
 
   getDrugList = () => {}
   init = async () => {
-    let {
-      data: { detail },
-    } = await doctor.getSquareRoot({ prescriptionId: this.state.prescriptionId })
-    let {
-      data: { list: drugCategoryList },
-    } = await hospital.getDrugCategoryList({ page: -1, limit: -1 })
-    let {
-      data: { list: drugList },
-    } = await hospital.getDrugList({ page: -1, limit: -1 })
     try {
+      let {
+        data: { detail },
+      } = await doctor.getSquareRoot({ prescriptionId: this.state.prescriptionId })
+      let {
+        data: { list: drugCategoryList },
+      } = await hospital.getDrugCategoryList({ page: -1, limit: -1 })
+      let {
+        data: { list: drugList },
+      } = await hospital.getDrugList({ page: -1, limit: -1 })
       this.setState({
         hasLoad: true,
         detail,
@@ -225,88 +226,152 @@ export default class SquareRoot extends Component<
                   if (v.categoryId === v1.id) {
                     categoryName = v1.name
                   }
+                  if (v1.child.length > 0) {
+                    for (let v2 of v1.child) {
+                      if (v.categoryId === v2.id) {
+                        categoryName = v2.name
+                      }
+                    }
+                  }
                 }
-                return (
-                  <View style={style.drugCategoryItem} key={k}>
-                    <View style={[]}>
-                      <Text style={[style.drugItemLeftTitle, global.fontSize16]} numberOfLines={1}>
-                        {categoryName}
-                      </Text>
-                      <View style={style.drugListFa}>
-                        {v.list.map((v, k) => {
-                          let drugItem = "",
-                            unit = "",
-                            standard = "",
-                            price = 0,
-                            manufacturer = ""
-                          for (let v1 of this.state.drugList) {
-                            if (v.id === v1.id) {
-                              drugItem = v1.name || "未命名"
-                              unit = v1.unit || "盒"
-                              standard = v1.standard || "暂无地址"
-                              price = v1.price || 0
-                              manufacturer = v1.manufacturer || "暂无规格"
+                if (v.categoryId === 1 || v.categoryId === 2) {
+                  return (
+                    <View style={style.drugCategoryItem} key={k}>
+                      <View style={[]}>
+                        <Text
+                          style={[style.drugItemLeftTitle, global.fontSize16, { marginBottom: 8 }]}
+                          numberOfLines={1}>
+                          {categoryName}
+                        </Text>
+                        <View
+                          style={[
+                            style.drugListFa,
+                            global.flex,
+                            global.alignItemsCenter,
+                            global.flexWrap,
+                          ]}>
+                          {v.list.map((v, k) => {
+                            let drugItem = "",
+                              unit = ""
+                            for (let v1 of this.state.drugList) {
+                              if (v.id === v1.id) {
+                                drugItem = v1.name || "未命名"
+                                unit = v1.unit || "盒"
+                              }
                             }
-                          }
-                          return (
-                            <View key={k} style={style.drugItem}>
+                            return (
                               <View
+                                key={k}
                                 style={[
                                   style.drugItemFa,
+                                  style.traditionalChineseMedicine,
                                   global.flex,
                                   global.alignItemsCenter,
-                                  global.justifyContentSpaceBetween,
+                                  { marginRight: 15 },
                                 ]}>
                                 <Text
-                                  style={[style.drugItemTitle, global.fontSize14]}
-                                  numberOfLines={1}>
+                                  style={[
+                                    style.drugItemTitle,
+                                    global.fontSize14,
+                                    { marginRight: 5 },
+                                  ]}>
                                   {drugItem}
                                 </Text>
-                                <Text
-                                  style={[style.drugItemTitle, global.fontSize12]}
-                                  numberOfLines={1}>
+                                <Text style={[style.drugItemTitle, global.fontSize12]}>
                                   {v.count} {unit}
                                 </Text>
                               </View>
-                              <View
-                                style={[
-                                  style.drugItemFa,
-                                  global.flex,
-                                  global.alignItemsCenter,
-                                  global.justifyContentSpaceBetween,
-                                ]}>
-                                <Text
-                                  style={[style.drugItemDetail, global.fontSize14]}
-                                  numberOfLines={1}>
-                                  {standard}
-                                </Text>
+                            )
+                          })}
+                        </View>
+                      </View>
+                    </View>
+                  )
+                } else {
+                  return (
+                    <View style={style.drugCategoryItem} key={k}>
+                      <View style={[]}>
+                        <Text
+                          style={[style.drugItemLeftTitle, global.fontSize16]}
+                          numberOfLines={1}>
+                          {categoryName}
+                        </Text>
+                        <View style={style.drugListFa}>
+                          {v.list.map((v, k) => {
+                            let drugItem = "",
+                              unit = "",
+                              standard = "",
+                              price = 0,
+                              manufacturer = ""
+                            for (let v1 of this.state.drugList) {
+                              if (v.id === v1.id) {
+                                drugItem = v1.name || "未命名"
+                                unit = v1.unit || "盒"
+                                standard = v1.standard || "暂无地址"
+                                price = v1.price || 0
+                                manufacturer = v1.manufacturer || "暂无规格"
+                              }
+                            }
+                            return (
+                              <View key={k} style={style.drugItem}>
+                                <View
+                                  style={[
+                                    style.drugItemFa,
+                                    global.flex,
+                                    global.alignItemsCenter,
+                                    global.justifyContentSpaceBetween,
+                                  ]}>
+                                  <Text
+                                    style={[style.drugItemTitle, global.fontSize14]}
+                                    numberOfLines={1}>
+                                    {drugItem}
+                                  </Text>
+                                  <Text
+                                    style={[style.drugItemTitle, global.fontSize12]}
+                                    numberOfLines={1}>
+                                    {v.count} {unit}
+                                  </Text>
+                                </View>
+                                <View
+                                  style={[
+                                    style.drugItemFa,
+                                    global.flex,
+                                    global.alignItemsCenter,
+                                    global.justifyContentSpaceBetween,
+                                  ]}>
+                                  <Text
+                                    style={[style.drugItemDetail, global.fontSize14]}
+                                    numberOfLines={1}>
+                                    {standard}
+                                  </Text>
+                                  <Text
+                                    style={[style.drugItemDetail, global.fontSize12]}
+                                    numberOfLines={1}>
+                                    {((price / 1000) * v.count).toFixed(2)}元
+                                  </Text>
+                                </View>
                                 <Text
                                   style={[style.drugItemDetail, global.fontSize12]}
                                   numberOfLines={1}>
-                                  {((price / 1000) * v.count).toFixed(2)}元
+                                  {manufacturer}
                                 </Text>
+                                <View
+                                  style={[style.usageDosage, global.flex, global.alignItemsCenter]}>
+                                  <Text style={[style.diagnosisItemTitle, global.fontSize14]}>
+                                    用法用量
+                                  </Text>
+                                  <Text style={[style.diagnosisItemTitle, global.fontSize14]}>
+                                    {v.usage}
+                                  </Text>
+                                </View>
                               </View>
-                              <Text
-                                style={[style.drugItemDetail, global.fontSize12]}
-                                numberOfLines={1}>
-                                {manufacturer}
-                              </Text>
-                              <View
-                                style={[style.usageDosage, global.flex, global.alignItemsCenter]}>
-                                <Text style={[style.diagnosisItemTitle, global.fontSize14]}>
-                                  用法用量
-                                </Text>
-                                <Text style={[style.diagnosisItemTitle, global.fontSize14]}>
-                                  {v.usage}
-                                </Text>
-                              </View>
-                            </View>
-                          )
-                        })}
+                            )
+                          })}
+                        </View>
                       </View>
                     </View>
-                  </View>
-                )
+                  )
+                }
               })}
             </View>
           </View>

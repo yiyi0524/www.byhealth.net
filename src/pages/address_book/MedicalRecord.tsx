@@ -32,10 +32,15 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
     },
   }
 }
-interface drugCategory {
+interface drugInfo {
   id: number
   unit: string
   name: string
+}
+interface drugCategory {
+  id: number
+  name: string
+  child: drugCategory[]
 }
 interface Props {
   navigation: NavigationScreenProp<State>
@@ -47,7 +52,7 @@ interface State {
   patientUid: number
   detail: medicalRecord
   drugCategoryList: drugCategory[]
-  drugList: drugCategory[]
+  drugList: drugInfo[]
 }
 
 @connect(
@@ -215,35 +220,79 @@ export default class InquirySheet extends Component<
                   if (category.id === v.categoryId) {
                     categoryName = category.name
                   }
+                  if (category.child.length > 0) {
+                    for (let v1 of category.child) {
+                      if (v1.id === v.categoryId) {
+                        categoryName = v1.name
+                      }
+                    }
+                  }
                 }
-                return (
-                  <View style={style.drugCategory} key={k}>
-                    <Text style={[style.drugCategoryTitle, global.fontSize14]}>{categoryName}</Text>
-                    <View style={style.drugList}>
-                      {v.list.map((v1, k1) => {
-                        let drugName = "",
-                          unit = ""
-                        for (let drug of this.state.drugList) {
-                          if (drug.id === v1.id) {
-                            drugName = drug.name
-                            unit = drug.unit
+                if (v.categoryId === 1 || v.categoryId === 2) {
+                  return (
+                    <View style={style.drugCategory} key={k}>
+                      <Text style={[style.drugCategoryTitle, global.fontSize14]}>
+                        {categoryName}
+                      </Text>
+                      <View
+                        style={[
+                          style.drugList,
+                          global.flex,
+                          global.alignItemsCenter,
+                          global.flexWrap,
+                        ]}>
+                        {v.list.map((v1, k1) => {
+                          let drugName = "",
+                            unit = ""
+                          for (let drug of this.state.drugList) {
+                            if (drug.id === v1.id) {
+                              drugName = drug.name
+                              unit = drug.unit
+                            }
                           }
-                        }
-                        return (
-                          <View style={style.drugItem} key={k1}>
-                            <Text style={[style.drugName, global.fontSize14]}>
-                              {drugName}: {v1.count}
-                              {unit}
-                            </Text>
-                            <Text style={[style.drugDetail, global.fontSize14]}>
-                              用法用量: {v1.usage}
-                            </Text>
-                          </View>
-                        )
-                      })}
+                          return (
+                            <View style={[style.drugItem, { marginLeft: 15 }]} key={k1}>
+                              <Text style={[style.drugName, global.fontSize14]}>
+                                {drugName} {v1.count} {unit}
+                              </Text>
+                            </View>
+                          )
+                        })}
+                      </View>
                     </View>
-                  </View>
-                )
+                  )
+                } else {
+                  return (
+                    <View style={style.drugCategory} key={k}>
+                      <Text style={[style.drugCategoryTitle, global.fontSize14]}>
+                        {categoryName}
+                      </Text>
+                      <View style={[style.drugList, { marginLeft: 15 }]}>
+                        {v.list.map((v1, k1) => {
+                          let drugName = "",
+                            unit = ""
+                          for (let drug of this.state.drugList) {
+                            if (drug.id === v1.id) {
+                              drugName = drug.name
+                              unit = drug.unit
+                            }
+                          }
+                          return (
+                            <View style={style.drugItem} key={k1}>
+                              <Text style={[style.drugName, global.fontSize14]}>
+                                {drugName}: {v1.count}
+                                {unit}
+                              </Text>
+                              <Text style={[style.drugDetail, global.fontSize14]}>
+                                用法用量: {v1.usage}
+                              </Text>
+                            </View>
+                          )
+                        })}
+                      </View>
+                    </View>
+                  )
+                }
               })}
             </View>
           </View>

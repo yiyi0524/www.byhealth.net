@@ -87,7 +87,7 @@ export default StyleSheet.create({
   },
   drugList: {},
   drugItem: {
-    marginBottom: 5,
+    marginBottom: 10,
   },
   drugName: {
     color: sColor.color333,

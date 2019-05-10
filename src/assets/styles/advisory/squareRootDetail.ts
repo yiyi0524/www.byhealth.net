@@ -134,6 +134,7 @@ export default StyleSheet.create({
     borderBottomWidth: 1 / PixelRatio.get(),
     borderBottomColor: sColor.colorDdd,
   },
+  traditionalChineseMedicine: {},
   drugItemTitle: {
     color: sColor.color333,
   },
