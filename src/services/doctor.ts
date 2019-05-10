@@ -369,6 +369,7 @@ export interface PrescriptionDrugCategory {
 export interface AddPrescriptionParam {
   patientUid: number
   discrimination: string
+  serviceMoney?: number
   syndromeDifferentiation: string
   advice: string
   drugList: Record<number, { count: number; info: drugItem }>

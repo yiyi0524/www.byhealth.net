@@ -5,24 +5,18 @@ import * as wsAction from "@/redux/actions/ws"
 import { AppState } from "@/redux/stores/store"
 import pathMap from "@/routes/pathMap"
 import api, { getRegion } from "@/services/api"
-import { GENDER_ZH, closeInquiry } from "@/services/doctor"
+import { closeInquiry, GENDER_ZH } from "@/services/doctor"
 import gImg from "@/utils/img"
 import { getPicFullUrl, windowWidth } from "@/utils/utils"
-import {
-  ImagePicker,
-  Portal,
-  TextareaItem,
-  Toast,
-  Modal,
-  Button,
-  Icon,
-} from "@ant-design/react-native"
+import { Icon, ImagePicker, Modal, Portal, TextareaItem, Toast } from "@ant-design/react-native"
 import userApi from "@api/user"
 import wsMsgApi from "@api/wsMsg"
 import sColor from "@styles/color"
 import gStyle from "@utils/style"
 import React, { Component, ReactChild } from "react"
 import {
+  DeviceEventEmitter,
+  EmitterSubscription,
   Image,
   ImageSourcePropType,
   PermissionsAndroid,
@@ -31,15 +25,13 @@ import {
   RefreshControl,
   Text,
   View,
-  DeviceEventEmitter,
-  EmitterSubscription,
 } from "react-native"
 import { TouchableOpacity } from "react-native-gesture-handler"
+import ImageViewer from "react-native-image-zoom-viewer"
 import { NavigationScreenProp, ScrollView } from "react-navigation"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
 import { Overwrite } from "utility-types"
-import ImageViewer from "react-native-image-zoom-viewer"
 const style = gStyle.advisory.advisoryChat
 interface Props {
   navigation: NavigationScreenProp<State>
@@ -274,11 +266,11 @@ export default class Chat extends Component<
     //   title: "赠送提问",
     //   link: "",
     // },
-    {
-      icon: gImg.advisory.sittingInformation,
-      title: "坐诊信息",
-      link: "",
-    },
+    // {
+    //   icon: gImg.advisory.sittingInformation,
+    //   title: "坐诊信息",
+    //   link: "",
+    // },
   ]
   myScroll: ScrollView | null = null
   msgInput: TextareaItem | null = null
@@ -368,9 +360,15 @@ export default class Chat extends Component<
     if (this.state.patientUid in this.props.ws.chatMsg) {
       if (this.props.ws.chatMsg[this.state.patientUid].length === 0) {
         this.getMoreMsgList()
+        this.setState({
+          shouldScrollToEnd: true,
+        })
       }
     } else {
       this.getMoreMsgList()
+      this.setState({
+        shouldScrollToEnd: true,
+      })
     }
   }
   render() {

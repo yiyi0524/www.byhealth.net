@@ -76,10 +76,10 @@ export default StyleSheet.create({
     marginRight: 15,
   },
   percentageOfCommission: {
-    width: 100,
+    width: 110,
   },
   percentageOfCommissionInput: {
-    width: 100,
+    width: 110,
   },
   diagnosisItemAll: {
     color: sColor.color333,

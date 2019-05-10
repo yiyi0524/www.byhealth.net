@@ -3,7 +3,7 @@ import { BASE_URL } from "@/config/api"
 import * as userAction from "@/redux/actions/user"
 import { AppState } from "@/redux/stores/store"
 import api, { windowWidth } from "@/services/api"
-import { addPrescription, GENDER, GENDER_ZH } from "@/services/doctor"
+import { addPrescription, GENDER, GENDER_ZH, AddPrescriptionParam } from "@/services/doctor"
 import { getPatientInfo } from "@/services/patient"
 import { getPersonalInfo } from "@/services/user"
 import { getPicFullUrl } from "@/utils/utils"
@@ -39,7 +39,6 @@ interface State {
   isSelectDrug: boolean
   hasLoad: boolean
   refreshing: boolean
-  isChangeServiceMoney: boolean
   drugMoney: number
   serviceMoney: string
   percentageOfCommission: number
@@ -147,9 +146,8 @@ export default class SquareRoot extends Component<
       refreshing: false,
       isSelectPharmacy: false,
       isSelectDrug: false,
-      isChangeServiceMoney: false,
       drugMoney: 0,
-      serviceMoney: "0.00",
+      serviceMoney: "",
       percentageOfCommission: 0,
       pharmacy: {
         activeId: 0,
@@ -322,7 +320,12 @@ export default class SquareRoot extends Component<
         list = this.state.chooseDrugInfo
       drugMoney += (list[drugId].info.price / 1000) * list[drugId].count
     })
-
+    let calcServiceMoney = ((drugMoney * this.state.percentageOfCommission) / 100).toFixed(2),
+      actuallyServiceMoney =
+        this.state.serviceMoney === ""
+          ? parseFloat(calcServiceMoney)
+          : parseFloat(this.state.serviceMoney),
+      totalMoney = (drugMoney + actuallyServiceMoney).toFixed(2)
     return (
       <>
         <ScrollView
@@ -403,7 +406,6 @@ export default class SquareRoot extends Component<
                   onChange={this.handleFileChange}
                   files={this.state.medicalRecordPicList}
                   // selectable={this.state.medicalRecordPicList.length < 9}
-                  // todo 先暂时禁止添加
                   selectable={false}
                 />
               </View>
@@ -705,26 +707,21 @@ export default class SquareRoot extends Component<
                   labelNumber={1}
                   disabled={this.state.chooseDrugMapList.length === 0}
                   style={style.percentageOfCommissionInput}
-                  placeholder="0.00"
-                  value={
-                    this.state.isChangeServiceMoney
-                      ? this.state.serviceMoney
-                      : ((drugMoney * this.state.percentageOfCommission) / 100).toFixed(2)
-                  }
+                  placeholder={this.state.serviceMoney === "" ? calcServiceMoney : "0.00"}
+                  value={this.state.serviceMoney}
                   onChange={val => {
+                    let serviceMoney: number | string = parseFloat(val)
+                    if (isNaN(serviceMoney)) {
+                      serviceMoney = ""
+                    }
                     this.setState({
-                      serviceMoney: val,
-                      isChangeServiceMoney: true,
+                      serviceMoney: serviceMoney + "",
                     })
                   }}
-                  onBlur={val => {
-                    if (val) {
+                  onBlur={() => {
+                    if (this.state.serviceMoney === "") {
                       this.setState({
-                        serviceMoney: !isNaN(parseFloat(val)) ? parseFloat(val) + "" : 0 + "",
-                      })
-                    } else {
-                      this.setState({
-                        isChangeServiceMoney: false,
+                        serviceMoney: calcServiceMoney + "",
                       })
                     }
                   }}>
@@ -744,12 +741,7 @@ export default class SquareRoot extends Component<
                 总计
                 <Text style={[style.diagnosisItemDetail, global.fontSize12]}>( 不含快递费 )</Text>
               </Text>
-              <Text style={[style.diagnosisItemAll, global.fontSize15]}>
-                ¥{" "}
-                {this.state.isChangeServiceMoney
-                  ? (drugMoney + parseFloat(this.state.serviceMoney)).toFixed(2)
-                  : (drugMoney + (drugMoney * this.state.percentageOfCommission) / 100).toFixed(2)}
-              </Text>
+              <Text style={[style.diagnosisItemAll, global.fontSize15]}>¥ {totalMoney}</Text>
             </View>
             <DashLine len={45} width={windowWidth - 46} backgroundColor={sColor.colorEee} />
           </View>
@@ -771,11 +763,15 @@ export default class SquareRoot extends Component<
       </>
     )
   }
+  /**
+   * 发送处方给用户
+   */
   sendPrescriptionToUser = () => {
     const {
       advice,
       discrimination,
       syndromeDifferentiation,
+      serviceMoney,
       patientInfo: { uid: patientUid },
     } = this.state
     console.log({
@@ -794,13 +790,18 @@ export default class SquareRoot extends Component<
     if (Object.keys(this.state.chooseDrugInfo).length === 0) {
       return Toast.info("请选择药材", 3)
     }
-    addPrescription({
+
+    let args: AddPrescriptionParam = {
       advice,
       discrimination,
       patientUid,
       syndromeDifferentiation,
       drugList: this.state.chooseDrugInfo,
-    })
+    }
+    if (serviceMoney !== "") {
+      args.serviceMoney = parseFloat(serviceMoney) * 100
+    }
+    addPrescription(args)
       .then(json => {
         let prescriptionId = json.data.id
         this.props.ws.wsPost({
