@@ -23,10 +23,20 @@ import { NavigationScreenProp } from "react-navigation"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
 import { CategoryItem } from "../advisory/DrugSelect"
-import { chooseDrug, drugItem } from "../advisory/SquareRoot"
+import { drugItem } from "../advisory/SquareRoot"
 import doctor from "@/services/doctor"
 const style = gStyle.index.AddPrescriptionTpl
 const global = gStyle.global
+interface chooseDrug {
+  id: number
+  name: string
+  drugList: drugInfo[]
+}
+interface drugInfo {
+  id: number
+  count: number
+  info: drugItem
+}
 interface Props {
   navigation: NavigationScreenProp<State>
 }
@@ -37,7 +47,7 @@ interface State {
   tplName: string
   advice: string
   categoryList: CategoryItem[]
-  chooseDrugInfo: Record<number, { count: number; info: drugItem }>
+  chooseDrugInfo: Record<number, { count: string; info: drugItem }>
   chooseDrugMapList: chooseDrug[]
 }
 const mapStateToProps = (state: AppState) => {
@@ -110,7 +120,6 @@ export default class AddPrescriptionTpl extends Component<
       pathMap.AddPrescriptionTpl + "Reload",
       async chooseDrugInfo => {
         let chooseDrugMapList: chooseDrug[] = []
-        console.log(chooseDrugInfo)
         for (let v of chooseDrugInfo) {
           if (v) {
             let isCategoryExist =
@@ -129,7 +138,8 @@ export default class AddPrescriptionTpl extends Component<
             for (let v1 of chooseDrugMapList) {
               if (v1.id === v.info.category.id) {
                 v1.drugList.push({
-                  count: v.count,
+                  id: v.info.id,
+                  count: parseInt(v.count),
                   info: v.info,
                 })
               }
@@ -194,12 +204,13 @@ export default class AddPrescriptionTpl extends Component<
         categoryId: this.state.categoryId,
         name: this.state.tplName,
         advice: this.state.advice,
-        drugList: this.state.chooseDrugInfo,
+        drugList: this.state.chooseDrugMapList[0].drugList,
       })
       Toast.success("添加成功", 2)
       DeviceEventEmitter.emit(pathMap.PrescriptionTplList + "Reload", null)
       this.props.navigation.goBack()
     } catch (err) {
+      console.log(err)
       Toast.fail("添加失败, 错误信息:" + err.msg, 3)
     }
   }

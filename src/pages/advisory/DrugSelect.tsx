@@ -231,7 +231,6 @@ export default class Pharmacy extends Component<Props, State> {
         <View style={style.list}>
           {/* 当前已经选择的药品信息 */}
           {Object.keys(this.state.chooseDrugInfo).map((drugIdStr, k) => {
-            console.log(drugIdStr)
             let drugId: number = parseInt(drugIdStr),
               list = this.state.chooseDrugInfo
             setTimeout(() => {

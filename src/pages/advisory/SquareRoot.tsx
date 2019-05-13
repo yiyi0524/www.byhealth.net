@@ -176,7 +176,6 @@ export default class SquareRoot extends Component<
     this.listener = DeviceEventEmitter.addListener(
       pathMap.SquareRoot + "Reload",
       async chooseDrugInfo => {
-        console.log(chooseDrugInfo)
         let chooseDrugMapList: chooseDrug[] = []
         for (let v of chooseDrugInfo) {
           if (v) {
@@ -230,7 +229,6 @@ export default class SquareRoot extends Component<
       })
       let pharmacy = this.state.pharmacy
       pharmacy.categoryList = categoryList
-      // pharmacy.activeId = categoryList[0].id
       let { patientInfo } = this.state
       let {
         data: { yearAge, monthAge, name, gender, hospitalMedicalRecordPicList },
@@ -285,7 +283,6 @@ export default class SquareRoot extends Component<
           medicalRecordPicList.push(picMode)
           medicalRecordPicList[medicalRecordPicList.length - 1].url = BASE_URL + json.data.url
           medicalRecordPicList[medicalRecordPicList.length - 1].id = json.data.picId
-          console.log(medicalRecordPicList)
           this.setState({
             medicalRecordPicList,
           })
@@ -798,13 +795,6 @@ export default class SquareRoot extends Component<
       serviceMoney,
       patientInfo: { uid: patientUid },
     } = this.state
-    console.log({
-      advice,
-      discrimination,
-      patientUid,
-      syndromeDifferentiation,
-      drugList: this.state.chooseDrugInfo,
-    })
     if (discrimination === "") {
       return Toast.info("请输入辨病", 3)
     }

@@ -24,7 +24,7 @@ import { NavigationScreenProp } from "react-navigation"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
 import { CategoryItem } from "../advisory/DrugSelect"
-import { chooseDrug, drugItem, drugInfo } from "../advisory/SquareRoot"
+import { drugItem } from "../advisory/SquareRoot"
 const style = gStyle.index.EditPrescriptionTpl
 const global = gStyle.global
 interface Props {
@@ -38,8 +38,18 @@ interface State {
   categoryName: string
   prescriptionTplDetail: PrescriptionTpl
   categoryList: CategoryItem[]
-  chooseDrugInfo: Record<number, { count: number; info: drugItem }>
+  chooseDrugInfo: Record<number, { count: string; info: drugItem }>
   chooseDrugMapList: chooseDrug[]
+}
+interface chooseDrug {
+  id: number
+  name: string
+  drugList: drugInfo[]
+}
+interface drugInfo {
+  id: number
+  count: number
+  info: drugItem
 }
 const mapStateToProps = (state: AppState) => {
   return {
@@ -103,6 +113,7 @@ export default class AddPrescriptionTpl extends Component<
       categoryName: "",
       prescriptionTplDetail: {
         id: 0,
+        categoryId: 0,
         name: "",
         advice: "",
         ctime: "",
@@ -116,11 +127,15 @@ export default class AddPrescriptionTpl extends Component<
   componentDidMount() {
     this.listener = DeviceEventEmitter.addListener(
       pathMap.AddPrescriptionTpl + "Reload",
-      async (chooseDrugInfo: Record<number, { count: number; info: drugItem }>) => {
+      async (chooseDrugInfo: Record<number, { count: string; info: drugItem }>) => {
         let chooseDrugMapList: chooseDrug[] = []
-        let drugList: drugInfo[] = []
+        let drugList: { id: number; count: number; info: drugItem }[] = []
         for (let [_, v] of Object.entries(chooseDrugInfo)) {
-          drugList.push(v)
+          drugList.push({
+            id: v.info.id,
+            count: parseInt(v.count),
+            info: v.info,
+          })
         }
         chooseDrugMapList.push({
           id: this.state.categoryId,
@@ -156,9 +171,10 @@ export default class AddPrescriptionTpl extends Component<
       let {
         data: { detail: prescriptionTplDetail },
       } = await doctor.getPrescriptionTpl({ id })
-      let { chooseDrugMapList } = this.state
+      let chooseDrugMapList: chooseDrug[] = [],
+        chooseDrugInfo: Record<number, { count: string; info: drugItem }> = {}
       let drugList: drugInfo[] = []
-      for (let [_, v] of Object.entries(prescriptionTplDetail.drugList)) {
+      for (let v of prescriptionTplDetail.drugList) {
         drugList.push(v)
       }
       chooseDrugMapList.push({
@@ -166,6 +182,9 @@ export default class AddPrescriptionTpl extends Component<
         name: categoryName,
         drugList: drugList,
       })
+      for (let v of prescriptionTplDetail.drugList) {
+        chooseDrugInfo[v.id] = { count: v.count + "", info: v.info }
+      }
       this.setState({
         hasLoad: true,
         id,
@@ -173,7 +192,7 @@ export default class AddPrescriptionTpl extends Component<
         categoryId,
         categoryList,
         chooseDrugMapList,
-        chooseDrugInfo: prescriptionTplDetail.drugList,
+        chooseDrugInfo,
         prescriptionTplDetail,
       })
     } catch (err) {
@@ -205,12 +224,13 @@ export default class AddPrescriptionTpl extends Component<
         id: this.state.id,
         name: this.state.prescriptionTplDetail.name,
         advice: this.state.prescriptionTplDetail.advice,
-        drugList: this.state.chooseDrugInfo,
+        drugList: this.state.chooseDrugMapList[0].drugList,
       })
       Toast.success("修改成功", 1)
       DeviceEventEmitter.emit(pathMap.PrescriptionTplList + "Reload", null)
       this.props.navigation.goBack()
     } catch (err) {
+      console.log(err)
       Toast.fail("修改失败, 错误原因: " + err.msg, 3)
     }
   }

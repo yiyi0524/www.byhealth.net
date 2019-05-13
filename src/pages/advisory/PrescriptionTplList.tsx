@@ -29,7 +29,7 @@ interface PrescriptionTpl {
   name: string
   advice: string
   ctime: string
-  drugList: Record<number, { count: number; info: drugItem }>
+  drugList: { id: number; count: number; info: drugItem }[]
 }
 const mapStateToProps = (state: AppState) => {
   return {
@@ -117,9 +117,12 @@ export default class PrescriptionTplList extends Component<
       })
   }
   selectPrescriptionTpl = (prescription: PrescriptionTpl) => {
-    let chooseDrugInfo: Record<number, { count: number; info: drugItem }>[] = []
-    for (let [_, v] of Object.entries(prescription.drugList)) {
-      chooseDrugInfo.push(v)
+    let chooseDrugInfo: Record<number, { count: string; info: drugItem }> = []
+    for (let v of prescription.drugList) {
+      chooseDrugInfo[v.id] = {
+        count: v.count + "",
+        info: v.info,
+      }
     }
     DeviceEventEmitter.emit(pathMap.SquareRoot + "Reload", chooseDrugInfo)
     this.props.navigation.goBack()

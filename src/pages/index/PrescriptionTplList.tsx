@@ -40,7 +40,7 @@ interface PrescriptionTpl {
   name: string
   advice: string
   ctime: string
-  drugList: Record<number, { count: number; info: drugItem }>
+  drugList: { id: number; count: number; info: drugItem }[]
 }
 const mapStateToProps = (state: AppState) => {
   return {
@@ -196,7 +196,7 @@ export default class PrescriptionTplList extends Component<
             ) : null}
             {this.state.prescriptionTplList.map((prescription, k) => {
               let drugStr = ""
-              for (let [_, v] of Object.entries(prescription.drugList)) {
+              for (let v of prescription.drugList) {
                 drugStr += v.info.name + "、"
               }
               drugStr = drugStr.substr(0, drugStr.lastIndexOf("、"))
@@ -207,7 +207,7 @@ export default class PrescriptionTplList extends Component<
                   style={{ backgroundColor: "transparent" }}
                   right={[
                     {
-                      text: "查看",
+                      text: "编辑",
                       onPress: () => {
                         this.props.navigation.push(pathMap.EditPrescriptionTpl, {
                           id: prescription.id,
@@ -224,8 +224,8 @@ export default class PrescriptionTplList extends Component<
                       style: { backgroundColor: "red", color: "white" },
                     },
                   ]}
-                  onOpen={() => console.log("open")}
-                  onClose={() => console.log("close")}>
+                  onOpen={() => {}}
+                  onClose={() => {}}>
                   <View style={style.prescriptionItem}>
                     <View
                       style={[

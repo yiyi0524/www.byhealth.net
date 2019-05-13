@@ -633,53 +633,7 @@ export interface PrescriptionTpl {
  *    }
  *  }
  */
-export async function listPrescriptionTpl({ page, limit, filter }: GetListParam) {
-  return {
-    data: {
-      list: [
-        {
-          id: 1,
-          name: "模板咦",
-          ctime: "2019-04-12 19:00:00",
-          advice: "多喝水",
-          drugList: {
-            1: {
-              count: 3,
-              info: {
-                id: 2,
-                category: {
-                  id: 1,
-                  name: "内服",
-                },
-                manufacturer: "",
-                name: "buff药2",
-                price: 3,
-                signature: "",
-                standard: "",
-                unit: "g",
-              },
-            },
-            2: {
-              count: 4,
-              info: {
-                id: 1,
-                category: {
-                  id: 1,
-                  name: "内服",
-                },
-                manufacturer: "",
-                name: "buff药1",
-                price: 3,
-                signature: "",
-                standard: "",
-                unit: "g",
-              },
-            },
-          },
-        },
-      ],
-    },
-  }
+export function listPrescriptionTpl({ page, limit, filter }: GetListParam) {
   return bget<{ list: PrescriptionTpl[] }>({
     url: "api/listPrescriptionTpl",
     query: {
@@ -690,7 +644,7 @@ export async function listPrescriptionTpl({ page, limit, filter }: GetListParam)
   })
 }
 /**
- * todo获取开方模板详情
+ * 获取开方模板详情
  */
 export function getPrescriptionTpl({ id }: { id: number }) {
   return bget<{ detail: PrescriptionTpl }>({
@@ -701,7 +655,7 @@ export function getPrescriptionTpl({ id }: { id: number }) {
   })
 }
 /**
- * todo 添加开方模板
+ * 添加开方模板
  */
 export function addPrescriptionTpl(data: {
   categoryId: number
@@ -715,7 +669,7 @@ export function addPrescriptionTpl(data: {
   })
 }
 /**
- * todo 编辑开方模板详情
+ *  编辑开方模板
  */
 export function editPrescriptionTpl(data: {
   id: number
@@ -729,7 +683,7 @@ export function editPrescriptionTpl(data: {
   })
 }
 /**
- * todo 删除开方模板详情
+ * 删除开方模板
  */
 export function deletePrescriptionTpl(data: { id: number }) {
   return bpost({
