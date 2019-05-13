@@ -1,8 +1,8 @@
 export const BASE_URL = "https://www.byhealth.net"
 export const WSS_URL = "wss://www.byhealth.net/sw"
 export const customerServicePhone = "0523-86057008"
-export const customerServiceQq = "23455666777"
-export const customerServiceWeChat = "23455666777"
+export const customerServiceQq = "3441159716"
+export const customerServiceWeChat = "3441159716"
 export const registerAgreementHtml = `<div style="width:100%;">
 <div style="font-size:14px;"><strong>注册协议&nbsp;</strong></div> 
 
