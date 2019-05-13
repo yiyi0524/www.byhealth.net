@@ -399,7 +399,7 @@ export function idCardIDChecked(sId: string) {
 /**
  * 获取缩略图url
  */
-export function getThumbUrl({ path, width = 400 }: { width: number; path: string }) {
+export function getThumbUrl({ path, width = 400 }: { width?: number; path: string }) {
   // 如果不是我们服务器的图片就不转换,比如微信
   if (path.indexOf("http") === 0 && path.indexOf(BASE_URL) !== 0) {
     return path
