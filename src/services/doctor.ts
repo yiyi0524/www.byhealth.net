@@ -701,13 +701,13 @@ export function getPrescriptionTpl({ id }: { id: number }) {
   })
 }
 /**
- * todo 添加开方模板详情
+ * todo 添加开方模板
  */
 export function addPrescriptionTpl(data: {
   categoryId: number
   name: string
   advice: string
-  drugList: Record<number, { count: number; info: drugItem }>
+  drugList: { id: number; count: number; info: drugItem }[]
 }) {
   return bpost<{ detail: PrescriptionTpl }>({
     url: "api/addPrescriptionTpl",
@@ -721,7 +721,7 @@ export function editPrescriptionTpl(data: {
   id: number
   name: string
   advice: string
-  drugList: Record<number, { count: number; info: drugItem }>
+  drugList: { id: number; count: number; info: drugItem }[]
 }) {
   return bpost<{ detail: PrescriptionTpl }>({
     url: "api/editPrescriptionTpl",
