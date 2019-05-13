@@ -35,13 +35,19 @@ interface Props {
   navigation: NavigationScreenProp<State>
 }
 interface State {
+  // 是否为选择药房模式
   isSelectPharmacy: boolean
+  // 是否为选择药品模式
   isSelectDrug: boolean
   hasLoad: boolean
   refreshing: boolean
+  // 药品价格
   drugMoney: number
+  // 服务费
   serviceMoney: string
+  // 医生诊后管理费比率
   percentageOfCommission: number
+  // 患者信息
   patientInfo: {
     uid: number
     name: string
@@ -53,10 +59,10 @@ interface State {
   discrimination: string
   // 辩证
   syndromeDifferentiation: string
-  // 医嘱
-  advice: string
   // 实体医院病历id列表
   medicalRecordPicList: Picture[]
+  // 医嘱
+  advice: string
   // 药店
   pharmacy: {
     // 药品顶级分类列表
@@ -64,36 +70,36 @@ interface State {
     // 当前选中的id
     activeId: number
   }
-  // 选择的药品信息
-  chooseDrugInfo: Record<number, { count: number; info: drugItem }>
-  chooseDrugMapList: chooseDrug[]
+  prescriptionDrugCategoryList: PrescriptionDrugCategory[]
 }
-export interface chooseDrug {
+/**
+ * 处方中某个药品分类的药品集合
+ */
+export interface PrescriptionDrugCategory {
   id: number
   name: string
-  drugList: drugInfo[]
+  drugList: PrescriptionDrugInfo[]
 }
-export interface drugInfo {
-  count: number
-  info: drugItem
-}
-export interface activeDrugItem {
+/**
+ * 处方中某个药的信息
+ */
+export interface PrescriptionDrugInfo {
   id: number
   count: number
+  detail: Drug
 }
-export interface drugItem {
+/**
+ * 药品详情
+ */
+export interface Drug {
   id: number
-  category?: Category
   name: string
-  price: number
   unit: string
+  price: number
   standard: string
-  signature: string
   manufacturer: string
-}
-interface Category {
-  id: number
-  name: string
+  signature: string
+  ctime: string
 }
 const mapStateToProps = (state: AppState) => {
   return {
@@ -167,44 +173,17 @@ export default class SquareRoot extends Component<
       discrimination: "",
       syndromeDifferentiation: "",
       medicalRecordPicList: [],
-      chooseDrugInfo: [],
-      chooseDrugMapList: [],
       advice: "",
+      prescriptionDrugCategoryList: [],
     }
   }
   componentDidMount() {
     this.listener = DeviceEventEmitter.addListener(
       pathMap.SquareRoot + "Reload",
-      async chooseDrugInfo => {
-        let chooseDrugMapList: chooseDrug[] = []
-        for (let v of chooseDrugInfo) {
-          if (v) {
-            let isCategoryExist =
-              chooseDrugMapList.filter(v2 => v2.id === v.info.category.id).length > 0
-            if (!isCategoryExist) {
-              chooseDrugMapList.push({
-                id: v.info.category.id,
-                name: v.info.category.name,
-                drugList: [],
-              })
-            }
-          }
-        }
-        for (let v of chooseDrugInfo) {
-          if (v) {
-            for (let v1 of chooseDrugMapList) {
-              if (v1.id === v.info.category.id) {
-                v1.drugList.push({
-                  count: v.count,
-                  info: v.info,
-                })
-              }
-            }
-          }
-        }
+      (prescriptionDrugCategoryList: PrescriptionDrugCategory[]) => {
+        console.log(prescriptionDrugCategoryList)
         this.setState({
-          chooseDrugInfo,
-          chooseDrugMapList,
+          prescriptionDrugCategoryList,
         })
       },
     )
@@ -315,13 +294,17 @@ export default class SquareRoot extends Component<
         </View>
       )
     }
-    const { patientInfo } = this.state
+    const { patientInfo, prescriptionDrugCategoryList } = this.state
     let drugMoney = 0
-    Object.keys(this.state.chooseDrugInfo).map((drugIdStr, _) => {
-      let drugId: number = parseInt(drugIdStr),
-        list = this.state.chooseDrugInfo
-      drugMoney += (list[drugId].info.price / 1000) * list[drugId].count
-    })
+    for (let prescriptionDrugCategory of prescriptionDrugCategoryList) {
+      for (let prescriptionDrugInfo of prescriptionDrugCategory.drugList) {
+        let {
+          detail: { price },
+          count,
+        } = prescriptionDrugInfo
+        drugMoney += (price / 1000) * count
+      }
+    }
     let calcServiceMoney = ((drugMoney * this.state.percentageOfCommission) / 100).toFixed(2),
       actuallyServiceMoney =
         this.state.serviceMoney === ""
@@ -443,78 +426,11 @@ export default class SquareRoot extends Component<
               </View>
             </TouchableOpacity>
             <DashLine len={45} width={windowWidth - 46} backgroundColor={sColor.colorEee} />
-            {/*<View style={style.drugList}>
-               {Object.keys(this.state.chooseDrugInfo).map((drugIdStr, k) => {
-                let drugId: number = parseInt(drugIdStr),
-                  list = this.state.chooseDrugInfo
-                return (
-                  <View style={style.drugItem} key={k}>
-                    <View
-                      style={[
-                        global.flex,
-                        global.alignItemsCenter,
-                        global.justifyContentSpaceBetween,
-                      ]}>
-                      <View style={style.drugItemLeft}>
-                        <Text
-                          style={[style.drugItemLeftTitle, global.fontSize14]}
-                          numberOfLines={1}>
-                          {list[drugId].info.name || "未命名"}
-                        </Text>
-                        <Text
-                          style={[style.drugItemLeftDetail, global.fontSize12]}
-                          numberOfLines={1}>
-                          {list[drugId].info.standard || "暂无规格"}
-                        </Text>
-                        <Text
-                          style={[style.drugItemLeftDetail, global.fontSize12]}
-                          numberOfLines={1}>
-                          {list[drugId].info.manufacturer || "暂无厂商"}
-                        </Text>
-                      </View>
-                      <View style={style.drugItemRight}>
-                        <Text
-                          style={[style.drugItemLeftTitle, global.fontSize14]}
-                          numberOfLines={1}>
-                          {list[drugId].count}
-                          {list[drugId].info.unit}
-                        </Text>
-                        <Text
-                          style={[style.drugItemLeftDetail, global.fontSize12]}
-                          numberOfLines={1}>
-                          {((list[drugId].info.price / 1000) * list[drugId].count).toFixed(2)}元
-                        </Text>
-                      </View>
-                    </View>
-                    <View style={[style.usageDosage, global.flex, global.alignItemsCenter]}>
-                      <Text style={[style.diagnosisItemTitle, global.fontSize14]}>用法用量</Text>
-                      <View style={style.diagnosisItemInput}>
-                        <TextareaItem
-                          style={style.input}
-                          autoHeight
-                          value={list[drugId].info.signature}
-                          onChange={signature => {
-                            let chooseDrugInfoList = this.state.chooseDrugInfo
-                            if (signature || signature === "") {
-                              chooseDrugInfoList[drugId].info.signature = signature
-                            }
-                            this.setState({
-                              chooseDrugInfo: chooseDrugInfoList,
-                            })
-                          }}
-                          // onBlur={this.saveTemp}
-                        />
-                      </View>
-                    </View>
-                  </View>
-                )
-              })}
-              </View> */}
             <View style={style.chooseCategoryDrugList}>
-              {this.state.chooseDrugMapList.length === 0 ? (
+              {this.state.prescriptionDrugCategoryList.length === 0 ? (
                 <Text style={[style.empty, global.fontSize14]}>暂无</Text>
               ) : null}
-              {this.state.chooseDrugMapList.map((category, k) => {
+              {this.state.prescriptionDrugCategoryList.map((category, k) => {
                 if (category.id === 1 || category.id === 2) {
                   {
                     /* 中药 */
@@ -534,7 +450,7 @@ export default class SquareRoot extends Component<
                           global.alignItemsCenter,
                           global.flexWrap,
                         ]}>
-                        {category.drugList.map((drug, k1) => {
+                        {category.drugList.map((drugInfo, k1) => {
                           return (
                             <View
                               style={[style.chooseDrugItem, global.flex, global.alignItemsCenter]}
@@ -542,10 +458,10 @@ export default class SquareRoot extends Component<
                               <Text
                                 style={[style.chooseDrugTitle, global.fontSize14]}
                                 numberOfLines={1}>
-                                {drug.info.name}
+                                {drugInfo.detail.name}
                               </Text>
                               <Text style={[style.chooseDrugCount, global.fontSize14]}>
-                                {drug.count} {drug.info.unit}
+                                {drugInfo.count} {drugInfo.detail.unit}
                               </Text>
                             </View>
                           )
@@ -565,7 +481,7 @@ export default class SquareRoot extends Component<
                       key={k}>
                       <Text style={[style.drug, global.fontSize16]}>{category.name}</Text>
                       <View style={style.chooseDrugList}>
-                        {category.drugList.map((drug, k1) => {
+                        {category.drugList.map((drugInfo, k1) => {
                           return (
                             <View style={style.drugItem} key={k1}>
                               <View
@@ -578,30 +494,30 @@ export default class SquareRoot extends Component<
                                   <Text
                                     style={[style.drugItemLeftTitle, global.fontSize14]}
                                     numberOfLines={1}>
-                                    {drug.info.name || "未命名"}
+                                    {drugInfo.detail.name || "未命名"}
                                   </Text>
                                   <Text
                                     style={[style.drugItemLeftDetail, global.fontSize12]}
                                     numberOfLines={1}>
-                                    {drug.info.standard || "暂无规格"}
+                                    {drugInfo.detail.standard || "暂无规格"}
                                   </Text>
                                   <Text
                                     style={[style.drugItemLeftDetail, global.fontSize12]}
                                     numberOfLines={1}>
-                                    {drug.info.manufacturer || "暂无厂商"}
+                                    {drugInfo.detail.manufacturer || "暂无厂商"}
                                   </Text>
                                 </View>
                                 <View style={style.drugItemRight}>
                                   <Text
                                     style={[style.drugItemLeftTitle, global.fontSize14]}
                                     numberOfLines={1}>
-                                    {drug.count}
-                                    {drug.info.unit}
+                                    {drugInfo.count}
+                                    {drugInfo.detail.unit}
                                   </Text>
                                   <Text
                                     style={[style.drugItemLeftDetail, global.fontSize12]}
                                     numberOfLines={1}>
-                                    {((drug.info.price / 1000) * drug.count).toFixed(2)}元
+                                    {((drugInfo.detail.price / 1000) * drugInfo.count).toFixed(2)}元
                                   </Text>
                                 </View>
                               </View>
@@ -614,21 +530,14 @@ export default class SquareRoot extends Component<
                                   <TextareaItem
                                     style={style.input}
                                     autoHeight
-                                    value={drug.info.signature}
+                                    value={drugInfo.detail.signature}
                                     onChange={signature => {
-                                      let { chooseDrugMapList } = this.state
-                                      if (signature || signature === "") {
-                                        chooseDrugMapList[k].drugList[k1].info.signature = signature
-                                      }
+                                      let { prescriptionDrugCategoryList } = this.state
+                                      prescriptionDrugCategoryList[k].drugList[
+                                        k1
+                                      ].detail.signature = signature || ""
                                       this.setState({
-                                        chooseDrugMapList: chooseDrugMapList,
-                                      })
-                                      let chooseDrugInfoList = this.state.chooseDrugInfo
-                                      if (signature || signature === "") {
-                                        chooseDrugInfoList[drug.info.id].info.signature = signature
-                                      }
-                                      this.setState({
-                                        chooseDrugInfo: chooseDrugInfoList,
+                                        prescriptionDrugCategoryList,
                                       })
                                     }}
                                   />
@@ -726,7 +635,7 @@ export default class SquareRoot extends Component<
               <View style={style.percentageOfCommission}>
                 <InputItem
                   labelNumber={1}
-                  disabled={this.state.chooseDrugMapList.length === 0}
+                  disabled={this.state.prescriptionDrugCategoryList.length === 0}
                   style={style.percentageOfCommissionInput}
                   placeholder={this.state.serviceMoney === "" ? calcServiceMoney : "0.00"}
                   value={this.state.serviceMoney}
@@ -778,7 +687,7 @@ export default class SquareRoot extends Component<
             activeId={this.state.pharmacy.activeId}
             chooseCategory={this.chooseCategory}
             closeChooseCategory={this.closeChooseCategory}
-            chooseDrugInfo={this.state.chooseDrugInfo}
+            prescriptionDrugCategoryList={this.state.prescriptionDrugCategoryList}
           />
         </View>
       </>
@@ -794,6 +703,7 @@ export default class SquareRoot extends Component<
       syndromeDifferentiation,
       serviceMoney,
       patientInfo: { uid: patientUid },
+      prescriptionDrugCategoryList,
     } = this.state
     if (discrimination === "") {
       return Toast.info("请输入辨病", 3)
@@ -801,8 +711,14 @@ export default class SquareRoot extends Component<
     if (syndromeDifferentiation === "") {
       return Toast.info("请输入辨证", 3)
     }
-    if (Object.keys(this.state.chooseDrugInfo).length === 0) {
+    if (prescriptionDrugCategoryList.length === 0) {
       return Toast.info("请选择药材", 3)
+    }
+    let fmtDrugList: Record<number, { count: number; detail: Drug }> = {}
+    for (let category of prescriptionDrugCategoryList) {
+      for (let drugInfo of category.drugList) {
+        fmtDrugList[drugInfo.id] = drugInfo
+      }
     }
 
     let args: AddPrescriptionParam = {
@@ -810,7 +726,7 @@ export default class SquareRoot extends Component<
       discrimination,
       patientUid,
       syndromeDifferentiation,
-      drugList: this.state.chooseDrugInfo,
+      drugList: fmtDrugList,
     }
     if (serviceMoney !== "") {
       args.serviceMoney = parseFloat(serviceMoney) * 100

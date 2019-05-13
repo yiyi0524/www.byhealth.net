@@ -23,7 +23,7 @@ import { NavigationScreenProp } from "react-navigation"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
 import { CategoryItem } from "../advisory/DrugSelect"
-import { drugItem } from "../advisory/SquareRoot"
+import { drugItem } from "../advisory/SquareRootOld"
 import doctor from "@/services/doctor"
 const style = gStyle.index.AddPrescriptionTpl
 const global = gStyle.global

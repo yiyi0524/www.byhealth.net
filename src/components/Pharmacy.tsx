@@ -1,4 +1,5 @@
 import global from "@/assets/styles/global"
+import { PrescriptionDrugCategory } from "@/pages/advisory/SquareRoot"
 import pathMap from "@/routes/pathMap"
 import { windowHeight, windowWidth } from "@/services/api"
 import { Icon } from "@ant-design/react-native"
@@ -6,7 +7,6 @@ import sColor from "@styles/color"
 import React, { Component } from "react"
 import { PixelRatio, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native"
 import { NavigationScreenProp } from "react-navigation"
-import { drugItem } from "@/pages/advisory/SquareRoot"
 export interface CategoryItem {
   id: number
   name: string
@@ -15,7 +15,7 @@ interface Props {
   navigation: NavigationScreenProp<State>
   categoryList: CategoryItem[]
   activeId: number
-  chooseDrugInfo: Record<number, { count: number; info: drugItem }>
+  prescriptionDrugCategoryList: PrescriptionDrugCategory[]
   chooseCategory: (id: number) => void
   closeChooseCategory: () => void
 }
@@ -49,7 +49,7 @@ export default class Pharmacy extends Component<Props, State> {
                       await this.props.navigation.push(pathMap.DrugSelect, {
                         categoryList: this.props.categoryList,
                         activeId: this.props.activeId,
-                        chooseDrugInfo: this.props.chooseDrugInfo,
+                        prescriptionDrugCategoryList: this.props.prescriptionDrugCategoryList,
                       })
                       await this.props.closeChooseCategory()
                     }}>

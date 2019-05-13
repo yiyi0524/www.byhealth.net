@@ -24,7 +24,7 @@ import { NavigationScreenProp } from "react-navigation"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
 import { CategoryItem } from "../advisory/DrugSelect"
-import { drugItem } from "../advisory/SquareRoot"
+import { drugItem } from "../advisory/SquareRootOld"
 const style = gStyle.index.EditPrescriptionTpl
 const global = gStyle.global
 interface Props {

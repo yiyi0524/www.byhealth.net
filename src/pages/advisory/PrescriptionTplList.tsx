@@ -13,7 +13,7 @@ import { ScrollView, TouchableOpacity } from "react-native-gesture-handler"
 import { NavigationScreenProp } from "react-navigation"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
-import { drugItem } from "../advisory/SquareRoot"
+import { drugItem } from "./SquareRootOld"
 const style = gStyle.advisory.SelectPrescriptionTplList
 const global = gStyle.global
 interface Props {
@@ -117,7 +117,7 @@ export default class PrescriptionTplList extends Component<
       })
   }
   selectPrescriptionTpl = (prescription: PrescriptionTpl) => {
-    let chooseDrugInfo: Record<number, { count: string; info: drugItem }> = []
+    let chooseDrugInfo: Record<number, { count: string; info: drugItem }> = {}
     for (let v of prescription.drugList) {
       chooseDrugInfo[v.id] = {
         count: v.count + "",
@@ -153,7 +153,7 @@ export default class PrescriptionTplList extends Component<
             ) : null}
             {this.state.prescriptionTplList.map((prescription, k) => {
               let drugStr = ""
-              for (let [_, v] of Object.entries(prescription.drugList)) {
+              for (let [, v] of Object.entries(prescription.drugList)) {
                 drugStr += v.info.name + "、"
               }
               drugStr = drugStr.substr(0, drugStr.lastIndexOf("、"))

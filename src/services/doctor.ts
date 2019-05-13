@@ -3,7 +3,7 @@ import { patientGroupItem } from "@/pages/address_book/Group"
 import { patientItem } from "@/pages/address_book/GroupDetail"
 import { Picture } from "@/pages/advisory/Chat"
 import { ConsultationItem } from "@/pages/advisory/Index"
-import { drugItem } from "@/pages/advisory/SquareRoot"
+import { drugItem } from "@/pages/advisory/SquareRootOld"
 import { bget, bpost, GetListParam } from "./api"
 import { Drug } from "./patient"
 export const ALLOW_INQUIRY = {
@@ -372,7 +372,7 @@ export interface AddPrescriptionParam {
   serviceMoney?: number
   syndromeDifferentiation: string
   advice: string
-  drugList: Record<number, { count: number; info: drugItem }>
+  drugList: Record<number, { count: number; detail: drugItem }>
 }
 /**
  * 添加处方
@@ -627,7 +627,7 @@ export interface PrescriptionTpl {
 /**
  *  todo 获取处方模板列列表
  *  filter:{
- *    categoryId:{
+ *    categoryId:{,
  *      condiction:TYPE.eq,
  *      val:categoryId
  *    }

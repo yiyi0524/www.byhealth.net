@@ -21,7 +21,7 @@ import { ScrollView, TouchableOpacity } from "react-native-gesture-handler"
 import { NavigationScreenProp } from "react-navigation"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
-import { drugItem } from "../advisory/SquareRoot"
+import { drugItem } from "../advisory/SquareRootOld"
 import Empty from "@/components/Empty"
 const style = gStyle.index.PrescriptionTplList
 const global = gStyle.global
@@ -115,9 +115,12 @@ export default class PrescriptionTplList extends Component<
     }
   }
   componentDidMount() {
-    this.subscription = DeviceEventEmitter.addListener(pathMap.SittingHospital + "Reload", _ => {
-      this.init()
-    })
+    this.subscription = DeviceEventEmitter.addListener(
+      pathMap.PrescriptionTplList + "Reload",
+      _ => {
+        this.init()
+      },
+    )
     this.init()
   }
   componentWillUnmount() {
@@ -136,7 +139,7 @@ export default class PrescriptionTplList extends Component<
         limit: -1,
         filter: {
           categoryId: {
-            condiction: TYPE.eq,
+            condition: TYPE.eq,
             val: categoryId,
           },
         },
