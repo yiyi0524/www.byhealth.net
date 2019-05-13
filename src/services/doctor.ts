@@ -646,6 +646,10 @@ export async function listPrescriptionTpl({ page, limit, filter }: GetListParam)
               count: 3,
               info: {
                 id: 2,
+                category: {
+                  id: 1,
+                  name: "内服",
+                },
                 manufacturer: "",
                 name: "buff药2",
                 price: 3,
@@ -658,6 +662,10 @@ export async function listPrescriptionTpl({ page, limit, filter }: GetListParam)
               count: 4,
               info: {
                 id: 1,
+                category: {
+                  id: 1,
+                  name: "内服",
+                },
                 manufacturer: "",
                 name: "buff药1",
                 price: 3,

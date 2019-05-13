@@ -1,28 +1,19 @@
+import Empty from "@/components/Empty"
 import * as userAction from "@/redux/actions/user"
 import { AppState } from "@/redux/stores/store"
 import pathMap from "@/routes/pathMap"
 import doctor from "@/services/doctor"
-import { TYPE } from "@/utils/constant"
-import { Toast, SwipeAction } from "@ant-design/react-native"
+import { Toast } from "@ant-design/react-native"
 import sColor from "@styles/color"
 import gImg from "@utils/img"
 import gStyle from "@utils/style"
 import React, { Component } from "react"
-import {
-  DeviceEventEmitter,
-  EmitterSubscription,
-  Image,
-  PixelRatio,
-  RefreshControl,
-  Text,
-  View,
-} from "react-native"
+import { DeviceEventEmitter, Image, PixelRatio, RefreshControl, Text, View } from "react-native"
 import { ScrollView, TouchableOpacity } from "react-native-gesture-handler"
 import { NavigationScreenProp } from "react-navigation"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
 import { drugItem } from "../advisory/SquareRoot"
-import Empty from "@/components/Empty"
 const style = gStyle.advisory.SelectPrescriptionTplList
 const global = gStyle.global
 interface Props {
@@ -126,7 +117,12 @@ export default class PrescriptionTplList extends Component<
       })
   }
   selectPrescriptionTpl = (prescription: PrescriptionTpl) => {
-    console.log(prescription)
+    let chooseDrugInfo: Record<number, { count: number; info: drugItem }>[] = []
+    for (let [_, v] of Object.entries(prescription.drugList)) {
+      chooseDrugInfo.push(v)
+    }
+    DeviceEventEmitter.emit(pathMap.SquareRoot + "Reload", chooseDrugInfo)
+    this.props.navigation.goBack()
   }
   render() {
     if (!this.state.hasLoad) {

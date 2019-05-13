@@ -83,6 +83,7 @@ export interface activeDrugItem {
 }
 export interface drugItem {
   id: number
+  category?: Category
   name: string
   price: number
   unit: string
@@ -90,7 +91,10 @@ export interface drugItem {
   signature: string
   manufacturer: string
 }
-
+interface Category {
+  id: number
+  name: string
+}
 const mapStateToProps = (state: AppState) => {
   return {
     isLogin: state.user.isLogin,
@@ -172,6 +176,7 @@ export default class SquareRoot extends Component<
     this.listener = DeviceEventEmitter.addListener(
       pathMap.SquareRoot + "Reload",
       async chooseDrugInfo => {
+        console.log(chooseDrugInfo)
         let chooseDrugMapList: chooseDrug[] = []
         for (let v of chooseDrugInfo) {
           if (v) {
