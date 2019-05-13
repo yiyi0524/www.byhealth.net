@@ -616,6 +616,13 @@ export function getMyInvitePatientQrCode() {
     url: "api/getMyInvitePatientQrCode",
   })
 }
+export interface PrescriptionTpl {
+  id: number
+  name: string
+  ctime: string
+  advice: string
+  drugList: Record<number, { count: number; info: drugItem }>
+}
 /**
  *  todo 获取处方模板列列表
  *  filter:{
@@ -625,14 +632,45 @@ export function getMyInvitePatientQrCode() {
  *    }
  *  }
  */
-export interface PrescriptionTpl {
-  id: number
-  name: string
-  ctime: string
-  advice: string
-  drugList: Record<number, { count: number; info: drugItem }>
-}
-export function listPrescriptionTpl({ page, limit, filter }: GetListParam) {
+export async function listPrescriptionTpl({ page, limit, filter }: GetListParam) {
+  return {
+    data: {
+      list: [
+        {
+          id: 1,
+          name: "模板咦",
+          ctime: "2019-04-12 19:00:00",
+          advice: "多喝水",
+          drugList: {
+            1: {
+              count: 3,
+              info: {
+                id: 2,
+                manufacturer: "",
+                name: "buff药2",
+                price: 3,
+                signature: "",
+                standard: "",
+                unit: "g",
+              },
+            },
+            2: {
+              count: 4,
+              info: {
+                id: 1,
+                manufacturer: "",
+                name: "buff药1",
+                price: 3,
+                signature: "",
+                standard: "",
+                unit: "g",
+              },
+            },
+          },
+        },
+      ],
+    },
+  }
   return bget<{ list: PrescriptionTpl[] }>({
     url: "api/listPrescriptionTpl",
     query: {
@@ -681,8 +719,18 @@ export function editPrescriptionTpl(data: {
     data,
   })
 }
+/**
+ * todo 删除开方模板详情
+ */
+export function deletePrescriptionTpl(data: { id: number }) {
+  return bpost({
+    url: "api/deletePrescriptionTpl",
+    data,
+  })
+}
 
 export default {
+  deletePrescriptionTpl,
   getPrescriptionTpl,
   editPrescriptionTpl,
   addPrescriptionTpl,

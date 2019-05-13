@@ -218,4 +218,18 @@ export default StyleSheet.create({
   chooseDrugCount: {
     color: sColor.color333,
   },
+  prescriptionTpl: {
+    height: 45,
+  },
+  prescriptionTplTitle: {
+    color: sColor.color666,
+  },
+  prescriptionTplIcon: {
+    color: sColor.color888,
+  },
+  empty: {
+    color: sColor.color888,
+    textAlign: "center",
+    marginTop: 8,
+  },
 })

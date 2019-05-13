@@ -41,6 +41,7 @@ import PrescriptionTpl from "@/assets/styles/index/prescriptionTpl"
 import PrescriptionTplList from "@/assets/styles/index/prescriptionTplList"
 import AddPrescriptionTpl from "@/assets/styles/index/addPrescriptionTpl"
 import EditPrescriptionTpl from "@/assets/styles/index/editPrescriptionTpl"
+import SelectPrescriptionTplList from "@/assets/styles/advisory/prescriptionTplList"
 export default {
   home,
   global,
@@ -73,6 +74,7 @@ export default {
     SquareRootDetail,
     AdvisoryPatientDetail,
     QuickReply,
+    SelectPrescriptionTplList,
   },
   addressBook: {
     AddressBookIndex,

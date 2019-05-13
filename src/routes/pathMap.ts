@@ -43,4 +43,5 @@ export default {
   PrescriptionTplList: "PrescriptionTplList",
   AddPrescriptionTpl: "AddPrescriptionTpl",
   EditPrescriptionTpl: "EditPrescriptionTpl",
+  SelectPrescriptionTpl: "SelectPrescriptionTpl",
 }

@@ -425,6 +425,22 @@ export default class SquareRoot extends Component<
               <View style={style.titleSpot} />
             </View>
             <DashLine len={45} width={windowWidth - 46} backgroundColor={sColor.colorEee} />
+            <TouchableOpacity
+              onPress={() => {
+                this.props.navigation.push(pathMap.SelectPrescriptionTpl)
+              }}>
+              <View
+                style={[
+                  style.prescriptionTpl,
+                  global.flex,
+                  global.alignItemsCenter,
+                  global.justifyContentSpaceBetween,
+                ]}>
+                <Text style={[global.fontSize14, style.prescriptionTplTitle]}>使用模板开方</Text>
+                <Icon style={[style.prescriptionTplIcon, global.fontSize14]} name="right" />
+              </View>
+            </TouchableOpacity>
+            <DashLine len={45} width={windowWidth - 46} backgroundColor={sColor.colorEee} />
             {/*<View style={style.drugList}>
                {Object.keys(this.state.chooseDrugInfo).map((drugIdStr, k) => {
                 let drugId: number = parseInt(drugIdStr),
@@ -493,6 +509,9 @@ export default class SquareRoot extends Component<
               })}
               </View> */}
             <View style={style.chooseCategoryDrugList}>
+              {this.state.chooseDrugMapList.length === 0 ? (
+                <Text style={[style.empty, global.fontSize14]}>暂无</Text>
+              ) : null}
               {this.state.chooseDrugMapList.map((category, k) => {
                 if (category.id === 1 || category.id === 2) {
                   {

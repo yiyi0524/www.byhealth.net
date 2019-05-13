@@ -23,7 +23,7 @@ import { connect } from "react-redux"
 import { Dispatch } from "redux"
 import { drugItem } from "../advisory/SquareRoot"
 import Empty from "@/components/Empty"
-const style = gStyle.index.PrescriptionTplList
+const style = gStyle.advisory.SelectPrescriptionTplList
 const global = gStyle.global
 interface Props {
   navigation: NavigationScreenProp<State>
@@ -31,8 +31,6 @@ interface Props {
 interface State {
   hasLoad: boolean
   refreshing: boolean
-  categoryId: number
-  categoryName: string
   prescriptionTplList: PrescriptionTpl[]
 }
 interface PrescriptionTpl {
@@ -64,13 +62,9 @@ export default class PrescriptionTplList extends Component<
   Props & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
   State
 > {
-  static navigationOptions = ({ navigation }: { navigation: NavigationScreenProp<State> }) => {
-    let title = ""
-    if (navigation.state.params) {
-      title = navigation.state.params.title + "模板"
-    }
+  static navigationOptions = () => {
     return {
-      title,
+      title: "模板信息",
       headerStyle: {
         backgroundColor: sColor.white,
         height: 45,
@@ -86,20 +80,9 @@ export default class PrescriptionTplList extends Component<
         fontSize: 14,
         textAlign: "center",
       },
-      headerRight: (
-        <TouchableOpacity
-          onPress={() => {
-            navigation.push(pathMap.AddPrescriptionTpl, {
-              id: navigation.getParam("id"),
-              title: navigation.getParam("title"),
-            })
-          }}>
-          <Text style={[style.headerRight, global.fontSize14, global.fontStyle]}>新建</Text>
-        </TouchableOpacity>
-      ),
+      headerRight: <TouchableOpacity />,
     }
   }
-  subscription?: EmitterSubscription
   constructor(props: any) {
     super(props)
 
@@ -109,42 +92,23 @@ export default class PrescriptionTplList extends Component<
     return {
       hasLoad: false,
       refreshing: false,
-      categoryId: 0,
-      categoryName: "",
       prescriptionTplList: [],
     }
   }
   componentDidMount() {
-    this.subscription = DeviceEventEmitter.addListener(pathMap.SittingHospital + "Reload", _ => {
-      this.init()
-    })
     this.init()
-  }
-  componentWillUnmount() {
-    if (this.subscription) {
-      this.subscription.remove()
-    }
   }
   init = async () => {
     try {
-      let categoryId = this.props.navigation.getParam("id"),
-        categoryName = this.props.navigation.getParam("title")
       let {
         data: { list: prescriptionTplList },
       } = await doctor.listPrescriptionTpl({
         page: -1,
         limit: -1,
-        filter: {
-          categoryId: {
-            condiction: TYPE.eq,
-            val: categoryId,
-          },
-        },
+        filter: {},
       })
       this.setState({
         hasLoad: true,
-        categoryId,
-        categoryName,
         prescriptionTplList,
       })
     } catch (err) {
@@ -161,14 +125,8 @@ export default class PrescriptionTplList extends Component<
         Toast.fail("刷新失败,错误信息: " + err.msg)
       })
   }
-  deletePrescriptionTpl = async (id: number) => {
-    try {
-      await doctor.deletePrescriptionTpl({ id })
-      Toast.success("删除成功", 2)
-      DeviceEventEmitter.emit(pathMap.PrescriptionTplList + "Reload", null)
-    } catch (err) {
-      Toast.fail("删除失败, 错误信息: " + err.msg, 3)
-    }
+  selectPrescriptionTpl = (prescription: PrescriptionTpl) => {
+    console.log(prescription)
   }
   render() {
     if (!this.state.hasLoad) {
@@ -201,31 +159,7 @@ export default class PrescriptionTplList extends Component<
               }
               drugStr = drugStr.substr(0, drugStr.lastIndexOf("、"))
               return (
-                <SwipeAction
-                  key={k}
-                  autoClose
-                  style={{ backgroundColor: "transparent" }}
-                  right={[
-                    {
-                      text: "查看",
-                      onPress: () => {
-                        this.props.navigation.push(pathMap.EditPrescriptionTpl, {
-                          id: prescription.id,
-                          title: this.state.categoryName,
-                          categoryId: this.state.categoryId,
-                          categoryName: this.state.categoryName,
-                        })
-                      },
-                      style: { backgroundColor: "orange", color: "white" },
-                    },
-                    {
-                      text: "删除",
-                      onPress: () => this.deletePrescriptionTpl(prescription.id),
-                      style: { backgroundColor: "red", color: "white" },
-                    },
-                  ]}
-                  onOpen={() => console.log("open")}
-                  onClose={() => console.log("close")}>
+                <TouchableOpacity key={k} onPress={() => this.selectPrescriptionTpl(prescription)}>
                   <View style={style.prescriptionItem}>
                     <View
                       style={[
@@ -245,7 +179,7 @@ export default class PrescriptionTplList extends Component<
                       {drugStr}
                     </Text>
                   </View>
-                </SwipeAction>
+                </TouchableOpacity>
               )
             })}
           </View>
