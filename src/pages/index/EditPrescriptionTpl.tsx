@@ -1,31 +1,30 @@
+import DashLine from "@/components/DashLine"
 import * as userAction from "@/redux/actions/user"
 import { AppState } from "@/redux/stores/store"
-import { PrescriptionTpl } from "@/services/doctor"
-import { InputItem, Toast, Icon } from "@ant-design/react-native"
+import pathMap from "@/routes/pathMap"
+import { windowWidth } from "@/services/api"
+import doctor, { PrescriptionTpl } from "@/services/doctor"
+import hospital from "@/services/hospital"
+import { Icon, InputItem, Toast } from "@ant-design/react-native"
 import sColor from "@styles/color"
 import gImg from "@utils/img"
 import gStyle from "@utils/style"
 import React, { Component } from "react"
 import {
+  DeviceEventEmitter,
+  EmitterSubscription,
   Image,
   PixelRatio,
   RefreshControl,
   Text,
   View,
-  EmitterSubscription,
-  DeviceEventEmitter,
 } from "react-native"
 import { ScrollView, TouchableOpacity } from "react-native-gesture-handler"
 import { NavigationScreenProp } from "react-navigation"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
-import DashLine from "@/components/DashLine"
-import { windowWidth } from "@/services/api"
-import { chooseDrug, drugItem } from "../advisory/SquareRoot"
-import pathMap from "@/routes/pathMap"
 import { CategoryItem } from "../advisory/DrugSelect"
-import hospital from "@/services/hospital"
-import Empty from "@/components/Empty"
+import { chooseDrug, drugItem, drugInfo } from "../advisory/SquareRoot"
 const style = gStyle.index.EditPrescriptionTpl
 const global = gStyle.global
 interface Props {
@@ -34,7 +33,9 @@ interface Props {
 interface State {
   hasLoad: boolean
   refreshing: boolean
+  id: number
   categoryId: number
+  categoryName: string
   prescriptionTplDetail: PrescriptionTpl
   categoryList: CategoryItem[]
   chooseDrugInfo: Record<number, { count: number; info: drugItem }>
@@ -97,7 +98,9 @@ export default class AddPrescriptionTpl extends Component<
     return {
       hasLoad: false,
       refreshing: false,
+      id: 0,
       categoryId: 0,
+      categoryName: "",
       prescriptionTplDetail: {
         id: 0,
         name: "",
@@ -113,34 +116,17 @@ export default class AddPrescriptionTpl extends Component<
   componentDidMount() {
     this.listener = DeviceEventEmitter.addListener(
       pathMap.AddPrescriptionTpl + "Reload",
-      async chooseDrugInfo => {
-        console.log(chooseDrugInfo)
+      async (chooseDrugInfo: Record<number, { count: number; info: drugItem }>) => {
         let chooseDrugMapList: chooseDrug[] = []
-        for (let v of chooseDrugInfo) {
-          if (v) {
-            let isCategoryExist =
-              chooseDrugMapList.filter(v2 => v2.id === v.info.category.id).length > 0
-            if (!isCategoryExist) {
-              chooseDrugMapList.push({
-                id: v.info.category.id,
-                name: v.info.category.name,
-                drugList: [],
-              })
-            }
-          }
+        let drugList: drugInfo[] = []
+        for (let [_, v] of Object.entries(chooseDrugInfo)) {
+          drugList.push(v)
         }
-        for (let v of chooseDrugInfo) {
-          if (v) {
-            for (let v1 of chooseDrugMapList) {
-              if (v1.id === v.info.category.id) {
-                v1.drugList.push({
-                  count: v.count,
-                  info: v.info,
-                })
-              }
-            }
-          }
-        }
+        chooseDrugMapList.push({
+          id: this.state.categoryId,
+          name: this.state.categoryName,
+          drugList,
+        })
         this.setState({
           chooseDrugInfo,
           chooseDrugMapList,
@@ -164,11 +150,31 @@ export default class AddPrescriptionTpl extends Component<
         limit: -1,
         filter: {},
       })
-      let categoryId = this.props.navigation.getParam("id")
+      let id = this.props.navigation.getParam("id"),
+        categoryId = this.props.navigation.getParam("categoryId"),
+        categoryName = this.props.navigation.getParam("categoryName")
+      let {
+        data: { detail: prescriptionTplDetail },
+      } = await doctor.getPrescriptionTpl({ id })
+      let { chooseDrugMapList } = this.state
+      let drugList: drugInfo[] = []
+      for (let [_, v] of Object.entries(prescriptionTplDetail.drugList)) {
+        drugList.push(v)
+      }
+      chooseDrugMapList.push({
+        id: categoryId,
+        name: categoryName,
+        drugList: drugList,
+      })
       this.setState({
         hasLoad: true,
+        id,
+        categoryName,
         categoryId,
         categoryList,
+        chooseDrugMapList,
+        chooseDrugInfo: prescriptionTplDetail.drugList,
+        prescriptionTplDetail,
       })
     } catch (err) {
       console.log(err.msg)
@@ -184,12 +190,28 @@ export default class AddPrescriptionTpl extends Component<
         Toast.fail("刷新失败,错误信息: " + err.msg)
       })
   }
-  addPrescriptionTpl = () => {
+  editPrescriptionTpl = async () => {
     if (this.state.prescriptionTplDetail.name === "") {
       return Toast.info("请输入模板名称", 2)
     }
+    if (this.state.chooseDrugMapList.length === 0) {
+      return Toast.info("请选择药材", 2)
+    }
     if (this.state.prescriptionTplDetail.advice === "") {
-      return Toast.info("请输入模板名称", 2)
+      return Toast.info("请输入医嘱", 2)
+    }
+    try {
+      await doctor.editPrescriptionTpl({
+        id: this.state.id,
+        name: this.state.prescriptionTplDetail.name,
+        advice: this.state.prescriptionTplDetail.advice,
+        drugList: this.state.chooseDrugInfo,
+      })
+      Toast.success("修改成功", 1)
+      DeviceEventEmitter.emit(pathMap.PrescriptionTplList + "Reload", null)
+      this.props.navigation.goBack()
+    } catch (err) {
+      Toast.fail("修改失败, 错误原因: " + err.msg, 3)
     }
   }
   render() {
@@ -369,7 +391,7 @@ export default class AddPrescriptionTpl extends Component<
                 />
               </View>
             </View>
-            <TouchableOpacity onPress={this.addPrescriptionTpl}>
+            <TouchableOpacity onPress={this.editPrescriptionTpl}>
               <Text style={[style.addPrescriptionTplBtn, global.fontSize14]}>保存</Text>
             </TouchableOpacity>
           </View>

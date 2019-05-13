@@ -73,7 +73,7 @@ export interface chooseDrug {
   name: string
   drugList: drugInfo[]
 }
-interface drugInfo {
+export interface drugInfo {
   count: number
   info: drugItem
 }

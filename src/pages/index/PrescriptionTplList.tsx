@@ -1,7 +1,7 @@
 import * as userAction from "@/redux/actions/user"
 import { AppState } from "@/redux/stores/store"
 import pathMap from "@/routes/pathMap"
-import doctor, { PrescriptionTpl } from "@/services/doctor"
+import doctor from "@/services/doctor"
 import { TYPE } from "@/utils/constant"
 import { Toast } from "@ant-design/react-native"
 import sColor from "@styles/color"
@@ -21,6 +21,8 @@ import { ScrollView, TouchableOpacity } from "react-native-gesture-handler"
 import { NavigationScreenProp } from "react-navigation"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
+import { drugItem } from "../advisory/SquareRoot"
+import Empty from "@/components/Empty"
 const style = gStyle.index.PrescriptionTplList
 const global = gStyle.global
 interface Props {
@@ -32,6 +34,13 @@ interface State {
   categoryId: number
   categoryName: string
   prescriptionTplList: PrescriptionTpl[]
+}
+interface PrescriptionTpl {
+  id: number
+  name: string
+  advice: string
+  ctime: string
+  drugList: Record<number, { count: number; info: drugItem }>
 }
 const mapStateToProps = (state: AppState) => {
   return {
@@ -171,18 +180,25 @@ export default class PrescriptionTplList extends Component<
             <RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh} />
           }>
           <View style={style.prescriptionList}>
+            {this.state.prescriptionTplList.length === 0 ? (
+              <View>
+                <Empty />
+                <Text style={{ textAlign: "center", fontSize: 14, color: "#888" }}>暂无模板</Text>
+              </View>
+            ) : null}
             {this.state.prescriptionTplList.map((prescription, k) => {
-              let drug = ""
-              for (let v of prescription.drugList) {
-                drug += v.name + "、"
+              let drugStr = ""
+              for (let [_, v] of Object.entries(prescription.drugList)) {
+                drugStr += v.info.name + "、"
               }
-              drug = drug.substr(0, drug.lastIndexOf("、"))
+              drugStr = drugStr.substr(0, drugStr.lastIndexOf("、"))
               return (
                 <TouchableOpacity
                   key={k}
                   onPress={() =>
                     this.props.navigation.push(pathMap.EditPrescriptionTpl, {
                       id: prescription.id,
+                      title: this.state.categoryName,
                       categoryId: this.state.categoryId,
                       categoryName: this.state.categoryName,
                     })
@@ -203,7 +219,7 @@ export default class PrescriptionTplList extends Component<
                       </Text>
                     </View>
                     <Text style={[style.prescriptionDetail, global.fontSize14]} numberOfLines={1}>
-                      {drug}
+                      {drugStr}
                     </Text>
                   </View>
                 </TouchableOpacity>

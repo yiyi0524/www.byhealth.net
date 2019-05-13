@@ -1,31 +1,30 @@
+import DashLine from "@/components/DashLine"
 import * as userAction from "@/redux/actions/user"
 import { AppState } from "@/redux/stores/store"
-import { PrescriptionTpl } from "@/services/doctor"
-import { InputItem, Toast, Icon } from "@ant-design/react-native"
+import pathMap from "@/routes/pathMap"
+import { windowWidth } from "@/services/api"
+import hospital from "@/services/hospital"
+import { Icon, InputItem, Toast } from "@ant-design/react-native"
 import sColor from "@styles/color"
 import gImg from "@utils/img"
 import gStyle from "@utils/style"
 import React, { Component } from "react"
 import {
+  DeviceEventEmitter,
+  EmitterSubscription,
   Image,
   PixelRatio,
   RefreshControl,
   Text,
   View,
-  EmitterSubscription,
-  DeviceEventEmitter,
 } from "react-native"
 import { ScrollView, TouchableOpacity } from "react-native-gesture-handler"
 import { NavigationScreenProp } from "react-navigation"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
-import DashLine from "@/components/DashLine"
-import { windowWidth } from "@/services/api"
-import { chooseDrug, drugItem } from "../advisory/SquareRoot"
-import pathMap from "@/routes/pathMap"
 import { CategoryItem } from "../advisory/DrugSelect"
-import hospital from "@/services/hospital"
-import Empty from "@/components/Empty"
+import { chooseDrug, drugItem } from "../advisory/SquareRoot"
+import doctor from "@/services/doctor"
 const style = gStyle.index.AddPrescriptionTpl
 const global = gStyle.global
 interface Props {
@@ -180,7 +179,7 @@ export default class AddPrescriptionTpl extends Component<
         Toast.fail("刷新失败,错误信息: " + err.msg)
       })
   }
-  addPrescriptionTpl = () => {
+  addPrescriptionTpl = async () => {
     if (this.state.tplName === "") {
       return Toast.info("请输入模板名称", 2)
     }
@@ -190,12 +189,19 @@ export default class AddPrescriptionTpl extends Component<
     if (this.state.advice === "") {
       return Toast.info("请输入医嘱", 2)
     }
-    console.log({
-      categoryId: this.state.categoryId,
-      name: this.state.tplName,
-      advice: this.state.advice,
-      drugList: this.state.chooseDrugMapList,
-    })
+    try {
+      await doctor.addPrescriptionTpl({
+        categoryId: this.state.categoryId,
+        name: this.state.tplName,
+        advice: this.state.advice,
+        drugList: this.state.chooseDrugInfo,
+      })
+      Toast.success("添加成功", 2)
+      DeviceEventEmitter.emit(pathMap.PrescriptionTplList + "Reload", null)
+      this.props.navigation.goBack()
+    } catch (err) {
+      Toast.fail("添加失败, 错误信息:" + err.msg, 3)
+    }
   }
   render() {
     if (!this.state.hasLoad) {

@@ -630,101 +630,9 @@ export interface PrescriptionTpl {
   name: string
   ctime: string
   advice: string
-  drugList: PrescriptionTplDrugInfo[]
+  drugList: Record<number, { count: number; info: drugItem }>
 }
-interface PrescriptionTplDrugInfo {
-  id: number
-  count: number
-  name: string
-  price: number
-  unit: string
-  standard: string
-  signature: string
-  manufacturer: string
-}
-export async function listPrescriptionTpl({ page, limit, filter }: GetListParam) {
-  return {
-    data: {
-      list: [
-        {
-          id: 1,
-          name: "模板咦",
-          ctime: "2019-04-12 19:00:00",
-          advice: "多喝水",
-          drugList: [
-            {
-              id: 1,
-              count: 2,
-              name: "还钱1",
-              price: 1.5,
-              unit: "g",
-              standard: "",
-              signature: "",
-              manufacturer: "",
-            },
-            {
-              id: 2,
-              count: 4,
-              name: "还钱2",
-              price: 1.5,
-              unit: "g",
-              standard: "",
-              signature: "",
-              manufacturer: "",
-            },
-            {
-              id: 3,
-              count: 5,
-              name: "还钱3",
-              price: 1.5,
-              unit: "g",
-              standard: "",
-              signature: "",
-              manufacturer: "",
-            },
-          ],
-        },
-        {
-          id: 2,
-          name: "模板二",
-          ctime: "2019-04-12 19:00:00",
-          advice: "多喝水",
-          drugList: [
-            {
-              id: 1,
-              count: 2,
-              name: "还钱1",
-              price: 1.5,
-              unit: "g",
-              standard: "",
-              signature: "",
-              manufacturer: "",
-            },
-            {
-              id: 2,
-              count: 4,
-              name: "还钱2",
-              price: 1.5,
-              unit: "g",
-              standard: "",
-              signature: "",
-              manufacturer: "",
-            },
-            {
-              id: 3,
-              count: 5,
-              name: "还钱3",
-              price: 1.5,
-              unit: "g",
-              standard: "",
-              signature: "",
-              manufacturer: "",
-            },
-          ],
-        },
-      ],
-    },
-  }
+export function listPrescriptionTpl({ page, limit, filter }: GetListParam) {
   return bget<{ list: PrescriptionTpl[] }>({
     url: "api/listPrescriptionTpl",
     query: {
@@ -737,49 +645,7 @@ export async function listPrescriptionTpl({ page, limit, filter }: GetListParam)
 /**
  * todo获取开方模板详情
  */
-export async function getPrescriptionTpl({ id }: { id: number }) {
-  return {
-    data: {
-      detail: {
-        id: 1,
-        name: "模板咦",
-        ctime: "2019-04-12 19:00:00",
-        advice: "多喝水",
-        drugList: [
-          {
-            id: 1,
-            count: 2,
-            name: "还钱1",
-            price: 1.5,
-            unit: "g",
-            standard: "",
-            signature: "",
-            manufacturer: "",
-          },
-          {
-            id: 2,
-            count: 4,
-            name: "还钱2",
-            price: 1.5,
-            unit: "g",
-            standard: "",
-            signature: "",
-            manufacturer: "",
-          },
-          {
-            id: 3,
-            count: 5,
-            name: "还钱3",
-            price: 1.5,
-            unit: "g",
-            standard: "",
-            signature: "",
-            manufacturer: "",
-          },
-        ],
-      },
-    },
-  }
+export function getPrescriptionTpl({ id }: { id: number }) {
   return bget<{ detail: PrescriptionTpl }>({
     url: "api/getPrescriptionTpl",
     query: {
@@ -794,7 +660,7 @@ export function addPrescriptionTpl(data: {
   categoryId: number
   name: string
   advice: string
-  drugList: PrescriptionTplDrugInfo[]
+  drugList: Record<number, { count: number; info: drugItem }>
 }) {
   return bpost<{ detail: PrescriptionTpl }>({
     url: "api/addPrescriptionTpl",
@@ -808,7 +674,7 @@ export function editPrescriptionTpl(data: {
   id: number
   name: string
   advice: string
-  drugList: PrescriptionTplDrugInfo[]
+  drugList: Record<number, { count: number; info: drugItem }>
 }) {
   return bpost<{ detail: PrescriptionTpl }>({
     url: "api/editPrescriptionTpl",
@@ -817,6 +683,7 @@ export function editPrescriptionTpl(data: {
 }
 
 export default {
+  getPrescriptionTpl,
   editPrescriptionTpl,
   addPrescriptionTpl,
   listPrescriptionTpl,
