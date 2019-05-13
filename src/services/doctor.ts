@@ -618,10 +618,11 @@ export function getMyInvitePatientQrCode() {
 }
 export interface PrescriptionTpl {
   id: number
+  categoryId: number
   name: string
   ctime: string
   advice: string
-  drugList: Record<number, { count: number; info: drugItem }>
+  drugList: { id: number; count: number; info: drugItem }[]
 }
 /**
  *  todo 获取处方模板列列表
