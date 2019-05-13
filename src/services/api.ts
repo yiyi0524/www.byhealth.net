@@ -396,7 +396,14 @@ export function idCardIDChecked(sId: string) {
   if (iSum % 11 !== 1) return false
   return true
 }
+/**
+ * 获取缩略图url
+ */
+export function getThumbUrl(param: { width: number; path: string }) {
+  return BASE_URL + `/getThumb?path=${param.path}&width=${param.width}`
+}
 export default {
+  getThumbUrl,
   uploadImg,
   bget,
   bpost,
