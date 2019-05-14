@@ -200,14 +200,14 @@ export default class Register extends Component<
       })
   }
   submit = async () => {
+    if (this.state.cityId.length === 0) {
+      return Toast.fail("请选择地区", 2)
+    }
+    if (this.state.hospitalId === 0 && this.state.hospitalName === "") {
+      return Toast.fail("请选择医疗机构", 2)
+    }
     if (this.state.name === "") {
       return Toast.fail("请输入姓名", 2)
-    }
-    if (this.state.pwd === "") {
-      return Toast.fail("请输入密码", 2)
-    }
-    if (this.state.rePwd === "") {
-      return Toast.fail("请确认密码", 2)
     }
     if (this.state.phone === "") {
       return Toast.fail("请输入手机号码", 2)
@@ -221,11 +221,11 @@ export default class Register extends Component<
     if (this.state.verificationCode === "") {
       return Toast.fail("请输入验证码", 2)
     }
-    if (this.state.cityId.length === 0) {
-      return Toast.fail("请选择地区", 2)
+    if (this.state.pwd === "") {
+      return Toast.fail("请输入密码", 2)
     }
-    if (this.state.hospitalId === 0 && this.state.hospitalName === "") {
-      return Toast.fail("请选择医疗机构", 2)
+    if (this.state.rePwd === "") {
+      return Toast.fail("请确认密码", 2)
     }
     const param: registerParam = {
       smsUuid: this.state.verificationCodeUuid,
@@ -277,80 +277,6 @@ export default class Register extends Component<
               <Image style={style.logoImg} source={gImg.common.logo} />
             </View>
             <View style={style.form}>
-              <View style={style.formItem}>
-                <InputItem
-                  clear
-                  style={[style.input, global.fontStyle, global.fontSize14]}
-                  value={this.state.name}
-                  placeholder="姓名"
-                  onChange={name => {
-                    this.setState({ name })
-                  }}
-                />
-              </View>
-              <View style={style.formItem}>
-                <InputItem
-                  clear
-                  style={[style.input, global.fontStyle, global.fontSize14]}
-                  value={this.state.pwd}
-                  type="password"
-                  placeholder="密码"
-                  onChange={pwd => {
-                    this.setState({ pwd })
-                  }}
-                />
-              </View>
-              <View style={style.formItem}>
-                <InputItem
-                  clear
-                  style={[style.input, global.fontStyle, global.fontSize14]}
-                  value={this.state.rePwd}
-                  type="password"
-                  placeholder="确认密码"
-                  onChange={rePwd => {
-                    this.setState({ rePwd })
-                  }}
-                  onBlur={() => {
-                    if (this.state.pwd !== this.state.rePwd) {
-                      Toast.fail("两次密码不一致", 2)
-                      this.setState({
-                        rePwd: "",
-                      })
-                    }
-                  }}
-                />
-              </View>
-              <View style={style.formItem}>
-                <InputItem
-                  clear
-                  style={[style.input, global.fontStyle, global.fontSize14]}
-                  value={this.state.phone}
-                  placeholder="手机号码"
-                  type="number"
-                  onChange={phone => {
-                    this.setState({ phone })
-                  }}
-                />
-              </View>
-              <View style={style.formItem}>
-                <InputItem
-                  style={[style.input, global.fontStyle, global.fontSize14]}
-                  value={this.state.verificationCode}
-                  placeholder="验证码"
-                  onChange={verificationCode => {
-                    this.setState({ verificationCode })
-                  }}
-                />
-                <TouchableOpacity
-                  style={style.getVerificationCodeBtn}
-                  onPress={() => {
-                    this.sendVerificationCode()
-                  }}>
-                  <Text style={[style.verificationCode, global.fontStyle, global.fontSize14]}>
-                    {this.state.verificationCodeMsg}
-                  </Text>
-                </TouchableOpacity>
-              </View>
               <View
                 style={[
                   style.formItem,
@@ -406,6 +332,81 @@ export default class Register extends Component<
                   </Text>
                   <Icon name="right" style={[style.inputIcon, global.fontSize16]} />
                 </TouchableOpacity>
+              </View>
+
+              <View style={style.formItem}>
+                <InputItem
+                  clear
+                  style={[style.input, global.fontStyle, global.fontSize14]}
+                  value={this.state.name}
+                  placeholder="姓名"
+                  onChange={name => {
+                    this.setState({ name })
+                  }}
+                />
+              </View>
+              <View style={style.formItem}>
+                <InputItem
+                  clear
+                  style={[style.input, global.fontStyle, global.fontSize14]}
+                  value={this.state.phone}
+                  placeholder="手机号码"
+                  type="number"
+                  onChange={phone => {
+                    this.setState({ phone })
+                  }}
+                />
+              </View>
+              <View style={style.formItem}>
+                <InputItem
+                  style={[style.input, global.fontStyle, global.fontSize14]}
+                  value={this.state.verificationCode}
+                  placeholder="验证码"
+                  onChange={verificationCode => {
+                    this.setState({ verificationCode })
+                  }}
+                />
+                <TouchableOpacity
+                  style={style.getVerificationCodeBtn}
+                  onPress={() => {
+                    this.sendVerificationCode()
+                  }}>
+                  <Text style={[style.verificationCode, global.fontStyle, global.fontSize14]}>
+                    {this.state.verificationCodeMsg}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+              <View style={style.formItem}>
+                <InputItem
+                  clear
+                  style={[style.input, global.fontStyle, global.fontSize14]}
+                  value={this.state.pwd}
+                  type="password"
+                  placeholder="密码"
+                  onChange={pwd => {
+                    this.setState({ pwd })
+                  }}
+                />
+              </View>
+              <View style={style.formItem}>
+                <InputItem
+                  clear
+                  style={[style.input, global.fontStyle, global.fontSize14]}
+                  value={this.state.rePwd}
+                  type="password"
+                  placeholder="确认密码"
+                  onChange={rePwd => {
+                    this.setState({ rePwd })
+                  }}
+                  onBlur={() => {
+                    if (this.state.pwd !== this.state.rePwd) {
+                      Toast.fail("两次密码不一致", 2)
+                      this.setState({
+                        rePwd: "",
+                      })
+                    }
+                  }}
+                />
               </View>
             </View>
             <View style={[style.agreement, global.flex, global.alignItemsCenter]}>

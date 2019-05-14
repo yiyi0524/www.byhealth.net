@@ -296,7 +296,7 @@ export default class DiagnosisSettings extends Component<
                 </View>
               </View>
             </TouchableOpacity>
-            <View
+            {/* <View
               style={[
                 style.item,
                 global.flex,
@@ -336,6 +336,7 @@ export default class DiagnosisSettings extends Component<
                 <Icon style={[style.itemIcon, global.fontSize14]} name="right" />
               </View>
             </View>
+           */}
           </View>
         </ScrollView>
         {/* 选择复诊价格 */}

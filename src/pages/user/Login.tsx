@@ -152,6 +152,7 @@ export default class Login extends Component<
         })
       })
       .catch(err => {
+        console.log(err)
         Toast.fail("登录失败: " + err.msg, 2)
       })
   }

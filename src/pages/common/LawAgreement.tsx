@@ -8,7 +8,16 @@ import sColor from "@styles/color"
 import gImg from "@utils/img"
 import gStyle from "@utils/style"
 import React, { Component } from "react"
-import { Image, PixelRatio, RefreshControl, Text, TouchableOpacity, View } from "react-native"
+import {
+  Image,
+  PixelRatio,
+  RefreshControl,
+  Text,
+  TouchableOpacity,
+  View,
+  NativeEventSubscription,
+  BackHandler,
+} from "react-native"
 import { ScrollView } from "react-native-gesture-handler"
 import HTMLView from "react-native-htmlview"
 import { NavigationScreenProp } from "react-navigation"
@@ -82,6 +91,7 @@ export default class InvitePatients extends Component<
     ),
     headerRight: <Text />,
   })
+  loginStatus?: NativeEventSubscription
   constructor(props: any) {
     super(props)
     this.state = this.getInitState()
@@ -98,8 +108,19 @@ export default class InvitePatients extends Component<
     this.props.navigation.setParams({
       isLogin: this.state.isLogin,
     })
+    this.loginStatus = BackHandler.addEventListener("hardwareBackPress", this.addEventListenerBack)
   }
-
+  componentWillUnmount() {
+    if (this.loginStatus) {
+      this.loginStatus.remove()
+    }
+  }
+  addEventListenerBack = () => {
+    this.props.navigation.state.params!.isLogin
+      ? this.props.navigation.goBack()
+      : this.props.navigation.navigate(pathMap.Register)
+    return true
+  }
   init = async () => {
     try {
       let isLogin = await api.isLogin()
