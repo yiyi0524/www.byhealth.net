@@ -1175,7 +1175,7 @@ export default class RealNameAuth extends Component<
                 })
               }}>
               <Text style={[style.closeAdeptSymptom, global.fontStyle, global.fontSize14]}>
-                关闭
+                确定并关闭
               </Text>
             </TouchableOpacity>
             <ScrollView style={style.adeptSymptomContent}>
