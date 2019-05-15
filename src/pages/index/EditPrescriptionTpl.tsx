@@ -24,7 +24,7 @@ import { NavigationScreenProp } from "react-navigation"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
 import { CategoryItem } from "../advisory/DrugSelect"
-import { drugItem } from "../advisory/SquareRootOld"
+import { PrescriptionDrugCategory } from "../advisory/SquareRoot"
 const style = gStyle.index.EditPrescriptionTpl
 const global = gStyle.global
 interface Props {
@@ -36,20 +36,10 @@ interface State {
   id: number
   categoryId: number
   categoryName: string
-  prescriptionTplDetail: PrescriptionTpl
+  detail: PrescriptionTpl
   categoryList: CategoryItem[]
-  chooseDrugInfo: Record<number, { count: string; info: drugItem }>
-  chooseDrugMapList: chooseDrug[]
-}
-interface chooseDrug {
-  id: number
-  name: string
-  drugList: drugInfo[]
-}
-interface drugInfo {
-  id: number
-  count: number
-  info: drugItem
+  // chooseDrugInfo: Record<number, { count: string; info: drugItem }>
+  // chooseDrugMapList: chooseDrug[]
 }
 const mapStateToProps = (state: AppState) => {
   return {
@@ -69,7 +59,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
   mapStateToProps,
   mapDispatchToProps,
 )
-export default class AddPrescriptionTpl extends Component<
+export default class EditPrescriptionTpl extends Component<
   Props & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
   State
 > {
@@ -111,7 +101,7 @@ export default class AddPrescriptionTpl extends Component<
       id: 0,
       categoryId: 0,
       categoryName: "",
-      prescriptionTplDetail: {
+      detail: {
         id: 0,
         categoryId: 0,
         name: "",
@@ -119,32 +109,18 @@ export default class AddPrescriptionTpl extends Component<
         ctime: "",
         drugList: [],
       },
-      chooseDrugInfo: [],
-      chooseDrugMapList: [],
       categoryList: [],
     }
   }
   componentDidMount() {
     this.listener = DeviceEventEmitter.addListener(
-      pathMap.AddPrescriptionTpl + "Reload",
-      async (chooseDrugInfo: Record<number, { count: string; info: drugItem }>) => {
-        let chooseDrugMapList: chooseDrug[] = []
-        let drugList: { id: number; count: number; info: drugItem }[] = []
-        for (let [_, v] of Object.entries(chooseDrugInfo)) {
-          drugList.push({
-            id: v.info.id,
-            count: parseInt(v.count),
-            info: v.info,
-          })
-        }
-        chooseDrugMapList.push({
-          id: this.state.categoryId,
-          name: this.state.categoryName,
-          drugList,
-        })
+      pathMap.EditPrescriptionTpl + "Reload",
+      (prescriptionDrugCategoryList: PrescriptionDrugCategory[]) => {
+        console.log(prescriptionDrugCategoryList)
+        let { detail } = this.state
+        detail.drugList = prescriptionDrugCategoryList[0].drugList
         this.setState({
-          chooseDrugInfo,
-          chooseDrugMapList,
+          detail,
         })
       },
     )
@@ -169,31 +145,17 @@ export default class AddPrescriptionTpl extends Component<
         categoryId = this.props.navigation.getParam("categoryId"),
         categoryName = this.props.navigation.getParam("categoryName")
       let {
-        data: { detail: prescriptionTplDetail },
+        data: { detail },
       } = await doctor.getPrescriptionTpl({ id })
-      let chooseDrugMapList: chooseDrug[] = [],
-        chooseDrugInfo: Record<number, { count: string; info: drugItem }> = {}
-      let drugList: drugInfo[] = []
-      for (let v of prescriptionTplDetail.drugList) {
-        drugList.push(v)
-      }
-      chooseDrugMapList.push({
-        id: categoryId,
-        name: categoryName,
-        drugList: drugList,
-      })
-      for (let v of prescriptionTplDetail.drugList) {
-        chooseDrugInfo[v.id] = { count: v.count + "", info: v.info }
-      }
       this.setState({
         hasLoad: true,
         id,
         categoryName,
         categoryId,
         categoryList,
-        chooseDrugMapList,
-        chooseDrugInfo,
-        prescriptionTplDetail,
+        // chooseDrugMapList,
+        // chooseDrugInfo,
+        detail,
       })
     } catch (err) {
       console.log(err.msg)
@@ -210,21 +172,22 @@ export default class AddPrescriptionTpl extends Component<
       })
   }
   editPrescriptionTpl = async () => {
-    if (this.state.prescriptionTplDetail.name === "") {
+    const { advice, id, drugList, name } = this.state.detail
+    if (name === "") {
       return Toast.info("请输入模板名称", 2)
     }
-    if (this.state.chooseDrugMapList.length === 0) {
+    if (drugList.length === 0) {
       return Toast.info("请选择药材", 2)
     }
-    if (this.state.prescriptionTplDetail.advice === "") {
+    if (advice === "") {
       return Toast.info("请输入医嘱", 2)
     }
     try {
       await doctor.editPrescriptionTpl({
-        id: this.state.id,
-        name: this.state.prescriptionTplDetail.name,
-        advice: this.state.prescriptionTplDetail.advice,
-        drugList: this.state.chooseDrugMapList[0].drugList,
+        id,
+        name,
+        advice,
+        drugList,
       })
       Toast.success("修改成功", 1)
       DeviceEventEmitter.emit(pathMap.PrescriptionTplList + "Reload", null)
@@ -244,6 +207,7 @@ export default class AddPrescriptionTpl extends Component<
         </View>
       )
     }
+    const { categoryId, detail, categoryName, categoryList } = this.state
     return (
       <>
         <ScrollView
@@ -260,12 +224,12 @@ export default class AddPrescriptionTpl extends Component<
                   style={style.input}
                   placeholder="请输入模板名称"
                   clear
-                  value={this.state.prescriptionTplDetail.name}
+                  value={this.state.detail.name}
                   onChange={val => {
-                    let { prescriptionTplDetail } = this.state
-                    prescriptionTplDetail.name = val
+                    let { detail } = this.state
+                    detail.name = val
                     this.setState({
-                      prescriptionTplDetail,
+                      detail,
                     })
                   }}
                 />
@@ -284,107 +248,86 @@ export default class AddPrescriptionTpl extends Component<
                 <View style={style.spot} />
               </View>
               <DashLine width={windowWidth - 30} backgroundColor={"#ddd"} len={45} />
-
-              {this.state.chooseDrugMapList.map((category, k) => {
-                if (category.id === 1 || category.id === 2) {
-                  {
-                    /* 中药 */
-                  }
-                  return (
-                    <View style={style.drugCategoryItem} key={k}>
-                      <Text style={[style.drugCategoryName, global.fontSize15]}>
-                        {category.name}
-                      </Text>
-                      <View
-                        style={[
-                          style.drugList,
-                          global.flex,
-                          global.alignItemsCenter,
-                          global.flexWrap,
-                        ]}>
-                        {category.drugList.map((drug, k1) => {
-                          return (
-                            <Text
-                              key={k1}
-                              style={[
-                                style.drugName,
-                                global.fontSize14,
-                                style.traditionalChineseMedicine,
-                              ]}>
-                              {drug.info.name} {drug.count} {drug.info.unit}
-                            </Text>
-                          )
-                        })}
-                      </View>
-                    </View>
-                  )
-                } else {
-                  {
-                    /* 西药 */
-                  }
-                  return (
-                    <View style={style.drugCategoryItem}>
-                      <Text style={[style.drugCategoryName, global.fontSize15]}>
-                        {category.name}
-                      </Text>
-                      <View style={style.drugList}>
-                        {category.drugList.map((drug, k1) => {
-                          return (
-                            <View style={style.drugItem} key={k1}>
-                              <View
+              {categoryId === 1 || categoryId === 2 ? (
+                <View style={style.drugCategoryItem}>
+                  <Text style={[style.drugCategoryName, global.fontSize15]}>{categoryName}</Text>
+                  <View
+                    style={[style.drugList, global.flex, global.alignItemsCenter, global.flexWrap]}>
+                    {detail.drugList.map((drugInfo, k) => {
+                      return (
+                        <Text
+                          key={k}
+                          style={[
+                            style.drugName,
+                            global.fontSize14,
+                            style.traditionalChineseMedicine,
+                          ]}>
+                          {drugInfo.detail.name} {drugInfo.count} {drugInfo.detail.unit}
+                        </Text>
+                      )
+                    })}
+                  </View>
+                </View>
+              ) : (
+                /* 西药 */
+                <View style={style.drugCategoryItem}>
+                  <Text style={[style.drugCategoryName, global.fontSize15]}>{categoryName}</Text>
+                  <View style={style.drugList}>
+                    {detail.drugList.map((drugInfo, k) => {
+                      return (
+                        <View style={style.drugItem} key={k}>
+                          <View
+                            style={[
+                              global.flex,
+                              global.alignItemsCenter,
+                              global.justifyContentSpaceBetween,
+                            ]}>
+                            <View style={style.drugItemLeft}>
+                              <Text
                                 style={[
-                                  global.flex,
-                                  global.alignItemsCenter,
-                                  global.justifyContentSpaceBetween,
+                                  style.drugTitle,
+                                  style.drugMarginBottom,
+                                  global.fontSize14,
                                 ]}>
-                                <View style={style.drugItemLeft}>
-                                  <Text
-                                    style={[
-                                      style.drugTitle,
-                                      style.drugMarginBottom,
-                                      global.fontSize14,
-                                    ]}>
-                                    {drug.info.name}
-                                  </Text>
-                                  <Text
-                                    style={[
-                                      style.drugName,
-                                      style.drugMarginBottom,
-                                      global.fontSize12,
-                                    ]}>
-                                    {drug.info.standard || "暂无规格"}
-                                  </Text>
-                                </View>
-                                <View style={style.drugItemRight}>
-                                  <Text style={[style.drugItemRightTitle, global.fontSize14]}>
-                                    {drug.count}
-                                    {drug.info.unit}
-                                  </Text>
-                                  <Text style={[style.drugItemRightTitle, global.fontSize14]}>
-                                    {drug.info.price / 1000} 元
-                                  </Text>
-                                </View>
-                              </View>
-                              <Text style={[style.drugName, global.fontSize12]}>
-                                {drug.info.manufacturer || "暂无厂商信息"}
+                                {drugInfo.detail.name}
+                              </Text>
+                              <Text
+                                style={[style.drugName, style.drugMarginBottom, global.fontSize12]}>
+                                {drugInfo.detail.standard || "暂无规格"}
                               </Text>
                             </View>
-                          )
-                        })}
-                      </View>
-                    </View>
-                  )
-                }
-              })}
-              {this.state.chooseDrugMapList.length === 0 ? (
-                <Text style={style.empty}>暂无</Text>
-              ) : null}
+                            <View style={style.drugItemRight}>
+                              <Text style={[style.drugItemRightTitle, global.fontSize14]}>
+                                {drugInfo.count}
+                                {drugInfo.detail.unit}
+                              </Text>
+                              <Text style={[style.drugItemRightTitle, global.fontSize14]}>
+                                {drugInfo.detail.price / 1000} 元
+                              </Text>
+                            </View>
+                          </View>
+                          <Text style={[style.drugName, global.fontSize12]}>
+                            {drugInfo.detail.manufacturer || "暂无厂商信息"}
+                          </Text>
+                        </View>
+                      )
+                    })}
+                  </View>
+                </View>
+              )}
+              {detail.drugList.length === 0 ? <Text style={style.empty}>暂无</Text> : null}
               <TouchableOpacity
                 onPress={() => {
                   this.props.navigation.push(pathMap.DrugSelect, {
-                    categoryList: this.state.categoryList,
-                    activeId: this.state.categoryId,
-                    chooseDrugInfo: this.state.chooseDrugInfo,
+                    categoryList,
+                    activeId: categoryId,
+                    prescriptionDrugCategoryList: [
+                      {
+                        id: categoryId,
+                        name: categoryName,
+                        drugList: detail.drugList,
+                      },
+                    ],
                   })
                 }}>
                 <View style={[global.flex, global.alignItemsCenter]}>
@@ -400,12 +343,12 @@ export default class AddPrescriptionTpl extends Component<
                   style={style.input}
                   placeholder="请输入医嘱"
                   clear
-                  value={this.state.prescriptionTplDetail.advice}
+                  value={this.state.detail.advice}
                   onChange={val => {
-                    let { prescriptionTplDetail } = this.state
-                    prescriptionTplDetail.advice = val
+                    let { detail } = this.state
+                    detail.advice = val
                     this.setState({
-                      prescriptionTplDetail,
+                      detail,
                     })
                   }}
                 />

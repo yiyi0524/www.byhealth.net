@@ -6,6 +6,7 @@
     "start": "node node_modules/react-native/local-cli/cli.js start",
     "test": "jest",
     "link": "react-native link",
+    "adb": "adb shell input keyevent 82",
     "android": "react-native run-android",
     "build-android": "cd android && ./gradlew assembleRelease",
     "pushy-bundle-android": "pushy bundle --platform android --entryFile index.tsx",

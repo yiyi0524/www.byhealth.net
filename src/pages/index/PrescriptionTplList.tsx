@@ -1,7 +1,7 @@
 import * as userAction from "@/redux/actions/user"
 import { AppState } from "@/redux/stores/store"
 import pathMap from "@/routes/pathMap"
-import doctor from "@/services/doctor"
+import doctor, { PrescriptionTpl } from "@/services/doctor"
 import { TYPE } from "@/utils/constant"
 import { Toast, SwipeAction } from "@ant-design/react-native"
 import sColor from "@styles/color"
@@ -21,7 +21,7 @@ import { ScrollView, TouchableOpacity } from "react-native-gesture-handler"
 import { NavigationScreenProp } from "react-navigation"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
-import { drugItem } from "../advisory/SquareRootOld"
+import { PrescriptionDrugInfo } from "../advisory/SquareRoot"
 import Empty from "@/components/Empty"
 const style = gStyle.index.PrescriptionTplList
 const global = gStyle.global
@@ -34,13 +34,6 @@ interface State {
   categoryId: number
   categoryName: string
   prescriptionTplList: PrescriptionTpl[]
-}
-interface PrescriptionTpl {
-  id: number
-  name: string
-  advice: string
-  ctime: string
-  drugList: { id: number; count: number; info: drugItem }[]
 }
 const mapStateToProps = (state: AppState) => {
   return {
@@ -200,7 +193,7 @@ export default class PrescriptionTplList extends Component<
             {this.state.prescriptionTplList.map((prescription, k) => {
               let drugStr = ""
               for (let v of prescription.drugList) {
-                drugStr += v.info.name + "、"
+                drugStr += v.detail.name + "、"
               }
               drugStr = drugStr.substr(0, drugStr.lastIndexOf("、"))
               return (

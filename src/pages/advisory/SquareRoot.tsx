@@ -726,7 +726,7 @@ export default class SquareRoot extends Component<
       discrimination,
       patientUid,
       syndromeDifferentiation,
-      drugList: fmtDrugList,
+      drugCategoryList: prescriptionDrugCategoryList,
     }
     if (serviceMoney !== "") {
       args.serviceMoney = parseFloat(serviceMoney) * 100

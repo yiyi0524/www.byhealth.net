@@ -13,7 +13,10 @@ import { ScrollView, TouchableOpacity } from "react-native-gesture-handler"
 import { NavigationScreenProp } from "react-navigation"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
-import { drugItem } from "./SquareRootOld"
+import { PrescriptionDrugInfo } from "./SquareRoot"
+import { PrescriptionDrugCategory } from "./SquareRoot"
+import { getDrugCategoryList } from "@/services/hospital"
+import { CategoryItem } from "./DrugSelect"
 const style = gStyle.advisory.SelectPrescriptionTplList
 const global = gStyle.global
 interface Props {
@@ -22,6 +25,7 @@ interface Props {
 interface State {
   hasLoad: boolean
   refreshing: boolean
+  categoryList: CategoryItem[]
   prescriptionTplList: PrescriptionTpl[]
 }
 interface PrescriptionTpl {
@@ -29,7 +33,8 @@ interface PrescriptionTpl {
   name: string
   advice: string
   ctime: string
-  drugList: { id: number; count: number; info: drugItem }[]
+  categoryId: number
+  drugList: PrescriptionDrugInfo[]
 }
 const mapStateToProps = (state: AppState) => {
   return {
@@ -83,6 +88,7 @@ export default class PrescriptionTplList extends Component<
     return {
       hasLoad: false,
       refreshing: false,
+      categoryList: [],
       prescriptionTplList: [],
     }
   }
@@ -98,8 +104,17 @@ export default class PrescriptionTplList extends Component<
         limit: -1,
         filter: {},
       })
+      let {
+        data: { list: categoryList },
+      } = await getDrugCategoryList({
+        page: -1,
+        limit: -1,
+        filter: {},
+      })
+      console.log(prescriptionTplList)
       this.setState({
         hasLoad: true,
+        categoryList,
         prescriptionTplList,
       })
     } catch (err) {
@@ -108,7 +123,7 @@ export default class PrescriptionTplList extends Component<
   }
   onRefresh = () => {
     this.setState({ refreshing: true })
-    Promise.all([this.init(), new Promise(s => setTimeout(s, 500))])
+    Promise.all([this.init(), new Promise(s => setTimeout(s, 170))])
       .then(_ => {
         this.setState({ refreshing: false })
       })
@@ -117,14 +132,31 @@ export default class PrescriptionTplList extends Component<
       })
   }
   selectPrescriptionTpl = (prescription: PrescriptionTpl) => {
-    let chooseDrugInfo: Record<number, { count: string; info: drugItem }> = {}
-    for (let v of prescription.drugList) {
-      chooseDrugInfo[v.id] = {
-        count: v.count + "",
-        info: v.info,
+    let prescriptionDrugCategoryList: PrescriptionDrugCategory[] = []
+    let isCategoryExist = false
+    for (let category of prescriptionDrugCategoryList) {
+      if (category.id === prescription.categoryId) {
+        isCategoryExist = true
+        let currSelectDrugIds: number[] = []
+        for (let drugInfo of category.drugList) {
+          currSelectDrugIds.push(drugInfo.id)
+        }
+        console.log(currSelectDrugIds, prescription.drugList)
+        prescription.drugList = prescription.drugList.filter(v => !currSelectDrugIds.includes(v.id))
+        console.log(prescription.drugList)
+        for (let drugInfo of prescription.drugList) {
+          category.drugList.push(drugInfo)
+        }
       }
     }
-    DeviceEventEmitter.emit(pathMap.SquareRoot + "Reload", chooseDrugInfo)
+    if (!isCategoryExist) {
+      prescriptionDrugCategoryList.push({
+        id: prescription.categoryId,
+        name: this.state.categoryList.filter(v => v.id === prescription.categoryId)[0].name,
+        drugList: prescription.drugList,
+      })
+    }
+    DeviceEventEmitter.emit(pathMap.SquareRoot + "Reload", prescriptionDrugCategoryList)
     this.props.navigation.goBack()
   }
   render() {
@@ -153,8 +185,8 @@ export default class PrescriptionTplList extends Component<
             ) : null}
             {this.state.prescriptionTplList.map((prescription, k) => {
               let drugStr = ""
-              for (let [, v] of Object.entries(prescription.drugList)) {
-                drugStr += v.info.name + "、"
+              for (let drugInfo of prescription.drugList) {
+                drugStr += drugInfo.detail.name + "、"
               }
               drugStr = drugStr.substr(0, drugStr.lastIndexOf("、"))
               return (

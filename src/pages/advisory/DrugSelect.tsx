@@ -122,6 +122,10 @@ export default class Pharmacy extends Component<Props, State> {
               pathMap.AddPrescriptionTpl + "Reload",
               prescriptionDrugCategoryList,
             )
+            DeviceEventEmitter.emit(
+              pathMap.EditPrescriptionTpl + "Reload",
+              prescriptionDrugCategoryList,
+            )
             navigation.goBack()
           }}>
           <Text style={[global.fontSize16, { color: sColor.mainRed, paddingRight: 15 }]}>完成</Text>
@@ -222,6 +226,7 @@ export default class Pharmacy extends Component<Props, State> {
         </View>
       )
     }
+    console.log(this.state)
     return (
       <ScrollView
         keyboardShouldPersistTaps="always"

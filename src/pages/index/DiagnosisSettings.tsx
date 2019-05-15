@@ -1,17 +1,17 @@
 import * as userAction from "@/redux/actions/user"
 import { AppState } from "@/redux/stores/store"
+import pathMap from "@/routes/pathMap"
 import doctor, { ALLOW_INQUIRY } from "@/services/doctor"
-import { Icon, Switch, Toast, InputItem } from "@ant-design/react-native"
+import { Icon, Switch, Toast } from "@ant-design/react-native"
 import sColor from "@styles/color"
 import gImg from "@utils/img"
 import gStyle from "@utils/style"
 import React, { Component } from "react"
-import { Image, PixelRatio, RefreshControl, Text, View, DeviceEventEmitter } from "react-native"
+import { DeviceEventEmitter, Image, PixelRatio, RefreshControl, Text, View } from "react-native"
 import { ScrollView, TouchableOpacity } from "react-native-gesture-handler"
 import { NavigationScreenProp } from "react-navigation"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
-import pathMap from "@/routes/pathMap"
 const style = gStyle.index.DiagnosisSettings
 const global = gStyle.global
 

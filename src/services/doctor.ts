@@ -3,9 +3,8 @@ import { patientGroupItem } from "@/pages/address_book/Group"
 import { patientItem } from "@/pages/address_book/GroupDetail"
 import { Picture } from "@/pages/advisory/Chat"
 import { ConsultationItem } from "@/pages/advisory/Index"
-import { drugItem } from "@/pages/advisory/SquareRootOld"
 import { bget, bpost, GetListParam } from "./api"
-import { Drug } from "./patient"
+import { Drug, PrescriptionDrugInfo, PrescriptionDrugCategory } from "@/pages/advisory/SquareRoot"
 export const ALLOW_INQUIRY = {
   FALSE: 0x0,
   TRUE: 0x1,
@@ -357,22 +356,22 @@ export async function getPrescriptionDetail({ prescriptionId }: { prescriptionId
 /**
  * 数据库保存的药品信息
  */
-export interface DbSaveDrugInfo {
-  id: number
-  count: number
-  usage: string
-}
-export interface PrescriptionDrugCategory {
-  category_id: number
-  drug_list: DbSaveDrugInfo[]
-}
+// export interface DbSaveDrugInfo {
+//   id: number
+//   count: number
+//   usage: string
+// }
+// export interface PrescriptionDrugCategory {
+//   category_id: number
+//   drug_list: DbSaveDrugInfo[]
+// }
 export interface AddPrescriptionParam {
   patientUid: number
   discrimination: string
   serviceMoney?: number
   syndromeDifferentiation: string
   advice: string
-  drugList: Record<number, { count: number; detail: drugItem }>
+  drugCategoryList: PrescriptionDrugCategory[]
 }
 /**
  * 添加处方
@@ -622,7 +621,7 @@ export interface PrescriptionTpl {
   name: string
   ctime: string
   advice: string
-  drugList: { id: number; count: number; info: drugItem }[]
+  drugList: PrescriptionDrugInfo[]
 }
 /**
  *  todo 获取处方模板列列表
@@ -661,7 +660,7 @@ export function addPrescriptionTpl(data: {
   categoryId: number
   name: string
   advice: string
-  drugList: { id: number; count: number; info: drugItem }[]
+  drugList: PrescriptionDrugInfo[]
 }) {
   return bpost<{ detail: PrescriptionTpl }>({
     url: "api/addPrescriptionTpl",
@@ -675,7 +674,7 @@ export function editPrescriptionTpl(data: {
   id: number
   name: string
   advice: string
-  drugList: { id: number; count: number; info: drugItem }[]
+  drugList: PrescriptionDrugInfo[]
 }) {
   return bpost<{ detail: PrescriptionTpl }>({
     url: "api/editPrescriptionTpl",
