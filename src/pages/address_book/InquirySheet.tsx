@@ -91,7 +91,10 @@ export default class InquirySheet extends Component<
         allergyHistory: "", //过敏史
         medicalHistory: "", //病史
         state: "", //用户情况,症状与病情
-        lingualSurfacePicList: [], //舌面照
+        hospitalMedicalRecordPicList: [], //实体医疗机构病历列表
+        tonguePicList: [], //舌照面
+        infectedPartPicList: [], //患部
+        facePicList: [], //面部
         dialoguePicList: [], //对话照片
         problems: {
           type: 0,
@@ -109,7 +112,6 @@ export default class InquirySheet extends Component<
         patientUid: this.state.patientUid,
         consultationId: this.state.consultationId,
       })
-      console.log(detail)
       let {
         data: { region },
       } = await api.getRegion()
@@ -188,11 +190,11 @@ export default class InquirySheet extends Component<
               <Text style={[style.patientInfoDetail, global.fontSize14]}>{detail.state}</Text>
             </View>
           </View>
-          {/* <View style={style.patientPic}>
-            <Text style={[style.patientPicTitle, global.fontSize14]}>舌面照及其他资料</Text>
+          <View style={style.patientPic}>
+            <Text style={[style.patientPicTitle, global.fontSize14]}>实体医疗机构照片</Text>
             <View
               style={[style.patientPicList, global.flex, global.alignItemsCenter, global.flexWrap]}>
-              {detail.lingualSurfacePicList.map(v => {
+              {detail.hospitalMedicalRecordPicList.map(v => {
                 return (
                   <TouchableOpacity
                     key={v.id}
@@ -206,8 +208,64 @@ export default class InquirySheet extends Component<
                   </TouchableOpacity>
                 )
               })}
+              {detail.hospitalMedicalRecordPicList.length === 0 ? (
+                <Text style={{ fontSize: 14, color: "#666" }}>暂无</Text>
+              ) : null}
             </View>
-          </View> */}
+          </View>
+          <View style={style.patientPic}>
+            <Text style={[style.patientPicTitle, global.fontSize14]}>舌面照及其他资料</Text>
+            <View
+              style={[style.patientPicList, global.flex, global.alignItemsCenter, global.flexWrap]}>
+              {detail.tonguePicList.map(v => {
+                return (
+                  <TouchableOpacity
+                    key={v.id}
+                    onPress={() => {
+                      this.showImg(v.url)
+                    }}>
+                    <Image
+                      style={style.patientImg}
+                      source={v.url ? { uri: getPicFullUrl(v.url) } : gImg.common.defaultPic}
+                    />
+                  </TouchableOpacity>
+                )
+              })}
+              {detail.facePicList.map(v => {
+                return (
+                  <TouchableOpacity
+                    key={v.id}
+                    onPress={() => {
+                      this.showImg(v.url)
+                    }}>
+                    <Image
+                      style={style.patientImg}
+                      source={v.url ? { uri: getPicFullUrl(v.url) } : gImg.common.defaultPic}
+                    />
+                  </TouchableOpacity>
+                )
+              })}
+              {detail.infectedPartPicList.map(v => {
+                return (
+                  <TouchableOpacity
+                    key={v.id}
+                    onPress={() => {
+                      this.showImg(v.url)
+                    }}>
+                    <Image
+                      style={style.patientImg}
+                      source={v.url ? { uri: getPicFullUrl(v.url) } : gImg.common.defaultPic}
+                    />
+                  </TouchableOpacity>
+                )
+              })}
+              {detail.tonguePicList.length === 0 &&
+              detail.facePicList.length === 0 &&
+              detail.infectedPartPicList.length === 0 ? (
+                <Text style={{ fontSize: 14, color: "#666" }}>暂无</Text>
+              ) : null}
+            </View>
+          </View>
           <View style={style.patientPic}>
             <Text style={[style.patientPicTitle, global.fontSize14]}>对话照片</Text>
             <View
@@ -226,6 +284,9 @@ export default class InquirySheet extends Component<
                   </TouchableOpacity>
                 )
               })}
+              {detail.dialoguePicList.length === 0 ? (
+                <Text style={{ fontSize: 14, color: "#666" }}>暂无</Text>
+              ) : null}
             </View>
           </View>
           <View style={style.problems}>

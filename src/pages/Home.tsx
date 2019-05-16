@@ -1,3 +1,4 @@
+import updateConfig from "@/../update.json"
 import global from "@/assets/styles/global"
 import { BASE_URL } from "@/config/api"
 import * as userAction from "@/redux/actions/user"
@@ -11,37 +12,24 @@ import gImg from "@utils/img"
 import gStyle from "@utils/style"
 import React, { Component } from "react"
 import {
+  Alert,
   DeviceEventEmitter,
   EmitterSubscription,
   Image,
+  Linking,
   NativeEventSubscription,
+  Platform,
   RefreshControl,
   ScrollView,
   Text,
   TouchableOpacity,
   View,
-  Alert,
-  AppRegistry,
-  StyleSheet,
-  Platform,
-  Linking,
 } from "react-native"
+import { checkUpdate, downloadUpdate, switchVersion, switchVersionLater } from "react-native-update"
 import { NavigationScreenProp } from "react-navigation"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
 import { Picture } from "./advisory/Chat"
-import updateConfig from "@/../update.json"
-import {
-  isFirstTime,
-  isRolledBack,
-  packageVersion,
-  currentVersion,
-  checkUpdate,
-  downloadUpdate,
-  switchVersion,
-  switchVersionLater,
-  markSuccess,
-} from "react-native-update"
 //@ts-ignore
 const { appKey } = updateConfig[Platform.OS]
 const style = gStyle.home

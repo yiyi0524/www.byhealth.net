@@ -226,7 +226,6 @@ export default class Pharmacy extends Component<Props, State> {
         </View>
       )
     }
-    console.log(this.state)
     return (
       <ScrollView
         keyboardShouldPersistTaps="always"
@@ -266,19 +265,16 @@ export default class Pharmacy extends Component<Props, State> {
         <View style={style.list}>
           {/* 当前已经选择的药品信息 */}
           {this.state.prescriptionDrugCategoryList.map((category, k) => {
-            // {Object.keys(this.state.chooseDrugInfo).map((drugIdStr, k) => {
-            //   let drugId: number = parseInt(drugIdStr),
-            //     list = this.state.chooseDrugInfo
-            //   setTimeout(() => {
-            //     if (this.state.currDrugId === drugId) {
-            //       try {
-            //         this.refs["input" + drugId].focus()
-            //       } catch (e) {
-            //         console.log(e)
-            //       }
-            //     }
-            //   }, 500)
             return category.drugList.map((drugInfo, k2) => {
+              setTimeout(() => {
+                if (this.state.currDrugId === drugInfo.id) {
+                  try {
+                    this.refs["input" + drugInfo.id].focus()
+                  } catch (e) {
+                    console.log(e)
+                  }
+                }
+              }, 500)
               return (
                 <View
                   key={k + "-" + k2}

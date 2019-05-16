@@ -181,7 +181,6 @@ export default class SquareRoot extends Component<
     this.listener = DeviceEventEmitter.addListener(
       pathMap.SquareRoot + "Reload",
       (prescriptionDrugCategoryList: PrescriptionDrugCategory[]) => {
-        console.log(prescriptionDrugCategoryList)
         this.setState({
           prescriptionDrugCategoryList,
         })

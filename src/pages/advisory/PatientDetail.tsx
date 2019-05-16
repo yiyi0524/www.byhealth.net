@@ -3,30 +3,30 @@ import { AppState } from "@/redux/stores/store"
 import pathMap from "@/routes/pathMap"
 import api from "@/services/api"
 import doctor, { GENDER, GENDER_ZH } from "@/services/doctor"
+import hospital from "@/services/hospital"
 import { getPicFullUrl } from "@/utils/utils"
-import { Icon, Toast, Modal } from "@ant-design/react-native"
+import { Icon, Modal, Toast } from "@ant-design/react-native"
+import { IconNames } from "@ant-design/react-native/lib/icon"
 import patientApi, { Drug, InquirySheet } from "@api/patient"
 import sColor from "@styles/color"
 import gImg from "@utils/img"
 import gStyle from "@utils/style"
+import moment from "moment"
 import React, { Component } from "react"
 import {
+  DeviceEventEmitter,
   Image,
   PixelRatio,
   RefreshControl,
   ScrollView,
   Text,
   View,
-  DeviceEventEmitter,
 } from "react-native"
 import { TouchableOpacity } from "react-native-gesture-handler"
 import { NavigationScreenProp } from "react-navigation"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
 import { Picture } from "../advisory/Chat"
-import moment from "moment"
-import hospital from "@/services/hospital"
-import { IconNames } from "@ant-design/react-native/lib/icon"
 const style = gStyle.advisory.AdvisoryPatientDetail
 const global = gStyle.global
 /**
@@ -47,14 +47,19 @@ export interface PatientInfo {
   allergyHistory: string
   medicalHistory: string
   hospitalMedicalRecordPicList: Picture[] //实体医疗机构病历列表
+  tonguePicList: Picture[] //舌照面
+  infectedPartPicList: Picture[] //患部
+  facePicList: Picture[] //面部
 }
 export interface MedicalRecord {
   consultation: {
     //复诊
     id: number
     patientState: string //患者自述
-    lingualSurfacePicList: Picture[] //舌照面及其他资料照片
-    dialoguePicList: Picture[] //对话照片
+    lingualSurfacePicList: Picture[] //对话照片
+    tonguePicList: Picture[] //舌照面
+    infectedPartPicList: Picture[] //
+    facePicList: Picture[] //面部
   }
   squareRoot: {
     //开方
@@ -171,6 +176,9 @@ export default class PatientDetail extends Component<
         gender: GENDER.UNDEFINED,
         height: 0,
         hospitalMedicalRecordPicList: [],
+        tonguePicList: [],
+        infectedPartPicList: [],
+        facePicList: [],
       },
       medicalRecordList: [],
       drugList: [],
@@ -298,7 +306,6 @@ export default class PatientDetail extends Component<
                       : patientInfo.yearAge + "岁" + patientInfo.monthAge + "月"}
                     {this.state.region.map((v: Region) => {
                       if (patientInfo.provinceCid === v.cid) {
-                        console.log(patientInfo.provinceCid)
                         return v.areaName
                       }
                     })}
@@ -424,6 +431,63 @@ export default class PatientDetail extends Component<
               {patientInfo.hospitalMedicalRecordPicList.length === 0 ? <Text>暂无</Text> : null}
             </View>
           </View>
+          <View style={style.medicalRecordPic}>
+            <View style={style.medicalRecordPicTitle}>
+              <Text style={[style.medicalRecordPicTitleName, global.fontSize14, global.fontStyle]}>
+                舌面照及其他资料照片
+              </Text>
+            </View>
+            <View
+              style={[
+                style.medicalRecordPics,
+                global.flex,
+                global.alignItemsCenter,
+                global.flexWrap,
+              ]}>
+              {patientInfo.tonguePicList.map((pic, k) => {
+                return (
+                  <TouchableOpacity key={k} onPress={() => this.showMode(getPicFullUrl(pic.url))}>
+                    <Image
+                      style={style.medicalRecordImg}
+                      source={{
+                        uri: getPicFullUrl(pic.url),
+                      }}
+                    />
+                  </TouchableOpacity>
+                )
+              })}
+              {patientInfo.infectedPartPicList.map((pic, k) => {
+                return (
+                  <TouchableOpacity key={k} onPress={() => this.showMode(getPicFullUrl(pic.url))}>
+                    <Image
+                      style={style.medicalRecordImg}
+                      source={{
+                        uri: getPicFullUrl(pic.url),
+                      }}
+                    />
+                  </TouchableOpacity>
+                )
+              })}
+              {patientInfo.facePicList.map((pic, k) => {
+                return (
+                  <TouchableOpacity key={k} onPress={() => this.showMode(getPicFullUrl(pic.url))}>
+                    <Image
+                      style={style.medicalRecordImg}
+                      source={{
+                        uri: getPicFullUrl(pic.url),
+                      }}
+                    />
+                  </TouchableOpacity>
+                )
+              })}
+              {patientInfo.infectedPartPicList.length === 0 &&
+              patientInfo.tonguePicList.length === 0 &&
+              patientInfo.facePicList.length === 0 ? (
+                <Text>暂无</Text>
+              ) : null}
+            </View>
+          </View>
+
           <View style={style.inquirySheet}>
             <View>
               <TouchableOpacity
@@ -512,13 +576,13 @@ export default class PatientDetail extends Component<
                     {" "}
                     {v.consultation.patientState}
                   </Text>
-                  {/* <Text
+                  <Text
                     style={[
                       style.medicalRecordItemSecondTitle,
                       global.fontSize14,
                       global.fontStyle,
                     ]}>
-                    舌面照及其他资料
+                    舌面照及其他资料照片
                   </Text>
                   <View
                     style={[
@@ -527,7 +591,7 @@ export default class PatientDetail extends Component<
                       global.alignItemsCenter,
                       global.flexWrap,
                     ]}>
-                    {v.consultation.lingualSurfacePicList.map((v, k) => {
+                    {v.consultation.tonguePicList.map((v, k) => {
                       return (
                         <TouchableOpacity
                           key={k}
@@ -547,8 +611,53 @@ export default class PatientDetail extends Component<
                         </TouchableOpacity>
                       )
                     })}
+                    {v.consultation.infectedPartPicList.map((v, k) => {
+                      return (
+                        <TouchableOpacity
+                          key={k}
+                          onPress={() => {
+                            this.showMode(v.url)
+                          }}>
+                          <Image
+                            style={style.medicalRecordImg}
+                            source={
+                              v.url
+                                ? {
+                                    uri: getPicFullUrl(v.url),
+                                  }
+                                : gImg.common.defaultPic
+                            }
+                          />
+                        </TouchableOpacity>
+                      )
+                    })}
+                    {v.consultation.facePicList.map((v, k) => {
+                      return (
+                        <TouchableOpacity
+                          key={k}
+                          onPress={() => {
+                            this.showMode(v.url)
+                          }}>
+                          <Image
+                            style={style.medicalRecordImg}
+                            source={
+                              v.url
+                                ? {
+                                    uri: getPicFullUrl(v.url),
+                                  }
+                                : gImg.common.defaultPic
+                            }
+                          />
+                        </TouchableOpacity>
+                      )
+                    })}
+                    {v.consultation.tonguePicList.length === 0 &&
+                    v.consultation.infectedPartPicList.length === 0 &&
+                    v.consultation.facePicList.length === 0 ? (
+                      <Text>暂无</Text>
+                    ) : null}
                   </View>
-                   */}
+
                   <Text
                     style={[
                       style.medicalRecordItemSecondTitle,
@@ -563,6 +672,7 @@ export default class PatientDetail extends Component<
                       global.flex,
                       global.alignItemsCenter,
                       global.flexWrap,
+                      global.justifyContentStart,
                     ]}>
                     {v.consultation.lingualSurfacePicList.map((v1, k) => {
                       return (
@@ -584,6 +694,9 @@ export default class PatientDetail extends Component<
                         </TouchableOpacity>
                       )
                     })}
+                    {v.consultation.lingualSurfacePicList.length === 0 ? (
+                      <Text style={{ fontSize: 14, color: "#666" }}>暂无</Text>
+                    ) : null}
                   </View>
                   <TouchableOpacity
                     onPress={() => {

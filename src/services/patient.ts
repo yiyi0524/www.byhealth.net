@@ -1,7 +1,7 @@
-import { bget, GetListParam } from "./api"
 import { communicationItem } from "@/pages/address_book/Index"
-import { Picture } from "@/pages/advisory/Chat"
 import { MedicalRecord } from "@/pages/address_book/PatientDetail"
+import { Picture } from "@/pages/advisory/Chat"
+import { bget, GetListParam } from "./api"
 export async function getAddressBoolPatientList({ page = -1, limit = -1, filter }: GetListParam) {
   return bget<{ list: communicationItem[] }>({
     url: "api/getAddressBoolPatientList",
@@ -62,7 +62,10 @@ export interface inquirySheet {
   allergyHistory: string //过敏史
   medicalHistory: string //病史
   state: string //用户情况,症状与病情
-  lingualSurfacePicList: Picture[] //舌面照
+  hospitalMedicalRecordPicList: Picture[] //实体医疗机构病历列表
+  tonguePicList: Picture[] //舌照面
+  infectedPartPicList: Picture[] //患部
+  facePicList: Picture[] //面部
   dialoguePicList: Picture[] //对话照片
   problems: InquirySheet //问题列表
 }
