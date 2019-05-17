@@ -34,6 +34,12 @@ interface State {
   hasLoad: boolean
   refreshing: boolean
   categoryId: number
+  //剂量
+  dose: string
+  //每次几剂
+  oneDose: string
+  //一剂几次使用
+  oneDoseUseCount: string
   categoryName: string
   tplName: string
   advice: string
@@ -98,6 +104,12 @@ export default class AddPrescriptionTpl extends Component<
       hasLoad: false,
       refreshing: false,
       categoryId: 0,
+      //剂量
+      dose: "",
+      //每次几剂
+      oneDose: "",
+      //一剂几次使用
+      oneDoseUseCount: "",
       categoryName: "",
       tplName: "",
       advice: "",
@@ -165,6 +177,17 @@ export default class AddPrescriptionTpl extends Component<
     }
     if (this.state.advice === "") {
       return Toast.info("请输入医嘱", 2)
+    }
+    if (this.state.categoryId === 1 || this.state.categoryId === 2) {
+      if (this.state.dose === "") {
+        return Toast.info("请输入药剂总数", 2)
+      }
+      if (this.state.oneDose === "") {
+        return Toast.info("请输入每日药剂数", 2)
+      }
+      if (this.state.oneDoseUseCount === "") {
+        return Toast.info("请输入一剂使用次数", 2)
+      }
     }
     try {
       const { categoryId, advice, tplName, drugList } = this.state
@@ -234,6 +257,9 @@ export default class AddPrescriptionTpl extends Component<
               {categoryId === 1 || categoryId === 2 ? (
                 <View style={style.drugCategoryItem}>
                   <Text style={[style.drugCategoryName, global.fontSize15]}>{categoryName}</Text>
+                  {this.state.drugList.length === 0 ? (
+                    <Text style={style.empty}>暂无药品</Text>
+                  ) : null}
                   <View
                     style={[style.drugList, global.flex, global.alignItemsCenter, global.flexWrap]}>
                     {drugList.map((drugInfo, k) => {
@@ -250,11 +276,75 @@ export default class AddPrescriptionTpl extends Component<
                       )
                     })}
                   </View>
+                  {/* 药剂和用法用量 */}
+                  <View>
+                    <View style={[style.dose, global.flex, global.alignItemsCenter]}>
+                      <Text style={[style.doseTitle, global.fontSize14]}>共</Text>
+                      <View style={style.doseInputFather}>
+                        <InputItem
+                          style={style.doseInput}
+                          placeholder="0"
+                          value={this.state.dose}
+                          onChange={val => {
+                            let dose: number | string = parseFloat(val)
+                            if (isNaN(dose)) {
+                              dose = ""
+                            }
+                            this.setState({
+                              dose: dose + "",
+                            })
+                          }}
+                        />
+                      </View>
+                      <Text style={[style.doseTitle, global.fontSize14]}>剂, </Text>
+                      <Text style={[style.doseTitle, global.fontSize14]}>每日</Text>
+                      <View style={style.doseInputFather}>
+                        <InputItem
+                          style={style.doseInput}
+                          placeholder="0"
+                          value={this.state.oneDose}
+                          onChange={val => {
+                            let oneDose: number | string = parseFloat(val)
+                            if (isNaN(oneDose)) {
+                              oneDose = ""
+                            }
+                            this.setState({
+                              oneDose: oneDose + "",
+                            })
+                          }}
+                        />
+                      </View>
+                      <Text style={[style.doseTitle, global.fontSize14]}>剂</Text>
+                    </View>
+                    <View style={[global.flex, global.alignItemsCenter]}>
+                      <Text style={[style.doseTitle, global.fontSize14]}>一剂分</Text>
+                      <View style={style.doseInputFather}>
+                        <InputItem
+                          style={style.doseInput}
+                          placeholder="0"
+                          value={this.state.oneDoseUseCount}
+                          onChange={val => {
+                            let oneDoseUseCount: number | string = parseFloat(val)
+                            if (isNaN(oneDoseUseCount)) {
+                              oneDoseUseCount = ""
+                            }
+                            this.setState({
+                              oneDoseUseCount: oneDoseUseCount + "",
+                            })
+                          }}
+                        />
+                      </View>
+                      <Text style={[style.doseTitle, global.fontSize14]}>次使用</Text>
+                    </View>
+                  </View>
                 </View>
               ) : (
                 /* 西药 */
                 <View style={style.drugCategoryItem}>
                   <Text style={[style.drugCategoryName, global.fontSize15]}>{categoryName}</Text>
+                  {this.state.drugList.length === 0 ? (
+                    <Text style={style.empty}>暂无药品</Text>
+                  ) : null}
                   <View style={style.drugList}>
                     {drugList.map((drugInfo, k) => {
                       return (
@@ -299,7 +389,6 @@ export default class AddPrescriptionTpl extends Component<
                 </View>
               )}
 
-              {this.state.drugList.length === 0 ? <Text style={style.empty}>暂无</Text> : null}
               <TouchableOpacity
                 onPress={() => {
                   this.props.navigation.push(pathMap.DrugSelect, {

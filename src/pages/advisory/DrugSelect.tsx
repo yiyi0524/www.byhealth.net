@@ -262,7 +262,7 @@ export default class Pharmacy extends Component<Props, State> {
             </Text>
           </TouchableOpacity>
         </View>
-        <View style={style.list}>
+        <View style={this.state.search === "" ? style.list : global.hidden}>
           {/* 当前已经选择的药品信息 */}
           {this.state.prescriptionDrugCategoryList.map((category, k) => {
             return category.drugList.map((drugInfo, k2) => {

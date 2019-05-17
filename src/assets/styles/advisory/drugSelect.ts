@@ -58,7 +58,7 @@ export default StyleSheet.create({
   },
   list: {
     backgroundColor: sColor.white,
-    height: windowHeight,
+    minHeight: windowHeight - 100,
     paddingBottom: 15,
   },
   theme: {
@@ -120,11 +120,6 @@ export default StyleSheet.create({
     color: sColor.color666,
   },
   drugList: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
     backgroundColor: sColor.white,
   },
   drugItem: {

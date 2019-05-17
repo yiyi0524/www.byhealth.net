@@ -43,6 +43,12 @@ interface State {
   refreshing: boolean
   // 药品价格
   drugMoney: number
+  //剂量
+  dose: string
+  //每次几剂
+  oneDose: string
+  //一剂几次使用
+  oneDoseUseCount: string
   // 服务费
   serviceMoney: string
   // 医生诊后管理费比率
@@ -156,6 +162,12 @@ export default class SquareRoot extends Component<
       refreshing: false,
       isSelectPharmacy: false,
       isSelectDrug: false,
+      //剂量
+      dose: "",
+      //每次几剂
+      oneDose: "",
+      //一剂几次使用
+      oneDoseUseCount: "",
       drugMoney: 0,
       serviceMoney: "",
       percentageOfCommission: 0,
@@ -466,6 +478,67 @@ export default class SquareRoot extends Component<
                           )
                         })}
                       </View>
+                      {/* 药剂和用法用量 */}
+                      <View>
+                        <View style={[style.dose, global.flex, global.alignItemsCenter]}>
+                          <Text style={[style.doseTitle, global.fontSize14]}>共</Text>
+                          <View style={style.doseInputFather}>
+                            <InputItem
+                              style={style.doseInput}
+                              placeholder="0"
+                              value={this.state.dose}
+                              onChange={val => {
+                                let dose: number | string = parseFloat(val)
+                                if (isNaN(dose)) {
+                                  dose = ""
+                                }
+                                this.setState({
+                                  dose: dose + "",
+                                })
+                              }}
+                            />
+                          </View>
+                          <Text style={[style.doseTitle, global.fontSize14]}>剂, </Text>
+                          <Text style={[style.doseTitle, global.fontSize14]}>每日</Text>
+                          <View style={style.doseInputFather}>
+                            <InputItem
+                              style={style.doseInput}
+                              placeholder="0"
+                              value={this.state.oneDose}
+                              onChange={val => {
+                                let oneDose: number | string = parseFloat(val)
+                                if (isNaN(oneDose)) {
+                                  oneDose = ""
+                                }
+                                this.setState({
+                                  oneDose: oneDose + "",
+                                })
+                              }}
+                            />
+                          </View>
+                          <Text style={[style.doseTitle, global.fontSize14]}>剂</Text>
+                        </View>
+                        <View style={[global.flex, global.alignItemsCenter]}>
+                          <Text style={[style.doseTitle, global.fontSize14]}>一剂分</Text>
+                          <View style={style.doseInputFather}>
+                            <InputItem
+                              style={style.doseInput}
+                              placeholder="0"
+                              value={this.state.oneDoseUseCount}
+                              onChange={val => {
+                                let oneDoseUseCount: number | string = parseFloat(val)
+                                if (isNaN(oneDoseUseCount)) {
+                                  oneDoseUseCount = ""
+                                }
+                                this.setState({
+                                  oneDoseUseCount: oneDoseUseCount + "",
+                                })
+                              }}
+                            />
+                          </View>
+                          <Text style={[style.doseTitle, global.fontSize14]}>次使用</Text>
+                        </View>
+                      </View>
                     </View>
                   )
                 } else {
@@ -713,6 +786,21 @@ export default class SquareRoot extends Component<
     if (prescriptionDrugCategoryList.length === 0) {
       return Toast.info("请选择药材", 3)
     }
+    for (let v of prescriptionDrugCategoryList) {
+      console.log(v)
+    }
+    return
+    // if (this.state.categoryId === 1 || this.state.categoryId === 2) {
+    //   if (this.state.dose === "") {
+    //     return Toast.info("请输入药剂总数", 2)
+    //   }
+    //   if (this.state.oneDose === "") {
+    //     return Toast.info("请输入每日药剂数", 2)
+    //   }
+    //   if (this.state.oneDoseUseCount === "") {
+    //     return Toast.info("请输入一剂使用次数", 2)
+    //   }
+    // }
     let fmtDrugList: Record<number, { count: number; detail: Drug }> = {}
     for (let category of prescriptionDrugCategoryList) {
       for (let drugInfo of category.drugList) {

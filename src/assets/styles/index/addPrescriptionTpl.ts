@@ -129,4 +129,17 @@ export default StyleSheet.create({
     color: sColor.color888,
     marginTop: 8,
   },
+  dose: {
+    height: 50,
+  },
+  doseTitle: {
+    color: sColor.color666,
+  },
+  doseInputFather: {
+    width: 70,
+  },
+  doseInput: {
+    fontSize: 14,
+    color: sColor.mainRed,
+  },
 })

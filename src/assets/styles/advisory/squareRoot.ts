@@ -76,7 +76,7 @@ export default StyleSheet.create({
     marginRight: 15,
   },
   percentageOfCommission: {
-    width: 110,
+    width: 120,
   },
   percentageOfCommissionInput: {
     width: 110,
@@ -231,5 +231,18 @@ export default StyleSheet.create({
     color: sColor.color888,
     textAlign: "center",
     marginTop: 8,
+  },
+  dose: {
+    height: 50,
+  },
+  doseTitle: {
+    color: sColor.color666,
+  },
+  doseInputFather: {
+    width: 70,
+  },
+  doseInput: {
+    fontSize: 14,
+    color: sColor.mainRed,
   },
 })
