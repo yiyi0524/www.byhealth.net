@@ -2,27 +2,28 @@ import { registerAgreementHtml } from "@/config/api"
 import * as userAction from "@/redux/actions/user"
 import { AppState } from "@/redux/stores/store"
 import pathMap from "@/routes/pathMap"
-import api from "@/services/api"
+import api, { windowWidth } from "@/services/api"
 import { Icon, Toast } from "@ant-design/react-native"
 import sColor from "@styles/color"
 import gImg from "@utils/img"
 import gStyle from "@utils/style"
 import React, { Component } from "react"
 import {
+  BackHandler,
   Image,
+  NativeEventSubscription,
   PixelRatio,
   RefreshControl,
   Text,
   TouchableOpacity,
   View,
-  NativeEventSubscription,
-  BackHandler,
+  WebView,
 } from "react-native"
 import { ScrollView } from "react-native-gesture-handler"
-import HTMLView from "react-native-htmlview"
 import { NavigationScreenProp } from "react-navigation"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
+import { windowHeight } from "@/utils/utils"
 const style = gStyle.common.RegisterAgreement
 interface NavParams {
   isLogin: boolean
@@ -34,6 +35,7 @@ interface State {
   hasLoad: boolean
   refreshing: boolean
   isLogin: boolean
+  height: number
 }
 const mapStateToProps = (state: AppState) => {
   return {
@@ -101,6 +103,7 @@ export default class InvitePatients extends Component<
       hasLoad: false,
       refreshing: false,
       isLogin: false,
+      height: windowHeight,
     }
   }
   async componentDidMount() {
@@ -142,6 +145,17 @@ export default class InvitePatients extends Component<
         Toast.fail("刷新失败,错误信息: " + err.msg)
       })
   }
+  onmessage = (event: any) => {
+    try {
+      const action = JSON.parse(event.nativeEvent.data)
+      console.log(action.type === "setHeight" && action.height > 0)
+      if (action.type === "setHeight" && action.height > 0) {
+        this.setState({ height: action.height })
+      }
+    } catch (error) {
+      // pass
+    }
+  }
 
   render() {
     if (!this.state.hasLoad) {
@@ -153,7 +167,23 @@ export default class InvitePatients extends Component<
         </View>
       )
     }
-
+    const BaseScript = `
+    (function () {
+        var height = null;
+        function changeHeight() {
+          if (document.body.scrollHeight != height) {
+            height = document.body.scrollHeight;
+            if (window.postMessage) {
+              window.postMessage(JSON.stringify({
+                type: 'setHeight',
+                height: height,
+              }))
+            }
+          }
+        }
+        setTimeout(changeHeight, 300);
+    } ())
+    `
     return (
       <>
         <ScrollView
@@ -162,7 +192,22 @@ export default class InvitePatients extends Component<
             <RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh} />
           }>
           <View style={style.article}>
-            <HTMLView value={registerAgreementHtml} />
+            <WebView
+              style={{
+                flex: 1,
+                width: windowWidth - 30,
+                height: this.state.height,
+              }}
+              injectedJavaScript={BaseScript}
+              decelerationRate="normal"
+              automaticallyAdjustContentInsets
+              scalesPageToFit
+              javaScriptEnabled // 仅限Android平台。iOS平台JavaScript是默认开启的。
+              domStorageEnabled // 适用于安卓
+              scrollEnabled={false}
+              source={{ html: registerAgreementHtml, baseUrl: "" }}
+              onMessage={this.onmessage}
+            />
           </View>
         </ScrollView>
       </>
