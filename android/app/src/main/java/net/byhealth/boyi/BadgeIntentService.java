@@ -42,8 +42,10 @@ public class BadgeIntentService extends IntentService {
             mNotificationManager.cancel(notificationId);
             notificationId++;
 
-            Notification.Builder builder = new Notification.Builder(getApplicationContext()).setContentTitle("")
-                    .setContentText("");
+            Notification.Builder builder = new Notification.Builder(getApplicationContext())
+                    .setContentTitle("")
+                    .setContentText("")
+                    .setSmallIcon(R.drawable.redbox_top_border_background);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 setupNotificationChannel();
 
