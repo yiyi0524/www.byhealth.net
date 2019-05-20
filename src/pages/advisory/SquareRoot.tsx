@@ -786,10 +786,6 @@ export default class SquareRoot extends Component<
     if (prescriptionDrugCategoryList.length === 0) {
       return Toast.info("请选择药材", 3)
     }
-    for (let v of prescriptionDrugCategoryList) {
-      console.log(v)
-    }
-    return
     // if (this.state.categoryId === 1 || this.state.categoryId === 2) {
     //   if (this.state.dose === "") {
     //     return Toast.info("请输入药剂总数", 2)

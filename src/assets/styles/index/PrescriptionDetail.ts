@@ -119,7 +119,7 @@ export default StyleSheet.create({
   },
   diagnosisItemTitle: {
     color: sColor.color666,
-    marginRight: 5,
+    marginRight: 8,
   },
   diagnosisItemAll: {
     color: sColor.color333,
@@ -166,7 +166,9 @@ export default StyleSheet.create({
     color: sColor.mainBlack,
     marginTop: 8,
   },
-  drugList: {},
+  drugList: {
+    marginTop: 8,
+  },
   drugCategoryItem: {
     marginTop: 5,
     marginBottom: 5,
@@ -218,7 +220,8 @@ export default StyleSheet.create({
     marginRight: 10,
   },
   diagnosisItemDetail: {
-    color: sColor.color999,
+    color: sColor.color666,
+    flex: 1,
   },
   sendPatient: {
     marginTop: 8,
@@ -261,5 +264,23 @@ export default StyleSheet.create({
   },
   doctorName: {
     color: sColor.color666,
+  },
+  drugCategory: {
+    marginBottom: 10,
+  },
+  drugCategoryTitle: {
+    color: sColor.mainBlack,
+    fontWeight: "500",
+  },
+  drugName: {
+    color: sColor.color333,
+    marginTop: 6,
+    marginBottom: 3,
+  },
+  drugDetail: {
+    color: sColor.color666,
+  },
+  traditionalChineseMedicineItem: {
+    marginBottom: 5,
   },
 })

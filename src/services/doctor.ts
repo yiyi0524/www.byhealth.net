@@ -4,7 +4,8 @@ import { patientItem } from "@/pages/address_book/GroupDetail"
 import { Picture } from "@/pages/advisory/Chat"
 import { ConsultationItem } from "@/pages/advisory/Index"
 import { bget, bpost, GetListParam } from "./api"
-import { Drug, PrescriptionDrugInfo, PrescriptionDrugCategory } from "@/pages/advisory/SquareRoot"
+import { PrescriptionDrugInfo, PrescriptionDrugCategory, Drug } from "@/pages/advisory/SquareRoot"
+import { Drug as DrugInfo } from "@api/patient"
 export const ALLOW_INQUIRY = {
   FALSE: 0x0,
   TRUE: 0x1,
@@ -333,7 +334,7 @@ export interface prescriptionDetail {
   discrimination: string //辨病
   syndromeDifferentiation: string //辩证
   advice: string //医嘱
-  drugList: Drug[]
+  drugList: DrugInfo[]
   cost: {
     drugCost: number
     doctorServiceCost: number
