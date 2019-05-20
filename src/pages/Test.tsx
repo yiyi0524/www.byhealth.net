@@ -30,13 +30,7 @@ export default class Test extends Component<Props, State> {
           width: windowWidth,
           padding: 15,
         }}
-        decelerationRate="normal"
-        automaticallyAdjustContentInsets
-        scalesPageToFit
-        javaScriptEnabled // 仅限Android平台。iOS平台JavaScript是默认开启的。
-        domStorageEnabled // 适用于安卓
-        scrollEnabled={false}
-        source={{ html: lawAgreementHtml, baseUrl: "" }}
+        source={{ html: lawAgreementHtml, baseUrl: "http://www.baidu.com" }}
       />
     )
   }
