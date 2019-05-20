@@ -103,6 +103,10 @@ export default class Index extends Component<
         link: pathMap.LawAgreement,
       },
       {
+        name: "test",
+        link: pathMap.Test,
+      },
+      {
         name: "退出登录",
         link: "",
       },
