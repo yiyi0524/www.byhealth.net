@@ -115,4 +115,13 @@ export default StyleSheet.create({
     color: sColor.color888,
     marginLeft: 5,
   },
+  dose: {},
+  doseTitle: {
+    color: sColor.color666,
+  },
+  doseDetail: {
+    color: sColor.mainRed,
+    marginLeft: 5,
+    marginRight: 5,
+  },
 })

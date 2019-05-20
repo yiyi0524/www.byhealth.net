@@ -283,4 +283,13 @@ export default StyleSheet.create({
   traditionalChineseMedicineItem: {
     marginBottom: 5,
   },
+  dose: {},
+  doseTitle: {
+    color: sColor.color666,
+  },
+  doseDetail: {
+    color: sColor.mainRed,
+    marginLeft: 5,
+    marginRight: 5,
+  },
 })

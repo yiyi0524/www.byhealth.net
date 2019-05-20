@@ -220,4 +220,13 @@ export default StyleSheet.create({
   doctorName: {
     color: sColor.color666,
   },
+  dose: {},
+  doseTitle: {
+    color: sColor.color666,
+  },
+  doseDetail: {
+    color: sColor.mainRed,
+    marginLeft: 5,
+    marginRight: 5,
+  },
 })

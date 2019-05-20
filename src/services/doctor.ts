@@ -302,7 +302,7 @@ export interface squareRoot {
   discrimination: string //辨病
   syndromeDifferentiation: string //辩证
   advice: string //医嘱
-  drugList: Drug[]
+  drugList: DrugInfo[]
   cost: {
     drugCost: number
     doctorServiceCost: number
