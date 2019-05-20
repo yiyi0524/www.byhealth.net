@@ -1,7 +1,7 @@
 import { windowHeight } from "@/utils/utils"
 import { windowWidth } from "@api/api"
 import sColor from "@styles/color"
-import { StyleSheet, PixelRatio } from "react-native"
+import { StyleSheet } from "react-native"
 export default StyleSheet.create({
   loading: {
     width: windowWidth,

@@ -149,6 +149,7 @@ android {
 }
 
 dependencies {
+    implementation project(':react-native-background-job')
     implementation project(':react-native-update')    
     implementation project(':react-native-view-shot')
     implementation project(':react-native-device-info')

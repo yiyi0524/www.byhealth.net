@@ -5430,6 +5430,11 @@ react-lifecycles-compat@^3.0.4:
   resolved "http://registry.npm.taobao.org/react-lifecycles-compat/download/react-lifecycles-compat-3.0.4.tgz#4f1a273afdfc8f3488a8c516bfda78f872352362"
   integrity sha1-TxonOv38jzSIqMUWv9p4+HI1I2I=
 
+react-native-background-job@^2.2.0:
+  version "2.2.0"
+  resolved "https://registry.npm.taobao.org/react-native-background-job/download/react-native-background-job-2.2.0.tgz#539b6416303bd06593e8a12fe43c6fe0b198eea8"
+  integrity sha1-U5tkFjA70GWT6KEv5Dxv4LGY7qg=
+
 react-native-collapsible@^1.4.0:
   version "1.4.0"
   resolved "http://registry.npm.taobao.org/react-native-collapsible/download/react-native-collapsible-1.4.0.tgz#ec03cac361178319b77bb9993b73677356dd89d2"

@@ -30,7 +30,8 @@ import { NavigationScreenProp } from "react-navigation"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
 import { Picture } from "./advisory/Chat"
-import Buff from "@utils/Buff"
+import { isDebugMode } from "@/utils/utils"
+// import Buff from "@utils/Buff"
 //@ts-ignore
 const { appKey } = updateConfig[Platform.OS]
 const style = gStyle.home
@@ -263,6 +264,9 @@ export default class Home extends Component<
       })
   }
   checkUpdate = () => {
+    if (isDebugMode()) {
+      return
+    }
     checkUpdate(appKey)
       .then((info: any) => {
         if (info.expired) {
@@ -432,7 +436,6 @@ export default class Home extends Component<
             </View>
             {/* </TouchableOpacity> */}
           </View>
-
           {/* 认证 */}
           <TouchableOpacity
             style={[

@@ -5,7 +5,6 @@
 	};
 	objectVersion = 46;
 	objects = {
-
 /* Begin PBXBuildFile section */
 		00860BD8A7BE42FF9933F323 /* libRNGestureHandler-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E3C23407E4A4491BF029076 /* libRNGestureHandler-tvOS.a */; };
 		00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302AC1ABCB8CE00DB3ED1 /* libRCTActionSheet.a */; };
@@ -48,6 +47,7 @@
 		B66A9D27076D4170904FA962 /* libRNDeviceInfo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EB2351FC608E486DBB420868 /* libRNDeviceInfo.a */; };
 		ED297163215061F000B7C4FE /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ED297162215061F000B7C4FE /* JavaScriptCore.framework */; };
 		ED2971652150620600B7C4FE /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ED2971642150620600B7C4FE /* JavaScriptCore.framework */; };
+		6183A2C73FCC48CFB36B1C72 /* libRNBackgroundJob.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D09BB216479C417A97C595CC /* libRNBackgroundJob.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -426,6 +426,8 @@
 		F8943A3ECED142728C900C82 /* RNGestureHandler.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNGestureHandler.xcodeproj; path = "../node_modules/react-native-gesture-handler/ios/RNGestureHandler.xcodeproj"; sourceTree = "<group>"; };
 		FE0D3D2CC04A42E2B3F4A67C /* libRNDeviceInfo-tvOS.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = "libRNDeviceInfo-tvOS.a"; sourceTree = "<group>"; };
 		FEFA39B18A7C48389407F6D7 /* RNDeviceInfo.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNDeviceInfo.xcodeproj; path = "../node_modules/react-native-device-info/ios/RNDeviceInfo.xcodeproj"; sourceTree = "<group>"; };
+		CC5E91F79521434E8F0736CD /* RNBackgroundJob.xcodeproj */ = {isa = PBXFileReference; name = "RNBackgroundJob.xcodeproj"; path = "../node_modules/react-native-background-job/ios/RNBackgroundJob.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
+		D09BB216479C417A97C595CC /* libRNBackgroundJob.a */ = {isa = PBXFileReference; name = "libRNBackgroundJob.a"; path = "libRNBackgroundJob.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -460,6 +462,7 @@
 				2118B81872574FE7B55CAE3E /* libRNCSlider.a in Frameworks */,
 				B66A9D27076D4170904FA962 /* libRNDeviceInfo.a in Frameworks */,
 				0809CDB2E17A4DD4862C1624 /* libRNViewShot.a in Frameworks */,
+				6183A2C73FCC48CFB36B1C72 /* libRNBackgroundJob.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -714,6 +717,7 @@
 				5469BAA5F7AA4F1AB81EDF22 /* RNCSlider.xcodeproj */,
 				FEFA39B18A7C48389407F6D7 /* RNDeviceInfo.xcodeproj */,
 				DC7044354F3F48F19A7B0E9C /* RNViewShot.xcodeproj */,
+				CC5E91F79521434E8F0736CD /* RNBackgroundJob.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -1427,12 +1431,14 @@
 					"$(SRCROOT)..\node_modules@react-native-communitysliderios",
 					"$(SRCROOT)..\node_modules\neact-native-device-infoiosRNDeviceInfo",
 					"$(SRCROOT)..\node_modules\neact-native-view-shotios",
+					"$(SRCROOT)\..\node_modules\react-native-background-job\ios",
 				);
 				INFOPLIST_FILE = aTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -1465,12 +1471,14 @@
 					"$(SRCROOT)..\node_modules@react-native-communitysliderios",
 					"$(SRCROOT)..\node_modules\neact-native-device-infoiosRNDeviceInfo",
 					"$(SRCROOT)..\node_modules\neact-native-view-shotios",
+					"$(SRCROOT)\..\node_modules\react-native-background-job\ios",
 				);
 				INFOPLIST_FILE = aTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -1506,6 +1514,7 @@
 					"$(SRCROOT)..\node_modules@react-native-communitysliderios",
 					"$(SRCROOT)..\node_modules\neact-native-device-infoiosRNDeviceInfo",
 					"$(SRCROOT)..\node_modules\neact-native-view-shotios",
+					"$(SRCROOT)\..\node_modules\react-native-background-job\ios",
 				);
 				INFOPLIST_FILE = a/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1535,6 +1544,7 @@
 					"$(SRCROOT)..\node_modules@react-native-communitysliderios",
 					"$(SRCROOT)..\node_modules\neact-native-device-infoiosRNDeviceInfo",
 					"$(SRCROOT)..\node_modules\neact-native-view-shotios",
+					"$(SRCROOT)\..\node_modules\react-native-background-job\ios",
 				);
 				INFOPLIST_FILE = a/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1569,11 +1579,13 @@
 					"$(SRCROOT)..\node_modules@react-native-communitysliderios",
 					"$(SRCROOT)..\node_modules\neact-native-device-infoiosRNDeviceInfo",
 					"$(SRCROOT)..\node_modules\neact-native-view-shotios",
+					"$(SRCROOT)\..\node_modules\react-native-background-job\ios",
 				);
 				INFOPLIST_FILE = "a-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -1615,11 +1627,13 @@
 					"$(SRCROOT)..\node_modules@react-native-communitysliderios",
 					"$(SRCROOT)..\node_modules\neact-native-device-infoiosRNDeviceInfo",
 					"$(SRCROOT)..\node_modules\neact-native-view-shotios",
+					"$(SRCROOT)\..\node_modules\react-native-background-job\ios",
 				);
 				INFOPLIST_FILE = "a-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -1660,11 +1674,13 @@
 					"$(SRCROOT)..\node_modules@react-native-communitysliderios",
 					"$(SRCROOT)..\node_modules\neact-native-device-infoiosRNDeviceInfo",
 					"$(SRCROOT)..\node_modules\neact-native-view-shotios",
+					"$(SRCROOT)\..\node_modules\react-native-background-job\ios",
 				);
 				INFOPLIST_FILE = "a-tvOSTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -1705,11 +1721,13 @@
 					"$(SRCROOT)..\node_modules@react-native-communitysliderios",
 					"$(SRCROOT)..\node_modules\neact-native-device-infoiosRNDeviceInfo",
 					"$(SRCROOT)..\node_modules\neact-native-view-shotios",
+					"$(SRCROOT)\..\node_modules\react-native-background-job\ios",
 				);
 				INFOPLIST_FILE = "a-tvOSTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",

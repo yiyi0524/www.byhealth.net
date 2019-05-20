@@ -15,3 +15,4 @@ declare module "*.gif" {
   export default value
 }
 declare module "react-native-update"
+declare module "react-native-background-job"

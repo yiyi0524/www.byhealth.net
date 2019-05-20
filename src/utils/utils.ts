@@ -1,4 +1,4 @@
-import { Platform, Dimensions } from "react-native"
+import { Platform, Dimensions, NativeModules } from "react-native"
 import { BASE_URL } from "@/config/api"
 
 const os = Platform.OS
@@ -11,4 +11,13 @@ export const windowHeight = Dimensions.get("window").height
  */
 export function getPicFullUrl(url: string): string {
   return url.indexOf("http") === 0 ? url : BASE_URL + url
+}
+/**
+ * 识别开发环境是否是debug开发环境
+ */
+export function isDebugMode() {
+  const { scriptURL } = NativeModules.SourceCode
+  const devEvn = scriptURL.split("&")[1]
+  console.log(devEvn)
+  return devEvn === "dev=true"
 }

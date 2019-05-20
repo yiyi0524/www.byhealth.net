@@ -3,6 +3,7 @@ package net.byhealth.boyi;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.pilloxa.backgroundjob.BackgroundJobPackage;
 import fr.greweb.reactnativeviewshot.RNViewShotPackage;
 import com.learnium.RNDeviceInfo.RNDeviceInfo;
 import com.reactnativecommunity.slider.ReactSliderPackage;
@@ -34,7 +35,8 @@ public class MainApplication extends Application implements ReactApplication {
 
     @Override
     protected List<ReactPackage> getPackages() {
-      return Arrays.<ReactPackage>asList(new MainReactPackage(), new RNViewShotPackage(), new RNDeviceInfo(),
+      return Arrays.<ReactPackage>asList(new MainReactPackage(),
+            new BackgroundJobPackage(), new RNViewShotPackage(), new RNDeviceInfo(),
           new ReactSliderPackage(), new RNCViewPagerPackage(), new AsyncStoragePackage(), new RNGestureHandlerPackage(),
           new UpdatePackage(), new BuffPackage());
     }
