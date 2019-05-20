@@ -89,7 +89,7 @@ export default StyleSheet.create({
     paddingBottom: 8,
   },
   prescriptionItem: {
-    flex: 1,
+    width: windowWidth / 2,
     alignItems: "center",
   },
   prescriptionItemTitle: {
