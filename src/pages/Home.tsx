@@ -322,8 +322,7 @@ export default class Home extends Component<
           style={style.main}
           refreshControl={
             <RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh} />
-          }
-        >
+          }>
           {/* 头部 */}
           <View
             style={[
@@ -331,8 +330,7 @@ export default class Home extends Component<
               globalStyle.flex,
               globalStyle.justifyContentSpaceBetween,
               globalStyle.alignItemsCenter,
-            ]}
-          >
+            ]}>
             <View style={style.headerAvatarCircle}>
               <Image
                 source={
@@ -346,15 +344,17 @@ export default class Home extends Component<
             <View style={style.headerTitle}>
               <Text
                 style={[style.headerName, globalStyle.fontSize16, globalStyle.fontStyle]}
-                numberOfLines={1}
-              >
+                numberOfLines={1}>
                 {this.state.name === "" ? "未知" : this.state.name}
                 的医馆
               </Text>
               <View style={[style.headerVerified, globalStyle.flex, globalStyle.alignItemsCenter]}>
                 <Text
-                  style={[style.headerVerifiedTitle, globalStyle.fontStyle, globalStyle.fontSize12]}
-                >
+                  style={[
+                    style.headerVerifiedTitle,
+                    globalStyle.fontStyle,
+                    globalStyle.fontSize12,
+                  ]}>
                   {" "}
                   医疗资质{this.state.hasRealNameAuth ? "已认证" : "未认证"}{" "}
                 </Text>
@@ -368,15 +368,13 @@ export default class Home extends Component<
                       : style.headerMedicalQualification,
                     globalStyle.flex,
                     globalStyle.alignItemsCenter,
-                  ]}
-                >
+                  ]}>
                   <Text
                     style={[
                       style.headerMedicalQualificationTitle,
                       globalStyle.fontStyle,
                       globalStyle.fontSize12,
-                    ]}
-                  >
+                    ]}>
                     {" "}
                     去认证{" "}
                   </Text>
@@ -392,8 +390,7 @@ export default class Home extends Component<
               onPress={() => {
                 this.props.navigation.push(pathMap.CustomerService)
                 // this.props.navigation.push(pathMap.Test)
-              }}
-            >
+              }}>
               <Text style={[globalStyle.fontSize14, globalStyle.fontStyle, style.headerHelpTitle]}>
                 帮助
               </Text>
@@ -407,8 +404,7 @@ export default class Home extends Component<
               global.flex,
               global.alignItemsCenter,
               global.justifyContentSpaceBetween,
-            ]}
-          >
+            ]}>
             <TouchableOpacity
               style={style.prescriptionItem}
               onPress={() => {
@@ -416,26 +412,25 @@ export default class Home extends Component<
                   return Toast.info("您未认证完成", 1)
                 }
                 this.props.navigation.push(pathMap.Prescription)
-              }}
-            >
+              }}>
               <Text style={[style.prescriptionItemNum, global.fontSize15]}>
                 {this.state.prescriptionCount}
               </Text>
               <Text style={[style.prescriptionItemTitle, global.fontSize12]}>处方数</Text>
             </TouchableOpacity>
-            <TouchableOpacity
+            {/* <TouchableOpacity
               onPress={() => {
                 console.log("bbbbb")
                 Buff.setShortcutBadger(988)
               }}
-            >
-              <View style={style.prescriptionItem}>
-                <Text style={[style.prescriptionItemNum, global.fontSize15]}>
-                  {this.state.patientCount}
-                </Text>
-                <Text style={[style.prescriptionItemTitle, global.fontSize12]}>患者数</Text>
-              </View>
-            </TouchableOpacity>
+            > */}
+            <View style={style.prescriptionItem}>
+              <Text style={[style.prescriptionItemNum, global.fontSize15]}>
+                {this.state.patientCount}
+              </Text>
+              <Text style={[style.prescriptionItemTitle, global.fontSize12]}>患者数</Text>
+            </View>
+            {/* </TouchableOpacity> */}
           </View>
 
           {/* 认证 */}
@@ -448,15 +443,13 @@ export default class Home extends Component<
             ]}
             onPress={() => {
               this.props.navigation.push(pathMap.RealNameAuth)
-            }}
-          >
+            }}>
             <View style={[style.verifiedTheme, globalStyle.flex, globalStyle.alignItemsCenter]}>
               <Text style={[style.verifiedTitle, globalStyle.fontStyle, globalStyle.fontSize12]}>
                 认证
               </Text>
               <Text
-                style={[style.verifiedDescription, globalStyle.fontStyle, globalStyle.fontSize12]}
-              >
+                style={[style.verifiedDescription, globalStyle.fontStyle, globalStyle.fontSize12]}>
                 您还未认证, 点此认证
               </Text>
             </View>
@@ -475,8 +468,7 @@ export default class Home extends Component<
                       return Toast.info("您未认证完成", 1)
                     }
                     this.props.navigation.push(item.link)
-                  }}
-                >
+                  }}>
                   <Image style={style.categoryItemPic} source={item.icon} />
                   <Text style={[style.categoryItemTitle, globalStyle.fontSize14]}>
                     {item.title}
@@ -489,16 +481,14 @@ export default class Home extends Component<
           <ScrollView
             horizontal={true}
             style={[style.bannerList, globalStyle.flex]}
-            showsHorizontalScrollIndicator={false}
-          >
+            showsHorizontalScrollIndicator={false}>
             {this.state.bannerList.map((v: any, k: number) => {
               return (
                 <TouchableOpacity
                   key={k}
                   style={style.bannerItem}
                   activeOpacity={0.8}
-                  onPress={() => console.log(v.link)}
-                >
+                  onPress={() => console.log(v.link)}>
                   <Image style={style.bannerImg} source={v.url} />
                 </TouchableOpacity>
               )
@@ -522,12 +512,10 @@ export default class Home extends Component<
                       return Toast.info("您未认证完成", 1)
                     }
                     this.props.navigation.push(v.link)
-                  }}
-                >
+                  }}>
                   <Text
                     style={[style.settingTitle, globalStyle.fontSize15, globalStyle.fontStyle]}
-                    numberOfLines={1}
-                  >
+                    numberOfLines={1}>
                     {v.name}
                   </Text>
                   <View style={[globalStyle.flex, globalStyle.alignItemsCenter]}>
@@ -536,8 +524,7 @@ export default class Home extends Component<
                         style.settingDescription,
                         globalStyle.fontSize15,
                         globalStyle.fontStyle,
-                      ]}
-                    >
+                      ]}>
                       {v.description}
                     </Text>
                     <Icon name="right" style={[style.settingIcon, globalStyle.fontSize14]} />

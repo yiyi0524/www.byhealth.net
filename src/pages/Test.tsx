@@ -30,7 +30,7 @@ export default class Test extends Component<Props, State> {
           width: windowWidth,
           padding: 15,
         }}
-        source={{ html: lawAgreementHtml, baseUrl: "http://www.baidu.com" }}
+        source={{ uri: "https://www.byhealth.net/123.html" }}
       />
     )
   }
