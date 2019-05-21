@@ -28,10 +28,11 @@ const style = gStyle.advisory.advisoryIndex
 const globalStyle = gStyle.global
 
 export interface ConsultationItem {
-  id: number
   isWaitReply: boolean
   isWaitBuyDrug: boolean
+  id: number
   gender: number
+  doctorUnreadMsgCount: number
   patientUid: number
   year_age: number
   month_age: number
@@ -60,6 +61,9 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
   return {
     changeWsStatus: (preload: { status: number }) => {
       dispatch(wsAction.changeStatus(preload))
+    },
+    setUserUnReadMsgCount: (preload: { uid: number; count: number }) => {
+      dispatch(wsAction.setUserUnReadMsgCount(preload))
     },
   }
 }
@@ -100,6 +104,14 @@ export default class Index extends Component<
       let {
         data: { list: consultationList },
       } = await doctor.listConsultation({ page: -1, limit: -1 })
+      for (let consultation of consultationList) {
+        if (consultation.doctorUnreadMsgCount !== 0) {
+          this.props.setUserUnReadMsgCount({
+            uid: consultation.patientUid,
+            count: consultation.doctorUnreadMsgCount,
+          })
+        }
+      }
       this.setState({
         hasLoad: true,
         consultationList,
@@ -157,6 +169,7 @@ export default class Index extends Component<
         </View>
       )
     }
+    let { unReadMsgCountRecord } = this.props.ws
     return (
       <>
         <ScrollView
@@ -273,6 +286,12 @@ export default class Index extends Component<
                       <Badge dot style={[consultation.isWaitBuyDrug ? null : global.hidden]}>
                         <Text style={[style.replay, global.fontSize12]}>待购药</Text>
                       </Badge>
+                      {consultation.patientUid in unReadMsgCountRecord ? (
+                        <Badge
+                          style={{ marginLeft: 20, marginRight: 20 }}
+                          text={this.props.ws.unReadMsgCountRecord[consultation.patientUid]}
+                        />
+                      ) : null}
                     </View>
                   </View>
                 </TouchableOpacity>

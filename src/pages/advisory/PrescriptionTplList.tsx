@@ -111,7 +111,6 @@ export default class PrescriptionTplList extends Component<
         limit: -1,
         filter: {},
       })
-      console.log(prescriptionTplList)
       this.setState({
         hasLoad: true,
         categoryList,
@@ -141,9 +140,7 @@ export default class PrescriptionTplList extends Component<
         for (let drugInfo of category.drugList) {
           currSelectDrugIds.push(drugInfo.id)
         }
-        console.log(currSelectDrugIds, prescription.drugList)
         prescription.drugList = prescription.drugList.filter(v => !currSelectDrugIds.includes(v.id))
-        console.log(prescription.drugList)
         for (let drugInfo of prescription.drugList) {
           category.drugList.push(drugInfo)
         }

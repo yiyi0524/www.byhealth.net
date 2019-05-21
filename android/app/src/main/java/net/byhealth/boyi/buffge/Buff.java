@@ -33,8 +33,8 @@ public class Buff extends ReactContextBaseJavaModule {
         Activity currentActivity = getCurrentActivity();
 
         if (currentActivity == null) {
-            promise.reject("-1", "Activity doesn't exist");
-            return;
+//            promise.reject("-1", "Activity doesn't exist");
+//            return;
         }
         getReactApplicationContext().startService(
                 new Intent(currentActivity, BadgeIntentService.class).putExtra("badgeCount", badgeCount)

@@ -249,7 +249,7 @@ export default class SquareRoot extends Component<
         medicalRecordPicList: hospitalMedicalRecordPicList,
       })
     } catch (err) {
-      console.log("发送了错误, ", err)
+      console.log("发生了错误, ", err)
     }
   }
   onRefresh = () => {

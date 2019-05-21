@@ -104,7 +104,6 @@ export default class DiagnosisSettings extends Component<
     const {
       data: { allowInquiry, followUpPrice, initialPrice, percentageOfCommission },
     } = await doctor.getInquirySetup()
-    console.log(allowInquiry, followUpPrice, initialPrice, percentageOfCommission)
     this.setState({
       hasLoad: true,
       allowInquiry,

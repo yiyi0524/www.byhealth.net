@@ -359,7 +359,6 @@ class CalendarMode extends React.Component<Props, State> {
     let { isSitting, timeMapSittingRecord, selectHospital } = this.state
     isSitting = time + "-" + stage in timeMapSittingRecord ? SITTING.TRUE : SITTING.FALSE
     selectHospital = isSitting === SITTING.TRUE ? [timeMapSittingRecord[time + "-" + stage]] : []
-    console.log(timeMapSittingRecord[time + "-" + stage])
     this.setState({
       day: time,
       stage,
@@ -373,12 +372,6 @@ class CalendarMode extends React.Component<Props, State> {
       if (this.state.selectHospital.length === 0 || this.state.selectHospital[0] === 0) {
         return Toast.info("请选择医疗机构", 3)
       }
-      console.log({
-        time: this.state.day + " 00:00:00",
-        stage: this.state.stage,
-        sittingHospitalId: this.state.selectHospital[0],
-        isSitting: this.state.isSitting === SITTING.TRUE,
-      })
       await doctor.editSittingInfo({
         time: this.state.day + " 00:00:00",
         stage: this.state.stage,

@@ -3,9 +3,9 @@ import { patientGroupItem } from "@/pages/address_book/Group"
 import { patientItem } from "@/pages/address_book/GroupDetail"
 import { Picture } from "@/pages/advisory/Chat"
 import { ConsultationItem } from "@/pages/advisory/Index"
-import { bget, bpost, GetListParam } from "./api"
-import { PrescriptionDrugInfo, PrescriptionDrugCategory, Drug } from "@/pages/advisory/SquareRoot"
+import { PrescriptionDrugCategory, PrescriptionDrugInfo } from "@/pages/advisory/SquareRoot"
 import { Drug as DrugInfo } from "@api/patient"
+import { bget, bpost, GetListParam } from "./api"
 export const ALLOW_INQUIRY = {
   FALSE: 0x0,
   TRUE: 0x1,
@@ -691,8 +691,26 @@ export function deletePrescriptionTpl(data: { id: number }) {
     data,
   })
 }
-
+/**
+ * 清除指定患者的未读消息数量
+ */
+export function clearPatientUnreadMsgCount(data: { patientUid: number }) {
+  return bpost({
+    url: "api/clearPatientUnreadMsgCount",
+    data,
+  })
+}
+/**
+ * 获取未读消息总数
+ */
+export function getUnreadMsgCount() {
+  return bget<{ unreadMsgCount: number }>({
+    url: "api/getUnreadMsgCount",
+  })
+}
 export default {
+  getUnreadMsgCount,
+  clearPatientUnreadMsgCount,
   deletePrescriptionTpl,
   getPrescriptionTpl,
   editPrescriptionTpl,

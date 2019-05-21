@@ -128,7 +128,6 @@ export default class EditPrescriptionTpl extends Component<
     this.listener = DeviceEventEmitter.addListener(
       pathMap.EditPrescriptionTpl + "Reload",
       (prescriptionDrugCategoryList: PrescriptionDrugCategory[]) => {
-        console.log(prescriptionDrugCategoryList)
         let { detail } = this.state
         detail.drugList = prescriptionDrugCategoryList[0].drugList
         this.setState({

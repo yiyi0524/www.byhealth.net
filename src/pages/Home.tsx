@@ -173,7 +173,6 @@ export default class Home extends Component<
   }
   componentDidMount() {
     this.subscription = DeviceEventEmitter.addListener(pathMap.Home + "Reload", _ => {
-      console.log("首页被刷新")
       this.init()
     })
     // this.loginStatus = BackHandler.addEventListener(
@@ -181,7 +180,6 @@ export default class Home extends Component<
     //   this.addEventListenerLoginStatus,
     // )
     this.init()
-    console.log("componentDidMount")
   }
   componentWillUnmount() {
     if (this.subscription) {
@@ -424,7 +422,6 @@ export default class Home extends Component<
             </TouchableOpacity>
             {/* <TouchableOpacity
               onPress={() => {
-                console.log("bbbbb")
                 Buff.setShortcutBadger(988)
               }}
             > */}

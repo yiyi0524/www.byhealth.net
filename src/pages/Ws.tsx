@@ -1,15 +1,15 @@
+import { WSS_URL } from "@/config/api"
+import { AppState } from "@/redux/stores/store"
+import { JsonReturnCode } from "@/services/api"
+import storage from "@/utils/storage"
+import { Toast } from "@ant-design/react-native"
+import * as wsAction from "@redux/actions/ws"
 import React, { ReactChild } from "react"
+import { AppState as RnAppState } from "react-native"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
-import * as wsAction from "@redux/actions/ws"
-import { AppState } from "@/redux/stores/store"
-import { WSS_URL } from "@/config/api"
-import storage from "@/utils/storage"
-import { Picture, MsgType } from "./advisory/Chat"
 import { Overwrite } from "utility-types"
-import { JsonReturnCode } from "@/services/api"
-import { Toast } from "@ant-design/react-native"
-import { AppState as RnAppState } from "react-native"
+import { MsgType, Picture } from "./advisory/Chat"
 /**
  * 一条消息
  */
@@ -127,6 +127,9 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
     setWsFn: (preload: wsAction.WsFnPreload) => {
       dispatch(wsAction.setWsFn(preload))
     },
+    setUserUnReadMsgCount: (preload: { uid: number; count: number }) => {
+      dispatch(wsAction.setUserUnReadMsgCount(preload))
+    },
   }
 }
 class Ws extends React.Component<
@@ -156,7 +159,6 @@ class Ws extends React.Component<
   componentDidMount() {
     this.checkLoginStatus()
     // console.log("正在设置tick 定时器")
-    // setInterval(() => console.log("tick"), 1000)
     this.checkIsLoginTimer = setInterval(this.checkLoginStatus, 1000)
 
     RnAppState.addEventListener("change", state => {
@@ -224,11 +226,17 @@ class Ws extends React.Component<
     return !!this.client && this.client.readyState === WebSocket.OPEN
   }
   receiveMsg = (frame: ReceiveFrame<Exclude<Overwrite<Msg, MsgOptionalDataToRequired>, "dom">>) => {
+    let { currChatUid, currScreen, unReadMsgCountRecord } = this.props.ws
     let patientUid =
       this.props.uid === frame.data.sendUser.uid
         ? frame.data.receiveUser.uid
         : frame.data.sendUser.uid
     this.props.addMsg({ uid: patientUid, msg: frame.data })
+    // 如果当前页面不是聊天页面或者当前聊天的uid 不是 本条消息的患者uid 就把未读消息加1
+    if (currScreen !== "AdvisoryChat" || currChatUid !== patientUid) {
+      let patientUnreadMsgCount = unReadMsgCountRecord[patientUid] || 0
+      this.props.setUserUnReadMsgCount({ uid: patientUid, count: patientUnreadMsgCount + 1 })
+    }
   }
   initClient = async () => {
     console.log("正在初始化ws客户端")

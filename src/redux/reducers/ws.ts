@@ -1,25 +1,34 @@
-import * as wsAction from "../actions/ws"
 import { Msg } from "@/pages/Ws"
 import { Toast } from "@ant-design/react-native"
+import * as wsAction from "../actions/ws"
+type Uid = number
+type UnReadMsgCount = number
 export interface WsState {
+  currScreen: string
+  currChatUid: number
   status: number
+  // 未读消息数量统计
+  unReadMsgCountRecord: Record<Uid, UnReadMsgCount>
   chatMsg: Record<number, Msg[]>
   wsGet: ({ url, query: {} }: { url: string; query?: {} }) => boolean
   wsPost: ({ url, data: {} }: { url: string; data?: {} }) => boolean
 }
 export const initState: WsState = {
+  currScreen: "",
+  currChatUid: 0,
   // websocket 状态
   status: WebSocket.CLOSED,
+  unReadMsgCountRecord: {},
   chatMsg: {},
   wsGet: ({ url, query = {} }) => {
-    console.log(url, query)
+    console.log(query)
     if (url !== "/ws/ping") {
       Toast.info("未连接到服务器,无法发送消息")
     }
     return false
   },
   wsPost: ({ url, data = {} }) => {
-    console.log(url, data)
+    console.log(data)
     if (url !== "/ws/ping") {
       Toast.info("未连接到服务器,无法发送消息")
     }
@@ -99,6 +108,42 @@ function addMsgList(state = initState, action: Action<{ uid: number; msgList: Ms
   }
   return state
 }
+/**
+ * 设置与某用户的未读消息数量
+ */
+function setUserUnReadMsgCount(state = initState, action: Action<{ uid: number; count: number }>) {
+  if (action.type === wsAction.SET_USER_UNREAD_MSG_COUNT) {
+    let newState = Object.assign({}, state)
+    let { uid, count } = action.preload
+    if (uid in newState.unReadMsgCountRecord && count === 0) {
+      delete newState.unReadMsgCountRecord[uid]
+    } else {
+      newState.unReadMsgCountRecord[uid] = count
+    }
+    return newState
+  }
+  return state
+}
+/**
+ * 改变当前屏幕
+ */
+function changeScreen(state = initState, action: Action<{ screenName: string }>) {
+  if (action.type === wsAction.SET_USER_UNREAD_MSG_COUNT) {
+    let newState = Object.assign({}, state, { currScreen: action.preload.screenName })
+    return newState
+  }
+  return state
+}
+/**
+ * 设置当前聊天的用户uid
+ */
+function setCurrChatUid(state = initState, action: Action<{ screenName: string }>) {
+  if (action.type === wsAction.SET_USER_UNREAD_MSG_COUNT) {
+    let newState = Object.assign({}, state, { currScreen: action.preload.screenName })
+    return newState
+  }
+  return state
+}
 export default function reducer(state = initState, action: Action<any>) {
   switch (action.type) {
     case wsAction.CHANGE_STATUS:
@@ -109,6 +154,12 @@ export default function reducer(state = initState, action: Action<any>) {
       return addMsgList(state, action)
     case wsAction.SET_WS_FN:
       return setWsFn(state, action)
+    case wsAction.SET_USER_UNREAD_MSG_COUNT:
+      return setUserUnReadMsgCount(state, action)
+    case wsAction.CHANGE_SCREEN:
+      return changeScreen(state, action)
+    case wsAction.SET_CURR_CHAT_UID:
+      return setCurrChatUid(state, action)
     default:
       break
   }

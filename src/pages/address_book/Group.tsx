@@ -87,7 +87,6 @@ export default class Index extends Component<
           navigation.state.params!.navigatePress()
         }}>
         <Text style={[style.headerTitleLeft, global.fontSize14, global.fontStyle]}>
-          {console.log(navigation.state)}
           {navigation.state.params && navigation.state.params!.mode === "done" ? "删除" : "完成"}
         </Text>
       </TouchableOpacity>

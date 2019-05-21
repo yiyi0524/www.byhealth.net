@@ -10,6 +10,7 @@ import store from "@redux/stores/store"
 import { Provider as AntProvider } from "@ant-design/react-native"
 import BackgroundJob from "react-native-background-job"
 import Buff from "@utils/Buff"
+import { getUnreadMsgCount } from "@/services/doctor"
 
 const Root = () => (
   <Provider store={store}>
@@ -22,11 +23,21 @@ AppRegistry.registerComponent(appName, () => Root)
 
 const backgroundJob = {
   jobKey: "检查是否有新消息",
-  period: 5000,
-  job: () => {
+  job: async () => {
     console.log("这是后台任务,正在更新角标")
-    Buff.setShortcutBadger(parseInt(Math.random() * 100 + ""))
+    let {
+      data: { unreadMsgCount },
+    } = await getUnreadMsgCount()
+    Buff.setShortcutBadger(unreadMsgCount)
   },
 }
 
 BackgroundJob.register(backgroundJob)
+const backgroundSchedule = {
+  jobKey: "检查是否有新消息",
+  period: 50000,
+  // exact: true,
+  allowWhileIdle: true,
+}
+
+BackgroundJob.schedule(backgroundSchedule)

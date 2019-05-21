@@ -136,7 +136,6 @@ export default class Register extends Component<
     return cityList
   }
   chooseCityId = async (cityId: any) => {
-    console.log("正在改变城市id")
     this.setState({
       cityId,
     })
@@ -153,7 +152,6 @@ export default class Register extends Component<
           },
         },
       })
-      console.log(hospitalList)
       this.setState({
         hospitalList,
         hospitalName: "",

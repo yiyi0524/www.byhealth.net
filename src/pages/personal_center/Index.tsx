@@ -122,7 +122,6 @@ export default class Index extends Component<
   }
   componentDidMount() {
     this.subscription = DeviceEventEmitter.addListener(pathMap.Home + "Reload", _ => {
-      console.log("首页被刷新")
       this.init()
     })
     this.init()

@@ -5,7 +5,7 @@ import * as wsAction from "@/redux/actions/ws"
 import { AppState } from "@/redux/stores/store"
 import pathMap from "@/routes/pathMap"
 import api, { getRegion } from "@/services/api"
-import { closeInquiry, GENDER_ZH } from "@/services/doctor"
+import { clearPatientUnreadMsgCount, closeInquiry, GENDER_ZH } from "@/services/doctor"
 import gImg from "@/utils/img"
 import { getPicFullUrl, windowWidth } from "@/utils/utils"
 import { Icon, ImagePicker, Modal, Portal, TextareaItem, Toast } from "@ant-design/react-native"
@@ -184,6 +184,12 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
     addMsgList: (preload: wsAction.MsgListPreload) => {
       dispatch(wsAction.addList(preload))
     },
+    setUserUnReadMsgCount: (preload: { uid: number; count: number }) => {
+      dispatch(wsAction.setUserUnReadMsgCount(preload))
+    },
+    setCurrChatUid: (patientUid: number) => {
+      dispatch(wsAction.setCurrChatUid({ uid: patientUid }))
+    },
   }
 }
 @connect(
@@ -219,7 +225,6 @@ export default class Chat extends Component<
       headerRight: (
         <TouchableOpacity
           onPress={() => {
-            console.log(navigation.getParam("consultationId"))
             navigation.push(pathMap.AdvisoryMedicalRecord, {
               patientUid: navigation.getParam("patientUid"),
               consultationId: navigation.getParam("consultationId"),
@@ -357,7 +362,13 @@ export default class Chat extends Component<
     this.setState({
       hasLoad: true,
     })
-    if (this.state.patientUid in this.props.ws.chatMsg) {
+    let { patientUid } = this.state
+    //当医生进入聊天页面则清除未读消息数量
+    clearPatientUnreadMsgCount({ patientUid })
+    this.props.setCurrChatUid(patientUid)
+    this.props.setUserUnReadMsgCount({ uid: patientUid, count: 0 })
+
+    if (patientUid in this.props.ws.chatMsg) {
       if (this.props.ws.chatMsg[this.state.patientUid].length === 0) {
         this.getMoreMsgList()
         this.setState({
