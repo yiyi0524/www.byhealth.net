@@ -239,6 +239,9 @@ export default class Home extends Component<
     })
   }
   doUpdate = (info: any) => {
+    if (Platform.OS !== "android") {
+      return
+    }
     downloadUpdate(info)
       .then((hash: any) => {
         Alert.alert("提示", "下载完毕,是否重启应用?", [

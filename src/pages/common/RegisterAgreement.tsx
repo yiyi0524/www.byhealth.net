@@ -2,6 +2,7 @@ import * as userAction from "@/redux/actions/user"
 import { AppState } from "@/redux/stores/store"
 import pathMap from "@/routes/pathMap"
 import api from "@/services/api"
+import { windowWidth } from "@/utils/utils"
 import { Icon, Toast } from "@ant-design/react-native"
 import sColor from "@styles/color"
 import gImg from "@utils/img"
@@ -12,17 +13,14 @@ import {
   Image,
   NativeEventSubscription,
   PixelRatio,
-  RefreshControl,
   Text,
   TouchableOpacity,
   View,
   WebView,
 } from "react-native"
-import { ScrollView } from "react-native-gesture-handler"
 import { NavigationScreenProp } from "react-navigation"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
-import { windowWidth } from "@/utils/utils"
 const style = gStyle.common.RegisterAgreement
 interface NavParams {
   isLogin: boolean
@@ -63,6 +61,7 @@ export default class InvitePatients extends Component<
     navigation: NavigationScreenProp<State, NavParams>
   }) => ({
     title: "医生注册协议",
+    gesturesEnabled: false, //禁止用手势返回
     headerStyle: {
       backgroundColor: sColor.white,
       height: 50,
