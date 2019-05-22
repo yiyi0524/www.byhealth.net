@@ -27,6 +27,9 @@ export function getPatientInfo({ uid }: { uid: number }) {
 export interface Drug {
   categoryId: number
   list: DrugItem[]
+  doseCount?: number
+  dailyDose?: number
+  everyDoseUseCount?: number
 }
 export interface DrugItem {
   id?: number

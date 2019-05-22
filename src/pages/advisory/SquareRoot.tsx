@@ -3,11 +3,12 @@ import { BASE_URL } from "@/config/api"
 import * as userAction from "@/redux/actions/user"
 import { AppState } from "@/redux/stores/store"
 import api, { windowWidth } from "@/services/api"
-import { addPrescription, GENDER, GENDER_ZH, AddPrescriptionParam } from "@/services/doctor"
+import { addPrescription, AddPrescriptionParam, GENDER, GENDER_ZH } from "@/services/doctor"
+import { ORAL_CHINESE_DRUG_ID, TOPICAL_CHINESE_DRUG_ID } from "@/services/drug"
 import { getPatientInfo } from "@/services/patient"
 import { getPersonalInfo } from "@/services/user"
 import { getPicFullUrl } from "@/utils/utils"
-import { Icon, ImagePicker, TextareaItem, Toast, InputItem } from "@ant-design/react-native"
+import { Icon, ImagePicker, InputItem, TextareaItem, Toast } from "@ant-design/react-native"
 import hospital from "@api/hospital"
 import DashLine from "@components/DashLine"
 import Pharmacy, { CategoryItem } from "@components/Pharmacy"
@@ -85,6 +86,12 @@ export interface PrescriptionDrugCategory {
   id: number
   name: string
   drugList: PrescriptionDrugInfo[]
+  // 剂量数
+  doseCount?: number
+  // 每日剂量数
+  dailyDose?: number
+  // 每剂分几次使用
+  everyDoseUseCount?: number
 }
 /**
  * 处方中某个药的信息
@@ -193,6 +200,7 @@ export default class SquareRoot extends Component<
     this.listener = DeviceEventEmitter.addListener(
       pathMap.SquareRoot + "Reload",
       (prescriptionDrugCategoryList: PrescriptionDrugCategory[]) => {
+        console.log(prescriptionDrugCategoryList)
         this.setState({
           prescriptionDrugCategoryList,
         })
@@ -443,9 +451,7 @@ export default class SquareRoot extends Component<
               ) : null}
               {this.state.prescriptionDrugCategoryList.map((category, k) => {
                 if (category.id === 1 || category.id === 2) {
-                  {
-                    /* 中药 */
-                  }
+                  /* 中药 */
                   return (
                     <View
                       key={k}
@@ -484,16 +490,19 @@ export default class SquareRoot extends Component<
                           <Text style={[style.doseTitle, global.fontSize14]}>共</Text>
                           <View style={style.doseInputFather}>
                             <InputItem
+                              type="number"
                               style={style.doseInput}
                               placeholder="0"
-                              value={this.state.dose}
+                              value={category.doseCount + ""}
                               onChange={val => {
-                                let dose: number | string = parseFloat(val)
-                                if (isNaN(dose)) {
-                                  dose = ""
+                                let { prescriptionDrugCategoryList } = this.state
+                                let doseCount: number | string = parseInt(val)
+                                if (isNaN(doseCount)) {
+                                  doseCount = 0
                                 }
+                                prescriptionDrugCategoryList[k].doseCount = doseCount
                                 this.setState({
-                                  dose: dose + "",
+                                  prescriptionDrugCategoryList,
                                 })
                               }}
                             />
@@ -504,14 +513,17 @@ export default class SquareRoot extends Component<
                             <InputItem
                               style={style.doseInput}
                               placeholder="0"
-                              value={this.state.oneDose}
+                              type="number"
+                              value={category.dailyDose + ""}
                               onChange={val => {
-                                let oneDose: number | string = parseFloat(val)
-                                if (isNaN(oneDose)) {
-                                  oneDose = ""
+                                let { prescriptionDrugCategoryList } = this.state
+                                let dailyDose: number | string = parseInt(val)
+                                if (isNaN(dailyDose)) {
+                                  dailyDose = 0
                                 }
+                                prescriptionDrugCategoryList[k].dailyDose = dailyDose
                                 this.setState({
-                                  oneDose: oneDose + "",
+                                  prescriptionDrugCategoryList,
                                 })
                               }}
                             />
@@ -524,14 +536,18 @@ export default class SquareRoot extends Component<
                             <InputItem
                               style={style.doseInput}
                               placeholder="0"
-                              value={this.state.oneDoseUseCount}
+                              value={category.everyDoseUseCount + ""}
                               onChange={val => {
-                                let oneDoseUseCount: number | string = parseFloat(val)
-                                if (isNaN(oneDoseUseCount)) {
-                                  oneDoseUseCount = ""
+                                let { prescriptionDrugCategoryList } = this.state
+                                let everyDoseUseCount: number | string = parseInt(val)
+                                if (isNaN(everyDoseUseCount)) {
+                                  everyDoseUseCount = 0
                                 }
+                                prescriptionDrugCategoryList[
+                                  k
+                                ].everyDoseUseCount = everyDoseUseCount
                                 this.setState({
-                                  oneDoseUseCount: oneDoseUseCount + "",
+                                  prescriptionDrugCategoryList,
                                 })
                               }}
                             />
@@ -786,21 +802,17 @@ export default class SquareRoot extends Component<
     if (prescriptionDrugCategoryList.length === 0) {
       return Toast.info("请选择药材", 3)
     }
-    // if (this.state.categoryId === 1 || this.state.categoryId === 2) {
-    //   if (this.state.dose === "") {
-    //     return Toast.info("请输入药剂总数", 2)
-    //   }
-    //   if (this.state.oneDose === "") {
-    //     return Toast.info("请输入每日药剂数", 2)
-    //   }
-    //   if (this.state.oneDoseUseCount === "") {
-    //     return Toast.info("请输入一剂使用次数", 2)
-    //   }
-    // }
-    let fmtDrugList: Record<number, { count: number; detail: Drug }> = {}
     for (let category of prescriptionDrugCategoryList) {
-      for (let drugInfo of category.drugList) {
-        fmtDrugList[drugInfo.id] = drugInfo
+      if (category.id === ORAL_CHINESE_DRUG_ID || category.id === TOPICAL_CHINESE_DRUG_ID) {
+        if (!category.doseCount || category.doseCount < 1) {
+          return Toast.info("中药剂数必填", 2)
+        }
+        if (!category.dailyDose || category.dailyDose < 1) {
+          return Toast.info("中药每日剂数必填", 2)
+        }
+        if (!category.everyDoseUseCount || category.everyDoseUseCount < 1) {
+          return Toast.info("中药每剂分几次服用必填", 2)
+        }
       }
     }
 

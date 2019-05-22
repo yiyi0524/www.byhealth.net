@@ -35,11 +35,11 @@ interface State {
   refreshing: boolean
   categoryId: number
   //剂量
-  dose: string
-  //每次几剂
-  oneDose: string
+  doseCount: number
+  //每天几剂
+  dailyDose: number
   //一剂几次使用
-  oneDoseUseCount: string
+  everyDoseUseCount: number
   categoryName: string
   tplName: string
   advice: string
@@ -105,11 +105,11 @@ export default class AddPrescriptionTpl extends Component<
       refreshing: false,
       categoryId: 0,
       //剂量
-      dose: "",
-      //每次几剂
-      oneDose: "",
+      doseCount: 0,
+      //每天几剂
+      dailyDose: 0,
       //一剂几次使用
-      oneDoseUseCount: "",
+      everyDoseUseCount: 0,
       categoryName: "",
       tplName: "",
       advice: "",
@@ -118,6 +118,7 @@ export default class AddPrescriptionTpl extends Component<
     }
   }
   componentDidMount() {
+    //
     this.listener = DeviceEventEmitter.addListener(
       pathMap.AddPrescriptionTpl + "Reload",
       (prescriptionDrugCategoryList: PrescriptionDrugCategory[]) => {
@@ -178,23 +179,34 @@ export default class AddPrescriptionTpl extends Component<
       return Toast.info("请输入医嘱", 2)
     }
     if (this.state.categoryId === 1 || this.state.categoryId === 2) {
-      if (this.state.dose === "") {
+      if (this.state.doseCount === 0) {
         return Toast.info("请输入药剂总数", 2)
       }
-      if (this.state.oneDose === "") {
+      if (this.state.dailyDose === 0) {
         return Toast.info("请输入每日药剂数", 2)
       }
-      if (this.state.oneDoseUseCount === "") {
+      if (this.state.everyDoseUseCount === 0) {
         return Toast.info("请输入一剂使用次数", 2)
       }
     }
     try {
-      const { categoryId, advice, tplName, drugList } = this.state
+      const {
+        categoryId,
+        advice,
+        tplName,
+        drugList,
+        doseCount,
+        dailyDose,
+        everyDoseUseCount,
+      } = this.state
       await doctor.addPrescriptionTpl({
         categoryId,
         name: tplName,
         advice,
         drugList,
+        doseCount,
+        dailyDose,
+        everyDoseUseCount,
       })
       Toast.success("添加成功", 2)
       DeviceEventEmitter.emit(pathMap.PrescriptionTplList + "Reload", null)
@@ -283,14 +295,14 @@ export default class AddPrescriptionTpl extends Component<
                         <InputItem
                           style={style.doseInput}
                           placeholder="0"
-                          value={this.state.dose}
+                          value={this.state.doseCount + ""}
                           onChange={val => {
-                            let dose: number | string = parseFloat(val)
-                            if (isNaN(dose)) {
-                              dose = ""
+                            let doseCount: number | string = parseInt(val)
+                            if (isNaN(doseCount)) {
+                              doseCount = 0
                             }
                             this.setState({
-                              dose: dose + "",
+                              doseCount,
                             })
                           }}
                         />
@@ -301,14 +313,14 @@ export default class AddPrescriptionTpl extends Component<
                         <InputItem
                           style={style.doseInput}
                           placeholder="0"
-                          value={this.state.oneDose}
+                          value={this.state.dailyDose + ""}
                           onChange={val => {
-                            let oneDose: number | string = parseFloat(val)
-                            if (isNaN(oneDose)) {
-                              oneDose = ""
+                            let dailyDose: number | string = parseInt(val)
+                            if (isNaN(dailyDose)) {
+                              dailyDose = 0
                             }
                             this.setState({
-                              oneDose: oneDose + "",
+                              dailyDose,
                             })
                           }}
                         />
@@ -321,14 +333,14 @@ export default class AddPrescriptionTpl extends Component<
                         <InputItem
                           style={style.doseInput}
                           placeholder="0"
-                          value={this.state.oneDoseUseCount}
+                          value={this.state.everyDoseUseCount + ""}
                           onChange={val => {
-                            let oneDoseUseCount: number | string = parseFloat(val)
-                            if (isNaN(oneDoseUseCount)) {
-                              oneDoseUseCount = ""
+                            let everyDoseUseCount: number | string = parseInt(val)
+                            if (isNaN(everyDoseUseCount)) {
+                              everyDoseUseCount = 0
                             }
                             this.setState({
-                              oneDoseUseCount: oneDoseUseCount + "",
+                              everyDoseUseCount,
                             })
                           }}
                         />

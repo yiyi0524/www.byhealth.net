@@ -623,6 +623,9 @@ export interface PrescriptionTpl {
   ctime: string
   advice: string
   drugList: PrescriptionDrugInfo[]
+  dailyDose: number
+  doseCount: number
+  everyDoseUseCount: number
 }
 /**
  *  todo 获取处方模板列列表
@@ -662,6 +665,9 @@ export function addPrescriptionTpl(data: {
   name: string
   advice: string
   drugList: PrescriptionDrugInfo[]
+  doseCount: number
+  dailyDose: number
+  everyDoseUseCount: number
 }) {
   return bpost<{ detail: PrescriptionTpl }>({
     url: "api/addPrescriptionTpl",
@@ -676,6 +682,9 @@ export function editPrescriptionTpl(data: {
   name: string
   advice: string
   drugList: PrescriptionDrugInfo[]
+  doseCount: number
+  dailyDose: number
+  everyDoseUseCount: number
 }) {
   return bpost<{ detail: PrescriptionTpl }>({
     url: "api/editPrescriptionTpl",

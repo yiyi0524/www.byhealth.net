@@ -321,12 +321,18 @@ export default class SquareRoot extends Component<
                       <View
                         style={[style.dose, global.flex, global.alignItemsCenter, global.flexWrap]}>
                         <Text style={[style.doseTitle, global.fontSize14]}>共计</Text>
-                        <Text style={[style.doseDetail, global.fontSize14]}>4</Text>
+                        <Text style={[style.doseDetail, global.fontSize14]}>
+                          {v.doseCount || 0}
+                        </Text>
                         <Text style={[style.doseTitle, global.fontSize14]}>剂</Text>
                         <Text style={[style.doseTitle, global.fontSize14]}>, 每日</Text>
-                        <Text style={[style.doseDetail, global.fontSize14]}>2</Text>
+                        <Text style={[style.doseDetail, global.fontSize14]}>
+                          {v.dailyDose || 0}
+                        </Text>
                         <Text style={[style.doseTitle, global.fontSize14]}>剂, 一剂分</Text>
-                        <Text style={[style.doseDetail, global.fontSize14]}>2</Text>
+                        <Text style={[style.doseDetail, global.fontSize14]}>
+                          {v.everyDoseUseCount || 0}
+                        </Text>
                         <Text style={[style.doseTitle, global.fontSize14]}>次使用</Text>
                       </View>
                     </View>

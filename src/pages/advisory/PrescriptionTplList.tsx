@@ -35,6 +35,9 @@ interface PrescriptionTpl {
   ctime: string
   categoryId: number
   drugList: PrescriptionDrugInfo[]
+  doseCount: number
+  dailyDose: number
+  everyDoseUseCount: number
 }
 const mapStateToProps = (state: AppState) => {
   return {
@@ -144,6 +147,9 @@ export default class PrescriptionTplList extends Component<
         for (let drugInfo of prescription.drugList) {
           category.drugList.push(drugInfo)
         }
+        category.doseCount = prescription.doseCount
+        category.dailyDose = prescription.dailyDose
+        category.everyDoseUseCount = prescription.everyDoseUseCount
       }
     }
     if (!isCategoryExist) {
@@ -151,6 +157,9 @@ export default class PrescriptionTplList extends Component<
         id: prescription.categoryId,
         name: this.state.categoryList.filter(v => v.id === prescription.categoryId)[0].name,
         drugList: prescription.drugList,
+        doseCount: prescription.doseCount,
+        dailyDose: prescription.dailyDose,
+        everyDoseUseCount: prescription.everyDoseUseCount,
       })
     }
     DeviceEventEmitter.emit(pathMap.SquareRoot + "Reload", prescriptionDrugCategoryList)
