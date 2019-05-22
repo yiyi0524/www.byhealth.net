@@ -475,7 +475,7 @@ export default class SquareRoot extends Component<
                 global.alignItemsCenter,
                 global.justifyContentSpaceBetween,
               ]}>
-              <Text style={[style.diagnosisItemTitle, global.fontSize14]}>医生服务费</Text>
+              <Text style={[style.diagnosisItemTitle, global.fontSize14]}>诊后管理费</Text>
               <Text style={[style.diagnosisItemTitle, global.fontSize14]}>
                 ¥ {(detail.cost.doctorServiceCost / 100).toFixed(2)}
               </Text>
