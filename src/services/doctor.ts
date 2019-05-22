@@ -218,7 +218,7 @@ export function setInquirySetup(data: {
   })
 }
 /**
- * 获取患者分组列表
+ *  todo 获取患者分组列表 返回值不正确
  */
 export async function getPatientGroupList(param: GetListParam) {
   return bget<{ list: patientGroupItem[] }>({

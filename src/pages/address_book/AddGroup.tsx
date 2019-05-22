@@ -100,7 +100,7 @@ export default class Index extends Component<
     let { patientList } = this.state
     for (let v of communicationList) {
       patientList.push({
-        id: v.uid,
+        uid: v.uid,
         avatar: v.avatar,
         gender: v.gender,
         year_age: v.year_age,
@@ -230,11 +230,11 @@ export default class Index extends Component<
                       selectPatientList = this.state.selectPatientList
                     patientList[k].isChecked = !patientList[k].isChecked
                     if (v.isChecked) {
-                      patientUidList.push(v.id)
+                      patientUidList.push(v.uid)
                       selectPatientList.push(v.name)
                     } else {
                       patientUidList = patientUidList.filter(item => {
-                        return item !== v.id
+                        return item !== v.uid
                       })
                       selectPatientList = selectPatientList.filter(item => {
                         return item !== v.name

@@ -12,6 +12,7 @@ import { Image, PixelRatio, RefreshControl, ScrollView, Text, TouchableOpacity, 
 import { NavigationScreenProp } from "react-navigation"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
+import { Picture } from "../advisory/Chat"
 const style = gStyle.addressBook.AddressBookGroup
 const global = gStyle.global
 interface NavParams {
@@ -24,7 +25,17 @@ interface Props {
 export interface patientGroupItem {
   id: number
   name: string
-  patientList: patientGroupItem[]
+  patientList: patientItem[]
+}
+export interface patientItem {
+  id?: number
+  uid: number
+  avatar: Picture
+  name: string
+  gender: number
+  year_age: number
+  month_age: number
+  isChecked: boolean
 }
 interface State {
   hasLoad: boolean

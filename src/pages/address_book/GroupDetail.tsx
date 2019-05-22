@@ -28,6 +28,7 @@ interface Props {
   navigation: NavigationScreenProp<State>
 }
 export interface patientItem {
+  id?: number
   uid: number
   avatar: Picture
   name: string

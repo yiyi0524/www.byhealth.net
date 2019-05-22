@@ -40,7 +40,7 @@ export default StyleSheet.create({
   },
   tabScroll: {
     flex: 1,
-    marginBottom: 15,
+    marginBottom: 8,
   },
   tabBarUnderlineStyle: {
     backgroundColor: sColor.mainRed,
