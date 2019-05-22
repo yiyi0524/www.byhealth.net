@@ -1,7 +1,8 @@
 import * as userAction from "@/redux/actions/user"
 import { AppState } from "@/redux/stores/store"
+import pathMap from "@/routes/pathMap"
 import { GENDER_ZH, PRESCRIPTION_STATUS, PRESCRIPTION_STATUS_ZH } from "@/services/doctor"
-import { Icon, Tabs, Toast } from "@ant-design/react-native"
+import { Icon, Toast } from "@ant-design/react-native"
 import userApi from "@api/user"
 import sColor from "@styles/color"
 import gImg from "@utils/img"
@@ -9,11 +10,10 @@ import gStyle from "@utils/style"
 import moment from "moment"
 import React, { Component } from "react"
 import { Image, PixelRatio, Text, View } from "react-native"
-import { TouchableOpacity, ScrollView } from "react-native-gesture-handler"
+import { ScrollView, TouchableOpacity } from "react-native-gesture-handler"
 import { NavigationScreenProp } from "react-navigation"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
-import pathMap from "@/routes/pathMap"
 const style = gStyle.index.Prescription
 const global = gStyle.global
 interface Props {
@@ -22,6 +22,7 @@ interface Props {
 interface State {
   hasLoad: boolean
   refreshing: boolean
+  selectTab: string
   page: number
   limit: number
   filter: {}
@@ -89,6 +90,7 @@ export default class Prescription extends Component<
     return {
       hasLoad: false,
       refreshing: false,
+      selectTab: "all",
       prescriptionList: [],
       page: -1,
       limit: -1,
@@ -200,39 +202,58 @@ export default class Prescription extends Component<
       <>
         <View style={style.main}>
           <View style={style.prescription}>
-            <Tabs
-              tabBarActiveTextColor={sColor.mainRed}
-              tabBarInactiveTextColor={sColor.color333}
-              tabBarUnderlineStyle={style.tabBarUnderlineStyle}
-              tabs={[
-                {
-                  title: `全部 ( ${this.state.prescriptionList.length} )`,
-                },
-                {
-                  title: `已支付 ( ${
+            <View
+              style={[
+                style.header,
+                global.flex,
+                global.alignItemsCenter,
+                global.justifyContentSpaceAround,
+              ]}>
+              <TouchableOpacity
+                style={this.state.selectTab === "all" ? style.headerItem : global.hidden}
+                onPress={() => {
+                  this.setState({
+                    selectTab: "all",
+                  })
+                }}>
+                <Text style={[style.headerTitle, style.headerTitleActive, global.fontSize14]}>
+                  全部 ( {this.state.prescriptionList.length} )
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={this.state.selectTab === "pay" ? style.headerItem : global.hidden}
+                onPress={() => {
+                  this.setState({
+                    selectTab: "pay",
+                  })
+                }}>
+                <Text style={[style.headerTitle, global.fontSize14]}>
+                  已支付(
+                  {
                     this.state.prescriptionList.filter(
                       v => v.status === PRESCRIPTION_STATUS.completePay,
                     ).length
-                  } )`,
-                },
-              ]}>
-              <View style={style.prescriptionList}>
-                <ScrollView style={style.tabScroll}>
-                  {this.state.prescriptionList.map((v: prescriptionItem, k: number) =>
-                    this.buildPrescriptionDom(v, k),
-                  )}
-                </ScrollView>
-              </View>
-              <View style={style.prescriptionList}>
-                <ScrollView style={style.tabScroll}>
-                  {this.state.prescriptionList
-                    .filter(v => v.status === PRESCRIPTION_STATUS.completePay)
-                    .map((v: prescriptionItem, k: number) => {
-                      return this.buildPrescriptionDom(v, k, false)
-                    })}
-                </ScrollView>
-              </View>
-            </Tabs>
+                  }
+                  )
+                </Text>
+              </TouchableOpacity>
+            </View>
+            <View style={this.state.selectTab === "all" ? style.prescriptionList : global.hidden}>
+              <ScrollView style={style.tabScroll}>
+                {this.state.prescriptionList.map((v: prescriptionItem, k: number) =>
+                  this.buildPrescriptionDom(v, k),
+                )}
+              </ScrollView>
+            </View>
+            <View style={this.state.selectTab === "pay" ? style.prescriptionList : global.hidden}>
+              <ScrollView style={style.tabScroll}>
+                {this.state.prescriptionList
+                  .filter(v => v.status === PRESCRIPTION_STATUS.completePay)
+                  .map((v: prescriptionItem, k: number) => {
+                    return this.buildPrescriptionDom(v, k, false)
+                  })}
+              </ScrollView>
+            </View>
           </View>
         </View>
       </>

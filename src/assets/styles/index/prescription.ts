@@ -93,4 +93,21 @@ export default StyleSheet.create({
   prescriptionItemDescriptionStatus: {
     color: sColor.mainRed,
   },
+  header: {
+    height: 45,
+    backgroundColor: "#fff",
+    marginBottom: 8,
+  },
+  headerItem: {
+    width: 150,
+    borderWidth: 1,
+  },
+  headerTitle: {
+    color: sColor.color666,
+    width: 150,
+    textAlign: "center",
+  },
+  headerTitleActive: {
+    color: sColor.mainRed,
+  },
 })

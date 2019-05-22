@@ -5,6 +5,7 @@ import * as userAction from "@/redux/actions/user"
 import { AppState } from "@/redux/stores/store"
 import pathMap from "@/routes/pathMap"
 import { ALLOW_INQUIRY } from "@/services/doctor"
+import { isDebugMode } from "@/utils/utils"
 import { Icon, Toast } from "@ant-design/react-native"
 import api from "@api/api"
 import userApi from "@api/user"
@@ -30,7 +31,6 @@ import { NavigationScreenProp } from "react-navigation"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
 import { Picture } from "./advisory/Chat"
-import { isDebugMode } from "@/utils/utils"
 // import Buff from "@utils/Buff"
 //@ts-ignore
 const { appKey } = updateConfig[Platform.OS]
@@ -393,8 +393,8 @@ export default class Home extends Component<
             <TouchableOpacity
               style={style.headerHelp}
               onPress={() => {
-                this.props.navigation.push(pathMap.CustomerService)
-                // this.props.navigation.push(pathMap.Test)
+                // this.props.navigation.push(pathMap.CustomerService)
+                this.props.navigation.push(pathMap.Test)
               }}>
               <Text style={[globalStyle.fontSize14, globalStyle.fontStyle, style.headerHelpTitle]}>
                 帮助

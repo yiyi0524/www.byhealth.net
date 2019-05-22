@@ -61,7 +61,6 @@ export default class InvitePatients extends Component<
     navigation: NavigationScreenProp<State, NavParams>
   }) => ({
     title: "医生注册协议",
-    gesturesEnabled: false, //禁止用手势返回
     headerStyle: {
       backgroundColor: sColor.white,
       height: 50,
