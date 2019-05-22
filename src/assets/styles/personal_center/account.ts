@@ -63,7 +63,7 @@ export default StyleSheet.create({
     flex: 1,
     borderWidth: 1 / PixelRatio.get(),
     borderColor: sColor.whiteOpa7,
-    borderRadius: 25,
+    borderRadius: 15,
     paddingTop: 5,
     paddingBottom: 5,
     paddingLeft: 15,

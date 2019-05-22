@@ -210,7 +210,9 @@ export default class Index extends Component<
                 global.alignItemsCenter,
                 global.justifyContentStart,
               ]}>
-              <Image style={style.groupImg} source={gImg.addressBook.group} />
+              <View style={style.groupImgFa}>
+                <Image style={style.groupImg} source={gImg.addressBook.group} />
+              </View>
               <Text style={[style.groupTitle, global.fontSize14, global.fontStyle]}>患者分组</Text>
             </View>
             <Icon name="right" style={[style.groupIcon, global.fontSize14]} />
@@ -277,16 +279,18 @@ export default class Index extends Component<
                             global.justifyContentStart,
                             global.alignItemsCenter,
                           ]}>
-                          <Image
-                            style={style.genderIcon}
-                            source={
-                              v.gender === 1
-                                ? gImg.common.man
-                                : v.gender === 2
-                                ? gImg.common.woman
-                                : gImg.common.genderNull
-                            }
-                          />
+                          <View style={style.genderIconFa}>
+                            <Image
+                              style={style.genderIcon}
+                              source={
+                                v.gender === 1
+                                  ? gImg.common.man
+                                  : v.gender === 2
+                                  ? gImg.common.woman
+                                  : gImg.common.genderNull
+                              }
+                            />
+                          </View>
                           <Text
                             style={[
                               style.communicationItemDetail,
@@ -295,7 +299,9 @@ export default class Index extends Component<
                             ]}>
                             {v.year_age || "未知"}
                           </Text>
-                          <Image style={style.genderIcon} source={gImg.addressBook.phone} />
+                          <View style={style.genderIconFa}>
+                            <Image style={style.genderIcon} source={gImg.addressBook.phone} />
+                          </View>
                           <Text
                             style={[
                               style.communicationItemDetail,

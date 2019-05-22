@@ -39,8 +39,13 @@ export default StyleSheet.create({
     paddingTop: 30,
     paddingBottom: 30,
   },
-  headerImg: {
+  headerImgFa: {
+    width: 50,
+    height: 50,
     marginBottom: 10,
+    overflow: "hidden",
+  },
+  headerImg: {
     width: 50,
     height: 50,
     resizeMode: "center",

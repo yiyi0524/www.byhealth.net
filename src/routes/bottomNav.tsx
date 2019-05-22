@@ -43,7 +43,7 @@ import RealNameAuth from "@pages/user/RealNameAuth"
 import sColor from "@styles/color"
 import gImg from "@utils/img"
 import React from "react"
-import { Image, StyleSheet } from "react-native"
+import { Image, StyleSheet, View } from "react-native"
 import {
   createBottomTabNavigator,
   createStackNavigator,
@@ -56,6 +56,11 @@ const style = StyleSheet.create({
     height: 30,
     resizeMode: "center",
   },
+  iconFa: {
+    width: 30,
+    height: 30,
+    overflow: "hidden",
+  },
 })
 const TabNav = createBottomTabNavigator(
   {
@@ -66,10 +71,12 @@ const TabNav = createBottomTabNavigator(
         title: "医馆",
         tabBarIcon: ({ focused }: { focused: boolean }) => {
           return (
-            <Image
-              style={style.icon}
-              source={focused ? gImg.common.homeActive : gImg.common.home}
-            />
+            <View style={style.iconFa}>
+              <Image
+                style={style.icon}
+                source={focused ? gImg.common.homeActive : gImg.common.home}
+              />
+            </View>
           )
         },
       }),
@@ -87,10 +94,12 @@ const TabNav = createBottomTabNavigator(
         title: "咨询",
         tabBarIcon: ({ focused }: { focused: boolean }) => {
           return (
-            <Image
-              style={style.icon}
-              source={focused ? gImg.common.advisoryActive : gImg.common.advisory}
-            />
+            <View style={style.iconFa}>
+              <Image
+                style={style.icon}
+                source={focused ? gImg.common.advisoryActive : gImg.common.advisory}
+              />
+            </View>
           )
         },
         tabBarOnPress: (obj: any) => {
@@ -108,10 +117,12 @@ const TabNav = createBottomTabNavigator(
         title: "通讯录",
         tabBarIcon: ({ focused }: { focused: boolean }) => {
           return (
-            <Image
-              style={style.icon}
-              source={focused ? gImg.common.addressBookActive : gImg.common.addressBook}
-            />
+            <View style={style.iconFa}>
+              <Image
+                style={style.icon}
+                source={focused ? gImg.common.addressBookActive : gImg.common.addressBook}
+              />
+            </View>
           )
         },
         tabBarOnPress: (obj: any) => {
@@ -129,10 +140,12 @@ const TabNav = createBottomTabNavigator(
         title: "我的",
         tabBarIcon: ({ focused }: { focused: boolean }) => {
           return (
-            <Image
-              style={style.icon}
-              source={focused ? gImg.common.personalCenterActive : gImg.common.personalCenter}
-            />
+            <View style={style.iconFa}>
+              <Image
+                style={style.icon}
+                source={focused ? gImg.common.personalCenterActive : gImg.common.personalCenter}
+              />
+            </View>
           )
         },
         tabBarOnPress: (obj: any) => {

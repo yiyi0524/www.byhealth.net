@@ -188,6 +188,11 @@ export default StyleSheet.create({
     height: 60,
     marginBottom: 8,
   },
+  bottomNavItemPicFa: {
+    width: 40,
+    height: 40,
+    overflow: "hidden",
+  },
   bottomNavItemPic: {
     width: 40,
     height: 40,

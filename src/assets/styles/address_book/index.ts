@@ -67,11 +67,16 @@ export default StyleSheet.create({
     height: 50,
     flex: 1,
   },
+  groupImgFa: {
+    width: 30,
+    height: 30,
+    marginRight: 5,
+    overflow: "hidden",
+  },
   groupImg: {
     width: 30,
     height: 30,
     resizeMode: "center",
-    marginRight: 5,
   },
   communicationItemPicture: {
     width: 45,
@@ -121,11 +126,16 @@ export default StyleSheet.create({
     color: sColor.color666,
     marginRight: 6,
   },
+  genderIconFa: {
+    marginRight: 2,
+    width: 15,
+    height: 15,
+    overflow: "hidden",
+  },
   genderIcon: {
     width: 15,
     height: 15,
     resizeMode: "center",
-    marginRight: 2,
   },
   firstConsultTime: {
     color: sColor.color888,

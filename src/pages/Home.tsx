@@ -469,7 +469,9 @@ export default class Home extends Component<
                     }
                     this.props.navigation.push(item.link)
                   }}>
-                  <Image style={style.categoryItemPic} source={item.icon} />
+                  <View style={style.categoryItemPicFa}>
+                    <Image style={style.categoryItemPic} source={item.icon} />
+                  </View>
                   <Text style={[style.categoryItemTitle, globalStyle.fontSize14]}>
                     {item.title}
                   </Text>

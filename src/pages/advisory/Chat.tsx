@@ -461,7 +461,9 @@ export default class Chat extends Component<
                       onPress={() => this.selectBottomNav(v)}
                       key={k}
                       style={style.bottomNavItem}>
-                      <Image style={style.bottomNavItemPic} source={v.icon} />
+                      <View style={style.bottomNavItemPicFa}>
+                        <Image style={style.bottomNavItemPic} source={v.icon} />
+                      </View>
                       <Text style={[style.bottomNavItemTitle, global.fontSize13, global.fontStyle]}>
                         {v.title}
                       </Text>

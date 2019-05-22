@@ -125,7 +125,9 @@ export default class About extends Component<
             <RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh} />
           }>
           <View style={style.header}>
-            <Image style={style.headerImg} source={gImg.common.logo} />
+            <View style={style.headerImgFa}>
+              <Image style={style.headerImg} source={gImg.common.logo} />
+            </View>
             <Text style={[style.headerTitle, global.fontSize14]}>博一健康医生版</Text>
             <Text style={[style.headerVersion, global.fontSize12]}>版本{this.state.version}</Text>
           </View>

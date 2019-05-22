@@ -137,11 +137,16 @@ export default StyleSheet.create({
     width: (windowWidth - 30) / 4,
     alignItems: "center",
   },
+  categoryItemPicFa: {
+    width: 35,
+    height: 35,
+    overflow: "hidden",
+    borderRadius: 7,
+  },
   categoryItemPic: {
     width: 35,
     height: 35,
     resizeMode: "center",
-    borderRadius: 7,
   },
   categoryItemTitle: {
     textAlign: "center",

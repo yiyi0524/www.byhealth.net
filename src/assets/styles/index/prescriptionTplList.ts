@@ -40,7 +40,6 @@ export default StyleSheet.create({
     paddingRight: 15,
     paddingTop: 15,
     paddingBottom: 14,
-    marginTop: 8,
     backgroundColor: sColor.white,
   },
   prescriptionHeader: {

@@ -121,7 +121,7 @@ export default class Index extends Component<
     }
   }
   componentDidMount() {
-    this.subscription = DeviceEventEmitter.addListener(pathMap.Home + "Reload", _ => {
+    this.subscription = DeviceEventEmitter.addListener(pathMap.PersonalCenter + "Reload", _ => {
       this.init()
     })
     this.init()
@@ -133,6 +133,10 @@ export default class Index extends Component<
   }
   init = async () => {
     try {
+      let isLogin = await api.isLogin()
+      if (!isLogin) {
+        this.props.navigation.navigate(pathMap.Login)
+      }
       let {
         data: { doctorInfo },
       } = await userApi.getPersonalInfo()
@@ -166,9 +170,11 @@ export default class Index extends Component<
       await Promise.all([api.logout(), new Promise(s => setTimeout(s, 300))])
       await storage.remove("session")
       navigation.navigate(pathMap.Login)
+      DeviceEventEmitter.emit(pathMap.PersonalCenter + "Reload", null)
     } catch (err) {
       console.log(err)
       Toast.info("退出失败,错误信息: " + err.msg, 2)
+      DeviceEventEmitter.emit(pathMap.PersonalCenter + "Reload", null)
     }
   }
   render() {

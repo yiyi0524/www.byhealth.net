@@ -200,7 +200,7 @@ export default class PrescriptionTplList extends Component<
                 <SwipeAction
                   key={k}
                   autoClose
-                  style={{ backgroundColor: "transparent" }}
+                  style={{ backgroundColor: "transparent", marginTop: 8 }}
                   right={[
                     {
                       text: "编辑",

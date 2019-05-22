@@ -36,7 +36,8 @@ export default StyleSheet.create({
     color: sColor.color333,
   },
   prescriptionList: {
-    height: windowHeight,
+    minHeight: windowHeight,
+    borderWidth: 1,
   },
   tabBarUnderlineStyle: {
     backgroundColor: sColor.mainRed,
