@@ -9,7 +9,7 @@ import gStyle from "@utils/style"
 import moment from "moment"
 import React, { Component } from "react"
 import { Image, PixelRatio, Text, View } from "react-native"
-import { TouchableOpacity } from "react-native-gesture-handler"
+import { TouchableOpacity, ScrollView } from "react-native-gesture-handler"
 import { NavigationScreenProp } from "react-navigation"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
@@ -217,16 +217,20 @@ export default class Prescription extends Component<
                 },
               ]}>
               <View style={style.prescriptionList}>
-                {this.state.prescriptionList.map((v: prescriptionItem, k: number) =>
-                  this.buildPrescriptionDom(v, k),
-                )}
+                <ScrollView style={style.tabScroll}>
+                  {this.state.prescriptionList.map((v: prescriptionItem, k: number) =>
+                    this.buildPrescriptionDom(v, k),
+                  )}
+                </ScrollView>
               </View>
               <View style={style.prescriptionList}>
-                {this.state.prescriptionList
-                  .filter(v => v.status === PRESCRIPTION_STATUS.completePay)
-                  .map((v: prescriptionItem, k: number) => {
-                    return this.buildPrescriptionDom(v, k, false)
-                  })}
+                <ScrollView style={style.tabScroll}>
+                  {this.state.prescriptionList
+                    .filter(v => v.status === PRESCRIPTION_STATUS.completePay)
+                    .map((v: prescriptionItem, k: number) => {
+                      return this.buildPrescriptionDom(v, k, false)
+                    })}
+                </ScrollView>
               </View>
             </Tabs>
           </View>

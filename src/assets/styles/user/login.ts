@@ -13,6 +13,7 @@ export default StyleSheet.create({
     paddingRight: 15,
   },
   header: {
+    marginTop: 8,
     height: 45,
     borderBottomWidth: 1 / PixelRatio.get(),
     borderBottomColor: sColor.colorDdd,
