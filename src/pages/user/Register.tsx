@@ -8,7 +8,15 @@ import pathMap from "@routes/pathMap"
 import gImg from "@utils/img"
 import gStyle from "@utils/style"
 import React, { Component } from "react"
-import { Image, ScrollView, Text, TouchableOpacity, View } from "react-native"
+import {
+  Image,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
+  Platform,
+  KeyboardAvoidingView,
+} from "react-native"
 import { NavigationScreenProp } from "react-navigation"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
@@ -250,264 +258,528 @@ export default class Register extends Component<
     }
   }
   render() {
-    return (
-      <>
-        <View style={style.main}>
-          <ScrollView style={style.content} keyboardShouldPersistTaps="handled">
-            <View
-              style={[
-                style.header,
-                global.flex,
-                global.justifyContentSpaceBetween,
-                global.alignItemsCenter,
-              ]}>
-              <TouchableOpacity
-                style={style.headerLeft}
-                onPress={() => this.props.navigation.navigate(pathMap.Login)}>
-                <Text style={[style.headerLeftTitle, global.fontStyle, global.fontSize14]}>
-                  关闭
-                </Text>
-              </TouchableOpacity>
-              <Text style={[style.headerTitle, global.fontStyle, global.fontSize14]}>注册</Text>
-              <Text style={style.headerLeft} />
-            </View>
-            <View style={style.logo}>
-              <Image style={style.logoImg} source={gImg.common.logo} />
-            </View>
-            <View style={style.form}>
+    if (Platform.OS === "android") {
+      return (
+        <>
+          <View style={style.main}>
+            <ScrollView style={style.content} keyboardShouldPersistTaps="handled">
               <View
                 style={[
-                  style.formItem,
-                  style.pickerItem,
+                  style.header,
                   global.flex,
                   global.justifyContentSpaceBetween,
                   global.alignItemsCenter,
                 ]}>
-                <Text style={style.formItemTitle}>地区</Text>
-                <Picker
-                  data={this.state.region}
-                  style={style.picker}
-                  value={this.state.cityId}
-                  triggerType="onPress"
-                  onChange={cityId => this.chooseCityId(cityId)}>
+                <TouchableOpacity
+                  style={style.headerLeft}
+                  onPress={() => this.props.navigation.navigate(pathMap.Login)}>
+                  <Text style={[style.headerLeftTitle, global.fontStyle, global.fontSize14]}>
+                    关闭
+                  </Text>
+                </TouchableOpacity>
+                <Text style={[style.headerTitle, global.fontStyle, global.fontSize14]}>注册</Text>
+                <Text style={style.headerLeft} />
+              </View>
+              <View style={style.logo}>
+                <Image style={style.logoImg} source={gImg.common.logo} />
+              </View>
+              <View style={style.form}>
+                <View
+                  style={[
+                    style.formItem,
+                    style.pickerItem,
+                    global.flex,
+                    global.justifyContentSpaceBetween,
+                    global.alignItemsCenter,
+                  ]}>
+                  <Text style={style.formItemTitle}>地区</Text>
+                  <Picker
+                    data={this.state.region}
+                    style={style.picker}
+                    value={this.state.cityId}
+                    triggerType="onPress"
+                    onChange={cityId => this.chooseCityId(cityId)}>
+                    <TouchableOpacity
+                      style={[
+                        style.pickerTitle,
+                        global.flex,
+                        global.justifyContentEnd,
+                        global.alignItemsCenter,
+                      ]}>
+                      <Text style={[style.topItemTitle, global.fontStyle, global.fontSize14]}>
+                        {this.state.cityId.length === 0
+                          ? "请选择"
+                          : this.state.regionCidMapAreaName[this.state.cityId[2]]}
+                      </Text>
+                      <Icon name="right" style={[style.inputIcon, global.fontSize16]} />
+                    </TouchableOpacity>
+                  </Picker>
+                </View>
+                <View
+                  style={[
+                    style.formItem,
+                    style.pickerItem,
+                    global.flex,
+                    global.justifyContentSpaceBetween,
+                    global.alignItemsCenter,
+                  ]}>
+                  <Text style={style.formItemTitle}>医疗机构</Text>
                   <TouchableOpacity
-                    style={[
-                      style.pickerTitle,
-                      global.flex,
-                      global.justifyContentEnd,
-                      global.alignItemsCenter,
-                    ]}>
-                    <Text style={[style.topItemTitle, global.fontStyle, global.fontSize14]}>
-                      {this.state.cityId.length === 0
-                        ? "请选择"
-                        : this.state.regionCidMapAreaName[this.state.cityId[2]]}
+                    style={[style.hospital, global.flex, global.justifyContentSpaceBetween]}
+                    onPress={() => {
+                      if (this.state.cityId.length === 0) {
+                        return Toast.info("请先选择地区", 3)
+                      }
+                      this.setState({
+                        selectHospitalActive: true,
+                      })
+                    }}>
+                    <Text style={[style.hospitalTitle, global.fontSize14, global.fontStyle]}>
+                      {this.state.hospitalName === "" ? "请选择" : this.state.hospitalName}
                     </Text>
                     <Icon name="right" style={[style.inputIcon, global.fontSize16]} />
                   </TouchableOpacity>
-                </Picker>
-              </View>
-              <View
-                style={[
-                  style.formItem,
-                  style.pickerItem,
-                  global.flex,
-                  global.justifyContentSpaceBetween,
-                  global.alignItemsCenter,
-                ]}>
-                <Text style={style.formItemTitle}>医疗机构</Text>
-                <TouchableOpacity
-                  style={[style.hospital, global.flex, global.justifyContentSpaceBetween]}
-                  onPress={() => {
-                    if (this.state.cityId.length === 0) {
-                      return Toast.info("请先选择地区", 3)
-                    }
-                    this.setState({
-                      selectHospitalActive: true,
-                    })
-                  }}>
-                  <Text style={[style.hospitalTitle, global.fontSize14, global.fontStyle]}>
-                    {this.state.hospitalName === "" ? "请选择" : this.state.hospitalName}
-                  </Text>
-                  <Icon name="right" style={[style.inputIcon, global.fontSize16]} />
-                </TouchableOpacity>
-              </View>
+                </View>
 
-              <View style={style.formItem}>
-                <InputItem
-                  clear
-                  style={[style.input, global.fontStyle, global.fontSize14]}
-                  value={this.state.name}
-                  placeholder="姓名"
-                  onChange={name => {
-                    this.setState({ name })
-                  }}
-                />
-              </View>
-              <View style={style.formItem}>
-                <InputItem
-                  clear
-                  style={[style.input, global.fontStyle, global.fontSize14]}
-                  value={this.state.phone}
-                  placeholder="手机号码"
-                  type="number"
-                  onChange={phone => {
-                    this.setState({ phone })
-                  }}
-                />
-              </View>
-              <View style={style.formItem}>
-                <InputItem
-                  style={[style.input, global.fontStyle, global.fontSize14]}
-                  value={this.state.verificationCode}
-                  placeholder="验证码"
-                  onChange={verificationCode => {
-                    this.setState({ verificationCode })
-                  }}
-                />
-                <TouchableOpacity
-                  style={style.getVerificationCodeBtn}
-                  onPress={() => {
-                    this.sendVerificationCode()
-                  }}>
-                  <Text style={[style.verificationCode, global.fontStyle, global.fontSize14]}>
-                    {this.state.verificationCodeMsg}
-                  </Text>
-                </TouchableOpacity>
-              </View>
-              <View style={style.formItem}>
-                <InputItem
-                  clear
-                  style={[style.input, global.fontStyle, global.fontSize14]}
-                  value={this.state.pwd}
-                  type="password"
-                  placeholder="密码"
-                  onChange={pwd => {
-                    this.setState({ pwd })
-                  }}
-                />
-              </View>
-              <View style={style.formItem}>
-                <InputItem
-                  clear
-                  style={[style.input, global.fontStyle, global.fontSize14]}
-                  value={this.state.rePwd}
-                  type="password"
-                  placeholder="确认密码"
-                  onChange={rePwd => {
-                    this.setState({ rePwd })
-                  }}
-                  onBlur={() => {
-                    if (this.state.pwd !== this.state.rePwd) {
-                      Toast.fail("两次密码不一致", 2)
-                      this.setState({
-                        rePwd: "",
-                      })
-                    }
-                  }}
-                />
-              </View>
-            </View>
-            <View style={[style.agreement, global.flex, global.alignItemsCenter]}>
-              <Text style={[style.theme, global.fontStyle, global.fontSize14]}>注册即同意</Text>
-              <TouchableOpacity
-                onPress={() => {
-                  this.props.navigation.navigate(pathMap.RegisterAgreement)
-                }}>
-                <Text style={[style.agreementName, global.fontStyle, global.fontSize14]}>
-                  医生注册协议
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => {
-                  this.props.navigation.navigate(pathMap.LawAgreement)
-                }}>
-                <Text style={[style.agreementName, global.fontStyle, global.fontSize14]}>
-                  法律声明与隐私政策
-                </Text>
-              </TouchableOpacity>
-            </View>
-          </ScrollView>
-          <TouchableOpacity style={style.subBtn} onPress={this.submit}>
-            <Text style={[style.subTitle, global.fontStyle, global.fontSize15]}>
-              完成医生版注册
-            </Text>
-          </TouchableOpacity>
-          {/* 医疗机构选择 */}
-          <View style={this.state.selectHospitalActive ? style.hospitalSelect : global.hidden}>
-            <ScrollView style={style.hospitalContent} keyboardShouldPersistTaps="handled">
-              <View
-                style={[
-                  style.hospitalAdd,
-                  global.flex,
-                  global.alignItemsCenter,
-                  global.justifyContentSpaceBetween,
-                ]}>
-                <Icon style={style.hospitalSearchIcon} name="search" />
-                <View style={style.hospitalSearch}>
+                <View style={style.formItem}>
                   <InputItem
                     clear
-                    style={[style.hospitalInput, global.fontStyle, global.fontSize14]}
-                    value={this.state.hospitalName}
-                    placeholder="输入所在医疗机构"
-                    onChange={hospitalName => {
-                      this.setState({ hospitalName })
+                    style={[style.input, global.fontStyle, global.fontSize14]}
+                    value={this.state.name}
+                    placeholder="姓名"
+                    onChange={name => {
+                      this.setState({ name })
                     }}
                   />
                 </View>
+                <View style={style.formItem}>
+                  <InputItem
+                    clear
+                    style={[style.input, global.fontStyle, global.fontSize14]}
+                    value={this.state.phone}
+                    placeholder="手机号码"
+                    type="number"
+                    onChange={phone => {
+                      this.setState({ phone })
+                    }}
+                  />
+                </View>
+                <View style={style.formItem}>
+                  <InputItem
+                    style={[style.input, global.fontStyle, global.fontSize14]}
+                    value={this.state.verificationCode}
+                    placeholder="验证码"
+                    onChange={verificationCode => {
+                      this.setState({ verificationCode })
+                    }}
+                  />
+                  <TouchableOpacity
+                    style={style.getVerificationCodeBtn}
+                    onPress={() => {
+                      this.sendVerificationCode()
+                    }}>
+                    <Text style={[style.verificationCode, global.fontStyle, global.fontSize14]}>
+                      {this.state.verificationCodeMsg}
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+                <View style={style.formItem}>
+                  <InputItem
+                    clear
+                    style={[style.input, global.fontStyle, global.fontSize14]}
+                    value={this.state.pwd}
+                    type="password"
+                    placeholder="密码"
+                    onChange={pwd => {
+                      this.setState({ pwd })
+                    }}
+                  />
+                </View>
+                <View style={style.formItem}>
+                  <InputItem
+                    clear
+                    style={[style.input, global.fontStyle, global.fontSize14]}
+                    value={this.state.rePwd}
+                    type="password"
+                    placeholder="确认密码"
+                    onChange={rePwd => {
+                      this.setState({ rePwd })
+                    }}
+                    onBlur={() => {
+                      if (this.state.pwd !== this.state.rePwd) {
+                        Toast.fail("两次密码不一致", 2)
+                        this.setState({
+                          rePwd: "",
+                        })
+                      }
+                    }}
+                  />
+                </View>
+              </View>
+              <View style={[style.agreement, global.flex, global.alignItemsCenter]}>
+                <Text style={[style.theme, global.fontStyle, global.fontSize14]}>注册即同意</Text>
                 <TouchableOpacity
-                  style={style.closeBtn}
+                  onPress={() => {
+                    this.props.navigation.navigate(pathMap.RegisterAgreement)
+                  }}>
+                  <Text style={[style.agreementName, global.fontStyle, global.fontSize14]}>
+                    医生注册协议
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => {
+                    this.props.navigation.navigate(pathMap.LawAgreement)
+                  }}>
+                  <Text style={[style.agreementName, global.fontStyle, global.fontSize14]}>
+                    法律声明与隐私政策
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </ScrollView>
+            <TouchableOpacity style={style.subBtn} onPress={this.submit}>
+              <Text style={[style.subTitle, global.fontStyle, global.fontSize15]}>
+                完成医生版注册
+              </Text>
+            </TouchableOpacity>
+            {/* 医疗机构选择 */}
+            <View style={this.state.selectHospitalActive ? style.hospitalSelect : global.hidden}>
+              <ScrollView style={style.hospitalContent} keyboardShouldPersistTaps="handled">
+                <View
+                  style={[
+                    style.hospitalAdd,
+                    global.flex,
+                    global.alignItemsCenter,
+                    global.justifyContentSpaceBetween,
+                  ]}>
+                  <Icon style={style.hospitalSearchIcon} name="search" />
+                  <View style={style.hospitalSearch}>
+                    <InputItem
+                      clear
+                      style={[style.hospitalInput, global.fontStyle, global.fontSize14]}
+                      value={this.state.hospitalName}
+                      placeholder="输入所在医疗机构"
+                      onChange={hospitalName => {
+                        this.setState({ hospitalName })
+                      }}
+                    />
+                  </View>
+                  <TouchableOpacity
+                    style={style.closeBtn}
+                    onPress={() => {
+                      this.setState({
+                        selectHospitalActive: false,
+                        hospitalName: "",
+                        hospitalId: 0,
+                      })
+                    }}>
+                    <Text style={[style.close, global.fontSize14, global.fontStyle]}>取消</Text>
+                  </TouchableOpacity>
+                </View>
+                <TouchableOpacity
+                  style={[
+                    this.state.hospitalName !== "" ? style.addHospital : global.hidden,
+                    global.flex,
+                    global.alignItemsCenter,
+                    global.justifyContentCenter,
+                  ]}
                   onPress={() => {
                     this.setState({
                       selectHospitalActive: false,
-                      hospitalName: "",
-                      hospitalId: 0,
                     })
                   }}>
-                  <Text style={[style.close, global.fontSize14, global.fontStyle]}>取消</Text>
+                  <Text style={[style.addHospitalBtn, global.fontSize14, global.fontStyle]}>
+                    添加
+                  </Text>
+                  <Text
+                    numberOfLines={1}
+                    style={[style.addHospitalBtn, global.fontSize14, global.fontStyle]}>
+                    {this.state.hospitalName}
+                  </Text>
                 </TouchableOpacity>
-              </View>
-              <TouchableOpacity
-                style={[
-                  this.state.hospitalName !== "" ? style.addHospital : global.hidden,
-                  global.flex,
-                  global.alignItemsCenter,
-                  global.justifyContentCenter,
-                ]}
-                onPress={() => {
-                  this.setState({
-                    selectHospitalActive: false,
-                  })
-                }}>
-                <Text style={[style.addHospitalBtn, global.fontSize14, global.fontStyle]}>
-                  添加
-                </Text>
-                <Text
-                  numberOfLines={1}
-                  style={[style.addHospitalBtn, global.fontSize14, global.fontStyle]}>
-                  {this.state.hospitalName}
-                </Text>
-              </TouchableOpacity>
-              <View style={style.hospitalList}>
-                {this.state.hospitalList.map((v: any, k: number) => {
-                  return (
+                <View style={style.hospitalList}>
+                  {this.state.hospitalList.map((v: any, k: number) => {
+                    return (
+                      <TouchableOpacity
+                        key={k}
+                        onPress={() => {
+                          this.setState({
+                            hospitalId: v.id,
+                            hospitalName: v.name,
+                            selectHospitalActive: false,
+                          })
+                        }}>
+                        <Text style={style.hospitalItem}>{v.name}</Text>
+                      </TouchableOpacity>
+                    )
+                  })}
+                </View>
+              </ScrollView>
+            </View>
+          </View>
+        </>
+      )
+    } else {
+      return (
+        <>
+          <KeyboardAvoidingView behavior="padding" style={{ flex: 1 }} keyboardVerticalOffset={70}>
+            <View style={style.main}>
+              <ScrollView style={style.content} keyboardShouldPersistTaps="handled">
+                <View
+                  style={[
+                    style.header,
+                    global.flex,
+                    global.justifyContentSpaceBetween,
+                    global.alignItemsCenter,
+                  ]}>
+                  <TouchableOpacity
+                    style={style.headerLeft}
+                    onPress={() => this.props.navigation.navigate(pathMap.Login)}>
+                    <Text style={[style.headerLeftTitle, global.fontStyle, global.fontSize14]}>
+                      关闭
+                    </Text>
+                  </TouchableOpacity>
+                  <Text style={[style.headerTitle, global.fontStyle, global.fontSize14]}>注册</Text>
+                  <Text style={style.headerLeft} />
+                </View>
+                <View style={style.logo}>
+                  <Image style={style.logoImg} source={gImg.common.logo} />
+                </View>
+                <View style={style.form}>
+                  <View
+                    style={[
+                      style.formItem,
+                      style.pickerItem,
+                      global.flex,
+                      global.justifyContentSpaceBetween,
+                      global.alignItemsCenter,
+                    ]}>
+                    <Text style={style.formItemTitle}>地区</Text>
+                    <Picker
+                      data={this.state.region}
+                      style={style.picker}
+                      value={this.state.cityId}
+                      triggerType="onPress"
+                      onChange={cityId => this.chooseCityId(cityId)}>
+                      <TouchableOpacity
+                        style={[
+                          style.pickerTitle,
+                          global.flex,
+                          global.justifyContentEnd,
+                          global.alignItemsCenter,
+                        ]}>
+                        <Text style={[style.topItemTitle, global.fontStyle, global.fontSize14]}>
+                          {this.state.cityId.length === 0
+                            ? "请选择"
+                            : this.state.regionCidMapAreaName[this.state.cityId[2]]}
+                        </Text>
+                        <Icon name="right" style={[style.inputIcon, global.fontSize16]} />
+                      </TouchableOpacity>
+                    </Picker>
+                  </View>
+                  <View
+                    style={[
+                      style.formItem,
+                      style.pickerItem,
+                      global.flex,
+                      global.justifyContentSpaceBetween,
+                      global.alignItemsCenter,
+                    ]}>
+                    <Text style={style.formItemTitle}>医疗机构</Text>
                     <TouchableOpacity
-                      key={k}
+                      style={[style.hospital, global.flex, global.justifyContentSpaceBetween]}
                       onPress={() => {
+                        if (this.state.cityId.length === 0) {
+                          return Toast.info("请先选择地区", 3)
+                        }
                         this.setState({
-                          hospitalId: v.id,
-                          hospitalName: v.name,
-                          selectHospitalActive: false,
+                          selectHospitalActive: true,
                         })
                       }}>
-                      <Text style={style.hospitalItem}>{v.name}</Text>
+                      <Text style={[style.hospitalTitle, global.fontSize14, global.fontStyle]}>
+                        {this.state.hospitalName === "" ? "请选择" : this.state.hospitalName}
+                      </Text>
+                      <Icon name="right" style={[style.inputIcon, global.fontSize16]} />
                     </TouchableOpacity>
-                  )
-                })}
+                  </View>
+
+                  <View style={style.formItem}>
+                    <InputItem
+                      clear
+                      style={[style.input, global.fontStyle, global.fontSize14]}
+                      value={this.state.name}
+                      placeholder="姓名"
+                      onChange={name => {
+                        this.setState({ name })
+                      }}
+                    />
+                  </View>
+                  <View style={style.formItem}>
+                    <InputItem
+                      clear
+                      style={[style.input, global.fontStyle, global.fontSize14]}
+                      value={this.state.phone}
+                      placeholder="手机号码"
+                      type="number"
+                      onChange={phone => {
+                        this.setState({ phone })
+                      }}
+                    />
+                  </View>
+                  <View style={style.formItem}>
+                    <InputItem
+                      style={[style.input, global.fontStyle, global.fontSize14]}
+                      value={this.state.verificationCode}
+                      placeholder="验证码"
+                      onChange={verificationCode => {
+                        this.setState({ verificationCode })
+                      }}
+                    />
+                    <TouchableOpacity
+                      style={style.getVerificationCodeBtn}
+                      onPress={() => {
+                        this.sendVerificationCode()
+                      }}>
+                      <Text style={[style.verificationCode, global.fontStyle, global.fontSize14]}>
+                        {this.state.verificationCodeMsg}
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                  <View style={style.formItem}>
+                    <InputItem
+                      clear
+                      style={[style.input, global.fontStyle, global.fontSize14]}
+                      value={this.state.pwd}
+                      type="password"
+                      placeholder="密码"
+                      onChange={pwd => {
+                        this.setState({ pwd })
+                      }}
+                    />
+                  </View>
+                  <View style={style.formItem}>
+                    <InputItem
+                      clear
+                      style={[style.input, global.fontStyle, global.fontSize14]}
+                      value={this.state.rePwd}
+                      type="password"
+                      placeholder="确认密码"
+                      onChange={rePwd => {
+                        this.setState({ rePwd })
+                      }}
+                      onBlur={() => {
+                        if (this.state.pwd !== this.state.rePwd) {
+                          Toast.fail("两次密码不一致", 2)
+                          this.setState({
+                            rePwd: "",
+                          })
+                        }
+                      }}
+                    />
+                  </View>
+                </View>
+                <View style={[style.agreement, global.flex, global.alignItemsCenter]}>
+                  <Text style={[style.theme, global.fontStyle, global.fontSize14]}>注册即同意</Text>
+                  <TouchableOpacity
+                    onPress={() => {
+                      this.props.navigation.navigate(pathMap.RegisterAgreement)
+                    }}>
+                    <Text style={[style.agreementName, global.fontStyle, global.fontSize14]}>
+                      医生注册协议
+                    </Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() => {
+                      this.props.navigation.navigate(pathMap.LawAgreement)
+                    }}>
+                    <Text style={[style.agreementName, global.fontStyle, global.fontSize14]}>
+                      法律声明与隐私政策
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              </ScrollView>
+              <TouchableOpacity style={style.subBtn} onPress={this.submit}>
+                <Text style={[style.subTitle, global.fontStyle, global.fontSize15]}>
+                  完成医生版注册
+                </Text>
+              </TouchableOpacity>
+              {/* 医疗机构选择 */}
+              <View style={this.state.selectHospitalActive ? style.hospitalSelect : global.hidden}>
+                <ScrollView style={style.hospitalContent} keyboardShouldPersistTaps="handled">
+                  <View
+                    style={[
+                      style.hospitalAdd,
+                      global.flex,
+                      global.alignItemsCenter,
+                      global.justifyContentSpaceBetween,
+                    ]}>
+                    <Icon style={style.hospitalSearchIcon} name="search" />
+                    <View style={style.hospitalSearch}>
+                      <InputItem
+                        clear
+                        style={[style.hospitalInput, global.fontStyle, global.fontSize14]}
+                        value={this.state.hospitalName}
+                        placeholder="输入所在医疗机构"
+                        onChange={hospitalName => {
+                          this.setState({ hospitalName })
+                        }}
+                      />
+                    </View>
+                    <TouchableOpacity
+                      style={style.closeBtn}
+                      onPress={() => {
+                        this.setState({
+                          selectHospitalActive: false,
+                          hospitalName: "",
+                          hospitalId: 0,
+                        })
+                      }}>
+                      <Text style={[style.close, global.fontSize14, global.fontStyle]}>取消</Text>
+                    </TouchableOpacity>
+                  </View>
+                  <TouchableOpacity
+                    style={[
+                      this.state.hospitalName !== "" ? style.addHospital : global.hidden,
+                      global.flex,
+                      global.alignItemsCenter,
+                      global.justifyContentCenter,
+                    ]}
+                    onPress={() => {
+                      this.setState({
+                        selectHospitalActive: false,
+                      })
+                    }}>
+                    <Text style={[style.addHospitalBtn, global.fontSize14, global.fontStyle]}>
+                      添加
+                    </Text>
+                    <Text
+                      numberOfLines={1}
+                      style={[style.addHospitalBtn, global.fontSize14, global.fontStyle]}>
+                      {this.state.hospitalName}
+                    </Text>
+                  </TouchableOpacity>
+                  <View style={style.hospitalList}>
+                    {this.state.hospitalList.map((v: any, k: number) => {
+                      return (
+                        <TouchableOpacity
+                          key={k}
+                          onPress={() => {
+                            this.setState({
+                              hospitalId: v.id,
+                              hospitalName: v.name,
+                              selectHospitalActive: false,
+                            })
+                          }}>
+                          <Text style={style.hospitalItem}>{v.name}</Text>
+                        </TouchableOpacity>
+                      )
+                    })}
+                  </View>
+                </ScrollView>
               </View>
-            </ScrollView>
-          </View>
-        </View>
-      </>
-    )
+            </View>
+          </KeyboardAvoidingView>
+        </>
+      )
+    }
   }
 }
