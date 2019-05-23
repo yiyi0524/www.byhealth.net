@@ -22,7 +22,10 @@ export default class Test extends Component<Props, State> {
 
   render() {
     return (
-      <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={0}>
+      <KeyboardAvoidingView
+        behavior="padding"
+        style={{ backgroundColor: "red" }}
+        keyboardVerticalOffset={0}>
         <ScrollView style={{ flex: 1, backgroundColor: "yellow" }}>
           <View style={{ flex: 1, justifyContent: "center" }}>
             <View

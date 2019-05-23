@@ -166,6 +166,7 @@ interface State {
   region: Region[]
   imagesViewer: imagesViewer[]
   imageIdx: number
+  selectPic: Picture[]
 }
 interface imagesViewer {
   url: string
@@ -320,6 +321,7 @@ export default class Chat extends Component<
         },
       ],
       imageIdx: 0,
+      selectPic: [],
     }
   }
   componentDidMount() {
@@ -517,7 +519,7 @@ export default class Chat extends Component<
                   <TouchableOpacity style={style.selectPicFa}>
                     <Image source={gImg.advisory.selectPic} style={style.pickerImg} />
                     <View style={style.imgSelector}>
-                      <ImagePicker onChange={this.selectPic} />
+                      <ImagePicker onChange={this.selectPic} files={this.state.selectPic} />
                     </View>
                     <Text style={[style.selectTitle, global.fontSize14, global.fontStyle]}>
                       图片

@@ -36,7 +36,7 @@ export default StyleSheet.create({
     color: sColor.color333,
   },
   prescriptionList: {
-    height: windowHeight,
+    flex: 1,
   },
   tabScroll: {
     flex: 1,
