@@ -210,30 +210,38 @@ export default class Prescription extends Component<
                 global.justifyContentSpaceAround,
               ]}>
               <TouchableOpacity
-                style={this.state.selectTab === "all" ? style.headerItem : global.hidden}
+                style={style.headerItem}
                 onPress={() => {
                   this.setState({
                     selectTab: "all",
                   })
                 }}>
-                <Text style={[style.headerTitle, style.headerTitleActive, global.fontSize14]}>
+                <Text
+                  style={[
+                    this.state.selectTab === "all" ? style.headerTitleActive : style.headerTitle,
+                    global.fontSize14,
+                  ]}>
                   全部 ( {this.state.prescriptionList.length} )
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
-                style={this.state.selectTab === "pay" ? style.headerItem : global.hidden}
+                style={style.headerItem}
                 onPress={() => {
                   this.setState({
                     selectTab: "pay",
                   })
                 }}>
-                <Text style={[style.headerTitle, global.fontSize14]}>
-                  已支付(
+                <Text
+                  style={[
+                    this.state.selectTab === "pay" ? style.headerTitleActive : style.headerTitle,
+                    global.fontSize14,
+                  ]}>
+                  已支付({" "}
                   {
                     this.state.prescriptionList.filter(
                       v => v.status === PRESCRIPTION_STATUS.completePay,
                     ).length
-                  }
+                  }{" "}
                   )
                 </Text>
               </TouchableOpacity>

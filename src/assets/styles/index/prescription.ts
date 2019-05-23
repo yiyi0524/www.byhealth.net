@@ -41,6 +41,7 @@ export default StyleSheet.create({
   tabScroll: {
     flex: 1,
     marginBottom: 8,
+    paddingBottom: 8,
   },
   tabBarUnderlineStyle: {
     backgroundColor: sColor.mainRed,
@@ -100,14 +101,24 @@ export default StyleSheet.create({
   },
   headerItem: {
     width: 150,
-    borderWidth: 1,
+    height: 45,
   },
   headerTitle: {
     color: sColor.color666,
+    lineHeight: 45,
+    height: 45,
     width: 150,
+    borderBottomWidth: 1,
+    borderBottomColor: sColor.white,
     textAlign: "center",
   },
   headerTitleActive: {
+    lineHeight: 45,
+    height: 45,
+    width: 150,
+    borderBottomWidth: 1,
+    borderBottomColor: sColor.mainRed,
+    textAlign: "center",
     color: sColor.mainRed,
   },
 })
