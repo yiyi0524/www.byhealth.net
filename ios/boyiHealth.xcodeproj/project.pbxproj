@@ -741,9 +741,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		13B07F861A680F5B00A75B9A /* boyiHealth */ = {
+		13B07F861A680F5B00A75B9A /* 博一健康 */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "boyiHealth" */;
+			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "博一健康" */;
 			buildPhases = (
 				13B07F871A680F5B00A75B9A /* Sources */,
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
@@ -754,7 +754,7 @@
 			);
 			dependencies = (
 			);
-			name = boyiHealth;
+			name = "博一健康";
 			productName = "Hello World";
 			productReference = 13B07F961A680F5B00A75B9A /* boyiHealth.app */;
 			productType = "com.apple.product-type.application";
@@ -784,6 +784,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 				Base,
 			);
@@ -874,7 +875,7 @@
 			);
 			projectRoot = "";
 			targets = (
-				13B07F861A680F5B00A75B9A /* boyiHealth */,
+				13B07F861A680F5B00A75B9A /* 博一健康 */,
 			);
 		};
 /* End PBXProject section */
@@ -1464,7 +1465,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "boyiHealth" */ = {
+		13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "博一健康" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				13B07F941A680F5B00A75B9A /* Debug */,
