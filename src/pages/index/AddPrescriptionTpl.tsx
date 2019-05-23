@@ -295,7 +295,7 @@ export default class AddPrescriptionTpl extends Component<
                         <InputItem
                           style={style.doseInput}
                           placeholder="0"
-                          value={this.state.doseCount + ""}
+                          value={this.state.doseCount === 0 ? "" : this.state.doseCount + ""}
                           onChange={val => {
                             let doseCount: number | string = parseInt(val)
                             if (isNaN(doseCount)) {
@@ -313,7 +313,7 @@ export default class AddPrescriptionTpl extends Component<
                         <InputItem
                           style={style.doseInput}
                           placeholder="0"
-                          value={this.state.dailyDose + ""}
+                          value={this.state.dailyDose === 0 ? "" : this.state.dailyDose + ""}
                           onChange={val => {
                             let dailyDose: number | string = parseInt(val)
                             if (isNaN(dailyDose)) {
@@ -333,7 +333,11 @@ export default class AddPrescriptionTpl extends Component<
                         <InputItem
                           style={style.doseInput}
                           placeholder="0"
-                          value={this.state.everyDoseUseCount + ""}
+                          value={
+                            this.state.everyDoseUseCount === 0
+                              ? ""
+                              : this.state.everyDoseUseCount + ""
+                          }
                           onChange={val => {
                             let everyDoseUseCount: number | string = parseInt(val)
                             if (isNaN(everyDoseUseCount)) {

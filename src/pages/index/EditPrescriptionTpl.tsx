@@ -297,7 +297,11 @@ export default class EditPrescriptionTpl extends Component<
                         <InputItem
                           style={style.doseInput}
                           placeholder="0"
-                          value={this.state.detail.doseCount + ""}
+                          value={
+                            this.state.detail.doseCount === 0
+                              ? ""
+                              : this.state.detail.doseCount + ""
+                          }
                           onChange={val => {
                             let doseCount: number | string = parseInt(val)
                             if (isNaN(doseCount)) {
@@ -317,7 +321,11 @@ export default class EditPrescriptionTpl extends Component<
                         <InputItem
                           style={style.doseInput}
                           placeholder="0"
-                          value={this.state.detail.dailyDose + ""}
+                          value={
+                            this.state.detail.dailyDose === 0
+                              ? ""
+                              : this.state.detail.dailyDose + ""
+                          }
                           onChange={val => {
                             let dailyDose: number | string = parseInt(val)
                             if (isNaN(dailyDose)) {
@@ -339,7 +347,11 @@ export default class EditPrescriptionTpl extends Component<
                         <InputItem
                           style={style.doseInput}
                           placeholder="0"
-                          value={this.state.detail.everyDoseUseCount + ""}
+                          value={
+                            this.state.detail.everyDoseUseCount === 0
+                              ? ""
+                              : this.state.detail.everyDoseUseCount + ""
+                          }
                           onChange={val => {
                             let everyDoseUseCount: number | string = parseInt(val)
                             if (isNaN(everyDoseUseCount)) {
