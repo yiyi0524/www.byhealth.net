@@ -515,13 +515,13 @@ export default class Chat extends Component<
                     global.justifyContentSpaceAround,
                   ]}>
                   <TouchableOpacity style={style.selectPicFa}>
-                    <Image source={gImg.advisory.selectPic} style={style.selectImg} />
-                    <Text style={[style.selectTitle, global.fontSize14, global.fontStyle]}>
-                      图片
-                    </Text>
+                    <Image source={gImg.advisory.selectPic} style={style.pickerImg} />
                     <View style={style.imgSelector}>
                       <ImagePicker onChange={this.selectPic} />
                     </View>
+                    <Text style={[style.selectTitle, global.fontSize14, global.fontStyle]}>
+                      图片
+                    </Text>
                   </TouchableOpacity>
                   <TouchableOpacity style={style.selectPicFa}>
                     <Image source={gImg.advisory.selectPhoto} style={style.selectImg} />
@@ -992,7 +992,6 @@ export default class Chat extends Component<
   sendMsg = () => {
     this.setState({
       shouldScrollToEnd: true,
-      isShowBottomNav: false,
       isShowBottomPicSelect: false,
     })
     if (this.state.sendMsg === "") {
@@ -1041,7 +1040,6 @@ export default class Chat extends Component<
             if (json.code === 0) {
               Portal.remove(key)
               this.setState({
-                isShowBottomNav: false,
                 isShowBottomPicSelect: false,
               })
               const { patientUid } = this.state

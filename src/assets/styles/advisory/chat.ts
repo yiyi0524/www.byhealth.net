@@ -264,19 +264,25 @@ export default StyleSheet.create({
   selectPicFa: {
     alignItems: "center",
     position: "relative",
+    overflow: "hidden",
   },
   selectImg: {
     width: 50,
     height: 50,
     resizeMode: "cover",
   },
-  imgSelector: {
+  pickerImg: {
     position: "absolute",
-    // opacity: 0,
-    borderWidth: 1,
     width: 50,
     height: 50,
-    zIndex: 10000,
+    resizeMode: "cover",
+    borderWidth: 1,
+  },
+  imgSelector: {
+    // opacity: 0,
+    width: 50,
+    height: 50,
+    overflow: "hidden",
   },
   selectTitle: {
     color: sColor.color666,
