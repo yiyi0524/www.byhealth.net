@@ -31,6 +31,8 @@
 	</dict>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string></string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>让您能够上传图片</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>antfill.ttf</string>

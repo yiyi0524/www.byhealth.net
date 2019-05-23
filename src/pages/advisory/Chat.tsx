@@ -197,8 +197,8 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
   mapDispatchToProps,
 )
 export default class Chat extends Component<
-  Props & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
-  State
+Props & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
+State
 > {
   static navigationOptions = ({ navigation }: { navigation: NavigationScreenProp<State> }) => {
     let title = ""
@@ -516,15 +516,15 @@ export default class Chat extends Component<
                     global.alignItemsCenter,
                     global.justifyContentSpaceAround,
                   ]}>
-                  <TouchableOpacity style={style.selectPicFa}>
-                    <Image source={gImg.advisory.selectPic} style={style.pickerImg} />
+                  <View style={style.selectPicFa}>
                     <View style={style.imgSelector}>
                       <ImagePicker onChange={this.selectPic} files={this.state.selectPic} />
                     </View>
+                    <Image source={gImg.advisory.selectPic} style={style.pickerImg} />
                     <Text style={[style.selectTitle, global.fontSize14, global.fontStyle]}>
                       图片
                     </Text>
-                  </TouchableOpacity>
+                  </View>
                   <TouchableOpacity style={style.selectPicFa}>
                     <Image source={gImg.advisory.selectPhoto} style={style.selectImg} />
                     <Text style={[style.selectTitle, global.fontSize14, global.fontStyle]}>
@@ -576,7 +576,7 @@ export default class Chat extends Component<
               imageUrls={this.state.imagesViewer}
               index={this.state.imageIdx}
               maxOverflow={0}
-              onCancel={() => {}}
+              onCancel={() => { }}
             />
           </View>
         </View>
@@ -1033,6 +1033,7 @@ export default class Chat extends Component<
     })
   }
   selectPic = (files: Array<{}>, operationType: string) => {
+    Toast.info("11", 1)
     if (operationType === "add") {
       let key = Toast.loading("上传图片中")
       api
