@@ -22,6 +22,7 @@ import userApi from "@api/user"
 import { Picture } from "@pages/advisory/Chat"
 import { getPicFullUrl } from "@/utils/utils"
 import { Assign } from "utility-types"
+import api from "@/services/api"
 const style = gStyle.addressBook.AddressBookIndex
 const global = gStyle.global
 interface Props {
@@ -97,6 +98,10 @@ export default class Index extends Component<
   }
   init = async () => {
     try {
+      let isLogin = await api.isLogin()
+      if (!isLogin) {
+        this.props.navigation.navigate(pathMap.Login)
+      }
       let {
         data: { doctorInfo },
       } = await userApi.getPersonalInfo()

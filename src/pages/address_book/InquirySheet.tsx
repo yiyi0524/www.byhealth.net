@@ -12,7 +12,7 @@ import { NavigationScreenProp } from "react-navigation"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
 import { Region } from "./PatientDetail"
-import api from "@/services/api"
+import api, { getThumbUrl } from "@/services/api"
 import patient, { inquirySheet } from "@/services/patient"
 const style = gStyle.addressBook.InquirySheet
 const global = gStyle.global
@@ -199,11 +199,15 @@ export default class InquirySheet extends Component<
                   <TouchableOpacity
                     key={v.id}
                     onPress={() => {
-                      this.showImg(v.url)
+                      this.showImg(getThumbUrl({ path: getPicFullUrl(v.url) }))
                     }}>
                     <Image
                       style={style.patientImg}
-                      source={v.url ? { uri: getPicFullUrl(v.url) } : gImg.common.defaultPic}
+                      source={
+                        v.url
+                          ? { uri: getThumbUrl({ path: getPicFullUrl(v.url) }) }
+                          : gImg.common.defaultPic
+                      }
                     />
                   </TouchableOpacity>
                 )
@@ -222,11 +226,15 @@ export default class InquirySheet extends Component<
                   <TouchableOpacity
                     key={v.id}
                     onPress={() => {
-                      this.showImg(v.url)
+                      this.showImg(getThumbUrl({ path: getPicFullUrl(v.url) }))
                     }}>
                     <Image
                       style={style.patientImg}
-                      source={v.url ? { uri: getPicFullUrl(v.url) } : gImg.common.defaultPic}
+                      source={
+                        v.url
+                          ? { uri: getThumbUrl({ path: getPicFullUrl(v.url) }) }
+                          : gImg.common.defaultPic
+                      }
                     />
                   </TouchableOpacity>
                 )
@@ -236,11 +244,15 @@ export default class InquirySheet extends Component<
                   <TouchableOpacity
                     key={v.id}
                     onPress={() => {
-                      this.showImg(v.url)
+                      this.showImg(getThumbUrl({ path: getPicFullUrl(v.url) }))
                     }}>
                     <Image
                       style={style.patientImg}
-                      source={v.url ? { uri: getPicFullUrl(v.url) } : gImg.common.defaultPic}
+                      source={
+                        v.url
+                          ? { uri: getThumbUrl({ path: getPicFullUrl(v.url) }) }
+                          : gImg.common.defaultPic
+                      }
                     />
                   </TouchableOpacity>
                 )
@@ -250,11 +262,15 @@ export default class InquirySheet extends Component<
                   <TouchableOpacity
                     key={v.id}
                     onPress={() => {
-                      this.showImg(v.url)
+                      this.showImg(getThumbUrl({ path: getPicFullUrl(v.url) }))
                     }}>
                     <Image
                       style={style.patientImg}
-                      source={v.url ? { uri: getPicFullUrl(v.url) } : gImg.common.defaultPic}
+                      source={
+                        v.url
+                          ? { uri: getThumbUrl({ path: getPicFullUrl(v.url) }) }
+                          : gImg.common.defaultPic
+                      }
                     />
                   </TouchableOpacity>
                 )
@@ -275,11 +291,15 @@ export default class InquirySheet extends Component<
                   <TouchableOpacity
                     key={v.id}
                     onPress={() => {
-                      this.showImg(v.url)
+                      this.showImg(getThumbUrl({ path: getPicFullUrl(v.url) }))
                     }}>
                     <Image
                       style={style.patientImg}
-                      source={v.url ? { uri: getPicFullUrl(v.url) } : gImg.common.defaultPic}
+                      source={
+                        v.url
+                          ? { uri: getThumbUrl({ path: getPicFullUrl(v.url) }) }
+                          : gImg.common.defaultPic
+                      }
                     />
                   </TouchableOpacity>
                 )
@@ -323,9 +343,7 @@ export default class InquirySheet extends Component<
             <Image
               style={style.showImg}
               source={
-                this.state.showImgUrl
-                  ? { uri: getPicFullUrl(this.state.showImgUrl) }
-                  : gImg.common.defaultAvatar
+                this.state.showImgUrl ? { uri: this.state.showImgUrl } : gImg.common.defaultAvatar
               }
             />
           </TouchableOpacity>

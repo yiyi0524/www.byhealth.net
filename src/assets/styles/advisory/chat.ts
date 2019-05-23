@@ -272,7 +272,11 @@ export default StyleSheet.create({
   },
   imgSelector: {
     position: "absolute",
-    opacity: 0,
+    // opacity: 0,
+    borderWidth: 1,
+    width: 50,
+    height: 50,
+    zIndex: 10000,
   },
   selectTitle: {
     color: sColor.color666,

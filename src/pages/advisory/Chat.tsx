@@ -1,10 +1,9 @@
 import global from "@/assets/styles/global"
 import DashLine from "@/components/DashLine"
-import { BASE_URL } from "@/config/api"
 import * as wsAction from "@/redux/actions/ws"
 import { AppState } from "@/redux/stores/store"
 import pathMap from "@/routes/pathMap"
-import api, { getRegion } from "@/services/api"
+import api, { getRegion, getThumbUrl } from "@/services/api"
 import { clearPatientUnreadMsgCount, closeInquiry, GENDER_ZH } from "@/services/doctor"
 import gImg from "@/utils/img"
 import { getPicFullUrl, windowWidth } from "@/utils/utils"
@@ -674,7 +673,7 @@ export default class Chat extends Component<
                 style={style.itemImg}
                 source={
                   msg.sendUser.avatar.url
-                    ? { uri: getPicFullUrl(msg.sendUser.avatar.url) }
+                    ? { uri: getThumbUrl({ path: getPicFullUrl(msg.sendUser.avatar.url) }) }
                     : gImg.common.defaultAvatar
                 }
               />
@@ -682,10 +681,14 @@ export default class Chat extends Component<
             <View style={isSelfMsg ? global.hidden : style.leftItemIcon} />
             <TouchableOpacity
               style={style.leftItemPicture}
-              onPress={() => this.openShowPic(BASE_URL + msg.pic.url)}>
+              onPress={() => this.openShowPic(getThumbUrl({ path: getPicFullUrl(msg.pic.url) }))}>
               <Image
                 style={style.itemPicImg}
-                source={msg.pic.url ? { uri: BASE_URL + msg.pic.url } : gImg.common.defaultPic}
+                source={
+                  msg.pic.url
+                    ? { uri: getThumbUrl({ path: getPicFullUrl(msg.pic.url) }) }
+                    : gImg.common.defaultPic
+                }
               />
             </TouchableOpacity>
           </View>
@@ -698,10 +701,14 @@ export default class Chat extends Component<
           <View style={[style.leftItem, global.flex, global.justifyContentEnd]}>
             <TouchableOpacity
               style={style.rightItemPicture}
-              onPress={() => this.openShowPic(BASE_URL + msg.pic.url)}>
+              onPress={() => this.openShowPic(getThumbUrl({ path: getPicFullUrl(msg.pic.url) }))}>
               <Image
                 style={style.itemPicImg}
-                source={msg.pic.url ? { uri: BASE_URL + msg.pic.url } : gImg.common.defaultPic}
+                source={
+                  msg.pic.url
+                    ? { uri: getThumbUrl({ path: getPicFullUrl(msg.pic.url) }) }
+                    : gImg.common.defaultPic
+                }
               />
             </TouchableOpacity>
             <View style={isSelfMsg ? style.rightItemIcon : global.hidden} />
@@ -710,7 +717,7 @@ export default class Chat extends Component<
                 style={style.itemImg}
                 source={
                   msg.sendUser.avatar.url
-                    ? { uri: getPicFullUrl(msg.sendUser.avatar.url) }
+                    ? { uri: getThumbUrl({ path: getPicFullUrl(msg.sendUser.avatar.url) }) }
                     : gImg.common.defaultAvatar
                 }
               />
@@ -985,6 +992,8 @@ export default class Chat extends Component<
   sendMsg = () => {
     this.setState({
       shouldScrollToEnd: true,
+      isShowBottomNav: false,
+      isShowBottomPicSelect: false,
     })
     if (this.state.sendMsg === "") {
       return
@@ -1032,7 +1041,8 @@ export default class Chat extends Component<
             if (json.code === 0) {
               Portal.remove(key)
               this.setState({
-                isShowBottomPicSelect: !this.state.isShowBottomPicSelect,
+                isShowBottomNav: false,
+                isShowBottomPicSelect: false,
               })
               const { patientUid } = this.state
               const { url, picId } = json.data

@@ -23,6 +23,7 @@ import { Dispatch } from "redux"
 import { Picture } from "./Chat"
 import { connect } from "react-redux"
 import global from "@/assets/styles/global"
+import api from "@/services/api"
 
 const style = gStyle.advisory.advisoryIndex
 const globalStyle = gStyle.global
@@ -101,6 +102,10 @@ export default class Index extends Component<
   init = async () => {
     this.setState({ hasLoad: false })
     try {
+      let isLogin = await api.isLogin()
+      if (!isLogin) {
+        this.props.navigation.navigate(pathMap.Login)
+      }
       let {
         data: { list: consultationList },
       } = await doctor.listConsultation({ page: -1, limit: -1 })
