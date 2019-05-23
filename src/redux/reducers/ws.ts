@@ -128,7 +128,7 @@ function setUserUnReadMsgCount(state = initState, action: Action<{ uid: number; 
  * 改变当前屏幕
  */
 function changeScreen(state = initState, action: Action<{ screenName: string }>) {
-  if (action.type === wsAction.SET_USER_UNREAD_MSG_COUNT) {
+  if (action.type === wsAction.CHANGE_SCREEN) {
     let newState = Object.assign({}, state, { currScreen: action.preload.screenName })
     return newState
   }
@@ -137,9 +137,9 @@ function changeScreen(state = initState, action: Action<{ screenName: string }>)
 /**
  * 设置当前聊天的用户uid
  */
-function setCurrChatUid(state = initState, action: Action<{ screenName: string }>) {
-  if (action.type === wsAction.SET_USER_UNREAD_MSG_COUNT) {
-    let newState = Object.assign({}, state, { currScreen: action.preload.screenName })
+function setCurrChatUid(state = initState, action: Action<{ uid: number }>) {
+  if (action.type === wsAction.SET_CURR_CHAT_UID) {
+    let newState = Object.assign({}, state, { currChatUid: action.preload.uid })
     return newState
   }
   return state

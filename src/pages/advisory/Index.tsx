@@ -170,6 +170,7 @@ export default class Index extends Component<
       )
     }
     let { unReadMsgCountRecord } = this.props.ws
+    console.log(unReadMsgCountRecord)
     return (
       <>
         <ScrollView
@@ -286,10 +287,11 @@ export default class Index extends Component<
                       <Badge dot style={[consultation.isWaitBuyDrug ? null : global.hidden]}>
                         <Text style={[style.replay, global.fontSize12]}>待购药</Text>
                       </Badge>
-                      {consultation.patientUid in unReadMsgCountRecord ? (
+                      {consultation.patientUid in unReadMsgCountRecord &&
+                      unReadMsgCountRecord[consultation.patientUid] > 0 ? (
                         <Badge
                           style={{ marginLeft: 20, marginRight: 20 }}
-                          text={this.props.ws.unReadMsgCountRecord[consultation.patientUid]}
+                          text={unReadMsgCountRecord[consultation.patientUid]}
                         />
                       ) : null}
                     </View>

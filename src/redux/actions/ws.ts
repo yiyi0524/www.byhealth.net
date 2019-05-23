@@ -26,14 +26,14 @@ export const SET_CURR_CHAT_UID = "设置当前聊天的患者uid"
 
 export function changeScreen(preload: { screenName: string }) {
   return {
-    type: CHANGE_STATUS,
+    type: CHANGE_SCREEN,
     preload,
   }
 }
 
 export function setCurrChatUid(preload: { uid: number }) {
   return {
-    type: CHANGE_STATUS,
+    type: SET_CURR_CHAT_UID,
     preload,
   }
 }

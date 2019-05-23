@@ -1,11 +1,11 @@
-import React, { Component } from "react"
-import { createAppContainer, createStackNavigator } from "react-navigation"
+import * as wsAction from "@/redux/actions/ws"
+import { AppState } from "@/redux/stores/store"
 import routeConfig from "@/routes/route"
 import Ws from "@pages/Ws"
-import { AppState } from "@/redux/stores/store"
-import * as wsAction from "@/redux/actions/ws"
-import { Dispatch } from "redux"
+import React, { Component } from "react"
+import { createAppContainer, createStackNavigator } from "react-navigation"
 import { connect } from "react-redux"
+import { Dispatch } from "redux"
 
 const mapStateToProps = (state: AppState) => {
   return {
@@ -23,16 +23,13 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
   }
 }
 
-const AppNavigator = createAppContainer(createStackNavigator(routeConfig[0], routeConfig[1]))
-const AppNavigatorRedux: typeof AppNavigator & {
-  props: {
-    changeScreen: (screenName: string) => void
-  }
-} = connect(
+const stackNavigator = createStackNavigator(routeConfig[0], routeConfig[1])
+const AppNavigator = createAppContainer(stackNavigator)
+@connect(
   mapStateToProps,
   mapDispatchToProps,
-)(AppNavigator)
-export default class App extends Component {
+)
+export default class App extends Component<any> {
   getActiveRouteName = (navigationState: any): any => {
     if (!navigationState) {
       return null
@@ -46,16 +43,13 @@ export default class App extends Component {
   render() {
     return (
       <Ws>
-        <AppNavigatorRedux
+        <AppNavigator
           onNavigationStateChange={(prevState, currentState) => {
             const currentScreen = this.getActiveRouteName(currentState)
             const prevScreen = this.getActiveRouteName(prevState)
             if (prevScreen !== currentScreen) {
               if (currentScreen !== null) {
-                if ("changeScreen" in this.props) {
-                  let props: any = this.props
-                  props.changeScreen(currentScreen)
-                }
+                this.props.changeScreen(currentScreen)
               }
             }
           }}

@@ -10,6 +10,7 @@ import { connect } from "react-redux"
 import { Dispatch } from "redux"
 import { Overwrite } from "utility-types"
 import { MsgType, Picture } from "./advisory/Chat"
+import pathMap from "@/routes/pathMap"
 /**
  * 一条消息
  */
@@ -233,7 +234,8 @@ class Ws extends React.Component<
         : frame.data.sendUser.uid
     this.props.addMsg({ uid: patientUid, msg: frame.data })
     // 如果当前页面不是聊天页面或者当前聊天的uid 不是 本条消息的患者uid 就把未读消息加1
-    if (currScreen !== "AdvisoryChat" || currChatUid !== patientUid) {
+    if (currScreen !== pathMap.AdvisoryChat || currChatUid !== patientUid) {
+      console.log("ws238--- : ", currScreen, currChatUid, patientUid)
       let patientUnreadMsgCount = unReadMsgCountRecord[patientUid] || 0
       this.props.setUserUnReadMsgCount({ uid: patientUid, count: patientUnreadMsgCount + 1 })
     }
@@ -351,7 +353,7 @@ class Ws extends React.Component<
   sendMsg = (frame: SendFrame): boolean => {
     if (!this.client || !this.wsIsConnect()) {
       if (frame.url !== "/ws/ping") {
-        Toast.fail("未连接,无法发送消息")
+        Toast.fail("未连接,无法发送消息", 1)
       }
       return false
     }
