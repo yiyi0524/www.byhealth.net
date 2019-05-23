@@ -276,12 +276,12 @@ export default StyleSheet.create({
     width: 50,
     height: 50,
     resizeMode: "cover",
-    borderWidth: 1,
   },
   imgSelector: {
-    // opacity: 0,
+    opacity: 0,
     width: 50,
     height: 50,
+    zIndex: 1000,
     overflow: "hidden",
   },
   selectTitle: {
