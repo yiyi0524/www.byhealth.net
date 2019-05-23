@@ -271,10 +271,15 @@ export default StyleSheet.create({
     height: 50,
     resizeMode: "cover",
   },
-  imgSelector: {
+  pickerImg: {
     position: "absolute",
-    // opacity: 0,
+    width: 50,
+    height: 50,
+    resizeMode: "cover",
     borderWidth: 1,
+  },
+  imgSelector: {
+    // opacity: 0,
     width: 50,
     height: 50,
     overflow: "hidden",

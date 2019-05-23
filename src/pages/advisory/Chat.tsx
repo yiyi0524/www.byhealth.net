@@ -515,13 +515,13 @@ export default class Chat extends Component<
                     global.justifyContentSpaceAround,
                   ]}>
                   <TouchableOpacity style={style.selectPicFa}>
-                    <Image source={gImg.advisory.selectPic} style={style.selectImg} />
-                    <Text style={[style.selectTitle, global.fontSize14, global.fontStyle]}>
-                      图片
-                    </Text>
+                    <Image source={gImg.advisory.selectPic} style={style.pickerImg} />
                     <View style={style.imgSelector}>
                       <ImagePicker onChange={this.selectPic} />
                     </View>
+                    <Text style={[style.selectTitle, global.fontSize14, global.fontStyle]}>
+                      图片
+                    </Text>
                   </TouchableOpacity>
                   <TouchableOpacity style={style.selectPicFa}>
                     <Image source={gImg.advisory.selectPhoto} style={style.selectImg} />
