@@ -1,6 +1,5 @@
 import global from "@/assets/styles/global"
 import DashLine from "@/components/DashLine"
-import { BASE_URL } from "@/config/api"
 import * as wsAction from "@/redux/actions/ws"
 import { AppState } from "@/redux/stores/store"
 import pathMap from "@/routes/pathMap"
