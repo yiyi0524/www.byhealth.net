@@ -1,5 +1,6 @@
 import global from "@/assets/styles/global"
 import DashLine from "@/components/DashLine"
+import { BASE_URL } from "@/config/api"
 import * as wsAction from "@/redux/actions/ws"
 import { AppState } from "@/redux/stores/store"
 import pathMap from "@/routes/pathMap"
@@ -992,7 +993,6 @@ export default class Chat extends Component<
   sendMsg = () => {
     this.setState({
       shouldScrollToEnd: true,
-      isShowBottomNav: false,
       isShowBottomPicSelect: false,
     })
     if (this.state.sendMsg === "") {
@@ -1041,7 +1041,6 @@ export default class Chat extends Component<
             if (json.code === 0) {
               Portal.remove(key)
               this.setState({
-                isShowBottomNav: false,
                 isShowBottomPicSelect: false,
               })
               const { patientUid } = this.state

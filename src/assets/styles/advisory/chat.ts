@@ -264,6 +264,7 @@ export default StyleSheet.create({
   selectPicFa: {
     alignItems: "center",
     position: "relative",
+    overflow: "hidden",
   },
   selectImg: {
     width: 50,
@@ -276,7 +277,7 @@ export default StyleSheet.create({
     borderWidth: 1,
     width: 50,
     height: 50,
-    zIndex: 10000,
+    overflow: "hidden",
   },
   selectTitle: {
     color: sColor.color666,
