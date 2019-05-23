@@ -435,12 +435,12 @@ export default class Register extends Component<
                   </Text>
                 </TouchableOpacity>
               </View>
+              <TouchableOpacity style={style.subBtn} onPress={this.submit}>
+                <Text style={[style.subTitle, global.fontStyle, global.fontSize15]}>
+                  完成医生版注册
+                </Text>
+              </TouchableOpacity>
             </ScrollView>
-            <TouchableOpacity style={style.subBtn} onPress={this.submit}>
-              <Text style={[style.subTitle, global.fontStyle, global.fontSize15]}>
-                完成医生版注册
-              </Text>
-            </TouchableOpacity>
             {/* 医疗机构选择 */}
             <View style={this.state.selectHospitalActive ? style.hospitalSelect : global.hidden}>
               <ScrollView style={style.hospitalContent} keyboardShouldPersistTaps="handled">
@@ -696,12 +696,12 @@ export default class Register extends Component<
                     </Text>
                   </TouchableOpacity>
                 </View>
+                <TouchableOpacity style={style.subBtn} onPress={this.submit}>
+                  <Text style={[style.subTitle, global.fontStyle, global.fontSize15]}>
+                    完成医生版注册
+                  </Text>
+                </TouchableOpacity>
               </ScrollView>
-              <TouchableOpacity style={style.subBtn} onPress={this.submit}>
-                <Text style={[style.subTitle, global.fontStyle, global.fontSize15]}>
-                  完成医生版注册
-                </Text>
-              </TouchableOpacity>
               {/* 医疗机构选择 */}
               <View style={this.state.selectHospitalActive ? style.hospitalSelect : global.hidden}>
                 <ScrollView style={style.hospitalContent} keyboardShouldPersistTaps="handled">

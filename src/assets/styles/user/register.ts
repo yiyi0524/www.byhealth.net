@@ -10,7 +10,7 @@ export default StyleSheet.create({
     position: "relative",
   },
   content: {
-    flex: 0.9,
+    flex: 1,
   },
   header: {
     height: 45,
@@ -102,7 +102,6 @@ export default StyleSheet.create({
     marginRight: 15,
   },
   subBtn: {
-    flex: 0.1,
     paddingLeft: 15,
     paddingRight: 15,
   },
