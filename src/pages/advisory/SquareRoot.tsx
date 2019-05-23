@@ -490,6 +490,7 @@ export default class SquareRoot extends Component<
                           <Text style={[style.doseTitle, global.fontSize14]}>共</Text>
                           <View style={style.doseInputFather}>
                             <InputItem
+                              last
                               type="number"
                               style={style.doseInput}
                               placeholder="0"
@@ -511,6 +512,7 @@ export default class SquareRoot extends Component<
                           <Text style={[style.doseTitle, global.fontSize14]}>每日</Text>
                           <View style={style.doseInputFather}>
                             <InputItem
+                              last
                               style={style.doseInput}
                               placeholder="0"
                               type="number"
@@ -534,6 +536,7 @@ export default class SquareRoot extends Component<
                           <Text style={[style.doseTitle, global.fontSize14]}>一剂分</Text>
                           <View style={style.doseInputFather}>
                             <InputItem
+                              last
                               style={style.doseInput}
                               placeholder="0"
                               value={

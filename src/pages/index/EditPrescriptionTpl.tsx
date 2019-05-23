@@ -295,6 +295,7 @@ export default class EditPrescriptionTpl extends Component<
                       <Text style={[style.doseTitle, global.fontSize14]}>共</Text>
                       <View style={style.doseInputFather}>
                         <InputItem
+                          last
                           style={style.doseInput}
                           placeholder="0"
                           value={
@@ -319,6 +320,7 @@ export default class EditPrescriptionTpl extends Component<
                       <Text style={[style.doseTitle, global.fontSize14]}>每日</Text>
                       <View style={style.doseInputFather}>
                         <InputItem
+                          last
                           style={style.doseInput}
                           placeholder="0"
                           value={
@@ -345,6 +347,7 @@ export default class EditPrescriptionTpl extends Component<
                       <Text style={[style.doseTitle, global.fontSize14]}>一剂分</Text>
                       <View style={style.doseInputFather}>
                         <InputItem
+                          last
                           style={style.doseInput}
                           placeholder="0"
                           value={

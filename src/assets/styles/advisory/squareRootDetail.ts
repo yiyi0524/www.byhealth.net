@@ -78,6 +78,10 @@ export default StyleSheet.create({
     color: sColor.color666,
     marginRight: 5,
   },
+  diagnosisItemDescription: {
+    flex: 1,
+    color: sColor.color666,
+  },
   diagnosisItemAll: {
     color: sColor.color333,
     marginRight: 5,

@@ -1,7 +1,7 @@
 import { windowHeight } from "@/utils/utils"
 import { windowWidth } from "@api/api"
 import sColor from "@styles/color"
-import { StyleSheet } from "react-native"
+import { StyleSheet, PixelRatio } from "react-native"
 export default StyleSheet.create({
   loading: {
     width: windowWidth,
@@ -136,7 +136,9 @@ export default StyleSheet.create({
     color: sColor.color666,
   },
   doseInputFather: {
-    width: 70,
+    width: 55,
+    borderBottomWidth: 1 / PixelRatio.get(),
+    borderBottomColor: sColor.colorDdd,
   },
   doseInput: {
     fontSize: 14,

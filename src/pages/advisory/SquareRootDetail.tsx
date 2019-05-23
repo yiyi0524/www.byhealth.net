@@ -197,9 +197,9 @@ export default class SquareRoot extends Component<
                   : detail.patient.yearAge + "岁" + detail.patient.monthAge + "月"}
               </Text>
             </View>
-            <View style={[style.diagnosisItem, global.flex, global.alignItemsCenter]}>
+            <View style={[style.diagnosisItem, global.flex]}>
               <Text style={[style.diagnosisItemTitle, global.fontSize14]}>[ 诊断 ] </Text>
-              <Text style={[style.diagnosisItemLineTitle, global.fontSize14]}>
+              <Text style={[style.diagnosisItemDescription, global.fontSize14]}>
                 {detail.discrimination}; {detail.syndromeDifferentiation}
               </Text>
             </View>
@@ -372,12 +372,11 @@ export default class SquareRoot extends Component<
                                   numberOfLines={1}>
                                   {manufacturer}
                                 </Text>
-                                <View
-                                  style={[style.usageDosage, global.flex, global.alignItemsCenter]}>
+                                <View style={[style.usageDosage, global.flex]}>
                                   <Text style={[style.diagnosisItemTitle, global.fontSize14]}>
                                     用法用量
                                   </Text>
-                                  <Text style={[style.diagnosisItemTitle, global.fontSize14]}>
+                                  <Text style={[style.diagnosisItemDescription, global.fontSize14]}>
                                     {v.usage}
                                   </Text>
                                 </View>
@@ -405,9 +404,11 @@ export default class SquareRoot extends Component<
               <Text style={[style.title, global.fontSize14]}> 选填 </Text>
               <View style={style.titleSpot} />
             </View>
-            <View style={[style.diagnosisItem, global.flex, global.alignItemsCenter]}>
+            <View style={[style.diagnosisItem, global.flex]}>
               <Text style={[style.diagnosisItemTitle, global.fontSize14]}>[ 医嘱提醒 ]</Text>
-              <Text style={[style.diagnosisItemTitle, global.fontSize14]}>{detail.advice}</Text>
+              <Text style={[style.diagnosisItemDescription, global.fontSize14]}>
+                {detail.advice}
+              </Text>
             </View>
           </View>
           {/* 明细 */}
