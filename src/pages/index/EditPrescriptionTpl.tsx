@@ -303,7 +303,7 @@ export default class EditPrescriptionTpl extends Component<
                               : this.state.detail.doseCount + ""
                           }
                           onChange={val => {
-                            let doseCount: number | string = parseInt(val)
+                            let doseCount: number = parseInt(val)
                             if (isNaN(doseCount)) {
                               doseCount = 0
                             }
