@@ -333,7 +333,9 @@ export default class Index extends Component<
                   {GENDER_ZH[this.state.info.gender]}
                 </Text>
               </View>
-              <TouchableOpacity onPress={() => this.props.navigation.push(pathMap.CustomerService)}>
+              <TouchableOpacity
+                onPress={() => this.props.navigation.push(pathMap.CustomerService)}
+                style={style.headerInfoCustomerFa}>
                 <Text style={[style.headerInfoCustomer, global.fontSize12]}>联系客服修改</Text>
               </TouchableOpacity>
             </View>

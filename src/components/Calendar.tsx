@@ -176,14 +176,14 @@ class CalendarMode extends React.Component<Props, State> {
           }
         }
         sittingHospitalList.push({
-          value: v.id,
+          value: v.hospitalId,
           label: hospitalName,
         })
-        sittingHospitalMapList[v.id] = hospitalName
+        sittingHospitalMapList[v.hospitalId] = hospitalName
       }
       let { hospitalIdMapColor } = this.state
       for (let i = 0; i < listSittingHospital.length && i < 7; i++) {
-        hospitalIdMapColor[listSittingHospital[i].id] = this.hospitalColorList[i]
+        hospitalIdMapColor[listSittingHospital[i].hospitalId] = this.hospitalColorList[i]
       }
       this.setState({
         calendar,
@@ -212,9 +212,15 @@ class CalendarMode extends React.Component<Props, State> {
           <Fragment key={k}>
             <View style={style.mainRow}>
               <View style={style.mainRowItem} />
-              <Text style={style.mainRowItem}>上午</Text>
-              <Text style={style.mainRowItem}>下午</Text>
-              <Text style={style.mainRowItem}>晚上</Text>
+              <View style={style.mainRowItem}>
+                <Text style={style.mainRowItem}>上午</Text>
+              </View>
+              <View style={style.mainRowItemFa}>
+                <Text style={style.mainRowItem}>下午</Text>
+              </View>
+              <View style={style.mainRowItemFa}>
+                <Text style={style.mainRowItem}>晚上</Text>
+              </View>
             </View>
             {v.day === 0 ? (
               <View style={style.otherMonth}>
@@ -225,8 +231,19 @@ class CalendarMode extends React.Component<Props, State> {
               </View>
             ) : (
               <View style={style.currMonth}>
-                <Text style={style.currMonthItem}>{v.day}</Text>
+                <View style={style.currMonthItemFa}>
+                  <Text style={style.currMonthItem}>{v.day}</Text>
+                </View>
                 <TouchableOpacity
+                  style={[
+                    style.currMonthItemFa,
+                    {
+                      backgroundColor:
+                        `${dateFmt}-0` in timeMapSittingRecord
+                          ? this.state.hospitalIdMapColor[timeMapSittingRecord[`${dateFmt}-0`]]
+                          : "white",
+                    },
+                  ]}
                   onPress={() => {
                     // let isSitting = false,
                     //   sittingHospitalId = 0
@@ -235,46 +252,49 @@ class CalendarMode extends React.Component<Props, State> {
                   <Text
                     style={[
                       style.currMonthItem,
-                      {
-                        backgroundColor:
-                          `${dateFmt}-0` in timeMapSittingRecord
-                            ? this.state.hospitalIdMapColor[timeMapSittingRecord[`${dateFmt}-0`]]
-                            : "white",
-                      },
+                      `${dateFmt}-0` in timeMapSittingRecord ? style.currMonthItemActive : null,
                     ]}>
                     {`${dateFmt}-0` in timeMapSittingRecord ? "坐诊" : null}
                   </Text>
                 </TouchableOpacity>
                 <TouchableOpacity
+                  style={[
+                    style.currMonthItemFa,
+                    {
+                      backgroundColor:
+                        `${dateFmt}-1` in timeMapSittingRecord
+                          ? this.state.hospitalIdMapColor[timeMapSittingRecord[`${dateFmt}-1`]]
+                          : "white",
+                    },
+                  ]}
                   onPress={() => {
                     this.setSitting(dateFmt, STAGE.afternoon)
                   }}>
                   <Text
                     style={[
                       style.currMonthItem,
-                      {
-                        backgroundColor:
-                          `${dateFmt}-1` in timeMapSittingRecord
-                            ? this.state.hospitalIdMapColor[timeMapSittingRecord[`${dateFmt}-1`]]
-                            : "white",
-                      },
+                      `${dateFmt}-1` in timeMapSittingRecord ? style.currMonthItemActive : null,
                     ]}>
                     {`${dateFmt}-1` in timeMapSittingRecord ? "坐诊" : null}
                   </Text>
                 </TouchableOpacity>
                 <TouchableOpacity
+                  style={[
+                    style.currMonthItemFa,
+                    {
+                      backgroundColor:
+                        `${dateFmt}-2` in timeMapSittingRecord
+                          ? this.state.hospitalIdMapColor[timeMapSittingRecord[`${dateFmt}-2`]]
+                          : "white",
+                    },
+                  ]}
                   onPress={() => {
                     this.setSitting(dateFmt, STAGE.night)
                   }}>
                   <Text
                     style={[
                       style.currMonthItem,
-                      {
-                        backgroundColor:
-                          `${dateFmt}-2` in timeMapSittingRecord
-                            ? this.state.hospitalIdMapColor[timeMapSittingRecord[`${dateFmt}-2`]]
-                            : "white",
-                      },
+                      `${dateFmt}-2` in timeMapSittingRecord ? style.currMonthItemActive : null,
                     ]}>
                     {`${dateFmt}-2` in timeMapSittingRecord ? "坐诊" : null}
                   </Text>
@@ -297,54 +317,68 @@ class CalendarMode extends React.Component<Props, State> {
         return (
           // 除了第一列的所有上午下午晚上
           <View key={k} style={style.currMonth}>
-            <Text style={style.currMonthItem}>{v.day}</Text>
+            <View style={style.currMonthItemFa}>
+              <Text style={style.currMonthItem}>{v.day}</Text>
+            </View>
             <TouchableOpacity
+              style={[
+                style.currMonthItemFa,
+                {
+                  backgroundColor:
+                    `${dateFmt}-0` in timeMapSittingRecord
+                      ? this.state.hospitalIdMapColor[timeMapSittingRecord[`${dateFmt}-0`]]
+                      : "white",
+                },
+              ]}
               onPress={() => {
                 this.setSitting(dateFmt, STAGE.morning)
               }}>
               <Text
                 style={[
                   style.currMonthItem,
-                  {
-                    backgroundColor:
-                      `${dateFmt}-0` in timeMapSittingRecord
-                        ? this.state.hospitalIdMapColor[timeMapSittingRecord[`${dateFmt}-0`]]
-                        : "white",
-                  },
+                  `${dateFmt}-0` in timeMapSittingRecord ? style.currMonthItemActive : null,
                 ]}>
                 {`${dateFmt}-0` in timeMapSittingRecord ? "坐诊" : null}
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
+              style={[
+                style.currMonthItemFa,
+                {
+                  backgroundColor:
+                    `${dateFmt}-1` in timeMapSittingRecord
+                      ? this.state.hospitalIdMapColor[timeMapSittingRecord[`${dateFmt}-1`]]
+                      : "white",
+                },
+              ]}
               onPress={() => {
                 this.setSitting(dateFmt, STAGE.afternoon)
               }}>
               <Text
                 style={[
                   style.currMonthItem,
-                  {
-                    backgroundColor:
-                      `${dateFmt}-1` in timeMapSittingRecord
-                        ? this.state.hospitalIdMapColor[timeMapSittingRecord[`${dateFmt}-1`]]
-                        : "white",
-                  },
+                  `${dateFmt}-1` in timeMapSittingRecord ? style.currMonthItemActive : null,
                 ]}>
                 {`${dateFmt}-1` in timeMapSittingRecord ? "坐诊" : null}
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
+              style={[
+                style.currMonthItemFa,
+                {
+                  backgroundColor:
+                    `${dateFmt}-2` in timeMapSittingRecord
+                      ? this.state.hospitalIdMapColor[timeMapSittingRecord[`${dateFmt}-2`]]
+                      : "white",
+                },
+              ]}
               onPress={() => {
                 this.setSitting(dateFmt, STAGE.night)
               }}>
               <Text
                 style={[
                   style.currMonthItem,
-                  {
-                    backgroundColor:
-                      `${dateFmt}-2` in timeMapSittingRecord
-                        ? this.state.hospitalIdMapColor[timeMapSittingRecord[`${dateFmt}-2`]]
-                        : "white",
-                  },
+                  `${dateFmt}-2` in timeMapSittingRecord ? style.currMonthItemActive : null,
                 ]}>
                 {`${dateFmt}-2` in timeMapSittingRecord ? "坐诊" : null}
               </Text>
@@ -359,6 +393,7 @@ class CalendarMode extends React.Component<Props, State> {
     let { isSitting, timeMapSittingRecord, selectHospital } = this.state
     isSitting = time + "-" + stage in timeMapSittingRecord ? SITTING.TRUE : SITTING.FALSE
     selectHospital = isSitting === SITTING.TRUE ? [timeMapSittingRecord[time + "-" + stage]] : []
+    console.log(timeMapSittingRecord)
     this.setState({
       day: time,
       stage,
@@ -421,14 +456,30 @@ class CalendarMode extends React.Component<Props, State> {
     return (
       <View style={style.main}>
         <View style={style.head}>
-          <Text style={style.headerItem}>星期</Text>
-          <Text style={style.headerItem}>一</Text>
-          <Text style={style.headerItem}>二</Text>
-          <Text style={style.headerItem}>三</Text>
-          <Text style={style.headerItem}>四</Text>
-          <Text style={style.headerItem}>五</Text>
-          <Text style={style.headerItem}>六</Text>
-          <Text style={style.headerItem}>日</Text>
+          <View style={style.headerItemFa}>
+            <Text style={style.headerItem}>星期</Text>
+          </View>
+          <View style={style.headerItemFa}>
+            <Text style={style.headerItem}>一</Text>
+          </View>
+          <View style={style.headerItemFa}>
+            <Text style={style.headerItem}>二</Text>
+          </View>
+          <View style={style.headerItemFa}>
+            <Text style={style.headerItem}>三</Text>
+          </View>
+          <View style={style.headerItemFa}>
+            <Text style={style.headerItem}>四</Text>
+          </View>
+          <View style={style.headerItemFa}>
+            <Text style={style.headerItem}>五</Text>
+          </View>
+          <View style={style.headerItemFa}>
+            <Text style={style.headerItem}>六</Text>
+          </View>
+          <View style={style.headerItemFa}>
+            <Text style={style.headerItem}>日</Text>
+          </View>
         </View>
         <View style={style.calendar}>{this.buildCalendar()}</View>
         <Modal
@@ -515,15 +566,21 @@ const style = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
   },
-  headerItem: {
+  headerItemFa: {
     width: (windowWidth - 16) / 8,
     height: 35,
     lineHeight: 35,
-    textAlign: "center",
     borderColor: "#eee",
     borderBottomWidth: 1 / PixelRatio.get(),
     borderTopWidth: 1 / PixelRatio.get(),
     borderRightWidth: 1 / PixelRatio.get(),
+  },
+  headerItem: {
+    textAlign: "center",
+    height: 35,
+    lineHeight: 35,
+    fontSize: 14,
+    color: "#333",
   },
   calendar: {
     width: windowWidth,
@@ -534,16 +591,21 @@ const style = StyleSheet.create({
     width: (windowWidth - 16) / 8,
     height: 100,
   },
-  mainRowItem: {
+  mainRowItemFa: {
     width: (windowWidth - 16) / 8,
     height: 35,
     lineHeight: 35,
-    textAlign: "center",
     borderColor: "#eee",
     borderBottomWidth: 1 / PixelRatio.get(),
     borderTopWidth: 1 / PixelRatio.get(),
     borderRightWidth: 1 / PixelRatio.get(),
     borderLeftWidth: 1 / PixelRatio.get(),
+  },
+  mainRowItem: {
+    textAlign: "center",
+    height: 35,
+    lineHeight: 35,
+    color: "#333",
   },
   otherMonth: {},
   otherMonthItem: {
@@ -556,16 +618,25 @@ const style = StyleSheet.create({
     borderRightWidth: 1 / PixelRatio.get(),
   },
   currMonth: {},
-  currMonthItem: {
+  currMonthItemFa: {
     width: (windowWidth - 16) / 8,
     height: 35,
     lineHeight: 35,
-    textAlign: "center",
     backgroundColor: "white",
     borderColor: "#eee",
     borderBottomWidth: 1 / PixelRatio.get(),
     borderTopWidth: 1 / PixelRatio.get(),
     borderRightWidth: 1 / PixelRatio.get(),
+  },
+  currMonthItem: {
+    textAlign: "center",
+    height: 35,
+    lineHeight: 35,
+    color: "#333",
+    fontSize: 14,
+  },
+  currMonthItemActive: {
+    color: "#fff",
   },
   select: {
     flex: 1,

@@ -197,25 +197,34 @@ export default class SquareRoot extends Component<
               global.justifyContentSpaceBetween,
             ]}>
             <View style={style.step}>
-              <Text style={[style.activeNum, global.fontSize12]}>1</Text>
+              <View style={style.activeNum}>
+                <Text style={[style.activeNumDetail, global.fontSize12]}>1</Text>
+              </View>
               <Text style={[style.activeStepTitle, global.fontSize12]}>已发送</Text>
             </View>
             <View style={style.activeLine} />
             <View style={style.step}>
-              <Text style={[style.activeNum, global.fontSize12]}>2</Text>
+              <View style={style.activeNum}>
+                <Text style={[style.activeNumDetail, global.fontSize12]}>2</Text>
+              </View>
               <Text style={[style.activeStepTitle, global.fontSize12]}>已划价</Text>
             </View>
             <View
               style={status === PRESCRIPTION_STATUS.completePay ? style.activeLine : style.line}
             />
             <View style={style.step}>
-              <Text
-                style={[
-                  status === PRESCRIPTION_STATUS.completePay ? style.activeNum : style.num,
-                  global.fontSize12,
-                ]}>
-                3
-              </Text>
+              <View
+                style={[status === PRESCRIPTION_STATUS.completePay ? style.activeNum : style.num]}>
+                <Text
+                  style={[
+                    status === PRESCRIPTION_STATUS.completePay
+                      ? style.activeNumDetail
+                      : style.numDetail,
+                    global.fontSize12,
+                  ]}>
+                  3
+                </Text>
+              </View>
               <Text
                 style={[
                   status === PRESCRIPTION_STATUS.completePay

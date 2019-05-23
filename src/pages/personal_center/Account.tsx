@@ -1,15 +1,15 @@
 import * as userAction from "@/redux/actions/user"
 import { AppState } from "@/redux/stores/store"
+import { getBalance } from "@/services/doctor"
 import { Icon, Toast } from "@ant-design/react-native"
 import sColor from "@styles/color"
+import gImg from "@utils/img"
 import gStyle from "@utils/style"
 import React, { Component } from "react"
-import { RefreshControl, ScrollView, Text, TouchableOpacity, View, Image } from "react-native"
+import { Image, RefreshControl, ScrollView, Text, TouchableOpacity, View } from "react-native"
 import { NavigationScreenProp } from "react-navigation"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
-import gImg from "@utils/img"
-import { getBalance } from "@/services/doctor"
 const style = gStyle.personalCenter.account
 const global = gStyle.global
 interface Props {
@@ -54,6 +54,7 @@ export default class Account extends Component<
         backgroundColor: sColor.lightGreen,
         height: 45,
         elevation: 0,
+        borderColor: sColor.lightGreen,
       },
       headerTintColor: sColor.white,
       headerTitleStyle: {
@@ -153,7 +154,7 @@ export default class Account extends Component<
               <Text style={[style.headerCenterTitle]}>
                 ¥ {this.state.isShowAccount ? this.state.balance / 100 : "****"}
               </Text>
-              <TouchableOpacity>
+              <TouchableOpacity style={style.headerCenterRightFa}>
                 <Text style={[style.headerCenterRight, global.fontSize14, global.fontStyle]}>
                   去提现
                 </Text>

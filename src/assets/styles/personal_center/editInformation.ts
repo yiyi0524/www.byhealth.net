@@ -61,14 +61,17 @@ export default StyleSheet.create({
   headerInfoDetail: {
     color: sColor.white,
   },
-  headerInfoCustomer: {
+  headerInfoCustomerFa: {
     height: 30,
     paddingLeft: 15,
     paddingRight: 15,
-    lineHeight: 30,
     borderRadius: 25,
     borderWidth: 1 / PixelRatio.get(),
     borderColor: sColor.white,
+  },
+  headerInfoCustomer: {
+    height: 30,
+    lineHeight: 30,
     color: sColor.white,
   },
   headerDescription: {

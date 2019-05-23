@@ -50,10 +50,18 @@ export default StyleSheet.create({
   activeNum: {
     width: 20,
     height: 20,
+    lineHeight: 20,
+    marginBottom: 3,
     backgroundColor: sColor.mainRed,
-    color: sColor.white,
-    textAlign: "center",
     borderRadius: 100,
+    overflow: "hidden",
+  },
+  activeNumDetail: {
+    width: 20,
+    height: 20,
+    textAlign: "center",
+    lineHeight: 20,
+    color: sColor.white,
   },
   activeStepTitle: {
     color: sColor.mainRed,
@@ -74,10 +82,18 @@ export default StyleSheet.create({
   num: {
     width: 20,
     height: 20,
+    lineHeight: 20,
+    marginBottom: 3,
     backgroundColor: sColor.color999,
-    color: sColor.white,
-    textAlign: "center",
     borderRadius: 100,
+    overflow: "hidden",
+  },
+  numDetail: {
+    width: 20,
+    height: 20,
+    textAlign: "center",
+    color: sColor.white,
+    lineHeight: 20,
   },
   promptTitle: {
     lineHeight: 50,

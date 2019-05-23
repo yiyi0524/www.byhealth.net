@@ -58,9 +58,7 @@ export default StyleSheet.create({
     color: sColor.whiteOpa7,
     flex: 1,
   },
-  headerCenterRight: {
-    color: sColor.whiteOpa7,
-    flex: 1,
+  headerCenterRightFa: {
     borderWidth: 1 / PixelRatio.get(),
     borderColor: sColor.whiteOpa7,
     borderRadius: 15,
@@ -68,6 +66,9 @@ export default StyleSheet.create({
     paddingBottom: 5,
     paddingLeft: 15,
     paddingRight: 15,
+  },
+  headerCenterRight: {
+    color: sColor.whiteOpa7,
   },
   bank: {
     marginTop: 15,
