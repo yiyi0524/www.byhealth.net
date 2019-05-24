@@ -10,6 +10,7 @@
     "android": "react-native run-android",
     "build-android": "cd android && ./gradlew assembleRelease",
     "pushy-bundle-android": "pushy bundle --platform android --entryFile index.tsx",
+    "pushy-upload-android": "pushy uploadApk android/app/build/outputs/apk/release/app-release.apk",
     "clean": "cd android && ./gradlew clean",
     "reset-cache": "./node_modules/react-native/scripts/packager.sh start --resetCache"
   },
