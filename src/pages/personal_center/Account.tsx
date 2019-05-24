@@ -72,7 +72,7 @@ export default class Account extends Component<
         //   })
         // }
         >
-          <Text style={[style.headerRight, global.fontSize14, global.fontStyle]}>说明</Text>
+          {/* <Text style={[style.headerRight, global.fontSize14, global.fontStyle]}>说明</Text> */}
         </TouchableOpacity>
       ),
     }
@@ -154,7 +154,11 @@ export default class Account extends Component<
               <Text style={[style.headerCenterTitle]}>
                 ¥ {this.state.isShowAccount ? this.state.balance / 100 : "****"}
               </Text>
-              <TouchableOpacity style={style.headerCenterRightFa}>
+              <TouchableOpacity
+                style={style.headerCenterRightFa}
+                onPress={() => {
+                  Toast.info("暂无提现功能", 2)
+                }}>
                 <Text style={[style.headerCenterRight, global.fontSize14, global.fontStyle]}>
                   去提现
                 </Text>

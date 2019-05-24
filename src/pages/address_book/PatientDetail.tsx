@@ -297,24 +297,6 @@ export default class PatientDetail extends Component<
                     })}
                   </Text>
                 </View>
-                <View style={[style.headerDescriptionPhone, global.flex, global.alignItemsCenter]}>
-                  <Text
-                    style={[
-                      style.headerDescriptionPhoneTitle,
-                      global.fontSize13,
-                      global.fontStyle,
-                    ]}>
-                    手机号
-                  </Text>
-                  <Text
-                    style={[
-                      style.headerDescriptionPhoneDetail,
-                      global.fontSize13,
-                      global.fontStyle,
-                    ]}>
-                    {patientInfo.phone}
-                  </Text>
-                </View>
                 <TouchableOpacity
                   onPress={() => {
                     Modal.alert(
@@ -337,6 +319,16 @@ export default class PatientDetail extends Component<
                   }}>
                   <Text style={[style.invisiblePatients, global.fontSize14]}>设置不可见</Text>
                 </TouchableOpacity>
+              </View>
+              <View style={[style.headerDescriptionPhone, global.flex, global.alignItemsCenter]}>
+                <Text
+                  style={[style.headerDescriptionPhoneTitle, global.fontSize13, global.fontStyle]}>
+                  手机号
+                </Text>
+                <Text
+                  style={[style.headerDescriptionPhoneDetail, global.fontSize13, global.fontStyle]}>
+                  {patientInfo.phone}
+                </Text>
               </View>
             </View>
           </View>

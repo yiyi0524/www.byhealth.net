@@ -8,7 +8,7 @@ import pathMap from "@routes/pathMap"
 import gImg from "@utils/img"
 import gStyle from "@utils/style"
 import React, { Component } from "react"
-import { Image, ScrollView, Text, TouchableOpacity, View, Keyboard, KeyboardAvoidingView } from "react-native"
+import { Image, KeyboardAvoidingView, ScrollView, Text, TouchableOpacity, View } from "react-native"
 import { NavigationScreenProp } from "react-navigation"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
@@ -36,7 +36,7 @@ interface State {
   filter: any
   hospitalList: any
 }
-interface RegionCidMapAreaName extends Record<string, string> { }
+interface RegionCidMapAreaName extends Record<string, string> {}
 interface CityItem {
   value: string
   label: string
@@ -61,8 +61,8 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
   mapDispatchToProps,
 )
 export default class Register extends Component<
-Props & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
-State
+  Props & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
+  State
 > {
   keyboardDidShowListener: any
   keyboardDidHideListener: any
@@ -95,9 +95,7 @@ State
 
   componentDidMount() {
     this.init()
-
   }
-
 
   init = async () => {
     try {
@@ -258,8 +256,8 @@ State
   render() {
     return (
       <>
-        <KeyboardAvoidingView behavior="padding" style={{ flex: 1, }} keyboardVerticalOffset={70}>
-          <View style={[style.main,]}>
+        <KeyboardAvoidingView behavior="padding" style={{ flex: 1 }} keyboardVerticalOffset={70}>
+          <View style={[style.main]}>
             <ScrollView style={style.content} keyboardShouldPersistTaps="handled">
               <View
                 style={[
@@ -273,7 +271,7 @@ State
                   onPress={() => this.props.navigation.navigate(pathMap.Login)}>
                   <Text style={[style.headerLeftTitle, global.fontStyle, global.fontSize14]}>
                     关闭
-                </Text>
+                  </Text>
                 </TouchableOpacity>
                 <Text style={[style.headerTitle, global.fontStyle, global.fontSize14]}>注册</Text>
                 <Text style={style.headerLeft} />
@@ -422,7 +420,7 @@ State
                   }}>
                   <Text style={[style.agreementName, global.fontStyle, global.fontSize14]}>
                     医生注册协议
-                </Text>
+                  </Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   onPress={() => {
@@ -430,13 +428,13 @@ State
                   }}>
                   <Text style={[style.agreementName, global.fontStyle, global.fontSize14]}>
                     法律声明与隐私政策
-                </Text>
+                  </Text>
                 </TouchableOpacity>
               </View>
               <TouchableOpacity style={style.subBtn} onPress={this.submit}>
                 <Text style={[style.subTitle, global.fontStyle, global.fontSize15]}>
                   完成医生版注册
-            </Text>
+                </Text>
               </TouchableOpacity>
             </ScrollView>
           </View>

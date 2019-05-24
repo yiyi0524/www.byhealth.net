@@ -197,8 +197,8 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
   mapDispatchToProps,
 )
 export default class Chat extends Component<
-Props & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
-State
+  Props & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
+  State
 > {
   static navigationOptions = ({ navigation }: { navigation: NavigationScreenProp<State> }) => {
     let title = ""
@@ -576,7 +576,7 @@ State
               imageUrls={this.state.imagesViewer}
               index={this.state.imageIdx}
               maxOverflow={0}
-              onCancel={() => { }}
+              onCancel={() => {}}
             />
           </View>
         </View>

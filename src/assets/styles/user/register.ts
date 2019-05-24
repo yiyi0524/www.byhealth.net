@@ -104,6 +104,7 @@ export default StyleSheet.create({
   subBtn: {
     paddingLeft: 15,
     paddingRight: 15,
+    marginBottom: 15,
   },
   subTitle: {
     height: 50,
@@ -119,6 +120,8 @@ export default StyleSheet.create({
     width: "100%",
     backgroundColor: sColor.white,
     height: windowHeight,
+    borderTopWidth: 1 / PixelRatio.get(),
+    borderTopColor: sColor.colorDdd,
   },
   hospitalContent: {
     paddingLeft: 15,

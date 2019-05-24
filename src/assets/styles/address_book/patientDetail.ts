@@ -49,6 +49,7 @@ export default StyleSheet.create({
   },
   headerDescription: {
     marginLeft: 10,
+    flex: 1,
   },
   headerDescriptionTitle: {},
   headerDescriptionName: {

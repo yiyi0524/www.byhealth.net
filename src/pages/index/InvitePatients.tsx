@@ -80,7 +80,7 @@ export default class InvitePatients extends Component<
         onPress={() => {
           navigation.state.params!.navigatePress()
         }}>
-        <Text style={[style.headerRight, global.fontSize14]}>保存</Text>
+        {/* <Text style={[style.headerRight, global.fontSize14]}>保存</Text> */}
       </TouchableOpacity>
     ),
   })
