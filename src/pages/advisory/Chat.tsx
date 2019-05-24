@@ -3,7 +3,7 @@ import DashLine from "@/components/DashLine"
 import * as wsAction from "@/redux/actions/ws"
 import { AppState } from "@/redux/stores/store"
 import pathMap from "@/routes/pathMap"
-import api, { getRegion, getThumbUrl } from "@/services/api"
+import api, { getRegion, getThumbUrl, windowHeight } from "@/services/api"
 import { clearPatientUnreadMsgCount, closeInquiry, GENDER_ZH } from "@/services/doctor"
 import gImg from "@/utils/img"
 import { getPicFullUrl, windowWidth } from "@/utils/utils"
@@ -170,6 +170,8 @@ interface State {
 }
 interface imagesViewer {
   url: string
+  width?:number,
+  height?:number,
 }
 const mapStateToProps = (state: AppState) => {
   return {
@@ -318,6 +320,8 @@ export default class Chat extends Component<
       imagesViewer: [
         {
           url: "https://www.byhealth.net/static/media/collapsed_logo.db8ef9b3.png",
+          width:windowWidth,
+          height:windowHeight
         },
       ],
       imageIdx: 0,
