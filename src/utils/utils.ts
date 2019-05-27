@@ -16,8 +16,13 @@ export function getPicFullUrl(url: string): string {
  * 识别开发环境是否是debug开发环境
  */
 export function isDebugMode() {
-  const { scriptURL } = NativeModules.SourceCode
-  const devEvn = scriptURL.split("&")[1]
-  console.log(devEvn)
-  return devEvn === "dev=true"
+  try {
+    const { scriptURL } = NativeModules.SourceCode
+    const devEvn = scriptURL.split("&")[1]
+    console.log("buffge: ", devEvn)
+    return devEvn === "dev=true"
+  } catch (e) {
+    console.log("buffge: ", e)
+    return false
+  }
 }
