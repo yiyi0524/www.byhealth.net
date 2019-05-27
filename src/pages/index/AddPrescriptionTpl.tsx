@@ -188,6 +188,9 @@ export default class AddPrescriptionTpl extends Component<
       if (this.state.everyDoseUseCount === 0) {
         return Toast.info("请输入一剂使用次数", 2)
       }
+      if (this.state.dailyDose > this.state.doseCount) {
+        return Toast.info("每日剂量数不能大于总剂量数", 1)
+      }
     }
     try {
       const {
@@ -302,6 +305,13 @@ export default class AddPrescriptionTpl extends Component<
                             if (isNaN(doseCount)) {
                               doseCount = 0
                             }
+                            if (
+                              this.state.dailyDose &&
+                              this.state.dailyDose > 0 &&
+                              this.state.dailyDose > this.state.doseCount
+                            ) {
+                              return Toast.fail("每日剂量数不能大于剂量总数")
+                            }
                             this.setState({
                               doseCount,
                             })
@@ -320,6 +330,13 @@ export default class AddPrescriptionTpl extends Component<
                             let dailyDose: number | string = parseInt(val)
                             if (isNaN(dailyDose)) {
                               dailyDose = 0
+                            }
+                            if (
+                              this.state.doseCount &&
+                              this.state.doseCount > 0 &&
+                              this.state.doseCount < this.state.doseCount
+                            ) {
+                              return Toast.fail("剂量总数不能小于每日剂量数")
                             }
                             this.setState({
                               dailyDose,

@@ -31,6 +31,7 @@ import { NavigationScreenProp, ScrollView } from "react-navigation"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
 import { Overwrite } from "utility-types"
+import { BASE_URL } from "@/config/api"
 const style = gStyle.advisory.advisoryChat
 interface Props {
   navigation: NavigationScreenProp<State>
@@ -170,8 +171,8 @@ interface State {
 }
 interface imagesViewer {
   url: string
-  width?:number,
-  height?:number,
+  width?: number
+  height?: number
 }
 const mapStateToProps = (state: AppState) => {
   return {
@@ -320,8 +321,8 @@ export default class Chat extends Component<
       imagesViewer: [
         {
           url: "https://www.byhealth.net/static/media/collapsed_logo.db8ef9b3.png",
-          width:windowWidth,
-          height:windowHeight
+          width: windowWidth,
+          height: windowHeight,
         },
       ],
       imageIdx: 0,
@@ -565,7 +566,7 @@ export default class Chat extends Component<
                   this.setState({
                     imagesViewer: [
                       {
-                        url: "https://www.byhealth.net/static/media/collapsed_logo.db8ef9b3.png",
+                        url: BASE_URL + "/static/media/collapsed_logo.db8ef9b3.png",
                       },
                     ],
                     isShowPic: false,

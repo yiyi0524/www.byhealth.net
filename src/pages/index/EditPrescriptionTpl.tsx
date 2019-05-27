@@ -200,6 +200,9 @@ export default class EditPrescriptionTpl extends Component<
       if (everyDoseUseCount === 0) {
         return Toast.info("请输入每剂使用次数", 2)
       }
+      if (dailyDose > doseCount) {
+        return Toast.info("每日剂量数不能大于总剂量数", 1)
+      }
     }
     try {
       await doctor.editPrescriptionTpl({
