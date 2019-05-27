@@ -1,20 +1,28 @@
 import * as userAction from "@/redux/actions/user"
 import { AppState } from "@/redux/stores/store"
-import api, { windowWidth } from "@/services/api"
-import { Icon, InputItem, List, Picker, Toast } from "@ant-design/react-native"
+import pathMap from "@/routes/pathMap"
+import api from "@/services/api"
+import doctor from "@/services/doctor"
+import hospital from "@/services/hospital"
+import { TYPE } from "@/utils/constant"
+import { Icon, InputItem, Picker, Toast } from "@ant-design/react-native"
 import sColor from "@styles/color"
 import gImg from "@utils/img"
 import gStyle from "@utils/style"
 import React, { Component } from "react"
-import { Image, PixelRatio, RefreshControl, Text, View, DeviceEventEmitter } from "react-native"
-import { ScrollView, TouchableOpacity } from "react-native-gesture-handler"
+import {
+  DeviceEventEmitter,
+  Image,
+  PixelRatio,
+  RefreshControl,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native"
 import { NavigationScreenProp } from "react-navigation"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
-import hospital from "@/services/hospital"
-import { TYPE } from "@/utils/constant"
-import doctor from "@/services/doctor"
-import pathMap from "@/routes/pathMap"
 const style = gStyle.index.EditSittingHospital
 const global = gStyle.global
 interface NavParams {

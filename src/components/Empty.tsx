@@ -21,6 +21,6 @@ const styles = StyleSheet.create({
   },
   img: {
     width: 120,
-    resizeMode: "center",
+    resizeMode: "contain",
   },
 })

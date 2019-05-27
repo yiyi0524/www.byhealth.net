@@ -27,7 +27,7 @@ export default StyleSheet.create({
   },
   loadingImg: {
     width: 300,
-    resizeMode: "center",
+    resizeMode: "contain",
   },
   main: {
     backgroundColor: sColor.mainBgColor,

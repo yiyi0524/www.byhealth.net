@@ -23,7 +23,7 @@ export default StyleSheet.create({
   },
   loadingImg: {
     width: 300,
-    resizeMode: "center",
+    resizeMode: "contain",
   },
   main: {
     backgroundColor: sColor.mainBgColor,
@@ -41,7 +41,7 @@ export default StyleSheet.create({
   headerIcon: {
     width: 30,
     height: 30,
-    resizeMode: "center",
+    resizeMode: "contain",
   },
   headerItemTitle: {
     color: sColor.color666,
@@ -74,7 +74,7 @@ export default StyleSheet.create({
   avatar: {
     width: 50,
     height: 50,
-    resizeMode: "center",
+    resizeMode: "contain",
   },
   baseInformationBottom: {
     borderWidth: 1 / PixelRatio.get(),
@@ -86,7 +86,7 @@ export default StyleSheet.create({
   gender: {
     width: 15,
     height: 15,
-    resizeMode: "center",
+    resizeMode: "contain",
   },
   age: {
     color: sColor.color666,

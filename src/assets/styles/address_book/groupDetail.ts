@@ -81,7 +81,7 @@ export default StyleSheet.create({
   patientAvatar: {
     width: 40,
     height: 40,
-    resizeMode: "center",
+    resizeMode: "contain",
   },
   patientName: {
     color: sColor.color333,
@@ -102,7 +102,7 @@ export default StyleSheet.create({
   patientGender: {
     width: 15,
     height: 15,
-    resizeMode: "center",
+    resizeMode: "contain",
     marginRight: 2,
   },
   patientAge: {

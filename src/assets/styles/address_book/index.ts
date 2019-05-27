@@ -23,7 +23,7 @@ export default StyleSheet.create({
   },
   loadingImg: {
     width: 300,
-    resizeMode: "center",
+    resizeMode: "contain",
   },
   main: {
     backgroundColor: sColor.white,
@@ -76,7 +76,7 @@ export default StyleSheet.create({
   groupImg: {
     width: 30,
     height: 30,
-    resizeMode: "center",
+    resizeMode: "contain",
   },
   communicationItemPicture: {
     width: 45,
@@ -88,7 +88,7 @@ export default StyleSheet.create({
   communicationItemPic: {
     width: 45,
     height: 45,
-    resizeMode: "center",
+    resizeMode: "contain",
   },
   groupTitle: {
     color: sColor.color666,
@@ -135,7 +135,7 @@ export default StyleSheet.create({
   genderIcon: {
     width: 15,
     height: 15,
-    resizeMode: "center",
+    resizeMode: "contain",
   },
   firstConsultTime: {
     color: sColor.color888,

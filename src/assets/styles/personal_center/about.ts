@@ -1,7 +1,7 @@
 import { windowHeight } from "@/utils/utils"
 import { windowWidth } from "@api/api"
 import sColor from "@styles/color"
-import { PixelRatio, StyleSheet } from "react-native"
+import { StyleSheet } from "react-native"
 export default StyleSheet.create({
   loading: {
     width: windowWidth,
@@ -23,7 +23,7 @@ export default StyleSheet.create({
   },
   loadingImg: {
     width: 300,
-    resizeMode: "center",
+    resizeMode: "contain",
   },
   about: {
     flex: 1,
@@ -48,7 +48,7 @@ export default StyleSheet.create({
   headerImg: {
     width: 50,
     height: 50,
-    resizeMode: "center",
+    resizeMode: "contain",
   },
   headerTitle: {
     color: sColor.color333,

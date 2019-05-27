@@ -54,7 +54,7 @@ const style = StyleSheet.create({
   icon: {
     width: 30,
     height: 30,
-    resizeMode: "center",
+    resizeMode: "contain",
   },
   iconFa: {
     width: 30,

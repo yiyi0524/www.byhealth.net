@@ -1,7 +1,6 @@
-import { StyleSheet, PixelRatio } from "react-native"
-import sColor from "@styles/color"
 import { windowHeight, windowWidth } from "@api/api"
-import { s } from "@/services/user"
+import sColor from "@styles/color"
+import { PixelRatio, StyleSheet } from "react-native"
 export default StyleSheet.create({
   loading: {
     width: windowWidth,
@@ -23,7 +22,7 @@ export default StyleSheet.create({
   },
   loadingImg: {
     width: 300,
-    resizeMode: "center",
+    resizeMode: "contain",
   },
   main: {
     backgroundColor: sColor.white,
@@ -361,6 +360,6 @@ export default StyleSheet.create({
     alignItems: "center",
   },
   viewImg: {
-    resizeMode: "center",
+    resizeMode: "contain",
   },
 })

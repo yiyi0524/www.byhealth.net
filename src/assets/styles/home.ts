@@ -23,7 +23,7 @@ export default StyleSheet.create({
   },
   loadingImg: {
     width: 300,
-    resizeMode: "center",
+    resizeMode: "contain",
   },
   main: {
     backgroundColor: sColor.white,
@@ -45,7 +45,7 @@ export default StyleSheet.create({
   headerAvatar: {
     width: 60,
     height: 60,
-    resizeMode: "center",
+    resizeMode: "contain",
   },
   headerTitle: {
     flex: 1,
@@ -146,7 +146,7 @@ export default StyleSheet.create({
   categoryItemPic: {
     width: 35,
     height: 35,
-    resizeMode: "center",
+    resizeMode: "contain",
   },
   categoryItemTitle: {
     textAlign: "center",

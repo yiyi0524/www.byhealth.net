@@ -23,7 +23,7 @@ export default StyleSheet.create({
   },
   loadingImg: {
     width: 300,
-    resizeMode: "center",
+    resizeMode: "contain",
   },
   detail: {
     flex: 1,
@@ -164,7 +164,7 @@ export default StyleSheet.create({
   showImg: {
     width: 350,
     height: 350,
-    resizeMode: "center",
+    resizeMode: "contain",
   },
   medicalRecordList: {
     marginBottom: 8,

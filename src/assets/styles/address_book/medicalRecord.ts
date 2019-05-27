@@ -23,7 +23,7 @@ export default StyleSheet.create({
   },
   loadingImg: {
     width: 300,
-    resizeMode: "center",
+    resizeMode: "contain",
   },
   detail: {
     flex: 1,
@@ -56,7 +56,7 @@ export default StyleSheet.create({
   avatar: {
     width: 50,
     height: 50,
-    resizeMode: "center",
+    resizeMode: "contain",
   },
   patientName: {
     color: sColor.mainBlack,

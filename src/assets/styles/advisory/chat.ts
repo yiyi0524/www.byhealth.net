@@ -23,7 +23,7 @@ export default StyleSheet.create({
   },
   loadingImg: {
     width: 300,
-    resizeMode: "center",
+    resizeMode: "contain",
   },
   headerRight: {
     color: sColor.mainRed,
@@ -145,7 +145,7 @@ export default StyleSheet.create({
     overflow: "hidden",
   },
   itemPicImg: {
-    resizeMode: "center",
+    resizeMode: "contain",
     height: 130,
     width: 130,
   },
@@ -196,7 +196,7 @@ export default StyleSheet.create({
   bottomNavItemPic: {
     width: 40,
     height: 40,
-    resizeMode: "center",
+    resizeMode: "contain",
   },
   bottomNavItemTitle: {
     color: sColor.color666,
@@ -321,7 +321,7 @@ export default StyleSheet.create({
   showImg: {
     width: windowWidth - 30,
     height: windowHeight - 60,
-    resizeMode: "center",
+    resizeMode: "contain",
   },
   // 治疗方案
   treatmentPlan: {
@@ -341,7 +341,7 @@ export default StyleSheet.create({
   },
   treatmentPlanHeaderImg: {
     width: 60,
-    resizeMode: "center",
+    resizeMode: "contain",
     marginRight: 15,
   },
   treatmentPlanHeaderTitle: {},
@@ -392,7 +392,7 @@ export default StyleSheet.create({
   },
   inquirySheetHeaderImg: {
     width: 60,
-    resizeMode: "center",
+    resizeMode: "contain",
     marginRight: 15,
   },
   inquirySheetHeaderTitle: {

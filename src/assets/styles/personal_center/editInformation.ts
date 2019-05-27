@@ -23,7 +23,7 @@ export default StyleSheet.create({
   },
   loadingImg: {
     width: 300,
-    resizeMode: "center",
+    resizeMode: "contain",
   },
   edit: {
     flex: 1,
@@ -47,7 +47,7 @@ export default StyleSheet.create({
   headerInfoImg: {
     width: 50,
     height: 50,
-    resizeMode: "center",
+    resizeMode: "contain",
   },
   headerInfoName: {
     marginLeft: 15,
