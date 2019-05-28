@@ -200,7 +200,7 @@ export default class Home extends Component<
     try {
       isLogin = await api.isLogin()
       if (isLogin) {
-        this.checkUpdate()
+        // this.checkUpdate()
         let {
           data: { doctorInfo, info },
         } = await userApi.getPersonalInfo()

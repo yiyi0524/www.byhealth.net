@@ -8,8 +8,9 @@
     "link": "react-native link",
     "adb": "adb shell input keyevent 82",
     "android": "react-native run-android",
-    "build-android": "cd android && ./gradlew assembleRelease",
+    "build-android": "yarn bundle && cd android && ./gradlew assembleRelease",
     "pushy-bundle-android": "pushy bundle --platform android --entryFile index.tsx",
+    "bundle": "react-native bundle --platform android --dev false --entry-file index.tsx --bundle-output android/app/src/main/assets/index.android.bundle",
     "pushy-upload-android": "pushy uploadApk android/app/build/outputs/apk/release/app-release.apk",
     "clean": "cd android && ./gradlew clean",
     "reset-cache": "./node_modules/react-native/scripts/packager.sh start --resetCache"

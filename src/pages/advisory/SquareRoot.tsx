@@ -507,7 +507,11 @@ export default class SquareRoot extends Component<
                                 type="number"
                                 style={style.doseInput}
                                 placeholder="0"
-                                value={category.doseCount === 0 ? "" : category.doseCount + ""}
+                                value={
+                                  !category.doseCount || category.doseCount === 0
+                                    ? ""
+                                    : category.doseCount + ""
+                                }
                                 onChange={val => {
                                   let { prescriptionDrugCategoryList } = this.state
                                   let doseCount: number | string = parseInt(val)
@@ -536,7 +540,11 @@ export default class SquareRoot extends Component<
                                 style={style.doseInput}
                                 placeholder="0"
                                 type="number"
-                                value={category.dailyDose === 0 ? "" : category.dailyDose + ""}
+                                value={
+                                  !category.dailyDose || category.dailyDose === 0
+                                    ? ""
+                                    : category.dailyDose + ""
+                                }
                                 onChange={val => {
                                   let { prescriptionDrugCategoryList } = this.state
                                   let dailyDose: number | string = parseInt(val)
@@ -567,7 +575,7 @@ export default class SquareRoot extends Component<
                                 style={style.doseInput}
                                 placeholder="0"
                                 value={
-                                  category.everyDoseUseCount === 0
+                                  !category.everyDoseUseCount || category.everyDoseUseCount === 0
                                     ? ""
                                     : category.everyDoseUseCount + ""
                                 }
