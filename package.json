@@ -11,6 +11,7 @@
     "build-android": "yarn bundle && cd android && ./gradlew assembleRelease",
     "pushy-bundle-android": "pushy bundle --platform android --entryFile index.tsx",
     "bundle": "react-native bundle --platform android --dev false --entry-file index.tsx --bundle-output android/app/src/main/assets/index.android.bundle",
+    "bundle-ios": "react-native bundle --platform ios --dev false --entry-file index.tsx --bundle-output ios/main.jsbundle --assets-dest ios",
     "pushy-upload-android": "pushy uploadApk android/app/build/outputs/apk/release/app-release.apk",
     "clean": "cd android && ./gradlew clean",
     "reset-cache": "./node_modules/react-native/scripts/packager.sh start --resetCache"
