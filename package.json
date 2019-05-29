@@ -14,7 +14,7 @@
     "bundle-ios": "react-native bundle --platform ios --dev false --entry-file index.tsx --bundle-output ios/main.jsbundle --assets-dest ios",
     "pushy-upload-android": "pushy uploadApk android/app/build/outputs/apk/release/app-release.apk",
     "clean": "cd android && ./gradlew clean",
-    "reset-cache": "./node_modules/react-native/scripts/packager.sh start --resetCache"
+    "reset-cache": "yarn start --resetCache"
   },
   "dependencies": {
     "@ant-design/react-native": "^3.1.8",

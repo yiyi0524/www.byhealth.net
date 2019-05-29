@@ -1041,7 +1041,7 @@ export default class RealNameAuth extends Component<
                     {" "}
                     专业技术资格证书
                   </Text>
-                  即职称证书(最多10张)
+                  即职称证书(0-10张)
                 </Text>
               </View>
               <View style={style.formItemImg}>

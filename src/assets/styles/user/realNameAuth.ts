@@ -262,6 +262,7 @@ export default StyleSheet.create({
     width: "100%",
     backgroundColor: sColor.white,
     height: windowHeight,
+    paddingBottom: 60,
   },
   closeAdeptSymptom: {
     height: 50,
@@ -272,14 +273,16 @@ export default StyleSheet.create({
     paddingLeft: 15,
     marginTop: -1,
   },
-  adeptSymptomContent: {},
+  adeptSymptomContent: {
+    paddingBottom: 10,
+  },
   symptomList: {
     paddingLeft: 15,
     paddingRight: 15,
   },
   symptomTitle: {
-    height: 45,
-    lineHeight: 45,
+    height: 35,
+    lineHeight: 35,
     color: sColor.color888,
   },
   symptomItem: {
