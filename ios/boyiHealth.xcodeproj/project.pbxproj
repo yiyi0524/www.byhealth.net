@@ -5,7 +5,6 @@
 	};
 	objectVersion = 46;
 	objects = {
-
 /* Begin PBXBuildFile section */
 		00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302AC1ABCB8CE00DB3ED1 /* libRCTActionSheet.a */; };
 		00C302E71ABCBA2D00DB3ED1 /* libRCTGeolocation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302BA1ABCB90400DB3ED1 /* libRCTGeolocation.a */; };
@@ -37,6 +36,7 @@
 		B66A9D27076D4170904FA962 /* libRNDeviceInfo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EB2351FC608E486DBB420868 /* libRNDeviceInfo.a */; };
 		ED297163215061F000B7C4FE /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ED297162215061F000B7C4FE /* JavaScriptCore.framework */; };
 		FD648C4A539249959F6EC735 /* libRCTHotUpdate.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3596A1F67E4D41599998A66C /* libRCTHotUpdate.a */; };
+		635AC5BC301E4DE8BE18D58E /* libRNImagePicker.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A6391F6657B463F95BA48B7 /* libRNImagePicker.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -424,6 +424,8 @@
 		F8943A3ECED142728C900C82 /* RNGestureHandler.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNGestureHandler.xcodeproj; path = "../node_modules/react-native-gesture-handler/ios/RNGestureHandler.xcodeproj"; sourceTree = "<group>"; };
 		FE0D3D2CC04A42E2B3F4A67C /* libRNDeviceInfo-tvOS.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = "libRNDeviceInfo-tvOS.a"; sourceTree = "<group>"; };
 		FEFA39B18A7C48389407F6D7 /* RNDeviceInfo.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNDeviceInfo.xcodeproj; path = "../node_modules/react-native-device-info/ios/RNDeviceInfo.xcodeproj"; sourceTree = "<group>"; };
+		870AFE4165B348159E959E3E /* RNImagePicker.xcodeproj */ = {isa = PBXFileReference; name = "RNImagePicker.xcodeproj"; path = "../node_modules/react-native-image-picker/ios/RNImagePicker.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
+		3A6391F6657B463F95BA48B7 /* libRNImagePicker.a */ = {isa = PBXFileReference; name = "libRNImagePicker.a"; path = "libRNImagePicker.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -454,6 +456,7 @@
 				B66A9D27076D4170904FA962 /* libRNDeviceInfo.a in Frameworks */,
 				0809CDB2E17A4DD4862C1624 /* libRNViewShot.a in Frameworks */,
 				FD648C4A539249959F6EC735 /* libRCTHotUpdate.a in Frameworks */,
+				635AC5BC301E4DE8BE18D58E /* libRNImagePicker.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -711,6 +714,7 @@
 				FEFA39B18A7C48389407F6D7 /* RNDeviceInfo.xcodeproj */,
 				DC7044354F3F48F19A7B0E9C /* RNViewShot.xcodeproj */,
 				E13B0E55AE044EF48E144A33 /* RCTHotUpdate.xcodeproj */,
+				870AFE4165B348159E959E3E /* RNImagePicker.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -1327,11 +1331,13 @@
 					ode_modules,
 					"eact-native-view-shotios",
 					"$(SRCROOT)/../node_modules/react-native-update/ios/RCTHotUpdate/**",
+					"$(SRCROOT)\..\node_modules\react-native-image-picker\ios",
 				);
 				INFOPLIST_FILE = "$(SRCROOT)/boyiHealth/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/boyiHealth\"",
 					"\"$(SRCROOT)/boyiHealth\"",
 				);
 				OTHER_LDFLAGS = (
@@ -1374,11 +1380,13 @@
 					ode_modules,
 					"eact-native-view-shotios",
 					"$(SRCROOT)/../node_modules/react-native-update/ios/RCTHotUpdate/**",
+					"$(SRCROOT)\..\node_modules\react-native-image-picker\ios",
 				);
 				INFOPLIST_FILE = "$(SRCROOT)/boyiHealth/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/boyiHealth\"",
 					"\"$(SRCROOT)/boyiHealth\"",
 				);
 				OTHER_LDFLAGS = (

@@ -2,6 +2,8 @@ import global from "@/assets/styles/global"
 import * as userAction from "@/redux/actions/user"
 import { AppState } from "@/redux/stores/store"
 import pathMap from "@/routes/pathMap"
+import RnImagePicker from "react-native-image-picker"
+import imgPickerOpt from "@config/imgPickerOpt"
 import {
   Icon,
   ImagePicker,
@@ -11,7 +13,7 @@ import {
   TextareaItem,
   Toast,
 } from "@ant-design/react-native"
-import api, { TYPE } from "@api/api"
+import api, { TYPE, uploadImg } from "@api/api"
 import doctorApi, {
   authParam,
   GENDER,
@@ -40,6 +42,7 @@ import { NavigationScreenProp } from "react-navigation"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
 import { Picture } from "../advisory/Chat"
+import { getPicFullUrl } from "@/utils/utils"
 const style = gStyle.user.realNameAuth
 interface Props {
   navigation: NavigationScreenProp<State>
@@ -527,30 +530,9 @@ export default class RealNameAuth extends Component<
       Toast.fail("提交失败, 错误信息: " + err.msg, 3)
     }
   }
-  handleFileChange = (avatar: any, operationType: string) => {
+  avatarChange = (avatar: any, operationType: string) => {
     let avatarSelectable = avatar.length < 1
-    if (operationType === "add") {
-      const key = Toast.loading("正在上传头像")
-      api
-        .uploadImg(avatar[avatar.length - 1])
-        .then(json => {
-          let avatarId = this.state.avatarId
-          avatar[avatar.length - 1].url = BASE_URL + json.data.url
-          avatar[avatar.length - 1].picId = json.data.picId
-          avatarId = json.data.picId
-          this.setState({
-            avatarId,
-            avatar,
-            avatarSelectable,
-          })
-          Portal.remove(key)
-        })
-        .catch(err => {
-          Portal.remove(key)
-          Toast.fail("上传失败, 图片过大或网络失败, 请重新上传 ", 3)
-          console.log(err)
-        })
-    } else if (operationType === "remove") {
+    if (operationType === "remove") {
       this.setState({
         avatarId: 0,
         avatar,
@@ -562,31 +544,9 @@ export default class RealNameAuth extends Component<
     practisingCertificatePicList: Array<any>,
     operationType: string,
   ) => {
-    let practisingCertificatePicIdSelectable = practisingCertificatePicList.length < 2
-    if (operationType === "add") {
-      const key = Toast.loading("正在上传中")
-      api
-        .uploadImg(practisingCertificatePicList[practisingCertificatePicList.length - 1])
-        .then(json => {
-          practisingCertificatePicList[practisingCertificatePicList.length - 1].url =
-            BASE_URL + json.data.url
-          practisingCertificatePicList[practisingCertificatePicList.length - 1].picId =
-            json.data.picId
-          this.setState({
-            practisingCertificatePicList,
-            practisingCertificatePicIdSelectable,
-          })
-          Portal.remove(key)
-        })
-        .catch(err => {
-          Portal.remove(key)
-          Toast.fail("上传失败", 3)
-          console.log(err)
-        })
-    } else if (operationType === "remove") {
+    if (operationType === "remove") {
       this.setState({
         practisingCertificatePicList,
-        practisingCertificatePicIdSelectable,
       })
     }
   }
@@ -594,31 +554,9 @@ export default class RealNameAuth extends Component<
     qualificationCertificatePicList: Array<any>,
     operationType: string,
   ) => {
-    let qualificationCertificatePicIdSelectable = qualificationCertificatePicList.length < 2
-    if (operationType === "add") {
-      const key = Toast.loading("正在上传中")
-      api
-        .uploadImg(qualificationCertificatePicList[qualificationCertificatePicList.length - 1])
-        .then(json => {
-          qualificationCertificatePicList[qualificationCertificatePicList.length - 1].url =
-            BASE_URL + json.data.url
-          qualificationCertificatePicList[qualificationCertificatePicList.length - 1].picId =
-            json.data.picId
-          this.setState({
-            qualificationCertificatePicList,
-            qualificationCertificatePicIdSelectable,
-          })
-          Portal.remove(key)
-        })
-        .catch(err => {
-          Portal.remove(key)
-          Toast.fail("上传失败", 3)
-          console.log(err)
-        })
-    } else if (operationType === "remove") {
+    if (operationType === "remove") {
       this.setState({
         qualificationCertificatePicList,
-        qualificationCertificatePicIdSelectable,
       })
     }
   }
@@ -626,38 +564,9 @@ export default class RealNameAuth extends Component<
     technicalqualificationCertificatePicList: Array<any>,
     operationType: string,
   ) => {
-    let technicalqualificationCertificatePicIdSelectable =
-      technicalqualificationCertificatePicList.length < 9
-    if (operationType === "add") {
-      const key = Toast.loading("正在上传中")
-      api
-        .uploadImg(
-          technicalqualificationCertificatePicList[
-            technicalqualificationCertificatePicList.length - 1
-          ],
-        )
-        .then(json => {
-          technicalqualificationCertificatePicList[
-            technicalqualificationCertificatePicList.length - 1
-          ].url = BASE_URL + json.data.url
-          technicalqualificationCertificatePicList[
-            technicalqualificationCertificatePicList.length - 1
-          ].picId = json.data.picId
-          this.setState({
-            technicalqualificationCertificatePicList,
-            technicalqualificationCertificatePicIdSelectable,
-          })
-          Portal.remove(key)
-        })
-        .catch(err => {
-          Portal.remove(key)
-          Toast.fail("上传失败", 3)
-          console.log(err)
-        })
-    } else if (operationType === "remove") {
+    if (operationType === "remove") {
       this.setState({
         technicalqualificationCertificatePicList,
-        technicalqualificationCertificatePicIdSelectable,
       })
     }
   }
@@ -702,7 +611,48 @@ export default class RealNameAuth extends Component<
                 <Text style={[style.fromItemTitle, global.fontSize14, global.fontStyle]}>头像</Text>
                 <ImagePicker
                   selectable={this.state.avatarSelectable}
-                  onChange={this.handleFileChange}
+                  onAddImageClick={() => {
+                    console.log("onAddImageClick")
+                    RnImagePicker.showImagePicker(imgPickerOpt, resp => {
+                      const uploadingImgKey = Toast.loading("上传图片中", 0, () => {}, true)
+                      console.log("Response = ", resp)
+                      if (resp.didCancel) {
+                        Portal.remove(uploadingImgKey)
+                      } else if (resp.error) {
+                        Portal.remove(uploadingImgKey)
+                        Toast.fail("选择图片失败, 错误信息: " + resp.error)
+                      } else {
+                        uploadImg({ url: resp.uri })
+                          .then(json => {
+                            Portal.remove(uploadingImgKey)
+                            console.log(json)
+                            const { url, picId } = json.data
+                            let avatar = [
+                              {
+                                url: getPicFullUrl(url),
+                                picId,
+                                id: picId,
+                                title: "",
+                              },
+                            ]
+                            this.setState({
+                              avatarId: picId,
+                              avatar,
+                              avatarSelectable: false,
+                            })
+                          })
+                          .catch(e => {
+                            Portal.remove(uploadingImgKey)
+                            Toast.fail("上传图片, 错误信息: " + e)
+                            console.log("上传图片失败,错误信息", e)
+                          })
+                      }
+                    })
+                  }}
+                  onImageClick={() => {
+                    console.log("onImageClick")
+                  }}
+                  onChange={this.avatarChange}
                   files={this.state.avatar}
                 />
                 <Text
@@ -997,9 +947,39 @@ export default class RealNameAuth extends Component<
                   global.justifyContentStart,
                 ]}>
                 <ImagePicker
-                  selectable={this.state.practisingCertificatePicIdSelectable}
+                  selectable={this.state.practisingCertificatePicList.length < 2}
                   onChange={this.medicalPracticeCertificateChange}
                   files={this.state.practisingCertificatePicList}
+                  onAddImageClick={() => {
+                    RnImagePicker.showImagePicker(imgPickerOpt, resp => {
+                      const uploadingImgKey = Toast.loading("上传图片中", 0, () => {}, true)
+                      if (resp.didCancel) {
+                        Portal.remove(uploadingImgKey)
+                      } else if (resp.error) {
+                        Portal.remove(uploadingImgKey)
+                        Toast.fail("选择图片失败, 错误信息: " + resp.error)
+                      } else {
+                        uploadImg({ url: resp.uri })
+                          .then(json => {
+                            Portal.remove(uploadingImgKey)
+                            const { url, picId } = json.data
+                            let img = {
+                              url: getPicFullUrl(url),
+                              picId,
+                              id: picId,
+                              title: "",
+                            }
+                            let { practisingCertificatePicList } = this.state
+                            practisingCertificatePicList.push(img)
+                            this.setState({ practisingCertificatePicList })
+                          })
+                          .catch(e => {
+                            Portal.remove(uploadingImgKey)
+                            Toast.fail("上传图片, 错误信息: " + e)
+                          })
+                      }
+                    })
+                  }}
                 />
               </View>
             </View>
@@ -1025,9 +1005,39 @@ export default class RealNameAuth extends Component<
                   global.justifyContentStart,
                 ]}>
                 <ImagePicker
-                  selectable={this.state.qualificationCertificatePicIdSelectable}
+                  selectable={this.state.qualificationCertificatePicList.length < 2}
                   onChange={this.qualificationCertificatePicIdChange}
                   files={this.state.qualificationCertificatePicList}
+                  onAddImageClick={() => {
+                    RnImagePicker.showImagePicker(imgPickerOpt, resp => {
+                      const uploadingImgKey = Toast.loading("上传图片中", 0, () => {}, true)
+                      if (resp.didCancel) {
+                        Portal.remove(uploadingImgKey)
+                      } else if (resp.error) {
+                        Portal.remove(uploadingImgKey)
+                        Toast.fail("选择图片失败, 错误信息: " + resp.error)
+                      } else {
+                        uploadImg({ url: resp.uri })
+                          .then(json => {
+                            Portal.remove(uploadingImgKey)
+                            const { url, picId } = json.data
+                            let img = {
+                              url: getPicFullUrl(url),
+                              picId,
+                              id: picId,
+                              title: "",
+                            }
+                            let { qualificationCertificatePicList } = this.state
+                            qualificationCertificatePicList.push(img)
+                            this.setState({ qualificationCertificatePicList })
+                          })
+                          .catch(e => {
+                            Portal.remove(uploadingImgKey)
+                            Toast.fail("上传图片, 错误信息: " + e)
+                          })
+                      }
+                    })
+                  }}
                 />
               </View>
             </View>
@@ -1046,9 +1056,39 @@ export default class RealNameAuth extends Component<
               </View>
               <View style={style.formItemImg}>
                 <ImagePicker
-                  selectable={this.state.technicalqualificationCertificatePicIdSelectable}
+                  selectable={this.state.technicalqualificationCertificatePicList.length < 10}
                   onChange={this.technicalqualificationCertificatePicIdChange}
                   files={this.state.technicalqualificationCertificatePicList}
+                  onAddImageClick={() => {
+                    RnImagePicker.showImagePicker(imgPickerOpt, resp => {
+                      const uploadingImgKey = Toast.loading("上传图片中", 0, () => {}, true)
+                      if (resp.didCancel) {
+                        Portal.remove(uploadingImgKey)
+                      } else if (resp.error) {
+                        Portal.remove(uploadingImgKey)
+                        Toast.fail("选择图片失败, 错误信息: " + resp.error)
+                      } else {
+                        uploadImg({ url: resp.uri })
+                          .then(json => {
+                            Portal.remove(uploadingImgKey)
+                            const { url, picId } = json.data
+                            let img = {
+                              url: getPicFullUrl(url),
+                              picId,
+                              id: picId,
+                              title: "",
+                            }
+                            let { technicalqualificationCertificatePicList } = this.state
+                            technicalqualificationCertificatePicList.push(img)
+                            this.setState({ technicalqualificationCertificatePicList })
+                          })
+                          .catch(e => {
+                            Portal.remove(uploadingImgKey)
+                            Toast.fail("上传图片, 错误信息: " + e)
+                          })
+                      }
+                    })
+                  }}
                 />
               </View>
               <View style={style.previewPic}>

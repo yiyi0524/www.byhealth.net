@@ -3,7 +3,7 @@ import DashLine from "@/components/DashLine"
 import * as wsAction from "@/redux/actions/ws"
 import { AppState } from "@/redux/stores/store"
 import pathMap from "@/routes/pathMap"
-import api, { getRegion, getThumbUrl, windowHeight } from "@/services/api"
+import api, { getRegion, getThumbUrl, windowHeight, uploadImg } from "@/services/api"
 import { clearPatientUnreadMsgCount, closeInquiry, GENDER_ZH } from "@/services/doctor"
 import gImg from "@/utils/img"
 import { getPicFullUrl, windowWidth } from "@/utils/utils"
@@ -13,6 +13,8 @@ import wsMsgApi from "@api/wsMsg"
 import sColor from "@styles/color"
 import gStyle from "@utils/style"
 import React, { Component, ReactChild } from "react"
+import RnImagePicker from "react-native-image-picker"
+import imgPickerOpt from "@config/imgPickerOpt"
 import {
   DeviceEventEmitter,
   EmitterSubscription,
@@ -523,14 +525,92 @@ export default class Chat extends Component<
                   ]}>
                   <View style={style.selectPicFa}>
                     <View style={style.imgSelector}>
-                      <ImagePicker onChange={this.selectPic} files={this.state.selectPic} />
+                      <ImagePicker
+                        // onChange={this.selectPic}
+                        files={this.state.selectPic}
+                        onAddImageClick={() => {
+                          RnImagePicker.launchImageLibrary(imgPickerOpt, resp => {
+                            const uploadingImgKey = Toast.loading("上传图片中", 0, () => {}, true)
+                            if (resp.didCancel) {
+                              Portal.remove(uploadingImgKey)
+                            } else if (resp.error) {
+                              Portal.remove(uploadingImgKey)
+                              Toast.fail("选择图片失败, 错误信息: " + resp.error)
+                            } else {
+                              uploadImg({ url: resp.uri })
+                                .then(json => {
+                                  Portal.remove(uploadingImgKey)
+                                  this.setState({
+                                    isShowBottomNav: false,
+                                    isShowBottomPicSelect: false,
+                                  })
+                                  const { patientUid } = this.state
+                                  const { url, picId } = json.data
+                                  this.props.ws.wsPost({
+                                    url: "/ws/sendMsg",
+                                    data: {
+                                      pic: {
+                                        url,
+                                        picId,
+                                      },
+                                      type: MsgType.picture,
+                                      patientUid,
+                                    },
+                                  })
+                                })
+                                .catch(e => {
+                                  Portal.remove(uploadingImgKey)
+                                  Toast.fail("上传图片, 错误信息: " + e)
+                                })
+                            }
+                          })
+                        }}
+                      />
                     </View>
                     <Image source={gImg.advisory.selectPic} style={style.pickerImg} />
                     <Text style={[style.selectTitle, global.fontSize14, global.fontStyle]}>
                       图片
                     </Text>
                   </View>
-                  <TouchableOpacity style={style.selectPicFa}>
+                  <TouchableOpacity
+                    style={style.selectPicFa}
+                    onPress={() => {
+                      RnImagePicker.launchCamera(imgPickerOpt, resp => {
+                        const uploadingImgKey = Toast.loading("上传图片中", 0, () => {}, true)
+                        if (resp.didCancel) {
+                          Portal.remove(uploadingImgKey)
+                        } else if (resp.error) {
+                          Portal.remove(uploadingImgKey)
+                          Toast.fail("选择图片失败, 错误信息: " + resp.error)
+                        } else {
+                          uploadImg({ url: resp.uri })
+                            .then(json => {
+                              Portal.remove(uploadingImgKey)
+                              this.setState({
+                                isShowBottomNav: false,
+                                isShowBottomPicSelect: false,
+                              })
+                              const { patientUid } = this.state
+                              const { url, picId } = json.data
+                              this.props.ws.wsPost({
+                                url: "/ws/sendMsg",
+                                data: {
+                                  pic: {
+                                    url,
+                                    picId,
+                                  },
+                                  type: MsgType.picture,
+                                  patientUid,
+                                },
+                              })
+                            })
+                            .catch(e => {
+                              Portal.remove(uploadingImgKey)
+                              Toast.fail("上传图片, 错误信息: " + e)
+                            })
+                        }
+                      })
+                    }}>
                     <Image source={gImg.advisory.selectPhoto} style={style.selectImg} />
                     <Text style={[style.selectTitle, global.fontSize14, global.fontStyle]}>
                       拍照
