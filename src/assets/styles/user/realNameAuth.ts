@@ -358,11 +358,12 @@ export default StyleSheet.create({
     paddingLeft: 15,
   },
   viewImgFather: {
+    position: "relative",
     padding: 15,
     justifyContent: "center",
     alignItems: "center",
   },
   viewImg: {
-    resizeMode: "contain",
+    resizeMode: "cover",
   },
 })
