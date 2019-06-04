@@ -17,11 +17,11 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.0</string>
+	<string>1.12</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>4</string>
+	<string>1</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
@@ -30,9 +30,9 @@
 		<true/>
 	</dict>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string/>
+	<string>为您提供更精准的定位服务</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>让您能够上传图片</string>
+	<string>$(PRODUCT_NAME) would like your access to your photo gallery </string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>antfill.ttf</string>

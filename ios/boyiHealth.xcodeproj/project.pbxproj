@@ -5,6 +5,7 @@
 	};
 	objectVersion = 46;
 	objects = {
+
 /* Begin PBXBuildFile section */
 		00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302AC1ABCB8CE00DB3ED1 /* libRCTActionSheet.a */; };
 		00C302E71ABCBA2D00DB3ED1 /* libRCTGeolocation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302BA1ABCB90400DB3ED1 /* libRCTGeolocation.a */; };
@@ -29,6 +30,7 @@
 		21CC6138BEEA4AC495DA6A97 /* libRNCAsyncStorage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A14CF2388C9446CFAC7E3444 /* libRNCAsyncStorage.a */; };
 		2D43A230916F419EA4B7F8DB /* libRNCViewpager.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 180B0270AE174E7F8FB7B777 /* libRNCViewpager.a */; };
 		51EA6F49551C4BEC86CE887B /* antfill.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 95870B4BE1CC4E2FB8C48C57 /* antfill.ttf */; };
+		635AC5BC301E4DE8BE18D58E /* libRNImagePicker.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A6391F6657B463F95BA48B7 /* libRNImagePicker.a */; };
 		71671E8040E04248B251BEDC /* libRNGestureHandler.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 65D2685F71C64A26B50D8233 /* libRNGestureHandler.a */; };
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
 		ADBDB9381DFEBF1600ED6528 /* libRCTBlob.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ADBDB9271DFEBF0700ED6528 /* libRCTBlob.a */; };
@@ -36,7 +38,6 @@
 		B66A9D27076D4170904FA962 /* libRNDeviceInfo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EB2351FC608E486DBB420868 /* libRNDeviceInfo.a */; };
 		ED297163215061F000B7C4FE /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ED297162215061F000B7C4FE /* JavaScriptCore.framework */; };
 		FD648C4A539249959F6EC735 /* libRCTHotUpdate.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3596A1F67E4D41599998A66C /* libRCTHotUpdate.a */; };
-		635AC5BC301E4DE8BE18D58E /* libRNImagePicker.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A6391F6657B463F95BA48B7 /* libRNImagePicker.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -193,6 +194,13 @@
 			proxyType = 2;
 			remoteGlobalIDString = 58B5115D1A9E6B3D00147676;
 			remoteInfo = RCTCameraRoll;
+		};
+		15DD5B53229E84A7001EE9EE /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 870AFE4165B348159E959E3E /* RNImagePicker.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 014A3B5C1C6CF33500B6D375;
+			remoteInfo = RNImagePicker;
 		};
 		15F3BA6F228D93450084C7B6 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -404,12 +412,14 @@
 		2403779CF8F649258D42371E /* RNCViewpager.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNCViewpager.xcodeproj; path = "../node_modules/@react-native-community/viewpager/ios/RNCViewpager.xcodeproj"; sourceTree = "<group>"; };
 		2D16E6891FA4F8E400B85C8A /* libReact.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libReact.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		3596A1F67E4D41599998A66C /* libRCTHotUpdate.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRCTHotUpdate.a; sourceTree = "<group>"; };
+		3A6391F6657B463F95BA48B7 /* libRNImagePicker.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNImagePicker.a; sourceTree = "<group>"; };
 		5469BAA5F7AA4F1AB81EDF22 /* RNCSlider.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNCSlider.xcodeproj; path = "../node_modules/@react-native-community/slider/ios/RNCSlider.xcodeproj"; sourceTree = "<group>"; };
 		5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTAnimation.xcodeproj; path = "../node_modules/react-native/Libraries/NativeAnimation/RCTAnimation.xcodeproj"; sourceTree = "<group>"; };
 		65D2685F71C64A26B50D8233 /* libRNGestureHandler.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNGestureHandler.a; sourceTree = "<group>"; };
 		78C398B01ACF4ADC00677621 /* RCTLinking.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTLinking.xcodeproj; path = "../node_modules/react-native/Libraries/LinkingIOS/RCTLinking.xcodeproj"; sourceTree = "<group>"; };
 		7E3C23407E4A4491BF029076 /* libRNGestureHandler-tvOS.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = "libRNGestureHandler-tvOS.a"; sourceTree = "<group>"; };
 		832341B01AAA6A8300B99B32 /* RCTText.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTText.xcodeproj; path = "../node_modules/react-native/Libraries/Text/RCTText.xcodeproj"; sourceTree = "<group>"; };
+		870AFE4165B348159E959E3E /* RNImagePicker.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNImagePicker.xcodeproj; path = "../node_modules/react-native-image-picker/ios/RNImagePicker.xcodeproj"; sourceTree = "<group>"; };
 		95870B4BE1CC4E2FB8C48C57 /* antfill.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = antfill.ttf; path = "../node_modules/@ant-design/icons-react-native/fonts/antfill.ttf"; sourceTree = "<group>"; };
 		A14CF2388C9446CFAC7E3444 /* libRNCAsyncStorage.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNCAsyncStorage.a; sourceTree = "<group>"; };
 		ADBDB91F1DFEBF0600ED6528 /* RCTBlob.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTBlob.xcodeproj; path = "../node_modules/react-native/Libraries/Blob/RCTBlob.xcodeproj"; sourceTree = "<group>"; };
@@ -424,8 +434,6 @@
 		F8943A3ECED142728C900C82 /* RNGestureHandler.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNGestureHandler.xcodeproj; path = "../node_modules/react-native-gesture-handler/ios/RNGestureHandler.xcodeproj"; sourceTree = "<group>"; };
 		FE0D3D2CC04A42E2B3F4A67C /* libRNDeviceInfo-tvOS.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = "libRNDeviceInfo-tvOS.a"; sourceTree = "<group>"; };
 		FEFA39B18A7C48389407F6D7 /* RNDeviceInfo.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNDeviceInfo.xcodeproj; path = "../node_modules/react-native-device-info/ios/RNDeviceInfo.xcodeproj"; sourceTree = "<group>"; };
-		870AFE4165B348159E959E3E /* RNImagePicker.xcodeproj */ = {isa = PBXFileReference; name = "RNImagePicker.xcodeproj"; path = "../node_modules/react-native-image-picker/ios/RNImagePicker.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
-		3A6391F6657B463F95BA48B7 /* libRNImagePicker.a */ = {isa = PBXFileReference; name = "libRNImagePicker.a"; path = "libRNImagePicker.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -573,6 +581,7 @@
 				7E3C23407E4A4491BF029076 /* libRNGestureHandler-tvOS.a */,
 				FE0D3D2CC04A42E2B3F4A67C /* libRNDeviceInfo-tvOS.a */,
 				3596A1F67E4D41599998A66C /* libRCTHotUpdate.a */,
+				3A6391F6657B463F95BA48B7 /* libRNImagePicker.a */,
 			);
 			name = "Recovered References";
 			sourceTree = "<group>";
@@ -639,6 +648,14 @@
 			isa = PBXGroup;
 			children = (
 				15DD59B722967C7A001EE9EE /* libRCTCameraRoll.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		15DD5B50229E84A7001EE9EE /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				15DD5B54229E84A7001EE9EE /* libRNImagePicker.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -896,6 +913,10 @@
 					ProjectRef = F8943A3ECED142728C900C82 /* RNGestureHandler.xcodeproj */;
 				},
 				{
+					ProductGroup = 15DD5B50229E84A7001EE9EE /* Products */;
+					ProjectRef = 870AFE4165B348159E959E3E /* RNImagePicker.xcodeproj */;
+				},
+				{
 					ProductGroup = 155FB920226F0757003D6DAB /* Products */;
 					ProjectRef = DC7044354F3F48F19A7B0E9C /* RNViewShot.xcodeproj */;
 				},
@@ -1060,6 +1081,13 @@
 			fileType = archive.ar;
 			path = libRCTCameraRoll.a;
 			remoteRef = 15DD59B622967C7A001EE9EE /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		15DD5B54229E84A7001EE9EE /* libRNImagePicker.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRNImagePicker.a;
+			remoteRef = 15DD5B53229E84A7001EE9EE /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		15F3BA70228D93450084C7B6 /* libRCTHotUpdate.a */ = {
@@ -1331,7 +1359,7 @@
 					ode_modules,
 					"eact-native-view-shotios",
 					"$(SRCROOT)/../node_modules/react-native-update/ios/RCTHotUpdate/**",
-					"$(SRCROOT)\..\node_modules\react-native-image-picker\ios",
+					"$(SRCROOT)..\node_modules\neact-native-image-pickerios",
 				);
 				INFOPLIST_FILE = "$(SRCROOT)/boyiHealth/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1380,7 +1408,7 @@
 					ode_modules,
 					"eact-native-view-shotios",
 					"$(SRCROOT)/../node_modules/react-native-update/ios/RCTHotUpdate/**",
-					"$(SRCROOT)\..\node_modules\react-native-image-picker\ios",
+					"$(SRCROOT)..\node_modules\neact-native-image-pickerios",
 				);
 				INFOPLIST_FILE = "$(SRCROOT)/boyiHealth/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
