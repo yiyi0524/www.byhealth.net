@@ -26,6 +26,7 @@ import {
   RefreshControl,
   Text,
   View,
+  KeyboardAvoidingView,
 } from "react-native"
 import { TouchableOpacity } from "react-native-gesture-handler"
 import ImageViewer from "react-native-image-zoom-viewer"
@@ -400,136 +401,466 @@ export default class Chat extends Component<
         </View>
       )
     }
-    return (
-      <>
-        <View style={style.main}>
-          <ScrollView
-            ref={ref => (this.myScroll = ref)}
-            style={style.content}
-            onContentSizeChange={() => {
-              if (this.myScroll && this.state.shouldScrollToEnd) {
-                this.myScroll.scrollToEnd()
-                this.setState({
-                  shouldScrollToEnd: false,
-                })
-              }
-            }}
-            refreshControl={
-              <RefreshControl refreshing={this.state.refreshing} onRefresh={this.getMoreMsgList} />
-            }>
-            <View style={style.list}>
-              <Text
-                style={[
-                  this.state.hasMoreRecord ? style.downloadMore : global.hidden,
-                  global.fontStyle,
-                  global.fontSize12,
-                ]}>
-                下拉查看更多聊天记录
-              </Text>
-              {Array.isArray(this.props.ws.chatMsg[this.state.patientUid]) &&
-                this.props.ws.chatMsg[this.state.patientUid].map((v: any, k) => {
-                  let formatMsg: Msg | null = null
-                  switch (v.type) {
-                    case MsgType.txt:
-                      formatMsg = this.txtFormat(v)
-                      break
-                    case MsgType.picture:
-                      formatMsg = this.pictureFormat(v)
-                      break
-                    case MsgType.inquirySheet:
-                      formatMsg = this.inquirySheetFormat(v)
-                      break
-                    case MsgType.patientsThemselves:
-                      formatMsg = this.patientsThemselvesFormat(v)
-                      break
-                    case MsgType.treatmentPlan:
-                      formatMsg = this.treatmentPlanFormat(v)
-                      break
-                    default:
-                      break
-                  }
-                  if (formatMsg) {
-                    return <View key={k}>{formatMsg.dom}</View>
-                  }
-                })}
-            </View>
-          </ScrollView>
-          <View style={style.bottom}>
-            <View style={style.bottomNav}>
-              <View
-                style={[
-                  this.state.isShowBottomNav ? style.bottomNavListActive : style.bottomNavList,
-                  global.flex,
-                  global.alignItemsCenter,
-                  global.flexWrap,
-                ]}>
-                {this.bottomNavList.map((v: bottomNavItem, k: number) => {
-                  return (
-                    <TouchableOpacity
-                      onPress={() => this.selectBottomNav(v)}
-                      key={k}
-                      style={style.bottomNavItem}>
-                      <View style={style.bottomNavItemPicFa}>
-                        <Image style={style.bottomNavItemPic} source={v.icon} />
-                      </View>
-                      <Text style={[style.bottomNavItemTitle, global.fontSize13, global.fontStyle]}>
-                        {v.title}
+    if (Platform.OS === "android") {
+      return (
+        <>
+          <View style={style.main}>
+            <ScrollView
+              ref={ref => (this.myScroll = ref)}
+              style={style.content}
+              onContentSizeChange={() => {
+                if (this.myScroll && this.state.shouldScrollToEnd) {
+                  this.myScroll.scrollToEnd()
+                  this.setState({
+                    shouldScrollToEnd: false,
+                  })
+                }
+              }}
+              refreshControl={
+                <RefreshControl
+                  refreshing={this.state.refreshing}
+                  onRefresh={this.getMoreMsgList}
+                />
+              }>
+              <View style={style.list}>
+                <Text
+                  style={[
+                    this.state.hasMoreRecord ? style.downloadMore : global.hidden,
+                    global.fontStyle,
+                    global.fontSize12,
+                  ]}>
+                  下拉查看更多聊天记录
+                </Text>
+                {Array.isArray(this.props.ws.chatMsg[this.state.patientUid]) &&
+                  this.props.ws.chatMsg[this.state.patientUid].map((v: any, k) => {
+                    let formatMsg: Msg | null = null
+                    switch (v.type) {
+                      case MsgType.txt:
+                        formatMsg = this.txtFormat(v)
+                        break
+                      case MsgType.picture:
+                        formatMsg = this.pictureFormat(v)
+                        break
+                      case MsgType.inquirySheet:
+                        formatMsg = this.inquirySheetFormat(v)
+                        break
+                      case MsgType.patientsThemselves:
+                        formatMsg = this.patientsThemselvesFormat(v)
+                        break
+                      case MsgType.treatmentPlan:
+                        formatMsg = this.treatmentPlanFormat(v)
+                        break
+                      default:
+                        break
+                    }
+                    if (formatMsg) {
+                      return <View key={k}>{formatMsg.dom}</View>
+                    }
+                  })}
+              </View>
+            </ScrollView>
+            <View style={style.bottom}>
+              <View style={style.bottomNav}>
+                <View
+                  style={[
+                    this.state.isShowBottomNav ? style.bottomNavListActive : style.bottomNavList,
+                    global.flex,
+                    global.alignItemsCenter,
+                    global.flexWrap,
+                  ]}>
+                  {this.bottomNavList.map((v: bottomNavItem, k: number) => {
+                    return (
+                      <TouchableOpacity
+                        onPress={() => this.selectBottomNav(v)}
+                        key={k}
+                        style={style.bottomNavItem}>
+                        <View style={style.bottomNavItemPicFa}>
+                          <Image style={style.bottomNavItemPic} source={v.icon} />
+                        </View>
+                        <Text
+                          style={[style.bottomNavItemTitle, global.fontSize13, global.fontStyle]}>
+                          {v.title}
+                        </Text>
+                      </TouchableOpacity>
+                    )
+                  })}
+                </View>
+                <View style={style.bottomInputFa}>
+                  <View
+                    style={[
+                      style.bottomInput,
+                      global.flex,
+                      global.justifyContentSpaceBetween,
+                      global.alignItemsCenter,
+                    ]}>
+                    <TouchableOpacity>
+                      {/* <Image
+                        style={style.bottomInputImg}
+                        source={gImg.advisory.voice}
+                      /> */}
+                    </TouchableOpacity>
+                    <View style={style.inputFa}>
+                      <TextareaItem
+                        style={style.input}
+                        placeholder="请输入"
+                        autoHeight
+                        clear
+                        last
+                        ref={ref => (this.msgInput = ref)}
+                        value={this.state.sendMsg}
+                        onChange={val => {
+                          val = val || ""
+                          this.setState({
+                            sendMsg: val,
+                          })
+                        }}
+                      />
+                    </View>
+                    <TouchableOpacity onPress={this.sendMsg}>
+                      <Text style={[style.bottomInputSendBtn, global.fontSize14, global.fontStyle]}>
+                        发送
                       </Text>
                     </TouchableOpacity>
-                  )
-                })}
-              </View>
-              <View style={style.bottomInputFa}>
-                <View
-                  style={[
-                    style.bottomInput,
-                    global.flex,
-                    global.justifyContentSpaceBetween,
-                    global.alignItemsCenter,
-                  ]}>
-                  <TouchableOpacity>
-                    {/* <Image
-                      style={style.bottomInputImg}
-                      source={gImg.advisory.voice}
-                    /> */}
-                  </TouchableOpacity>
-                  <View style={style.inputFa}>
-                    <TextareaItem
-                      style={style.input}
-                      placeholder="请输入"
-                      autoHeight
-                      clear
-                      last
-                      ref={ref => (this.msgInput = ref)}
-                      value={this.state.sendMsg}
-                      onChange={val => {
-                        val = val || ""
-                        this.setState({
-                          sendMsg: val,
-                        })
-                      }}
-                    />
                   </View>
-                  <TouchableOpacity onPress={this.sendMsg}>
-                    <Text style={[style.bottomInputSendBtn, global.fontSize14, global.fontStyle]}>
-                      发送
-                    </Text>
-                  </TouchableOpacity>
+                  <View
+                    style={[
+                      this.state.isShowBottomPicSelect ? style.selectPicActive : style.selectPic,
+                      global.flex,
+                      global.alignItemsCenter,
+                      global.justifyContentSpaceAround,
+                    ]}>
+                    <View style={style.selectPicFa}>
+                      <View style={style.imgSelector}>
+                        <ImagePicker
+                          // onChange={this.selectPic}
+                          files={this.state.selectPic}
+                          onAddImageClick={() => {
+                            RnImagePicker.launchImageLibrary(imgPickerOpt, resp => {
+                              const uploadingImgKey = Toast.loading("上传图片中", 0, () => {}, true)
+                              if (resp.didCancel) {
+                                Portal.remove(uploadingImgKey)
+                              } else if (resp.error) {
+                                Portal.remove(uploadingImgKey)
+                                Toast.fail("选择图片失败, 错误信息: " + resp.error)
+                              } else {
+                                uploadImg({ url: resp.uri })
+                                  .then(json => {
+                                    Portal.remove(uploadingImgKey)
+                                    this.setState({
+                                      isShowBottomNav: false,
+                                      isShowBottomPicSelect: false,
+                                    })
+                                    const { patientUid } = this.state
+                                    const { url, picId } = json.data
+                                    this.props.ws.wsPost({
+                                      url: "/ws/sendMsg",
+                                      data: {
+                                        pic: {
+                                          url,
+                                          picId,
+                                        },
+                                        type: MsgType.picture,
+                                        patientUid,
+                                      },
+                                    })
+                                  })
+                                  .catch(e => {
+                                    Portal.remove(uploadingImgKey)
+                                    Toast.fail("上传图片, 错误信息: " + e)
+                                  })
+                              }
+                            })
+                          }}
+                        />
+                      </View>
+                      <Image source={gImg.advisory.selectPic} style={style.pickerImg} />
+                      <Text style={[style.selectTitle, global.fontSize14, global.fontStyle]}>
+                        图片
+                      </Text>
+                    </View>
+                    <TouchableOpacity
+                      style={style.selectPicFa}
+                      onPress={() => {
+                        RnImagePicker.launchCamera(imgPickerOpt, resp => {
+                          const uploadingImgKey = Toast.loading("上传图片中", 0, () => {}, true)
+                          if (resp.didCancel) {
+                            Portal.remove(uploadingImgKey)
+                          } else if (resp.error) {
+                            Portal.remove(uploadingImgKey)
+                            Toast.fail("选择图片失败, 错误信息: " + resp.error)
+                          } else {
+                            uploadImg({ url: resp.uri })
+                              .then(json => {
+                                Portal.remove(uploadingImgKey)
+                                this.setState({
+                                  isShowBottomNav: false,
+                                  isShowBottomPicSelect: false,
+                                })
+                                const { patientUid } = this.state
+                                const { url, picId } = json.data
+                                this.props.ws.wsPost({
+                                  url: "/ws/sendMsg",
+                                  data: {
+                                    pic: {
+                                      url,
+                                      picId,
+                                    },
+                                    type: MsgType.picture,
+                                    patientUid,
+                                  },
+                                })
+                              })
+                              .catch(e => {
+                                Portal.remove(uploadingImgKey)
+                                Toast.fail("上传图片, 错误信息: " + e)
+                              })
+                          }
+                        })
+                      }}>
+                      <Image source={gImg.advisory.selectPhoto} style={style.selectImg} />
+                      <Text style={[style.selectTitle, global.fontSize14, global.fontStyle]}>
+                        拍照
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
                 </View>
-                <View
-                  style={[
-                    this.state.isShowBottomPicSelect ? style.selectPicActive : style.selectPic,
-                    global.flex,
-                    global.alignItemsCenter,
-                    global.justifyContentSpaceAround,
-                  ]}>
-                  <View style={style.selectPicFa}>
-                    <View style={style.imgSelector}>
-                      <ImagePicker
-                        // onChange={this.selectPic}
-                        files={this.state.selectPic}
-                        onAddImageClick={() => {
-                          RnImagePicker.launchImageLibrary(imgPickerOpt, resp => {
+              </View>
+            </View>
+          </View>
+          {/* 图片查看器 */}
+          {/* <View style={this.state.isShowPic ? style.showPic : global.hidden}>
+            <TouchableOpacity onPress={this.closeShowPic} activeOpacity={0.8}>
+              <View style={style.howImgFa}>
+                <Image
+                  style={style.showImg}
+                  source={
+                    this.state.showPicUrl
+                      ? {
+                          uri: getPicFullUrl(this.state.showPicUrl),
+                        }
+                      : gImg.common.defaultPic
+                  }
+                />
+              </View>
+            </TouchableOpacity>
+          </View> */}
+          <View style={this.state.isShowPic ? style.showPic : global.hidden}>
+            <View style={style.howImgFa}>
+              <View style={style.close}>
+                <Icon
+                  onPress={() => {
+                    this.setState({
+                      imagesViewer: [
+                        {
+                          url: BASE_URL + "/static/media/collapsed_logo.db8ef9b3.png",
+                        },
+                      ],
+                      isShowPic: false,
+                    })
+                  }}
+                  style={style.closeIcon}
+                  name="close"
+                />
+              </View>
+              <ImageViewer
+                saveToLocalByLongPress={false}
+                imageUrls={this.state.imagesViewer}
+                index={this.state.imageIdx}
+                maxOverflow={0}
+                onCancel={() => {}}
+              />
+            </View>
+          </View>
+        </>
+      )
+    } else {
+      return (
+        <>
+          <KeyboardAvoidingView behavior="padding" style={{ flex: 1 }} keyboardVerticalOffset={70}>
+            <View style={style.main}>
+              <ScrollView
+                ref={ref => (this.myScroll = ref)}
+                style={style.content}
+                onContentSizeChange={() => {
+                  if (this.myScroll && this.state.shouldScrollToEnd) {
+                    this.myScroll.scrollToEnd()
+                    this.setState({
+                      shouldScrollToEnd: false,
+                    })
+                  }
+                }}
+                refreshControl={
+                  <RefreshControl
+                    refreshing={this.state.refreshing}
+                    onRefresh={this.getMoreMsgList}
+                  />
+                }>
+                <View style={style.list}>
+                  <Text
+                    style={[
+                      this.state.hasMoreRecord ? style.downloadMore : global.hidden,
+                      global.fontStyle,
+                      global.fontSize12,
+                    ]}>
+                    下拉查看更多聊天记录
+                  </Text>
+                  {Array.isArray(this.props.ws.chatMsg[this.state.patientUid]) &&
+                    this.props.ws.chatMsg[this.state.patientUid].map((v: any, k) => {
+                      let formatMsg: Msg | null = null
+                      switch (v.type) {
+                        case MsgType.txt:
+                          formatMsg = this.txtFormat(v)
+                          break
+                        case MsgType.picture:
+                          formatMsg = this.pictureFormat(v)
+                          break
+                        case MsgType.inquirySheet:
+                          formatMsg = this.inquirySheetFormat(v)
+                          break
+                        case MsgType.patientsThemselves:
+                          formatMsg = this.patientsThemselvesFormat(v)
+                          break
+                        case MsgType.treatmentPlan:
+                          formatMsg = this.treatmentPlanFormat(v)
+                          break
+                        default:
+                          break
+                      }
+                      if (formatMsg) {
+                        return <View key={k}>{formatMsg.dom}</View>
+                      }
+                    })}
+                </View>
+              </ScrollView>
+              <View style={style.bottom}>
+                <View style={style.bottomNav}>
+                  <View
+                    style={[
+                      this.state.isShowBottomNav ? style.bottomNavListActive : style.bottomNavList,
+                      global.flex,
+                      global.alignItemsCenter,
+                      global.flexWrap,
+                    ]}>
+                    {this.bottomNavList.map((v: bottomNavItem, k: number) => {
+                      return (
+                        <TouchableOpacity
+                          onPress={() => this.selectBottomNav(v)}
+                          key={k}
+                          style={style.bottomNavItem}>
+                          <View style={style.bottomNavItemPicFa}>
+                            <Image style={style.bottomNavItemPic} source={v.icon} />
+                          </View>
+                          <Text
+                            style={[style.bottomNavItemTitle, global.fontSize13, global.fontStyle]}>
+                            {v.title}
+                          </Text>
+                        </TouchableOpacity>
+                      )
+                    })}
+                  </View>
+                  <View style={style.bottomInputFa}>
+                    <View
+                      style={[
+                        style.bottomInput,
+                        global.flex,
+                        global.justifyContentSpaceBetween,
+                        global.alignItemsCenter,
+                      ]}>
+                      <TouchableOpacity>
+                        {/* <Image
+                        style={style.bottomInputImg}
+                        source={gImg.advisory.voice}
+                      /> */}
+                      </TouchableOpacity>
+                      <View style={style.inputFa}>
+                        <TextareaItem
+                          style={style.input}
+                          placeholder="请输入"
+                          autoHeight
+                          clear
+                          last
+                          ref={ref => (this.msgInput = ref)}
+                          value={this.state.sendMsg}
+                          onChange={val => {
+                            val = val || ""
+                            this.setState({
+                              sendMsg: val,
+                            })
+                          }}
+                        />
+                      </View>
+                      <TouchableOpacity onPress={this.sendMsg}>
+                        <Text
+                          style={[style.bottomInputSendBtn, global.fontSize14, global.fontStyle]}>
+                          发送
+                        </Text>
+                      </TouchableOpacity>
+                    </View>
+                    <View
+                      style={[
+                        this.state.isShowBottomPicSelect ? style.selectPicActive : style.selectPic,
+                        global.flex,
+                        global.alignItemsCenter,
+                        global.justifyContentSpaceAround,
+                      ]}>
+                      <View style={style.selectPicFa}>
+                        <View style={style.imgSelector}>
+                          <ImagePicker
+                            // onChange={this.selectPic}
+                            files={this.state.selectPic}
+                            onAddImageClick={() => {
+                              RnImagePicker.launchImageLibrary(imgPickerOpt, resp => {
+                                const uploadingImgKey = Toast.loading(
+                                  "上传图片中",
+                                  0,
+                                  () => {},
+                                  true,
+                                )
+                                if (resp.didCancel) {
+                                  Portal.remove(uploadingImgKey)
+                                } else if (resp.error) {
+                                  Portal.remove(uploadingImgKey)
+                                  Toast.fail("选择图片失败, 错误信息: " + resp.error)
+                                } else {
+                                  uploadImg({ url: resp.uri })
+                                    .then(json => {
+                                      Portal.remove(uploadingImgKey)
+                                      this.setState({
+                                        isShowBottomNav: false,
+                                        isShowBottomPicSelect: false,
+                                      })
+                                      const { patientUid } = this.state
+                                      const { url, picId } = json.data
+                                      this.props.ws.wsPost({
+                                        url: "/ws/sendMsg",
+                                        data: {
+                                          pic: {
+                                            url,
+                                            picId,
+                                          },
+                                          type: MsgType.picture,
+                                          patientUid,
+                                        },
+                                      })
+                                    })
+                                    .catch(e => {
+                                      Portal.remove(uploadingImgKey)
+                                      Toast.fail("上传图片, 错误信息: " + e)
+                                    })
+                                }
+                              })
+                            }}
+                          />
+                        </View>
+                        <Image source={gImg.advisory.selectPic} style={style.pickerImg} />
+                        <Text style={[style.selectTitle, global.fontSize14, global.fontStyle]}>
+                          图片
+                        </Text>
+                      </View>
+                      <TouchableOpacity
+                        style={style.selectPicFa}
+                        onPress={() => {
+                          RnImagePicker.launchCamera(imgPickerOpt, resp => {
                             const uploadingImgKey = Toast.loading("上传图片中", 0, () => {}, true)
                             if (resp.didCancel) {
                               Portal.remove(uploadingImgKey)
@@ -564,109 +895,65 @@ export default class Chat extends Component<
                                 })
                             }
                           })
-                        }}
-                      />
+                        }}>
+                        <Image source={gImg.advisory.selectPhoto} style={style.selectImg} />
+                        <Text style={[style.selectTitle, global.fontSize14, global.fontStyle]}>
+                          拍照
+                        </Text>
+                      </TouchableOpacity>
                     </View>
-                    <Image source={gImg.advisory.selectPic} style={style.pickerImg} />
-                    <Text style={[style.selectTitle, global.fontSize14, global.fontStyle]}>
-                      图片
-                    </Text>
                   </View>
-                  <TouchableOpacity
-                    style={style.selectPicFa}
-                    onPress={() => {
-                      RnImagePicker.launchCamera(imgPickerOpt, resp => {
-                        const uploadingImgKey = Toast.loading("上传图片中", 0, () => {}, true)
-                        if (resp.didCancel) {
-                          Portal.remove(uploadingImgKey)
-                        } else if (resp.error) {
-                          Portal.remove(uploadingImgKey)
-                          Toast.fail("选择图片失败, 错误信息: " + resp.error)
-                        } else {
-                          uploadImg({ url: resp.uri })
-                            .then(json => {
-                              Portal.remove(uploadingImgKey)
-                              this.setState({
-                                isShowBottomNav: false,
-                                isShowBottomPicSelect: false,
-                              })
-                              const { patientUid } = this.state
-                              const { url, picId } = json.data
-                              this.props.ws.wsPost({
-                                url: "/ws/sendMsg",
-                                data: {
-                                  pic: {
-                                    url,
-                                    picId,
-                                  },
-                                  type: MsgType.picture,
-                                  patientUid,
-                                },
-                              })
-                            })
-                            .catch(e => {
-                              Portal.remove(uploadingImgKey)
-                              Toast.fail("上传图片, 错误信息: " + e)
-                            })
-                        }
-                      })
-                    }}>
-                    <Image source={gImg.advisory.selectPhoto} style={style.selectImg} />
-                    <Text style={[style.selectTitle, global.fontSize14, global.fontStyle]}>
-                      拍照
-                    </Text>
-                  </TouchableOpacity>
                 </View>
               </View>
             </View>
-          </View>
-        </View>
-        {/* 图片查看器 */}
-        {/* <View style={this.state.isShowPic ? style.showPic : global.hidden}>
-          <TouchableOpacity onPress={this.closeShowPic} activeOpacity={0.8}>
-            <View style={style.howImgFa}>
-              <Image
-                style={style.showImg}
-                source={
-                  this.state.showPicUrl
-                    ? {
-                        uri: getPicFullUrl(this.state.showPicUrl),
-                      }
-                    : gImg.common.defaultPic
-                }
-              />
+            {/* 图片查看器 */}
+            {/* <View style={this.state.isShowPic ? style.showPic : global.hidden}>
+            <TouchableOpacity onPress={this.closeShowPic} activeOpacity={0.8}>
+              <View style={style.howImgFa}>
+                <Image
+                  style={style.showImg}
+                  source={
+                    this.state.showPicUrl
+                      ? {
+                          uri: getPicFullUrl(this.state.showPicUrl),
+                        }
+                      : gImg.common.defaultPic
+                  }
+                />
+              </View>
+            </TouchableOpacity>
+          </View> */}
+            <View style={this.state.isShowPic ? style.showPic : global.hidden}>
+              <View style={style.howImgFa}>
+                <View style={style.close}>
+                  <Icon
+                    onPress={() => {
+                      this.setState({
+                        imagesViewer: [
+                          {
+                            url: BASE_URL + "/static/media/collapsed_logo.db8ef9b3.png",
+                          },
+                        ],
+                        isShowPic: false,
+                      })
+                    }}
+                    style={style.closeIcon}
+                    name="close"
+                  />
+                </View>
+                <ImageViewer
+                  saveToLocalByLongPress={false}
+                  imageUrls={this.state.imagesViewer}
+                  index={this.state.imageIdx}
+                  maxOverflow={0}
+                  onCancel={() => {}}
+                />
+              </View>
             </View>
-          </TouchableOpacity>
-        </View> */}
-        <View style={this.state.isShowPic ? style.showPic : global.hidden}>
-          <View style={style.howImgFa}>
-            <View style={style.close}>
-              <Icon
-                onPress={() => {
-                  this.setState({
-                    imagesViewer: [
-                      {
-                        url: BASE_URL + "/static/media/collapsed_logo.db8ef9b3.png",
-                      },
-                    ],
-                    isShowPic: false,
-                  })
-                }}
-                style={style.closeIcon}
-                name="close"
-              />
-            </View>
-            <ImageViewer
-              saveToLocalByLongPress={false}
-              imageUrls={this.state.imagesViewer}
-              index={this.state.imageIdx}
-              maxOverflow={0}
-              onCancel={() => {}}
-            />
-          </View>
-        </View>
-      </>
-    )
+          </KeyboardAvoidingView>
+        </>
+      )
+    }
   }
   getMsgList = async (
     page: number,

@@ -175,7 +175,6 @@ export default class Index extends Component<
       )
     }
     let { unReadMsgCountRecord } = this.props.ws
-    console.log(unReadMsgCountRecord)
     return (
       <>
         <ScrollView
