@@ -25,6 +25,7 @@ import {
   Text,
   TouchableOpacity,
   View,
+  PermissionsAndroid,
 } from "react-native"
 import { checkUpdate, downloadUpdate, switchVersion, switchVersionLater } from "react-native-update"
 import { NavigationScreenProp } from "react-navigation"
@@ -180,6 +181,8 @@ export default class Home extends Component<
     //   this.addEventListenerLoginStatus,
     // )
     this.init()
+    // this.readPermission()
+    // this.writePermission()
   }
   componentWillUnmount() {
     if (this.subscription) {
@@ -188,6 +191,66 @@ export default class Home extends Component<
     // if (this.loginStatus) {
     //   this.loginStatus.remove()
     // }
+  }
+  readPermission = () => {
+    try {
+      PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE)
+        .then(async res => {
+          console.log("读取权限" + res)
+          if (!res) {
+            const granted = await PermissionsAndroid.request(
+              PermissionsAndroid.PERMISSIONS.CAMERA,
+              {
+                title: "申请读取权限",
+                message: "博一健康要打开您的读取权限,是否允许?",
+                buttonNeutral: "稍后询问",
+                buttonNegative: "禁止",
+                buttonPositive: "允许",
+              },
+            )
+            if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+              console.log("允许打开读取权限")
+            } else {
+              console.log("禁止打开许读取权限")
+            }
+          }
+        })
+        .catch(err => {
+          console.log("读取权限失败: " + err)
+        })
+    } catch (err) {
+      console.log(err)
+    }
+  }
+  writePermission = () => {
+    try {
+      PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE)
+        .then(async res => {
+          console.log("写入权限" + res)
+          if (!res) {
+            const granted = await PermissionsAndroid.request(
+              PermissionsAndroid.PERMISSIONS.CAMERA,
+              {
+                title: "申请写入权限",
+                message: "博一健康要打开您的写入权限,是否允许?",
+                buttonNeutral: "稍后询问",
+                buttonNegative: "禁止",
+                buttonPositive: "允许",
+              },
+            )
+            if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+              console.log("允许打开写入权限")
+            } else {
+              console.log("禁止打开许写入权限")
+            }
+          }
+        })
+        .catch(err => {
+          console.log("读取权限失败: " + err)
+        })
+    } catch (err) {
+      console.log(err)
+    }
   }
   addEventListenerLoginStatus = async () => {
     let isLogin = await api.isLogin()

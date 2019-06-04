@@ -535,41 +535,122 @@ export default class Chat extends Component<
                           // onChange={this.selectPic}
                           files={this.state.selectPic}
                           onAddImageClick={() => {
-                            RnImagePicker.launchImageLibrary(imgPickerOpt, resp => {
-                              const uploadingImgKey = Toast.loading("上传图片中", 0, () => {}, true)
-                              if (resp.didCancel) {
-                                Portal.remove(uploadingImgKey)
-                              } else if (resp.error) {
-                                Portal.remove(uploadingImgKey)
-                                Toast.fail("选择图片失败, 错误信息: " + resp.error)
-                              } else {
-                                uploadImg({ url: resp.uri })
-                                  .then(json => {
-                                    Portal.remove(uploadingImgKey)
-                                    this.setState({
-                                      isShowBottomNav: false,
-                                      isShowBottomPicSelect: false,
-                                    })
-                                    const { patientUid } = this.state
-                                    const { url, picId } = json.data
-                                    this.props.ws.wsPost({
-                                      url: "/ws/sendMsg",
-                                      data: {
-                                        pic: {
-                                          url,
-                                          picId,
+                            try {
+                              PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.CAMERA)
+                                .then(async res => {
+                                  if (!res) {
+                                    try {
+                                      const granted = await PermissionsAndroid.request(
+                                        PermissionsAndroid.PERMISSIONS.CAMERA,
+                                        {
+                                          title: "申请拍摄照片和录制视频权限",
+                                          message:
+                                            "博一健康需要使用您的拍摄照片和录制视频的权限,是否允许?",
+                                          buttonNeutral: "稍后询问",
+                                          buttonNegative: "禁止",
+                                          buttonPositive: "允许",
                                         },
-                                        type: MsgType.picture,
-                                        patientUid,
-                                      },
+                                      )
+                                      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+                                        console.log("获得摄像头权限")
+                                        RnImagePicker.launchImageLibrary(imgPickerOpt, resp => {
+                                          const uploadingImgKey = Toast.loading(
+                                            "上传图片中",
+                                            0,
+                                            () => {},
+                                            true,
+                                          )
+                                          if (resp.didCancel) {
+                                            Portal.remove(uploadingImgKey)
+                                          } else if (resp.error) {
+                                            Portal.remove(uploadingImgKey)
+                                            Toast.fail("选择图片失败, 错误信息: " + resp.error)
+                                          } else {
+                                            uploadImg({ url: resp.uri })
+                                              .then(json => {
+                                                Portal.remove(uploadingImgKey)
+                                                this.setState({
+                                                  isShowBottomNav: false,
+                                                  isShowBottomPicSelect: false,
+                                                })
+                                                const { patientUid } = this.state
+                                                const { url, picId } = json.data
+                                                this.props.ws.wsPost({
+                                                  url: "/ws/sendMsg",
+                                                  data: {
+                                                    pic: {
+                                                      url,
+                                                      picId,
+                                                    },
+                                                    type: MsgType.picture,
+                                                    patientUid,
+                                                  },
+                                                })
+                                              })
+                                              .catch(e => {
+                                                Portal.remove(uploadingImgKey)
+                                                Toast.fail("上传图片, 错误信息: " + e)
+                                              })
+                                          }
+                                        })
+                                      } else {
+                                        return Toast.info(
+                                          "您禁止了拍摄照片和录制视频权限, 请到设置中心打开",
+                                          3,
+                                        )
+                                      }
+                                    } catch (err) {
+                                      console.warn(err)
+                                    }
+                                  } else {
+                                    RnImagePicker.launchImageLibrary(imgPickerOpt, resp => {
+                                      const uploadingImgKey = Toast.loading(
+                                        "上传图片中",
+                                        0,
+                                        () => {},
+                                        true,
+                                      )
+                                      if (resp.didCancel) {
+                                        Portal.remove(uploadingImgKey)
+                                      } else if (resp.error) {
+                                        Portal.remove(uploadingImgKey)
+                                        Toast.fail("选择图片失败, 错误信息: " + resp.error)
+                                      } else {
+                                        uploadImg({ url: resp.uri })
+                                          .then(json => {
+                                            Portal.remove(uploadingImgKey)
+                                            this.setState({
+                                              isShowBottomNav: false,
+                                              isShowBottomPicSelect: false,
+                                            })
+                                            const { patientUid } = this.state
+                                            const { url, picId } = json.data
+                                            this.props.ws.wsPost({
+                                              url: "/ws/sendMsg",
+                                              data: {
+                                                pic: {
+                                                  url,
+                                                  picId,
+                                                },
+                                                type: MsgType.picture,
+                                                patientUid,
+                                              },
+                                            })
+                                          })
+                                          .catch(e => {
+                                            Portal.remove(uploadingImgKey)
+                                            Toast.fail("上传图片, 错误信息: " + e)
+                                          })
+                                      }
                                     })
-                                  })
-                                  .catch(e => {
-                                    Portal.remove(uploadingImgKey)
-                                    Toast.fail("上传图片, 错误信息: " + e)
-                                  })
-                              }
-                            })
+                                  }
+                                })
+                                .catch(err => {
+                                  console.log("读取权限失败: " + err)
+                                })
+                            } catch (err) {
+                              console.log(err)
+                            }
                           }}
                         />
                       </View>
@@ -581,41 +662,122 @@ export default class Chat extends Component<
                     <TouchableOpacity
                       style={style.selectPicFa}
                       onPress={() => {
-                        RnImagePicker.launchCamera(imgPickerOpt, resp => {
-                          const uploadingImgKey = Toast.loading("上传图片中", 0, () => {}, true)
-                          if (resp.didCancel) {
-                            Portal.remove(uploadingImgKey)
-                          } else if (resp.error) {
-                            Portal.remove(uploadingImgKey)
-                            Toast.fail("选择图片失败, 错误信息: " + resp.error)
-                          } else {
-                            uploadImg({ url: resp.uri })
-                              .then(json => {
-                                Portal.remove(uploadingImgKey)
-                                this.setState({
-                                  isShowBottomNav: false,
-                                  isShowBottomPicSelect: false,
-                                })
-                                const { patientUid } = this.state
-                                const { url, picId } = json.data
-                                this.props.ws.wsPost({
-                                  url: "/ws/sendMsg",
-                                  data: {
-                                    pic: {
-                                      url,
-                                      picId,
+                        try {
+                          PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.CAMERA)
+                            .then(async res => {
+                              if (!res) {
+                                try {
+                                  const granted = await PermissionsAndroid.request(
+                                    PermissionsAndroid.PERMISSIONS.CAMERA,
+                                    {
+                                      title: "申请拍摄照片和录制视频权限",
+                                      message:
+                                        "博一健康需要使用您的拍摄照片和录制视频的权限,是否允许?",
+                                      buttonNeutral: "稍后询问",
+                                      buttonNegative: "禁止",
+                                      buttonPositive: "允许",
                                     },
-                                    type: MsgType.picture,
-                                    patientUid,
-                                  },
+                                  )
+                                  if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+                                    console.log("获得摄像头权限")
+                                    RnImagePicker.launchCamera(imgPickerOpt, resp => {
+                                      const uploadingImgKey = Toast.loading(
+                                        "上传图片中",
+                                        0,
+                                        () => {},
+                                        true,
+                                      )
+                                      if (resp.didCancel) {
+                                        Portal.remove(uploadingImgKey)
+                                      } else if (resp.error) {
+                                        Portal.remove(uploadingImgKey)
+                                        Toast.fail("选择图片失败, 错误信息: " + resp.error)
+                                      } else {
+                                        uploadImg({ url: resp.uri })
+                                          .then(json => {
+                                            Portal.remove(uploadingImgKey)
+                                            this.setState({
+                                              isShowBottomNav: false,
+                                              isShowBottomPicSelect: false,
+                                            })
+                                            const { patientUid } = this.state
+                                            const { url, picId } = json.data
+                                            this.props.ws.wsPost({
+                                              url: "/ws/sendMsg",
+                                              data: {
+                                                pic: {
+                                                  url,
+                                                  picId,
+                                                },
+                                                type: MsgType.picture,
+                                                patientUid,
+                                              },
+                                            })
+                                          })
+                                          .catch(e => {
+                                            Portal.remove(uploadingImgKey)
+                                            Toast.fail("上传图片, 错误信息: " + e)
+                                          })
+                                      }
+                                    })
+                                  } else {
+                                    Toast.info(
+                                      "您禁止了拍摄照片和录制视频权限, 请到设置中心打开",
+                                      3,
+                                    )
+                                  }
+                                } catch (err) {
+                                  console.warn(err)
+                                }
+                              } else {
+                                RnImagePicker.launchCamera(imgPickerOpt, resp => {
+                                  const uploadingImgKey = Toast.loading(
+                                    "上传图片中",
+                                    0,
+                                    () => {},
+                                    true,
+                                  )
+                                  if (resp.didCancel) {
+                                    Portal.remove(uploadingImgKey)
+                                  } else if (resp.error) {
+                                    Portal.remove(uploadingImgKey)
+                                    Toast.fail("选择图片失败, 错误信息: " + resp.error)
+                                  } else {
+                                    uploadImg({ url: resp.uri })
+                                      .then(json => {
+                                        Portal.remove(uploadingImgKey)
+                                        this.setState({
+                                          isShowBottomNav: false,
+                                          isShowBottomPicSelect: false,
+                                        })
+                                        const { patientUid } = this.state
+                                        const { url, picId } = json.data
+                                        this.props.ws.wsPost({
+                                          url: "/ws/sendMsg",
+                                          data: {
+                                            pic: {
+                                              url,
+                                              picId,
+                                            },
+                                            type: MsgType.picture,
+                                            patientUid,
+                                          },
+                                        })
+                                      })
+                                      .catch(e => {
+                                        Portal.remove(uploadingImgKey)
+                                        Toast.fail("上传图片, 错误信息: " + e)
+                                      })
+                                  }
                                 })
-                              })
-                              .catch(e => {
-                                Portal.remove(uploadingImgKey)
-                                Toast.fail("上传图片, 错误信息: " + e)
-                              })
-                          }
-                        })
+                              }
+                            })
+                            .catch(err => {
+                              console.log("读取权限失败: " + err)
+                            })
+                        } catch (err) {
+                          console.log(err)
+                        }
                       }}>
                       <Image source={gImg.advisory.selectPhoto} style={style.selectImg} />
                       <Text style={[style.selectTitle, global.fontSize14, global.fontStyle]}>
