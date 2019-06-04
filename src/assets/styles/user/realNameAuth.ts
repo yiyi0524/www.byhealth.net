@@ -357,7 +357,8 @@ export default StyleSheet.create({
     lineHeight: 45,
     backgroundColor: sColor.mainBgColor,
     color: sColor.mainBlack,
-    paddingLeft: 15,
+    width: windowWidth,
+    textAlign: "center",
   },
   viewImgFather: {
     position: "relative",
