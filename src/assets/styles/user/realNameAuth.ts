@@ -349,6 +349,8 @@ export default StyleSheet.create({
     left: 0,
     right: 0,
     backgroundColor: sColor.mainBlack,
+    justifyContent: "center",
+    alignItems: "center",
   },
   closePicView: {
     height: 45,
@@ -363,7 +365,7 @@ export default StyleSheet.create({
     padding: 15,
     justifyContent: "center",
     alignItems: "center",
-    borderWidth: 1,
+    textAlign: "center",
   },
   viewImg: {
     width: 350,
