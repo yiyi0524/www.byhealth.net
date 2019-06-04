@@ -564,7 +564,10 @@ export default class Chat extends Component<
                                             Portal.remove(uploadingImgKey)
                                           } else if (resp.error) {
                                             Portal.remove(uploadingImgKey)
-                                            Toast.fail("选择图片失败, 错误信息: " + resp.error)
+                                            return Toast.info(
+                                              "您禁止了拍摄照片和录制视频权限, 请到设置中心打开",
+                                              3,
+                                            )
                                           } else {
                                             uploadImg({ url: resp.uri })
                                               .then(json => {
@@ -614,7 +617,10 @@ export default class Chat extends Component<
                                         Portal.remove(uploadingImgKey)
                                       } else if (resp.error) {
                                         Portal.remove(uploadingImgKey)
-                                        Toast.fail("选择图片失败, 错误信息: " + resp.error)
+                                        return Toast.info(
+                                          "您禁止了拍摄照片和录制视频权限, 请到设置中心打开",
+                                          3,
+                                        )
                                       } else {
                                         uploadImg({ url: resp.uri })
                                           .then(json => {
@@ -691,7 +697,10 @@ export default class Chat extends Component<
                                         Portal.remove(uploadingImgKey)
                                       } else if (resp.error) {
                                         Portal.remove(uploadingImgKey)
-                                        Toast.fail("选择图片失败, 错误信息: " + resp.error)
+                                        return Toast.info(
+                                          "您禁止了拍摄照片和录制视频权限, 请到设置中心打开",
+                                          3,
+                                        )
                                       } else {
                                         uploadImg({ url: resp.uri })
                                           .then(json => {
@@ -741,7 +750,10 @@ export default class Chat extends Component<
                                     Portal.remove(uploadingImgKey)
                                   } else if (resp.error) {
                                     Portal.remove(uploadingImgKey)
-                                    Toast.fail("选择图片失败, 错误信息: " + resp.error)
+                                    return Toast.info(
+                                      "您禁止了拍摄照片和录制视频权限, 请到设置中心打开",
+                                      3,
+                                    )
                                   } else {
                                     uploadImg({ url: resp.uri })
                                       .then(json => {
@@ -982,7 +994,10 @@ export default class Chat extends Component<
                                   Portal.remove(uploadingImgKey)
                                 } else if (resp.error) {
                                   Portal.remove(uploadingImgKey)
-                                  Toast.fail("选择图片失败, 错误信息: " + resp.error)
+                                  return Toast.info(
+                                    "您禁止了拍摄照片和录制视频权限, 请到设置中心打开",
+                                    3,
+                                  )
                                 } else {
                                   uploadImg({ url: resp.uri })
                                     .then(json => {
@@ -1028,7 +1043,10 @@ export default class Chat extends Component<
                               Portal.remove(uploadingImgKey)
                             } else if (resp.error) {
                               Portal.remove(uploadingImgKey)
-                              Toast.fail("选择图片失败, 错误信息: " + resp.error)
+                              return Toast.info(
+                                "您禁止了拍摄照片和录制视频权限, 请到设置中心打开",
+                                3,
+                              )
                             } else {
                               uploadImg({ url: resp.uri })
                                 .then(json => {
