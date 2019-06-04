@@ -29,10 +29,14 @@
 		<key>NSAllowsArbitraryLoads</key>
 		<true/>
 	</dict>
+	<key>NSCameraUsageDescription</key>
+	<string>使用相机</string>
+	<key>NSContactsUsageDescription</key>
+	<string></string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>为您提供更精准的定位服务</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>$(PRODUCT_NAME) would like your access to your photo gallery </string>
+	<string>查看相册</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>antfill.ttf</string>
