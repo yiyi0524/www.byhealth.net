@@ -1,4 +1,3 @@
-import updateConfig from "@/../update.json"
 import global from "@/assets/styles/global"
 import { BASE_URL } from "@/config/api"
 import * as userAction from "@/redux/actions/user"
@@ -7,34 +6,30 @@ import pathMap from "@/routes/pathMap"
 import { ALLOW_INQUIRY } from "@/services/doctor"
 import { isDebugMode } from "@/utils/utils"
 import { Icon, Toast } from "@ant-design/react-native"
-import api from "@api/api"
+import api, { checkUpdate } from "@api/api"
 import userApi from "@api/user"
 import gImg from "@utils/img"
 import gStyle from "@utils/style"
 import React, { Component } from "react"
 import {
-  Alert,
   DeviceEventEmitter,
   EmitterSubscription,
   Image,
-  Linking,
   NativeEventSubscription,
-  Platform,
+  PermissionsAndroid,
   RefreshControl,
   ScrollView,
   Text,
   TouchableOpacity,
   View,
-  PermissionsAndroid,
+  Linking,
+  Alert,
 } from "react-native"
-import { checkUpdate, downloadUpdate, switchVersion, switchVersionLater } from "react-native-update"
 import { NavigationScreenProp } from "react-navigation"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
 import { Picture } from "./advisory/Chat"
 // import Buff from "@utils/Buff"
-//@ts-ignore
-const { appKey } = updateConfig[Platform.OS]
 const style = gStyle.home
 const globalStyle = gStyle.global
 interface Props {
@@ -300,72 +295,28 @@ export default class Home extends Component<
     this.setState({
       hasLoad: true,
     })
-  }
-  doUpdate = (info: any) => {
-    // if (Platform.OS !== "android") {
-    //   return
-    // }
-    downloadUpdate(info)
-      .then((hash: any) => {
-        Alert.alert("提示", "下载完毕,是否重启应用?", [
-          {
-            text: "是",
-            onPress: () => {
-              switchVersion(hash)
-            },
-          },
-          { text: "否" },
-          {
-            text: "下次启动时",
-            onPress: () => {
-              switchVersionLater(hash)
-            },
-          },
-        ])
-      })
-      .catch((err: any) => {
-        Alert.alert("提示", "更新失败." + err)
-      })
-  }
-  checkUpdate = () => {
-    if (isDebugMode()) {
-      return
+    if (!isDebugMode()) {
+      checkUpdate()
+        .then(json => {
+          const {
+            data: { updateUrl, needUpdate },
+          } = json
+          if (needUpdate) {
+            Alert.alert(
+              "更新提示",
+              "有新的版本 是否更新?",
+              [
+                { text: "取消", style: "cancel" },
+                { text: "确定", onPress: () => Linking.openURL(updateUrl) },
+              ],
+              { cancelable: false },
+            )
+          }
+        })
+        .catch(e => {
+          console.log(e)
+        })
     }
-    // if (Platform.OS === "ios") {
-    //   return
-    // }
-    checkUpdate(appKey)
-      .then((info: any) => {
-        if (info.expired) {
-          Alert.alert("提示", "您的应用版本已更新,请前往应用商店下载新的版本", [
-            {
-              text: "确定",
-              onPress: () => {
-                info.downloadUrl && Linking.openURL(info.downloadUrl)
-              },
-            },
-          ])
-        } else if (info.update) {
-          // Alert.alert("提示", "您的应用版本已是最新.")
-          // } else {
-          Alert.alert(
-            "提示",
-            "检查到新的版本" + info.name + ",是否下载?\n更新内容: " + info.description,
-            [
-              {
-                text: "是",
-                onPress: () => {
-                  this.doUpdate(info)
-                },
-              },
-              { text: "否" },
-            ],
-          )
-        }
-      })
-      .catch((err: any) => {
-        Alert.alert("提示", "更新失败." + err)
-      })
   }
   onRefresh = () => {
     this.setState({ refreshing: true })

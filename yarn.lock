@@ -5452,10 +5452,10 @@ react-native-device-info@^1.5.0:
   resolved "http://registry.npm.taobao.org/react-native-device-info/download/react-native-device-info-1.5.0.tgz#09e17c8199ac51082d72193f17eb445e9c83e68d"
   integrity sha1-CeF8gZmsUQgtchk/F+tEXpyD5o0=
 
-react-native-gesture-handler@^1.1.0:
-  version "1.1.0"
-  resolved "http://registry.npm.taobao.org/react-native-gesture-handler/download/react-native-gesture-handler-1.1.0.tgz#2a7d545ad2e0ca23adce22b2af441ad360ecccee"
-  integrity sha1-Kn1UWtLgyiOtziKyr0Qa02DszO4=
+react-native-gesture-handler@^1.3.0:
+  version "1.3.0"
+  resolved "https://registry.npm.taobao.org/react-native-gesture-handler/download/react-native-gesture-handler-1.3.0.tgz#d0386f565928ccc1849537f03f2e37fd5f6ad43f"
+  integrity sha1-0DhvVlkozMGElTfwPy43/V9q1D8=
   dependencies:
     hoist-non-react-statics "^2.3.1"
     invariant "^2.2.2"

@@ -1,8 +1,9 @@
 import { request as BuffReq } from "jsbdk"
-import { Dimensions } from "react-native"
+import { Dimensions, Platform } from "react-native"
 import { BASE_URL } from "@config/api"
 import storage from "@utils/storage"
 import qs from "qs"
+import DeviceInfo from "react-native-device-info"
 export const JsonReturnCode = {
   SUCCESS: 0x0,
 }
@@ -318,6 +319,7 @@ export function uploadImg(file: any) {
   let formData = new FormData()
   formData.append("name", "file")
   formData.append("file", {
+    // @ts-ignore
     uri: file.url,
     name: "file.jpg",
     type: "image/jpeg",
@@ -406,7 +408,20 @@ export function getThumbUrl({ path, width = 400 }: { width?: number; path: strin
   }
   return BASE_URL + `/getThumb?path=${path}&width=${width}`
 }
+/**
+ * 检查更新
+ */
+export function checkUpdate() {
+  return bget<{ needUpdate: boolean; updateUrl: string; forceUpdate: boolean }>({
+    url: "/app/checkUpdate",
+    query: {
+      os: Platform.OS,
+      version: DeviceInfo.getVersion(),
+    },
+  })
+}
 export default {
+  checkUpdate,
   getThumbUrl,
   uploadImg,
   bget,
