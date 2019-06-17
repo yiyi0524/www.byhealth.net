@@ -40,9 +40,9 @@
             </intent-filter>
         </activity>
         <activity android:name="com.facebook.react.devsupport.DevSettingsActivity" />
-        <!--<service-->
-            <!--android:name=".BadgeIntentService"-->
-            <!--android:exported="false"></service>-->
+        <service
+            android:name=".BadgeIntentService"
+            android:exported="false"></service>
         <service
             android:name=".buffge.GtPush"
             android:exported="true"

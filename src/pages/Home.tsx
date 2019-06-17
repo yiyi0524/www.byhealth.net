@@ -41,6 +41,7 @@ interface bannerItem {
   link: string
 }
 interface State {
+  isFirstStart: boolean
   refreshing: boolean
   hasLoad: boolean
   hasRealNameAuth: boolean
@@ -109,6 +110,7 @@ export default class Home extends Component<
   }
   getInitState = (): State => {
     return {
+      isFirstStart: true,
       refreshing: false,
       hasLoad: false,
       hasRealNameAuth: false,
@@ -258,7 +260,38 @@ export default class Home extends Component<
     try {
       isLogin = await api.isLogin()
       if (isLogin) {
-        // this.checkUpdate()
+        if (!isDebugMode() && this.state.isFirstStart) {
+          checkUpdate()
+            .then(json => {
+              const {
+                data: { updateUrl, needUpdate },
+              } = json
+              if (needUpdate) {
+                Alert.alert(
+                  "更新提示",
+                  "有新的版本 是否更新?",
+                  [
+                    { text: "取消", style: "cancel" },
+                    {
+                      text: "确定",
+                      onPress: () =>
+                        Linking.openURL(updateUrl).catch(err => console.error("打开url 失败", err)),
+                    },
+                  ],
+                  { cancelable: false },
+                )
+              }
+              this.setState({
+                isFirstStart: false,
+              })
+            })
+            .catch(e => {
+              console.log(e)
+              this.setState({
+                isFirstStart: false,
+              })
+            })
+        }
         let {
           data: { doctorInfo, info },
         } = await userApi.getPersonalInfo()
@@ -295,28 +328,6 @@ export default class Home extends Component<
     this.setState({
       hasLoad: true,
     })
-    if (!isDebugMode()) {
-      checkUpdate()
-        .then(json => {
-          const {
-            data: { updateUrl, needUpdate },
-          } = json
-          if (needUpdate) {
-            Alert.alert(
-              "更新提示",
-              "有新的版本 是否更新?",
-              [
-                { text: "取消", style: "cancel" },
-                { text: "确定", onPress: () => Linking.openURL(updateUrl) },
-              ],
-              { cancelable: false },
-            )
-          }
-        })
-        .catch(e => {
-          console.log(e)
-        })
-    }
   }
   onRefresh = () => {
     this.setState({ refreshing: true })

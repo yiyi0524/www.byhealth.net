@@ -13,11 +13,15 @@ import {
   Text,
   TouchableOpacity,
   View,
+  Alert,
+  Linking,
 } from "react-native"
 import DeviceInfo from "react-native-device-info"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
 import pathMap from "@/routes/pathMap"
+import { isDebugMode } from "@/utils/utils"
+import { checkUpdate } from "@/services/api"
 const style = gStyle.personalCenter.about
 const global = gStyle.global
 interface Props {
@@ -104,8 +108,34 @@ export default class About extends Component<
       })
   }
   checkedVersion = () => {
-    // const key = Toast.loading("正在检测新版本...", 3)
-    // Portal.remove(key)
+    if (!isDebugMode()) {
+      checkUpdate()
+        .then(json => {
+          const {
+            data: { updateUrl, needUpdate },
+          } = json
+          if (needUpdate) {
+            Alert.alert(
+              "更新提示",
+              "有新的版本 是否更新?",
+              [
+                { text: "取消", style: "cancel" },
+                {
+                  text: "确定",
+                  onPress: () =>
+                    Linking.openURL(updateUrl).catch(err => console.error("打开url 失败", err)),
+                },
+              ],
+              { cancelable: false },
+            )
+          } else {
+            Toast.success("当前已是最新版本!", 1)
+          }
+        })
+        .catch(e => {
+          console.log(e)
+        })
+    }
   }
   render() {
     if (!this.state.hasLoad) {

@@ -19,7 +19,6 @@ export function isDebugMode() {
   try {
     const { scriptURL } = NativeModules.SourceCode
     const devEvn = scriptURL.split("&")[1]
-    console.log("buffge: ", devEvn)
     return devEvn === "dev=true"
   } catch (e) {
     console.log("buffge: ", e)

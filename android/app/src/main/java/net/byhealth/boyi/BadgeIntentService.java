@@ -8,6 +8,7 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
+import android.util.Log;
 
 import me.leolin.shortcutbadger.ShortcutBadger;
 
@@ -42,16 +43,15 @@ public class BadgeIntentService extends IntentService {
             mNotificationManager.cancel(notificationId);
             notificationId++;
 
-            Notification.Builder builder = new Notification.Builder(getApplicationContext())
-                    .setContentTitle("")
-                    .setContentText("")
-                    .setSmallIcon(R.drawable.redbox_top_border_background);
+            Notification.Builder builder = new Notification.Builder(getApplicationContext()).setContentTitle("")
+                    .setContentText("").setSmallIcon(R.drawable.redbox_top_border_background);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 setupNotificationChannel();
 
                 builder.setChannelId(NOTIFICATION_CHANNEL);
             }
             Notification notification = builder.build();
+            Log.d("buffge-badge", notificationId + "" + badgeCount);
             ShortcutBadger.applyNotification(getApplicationContext(), notification, badgeCount);
             mNotificationManager.notify(notificationId, notification);
         }
