@@ -29,7 +29,7 @@ import { NavigationScreenProp } from "react-navigation"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
 import { Picture } from "./advisory/Chat"
-// import Buff from "@utils/Buff"
+import Buff from "@utils/Buff"
 const style = gStyle.home
 const globalStyle = gStyle.global
 interface Props {
@@ -260,6 +260,7 @@ export default class Home extends Component<
     try {
       isLogin = await api.isLogin()
       if (isLogin) {
+        console.log("deviceId : ", await Buff.getAliPushDeciceId())
         if (!isDebugMode() && this.state.isFirstStart) {
           checkUpdate()
             .then(json => {

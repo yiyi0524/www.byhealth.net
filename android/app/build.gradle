@@ -1,5 +1,5 @@
 apply plugin: "com.android.application"
-
+apply plugin: 'com.aliyun.ams.emas-services'
 import com.android.build.OutputFile
 
 /**
@@ -152,8 +152,8 @@ android {
 }
 
 dependencies {
+    implementation project(':react-native-device-info')
     implementation project(':react-native-image-picker')
-    implementation project(':react-native-background-job')
     implementation project(':react-native-view-shot')
     implementation project(':@react-native-community_slider')
     implementation project(':@react-native-community_viewpager')

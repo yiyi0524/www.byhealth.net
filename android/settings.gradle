@@ -1,12 +1,10 @@
 rootProject.name = '博一健康'
-include ':react-native-image-picker'
-project(':react-native-image-picker').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-image-picker/android')
-include ':react-native-background-job'
-project(':react-native-background-job').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-background-job/android')
-include ':react-native-view-shot'
-project(':react-native-view-shot').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-view-shot/android')
 include ':react-native-device-info'
 project(':react-native-device-info').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-device-info/android')
+include ':react-native-image-picker'
+project(':react-native-image-picker').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-image-picker/android')
+include ':react-native-view-shot'
+project(':react-native-view-shot').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-view-shot/android')
 include ':@react-native-community_slider'
 project(':@react-native-community_slider').projectDir = new File(rootProject.projectDir, '../node_modules/@react-native-community/slider/android')
 include ':@react-native-community_viewpager'
@@ -16,7 +14,5 @@ project(':@react-native-community_async-storage').projectDir = new File(rootProj
 include ':react-native-gesture-handler'
 project(':react-native-gesture-handler').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-gesture-handler/android')
 
-include ':react-native-update'
-project(':react-native-update').projectDir = new File(rootProject.projectDir, 	'../node_modules/react-native-update/android')
 
 include ':app'
