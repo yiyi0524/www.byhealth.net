@@ -6,7 +6,7 @@ import pathMap from "@/routes/pathMap"
 import { ALLOW_INQUIRY } from "@/services/doctor"
 import { isDebugMode } from "@/utils/utils"
 import { Icon, Toast } from "@ant-design/react-native"
-import api, { checkUpdate } from "@api/api"
+import api, { checkUpdate, updateAliPushDeviceId } from "@api/api"
 import userApi from "@api/user"
 import gImg from "@utils/img"
 import gStyle from "@utils/style"
@@ -260,7 +260,13 @@ export default class Home extends Component<
     try {
       isLogin = await api.isLogin()
       if (isLogin) {
-        console.log("deviceId : ", await Buff.getAliPushDeciceId())
+        Buff.getAliPushDeviceId()
+          .then((deviceId: string) => {
+            updateAliPushDeviceId({ deviceId })
+          })
+          .catch((e: any) => {
+            console.log("获取阿里云推送设备id失败,错误信息", e)
+          })
         if (!isDebugMode() && this.state.isFirstStart) {
           checkUpdate()
             .then(json => {

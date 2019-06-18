@@ -190,6 +190,9 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
     addMsgList: (preload: wsAction.MsgListPreload) => {
       dispatch(wsAction.addList(preload))
     },
+    addMsg: (preload: wsAction.MsgPreload) => {
+      dispatch(wsAction.addMsg(preload))
+    },
     setUserUnReadMsgCount: (preload: { uid: number; count: number }) => {
       dispatch(wsAction.setUserUnReadMsgCount(preload))
     },
@@ -383,6 +386,8 @@ export default class Chat extends Component<
         this.setState({
           shouldScrollToEnd: true,
         })
+      } else {
+        this.updateMsgList()
       }
     } else {
       this.getMoreMsgList()
@@ -1514,6 +1519,40 @@ export default class Chat extends Component<
       Toast.fail("刷新失败,错误信息: " + err.msg)
     }
   }
+  updateMsgList = async () => {
+    this.setState({ refreshing: true })
+    const {
+      ws: { chatMsg },
+    } = this.props
+    let { patientUid } = this.state
+    if (chatMsg[patientUid].length === 0) {
+      return
+    }
+    const currUserLastMsgId = chatMsg[patientUid][chatMsg[patientUid].length - 1].id
+    try {
+      let {
+        data: { list: msgList },
+        count,
+      } = await wsMsgApi.getMsgList({
+        page: -1,
+        limit: -1,
+        filter: {
+          patientUid,
+          currUserLastMsgId,
+        },
+      })
+      for (let msg of msgList) {
+        this.props.addMsg({ msg, uid: patientUid })
+      }
+      this.setState({
+        hasMoreRecord: chatMsg[patientUid] && count > chatMsg[patientUid].length,
+        refreshing: false,
+      })
+    } catch (err) {
+      this.setState({ refreshing: false })
+      Toast.fail("刷新失败,错误信息: " + err.msg)
+    }
+  }
   selectBottomNav = (v: bottomNavItem) => {
     if (v.title === "更多功能") {
       this.setState({
@@ -1535,7 +1574,7 @@ export default class Chat extends Component<
     } else if (v.title === "结束对话") {
       this.closeInquiry()
     } else if (v.title === "快捷回复") {
-      this.QuickReply()
+      this.quickReply()
     } else {
       console.log("正在进入开方页")
       this.props.navigation.push(v.link, {
@@ -1677,7 +1716,7 @@ export default class Chat extends Component<
   /**
    * 快捷回复
    */
-  QuickReply = () => {
+  quickReply = () => {
     this.props.navigation.push(pathMap.QuickReply)
   }
 }

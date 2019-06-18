@@ -6,6 +6,8 @@ import React, { Component } from "react"
 import { createAppContainer, createStackNavigator } from "react-navigation"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
+import { AppState as RnAppState, AppStateStatus } from "react-native"
+import { isLogin, updateAppStateStatus } from "@/services/api"
 
 const mapStateToProps = (state: AppState) => {
   return {
@@ -39,6 +41,20 @@ export default class App extends Component<any> {
       return this.getActiveRouteName(route)
     }
     return route.routeName
+  }
+  componentDidMount() {
+    RnAppState.addEventListener("change", this.onAppStateChange)
+  }
+  componentWillUnmount() {
+    RnAppState.removeEventListener("change", this.onAppStateChange)
+  }
+  onAppStateChange = async (status: AppStateStatus) => {
+    if (!(await isLogin())) {
+      return
+    }
+    if (status === "background" || status === "active") {
+      updateAppStateStatus({ status })
+    }
   }
   render() {
     return (

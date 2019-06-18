@@ -12,7 +12,9 @@ public class Buff extends ReactContextBaseJavaModule {
     private CloudPushService pushService;
 
     public Buff(ReactApplicationContext reactContext) {
+
         super(reactContext);
+        pushService = PushServiceFactory.getCloudPushService();
     }
 
     @Override
@@ -21,14 +23,21 @@ public class Buff extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void getAliPushDeciceId(Promise promise) {
+    public void getAliPushDeviceId(Promise promise) {
         try {
-            pushService = PushServiceFactory.getCloudPushService();
             promise.resolve(pushService.getDeviceId());
         } catch (Exception $ex) {
             promise.reject($ex);
         }
-
     }
 
+    @ReactMethod
+    public void clearNotifications(Promise promise) {
+        try {
+            pushService.clearNotifications();
+            promise.resolve(true);
+        } catch (Exception $ex) {
+            promise.reject($ex);
+        }
+    }
 }

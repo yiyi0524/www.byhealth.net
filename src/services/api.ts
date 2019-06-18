@@ -1,5 +1,5 @@
 import { request as BuffReq } from "jsbdk"
-import { Dimensions, Platform } from "react-native"
+import { Dimensions, Platform, AppStateStatus } from "react-native"
 import { BASE_URL } from "@config/api"
 import storage from "@utils/storage"
 import qs from "qs"
@@ -310,6 +310,27 @@ export function updateGetuiCid(cid: string) {
     data: {
       cid,
     },
+  })
+}
+/**
+ * 更新用户阿里云推送deviceId
+ */
+export function updateAliPushDeviceId(data: { deviceId: string }) {
+  return bpost({
+    url: "/user/updateAliPushDeviceId",
+    data: {
+      ...data,
+      os: Platform.OS,
+    },
+  })
+}
+/**
+ * 更新用户阿里云推送deviceId
+ */
+export function updateAppStateStatus(data: { status: AppStateStatus }) {
+  return bpost({
+    url: "/user/updateAppStateStatus",
+    data,
   })
 }
 // /**
