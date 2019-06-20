@@ -419,7 +419,7 @@ export default class Index extends Component<
             <Text style={[style.selectDepartmentTheme, global.fontSize16]}>
               请选择擅长治疗的疾病
             </Text>
-            <Text style={[style.selectDepartmentDetail, global.fontSize14]}>(最多选10个)</Text>
+            {/* <Text style={[style.selectDepartmentDetail, global.fontSize14]}>(最多选10个)</Text> */}
           </View>
           <View
             style={[
@@ -438,10 +438,10 @@ export default class Index extends Component<
                         adeptSymptomIdList = this.state.adeptSymptomIdList
                       adeptSymptomIdMapList[k].symptomList[k1].isChecked = !v1.isChecked
                       if (v1.isChecked) {
-                        if (adeptSymptomIdList.length >= 10) {
-                          adeptSymptomIdMapList[k].symptomList[k1].isChecked = false
-                          return Toast.info("选择擅长治疗疾病不超过10个", 3)
-                        }
+                        // if (adeptSymptomIdList.length >= 10) {
+                        //   adeptSymptomIdMapList[k].symptomList[k1].isChecked = false
+                        //   return Toast.info("选择擅长治疗疾病不超过10个", 3)
+                        // }
                         adeptSymptomIdList.push({
                           id: v1.id,
                           name: v1.name,
@@ -478,7 +478,7 @@ export default class Index extends Component<
           <View style={style.editInput}>
             <TextareaItem
               rows={4}
-              maxLength={500}
+              maxLength={10000}
               placeholder="请输入简介"
               value={this.state.doctorInfo.profile}
               onChange={profile => {

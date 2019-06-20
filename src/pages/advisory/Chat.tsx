@@ -391,6 +391,7 @@ export default class Chat extends Component<
             shouldScrollToEnd: true,
           })
         }
+        setTimeout(() => this.myScroll && this.myScroll.scrollToEnd(), 100)
       }
     }
   }
