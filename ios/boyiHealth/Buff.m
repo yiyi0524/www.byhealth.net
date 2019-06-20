@@ -21,6 +21,12 @@ RCT_EXPORT_METHOD(getAliPushDeviceId:findEventsWithResolver:(RCTPromiseResolveBl
 RCT_EXPORT_METHOD(clearNotifications){
   // iOS badge 清0
 [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
-}
+  [CloudPushSDK syncBadgeNum:0 withCallback:^(CloudPushCallbackResult *res) {
+    if (res.success) {
+      NSLog(@"\n ====== Sync badge num: [%lu] success.", (unsigned long)0);
+    } else {
+      NSLog(@"\n ====== Sync badge num: [%lu] failed, error: %@", (unsigned long)0, res.error);
+    }
+  }];}
 
 @end
