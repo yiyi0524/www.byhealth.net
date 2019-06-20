@@ -260,9 +260,10 @@ export default class Home extends Component<
     try {
       isLogin = await api.isLogin()
       if (isLogin) {
-        Buff.getAliPushDeviceId(1)
+        Buff.getAliPushDeviceId()
           .then((deviceId: string) => {
             updateAliPushDeviceId({ deviceId })
+            console.log("阿里云推送设置id = ", deviceId)
           })
           .catch((e: any) => {
             console.log("获取阿里云推送设备id失败,错误信息", e)

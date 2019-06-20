@@ -35,6 +35,7 @@ import { connect } from "react-redux"
 import { Dispatch } from "redux"
 import { Overwrite } from "utility-types"
 import { BASE_URL } from "@/config/api"
+import Buff from "@utils/Buff"
 const style = gStyle.advisory.advisoryChat
 interface Props {
   navigation: NavigationScreenProp<State>
@@ -377,6 +378,7 @@ export default class Chat extends Component<
     let { patientUid } = this.state
     //当医生进入聊天页面则清除未读消息数量
     clearPatientUnreadMsgCount({ patientUid })
+    Buff.clearNotifications()
     this.props.setCurrChatUid(patientUid)
     this.props.setUserUnReadMsgCount({ uid: patientUid, count: 0 })
 
