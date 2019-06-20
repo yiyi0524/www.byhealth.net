@@ -27,6 +27,8 @@ import {
   Text,
   View,
   KeyboardAvoidingView,
+  AppState as RnAppState,
+  AppStateStatus,
 } from "react-native"
 import { TouchableOpacity } from "react-native-gesture-handler"
 import ImageViewer from "react-native-image-zoom-viewer"
@@ -145,6 +147,8 @@ export interface PatientsThemselves {
   }
 }
 interface State {
+  // 是否刚刚在后台
+  lastIsInBackground: boolean
   shouldScrollToEnd: boolean
   hasLoad: boolean
   refreshing: boolean
@@ -297,6 +301,7 @@ export default class Chat extends Component<
   getInitState = (): State => {
     let patientUid = this.props.navigation.getParam("patientUid")
     return {
+      lastIsInBackground: false,
       shouldScrollToEnd: true,
       hasLoad: false,
       refreshing: false,
@@ -345,11 +350,48 @@ export default class Chat extends Component<
     this.init()
     this.requestReadExteralStorage()
     setTimeout(() => this.myScroll && this.myScroll.scrollToEnd(), 100)
+    RnAppState.addEventListener("change", this.onAppStateChange)
   }
   componentWillUnmount() {
     //移除监听
     if (this.listener) {
       this.listener.remove()
+    }
+    RnAppState.removeEventListener("change", this.onAppStateChange)
+  }
+  onAppStateChange = (status: AppStateStatus) => {
+    if (status === "background") {
+      this.setState({
+        lastIsInBackground: true,
+      })
+    } else if (status === "active") {
+      if (this.state.lastIsInBackground) {
+        this.setState({
+          lastIsInBackground: false,
+        })
+        let { patientUid } = this.state
+        //当医生进入聊天页面则清除未读消息数量
+        clearPatientUnreadMsgCount({ patientUid })
+        Buff.clearNotifications()
+        this.props.setCurrChatUid(patientUid)
+        this.props.setUserUnReadMsgCount({ uid: patientUid, count: 0 })
+
+        if (patientUid in this.props.ws.chatMsg) {
+          if (this.props.ws.chatMsg[this.state.patientUid].length === 0) {
+            this.getMoreMsgList()
+            this.setState({
+              shouldScrollToEnd: true,
+            })
+          } else {
+            this.updateMsgList()
+          }
+        } else {
+          this.getMoreMsgList()
+          this.setState({
+            shouldScrollToEnd: true,
+          })
+        }
+      }
     }
   }
   init = async () => {
@@ -857,7 +899,7 @@ export default class Chat extends Component<
     } else {
       return (
         <>
-          <KeyboardAvoidingView behavior="padding" style={{ flex: 1 }} keyboardVerticalOffset={70}>
+          <KeyboardAvoidingView behavior="padding" style={{ flex: 1 }} keyboardVerticalOffset={90}>
             <View style={style.main}>
               <ScrollView
                 ref={ref => (this.myScroll = ref)}
