@@ -260,7 +260,7 @@ export default class Home extends Component<
     try {
       isLogin = await api.isLogin()
       if (isLogin) {
-        Buff.getAliPushDeviceId()
+        Buff.getAliPushDeviceId(1)
           .then((deviceId: string) => {
             updateAliPushDeviceId({ deviceId })
           })

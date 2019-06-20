@@ -1,0 +1,10 @@
+# Uncomment the next line to define a global platform for your project
+# platform :ios, '9.0'
+source 'https://github.com/aliyun/aliyun-specs.git'
+target '博一健康' do
+  # Comment the next line if you don't want to use dynamic frameworks
+  use_frameworks!
+  pod 'AlicloudPush', '~> 1.9.8'
+  # Pods for 博一健康
+
+end
