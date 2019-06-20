@@ -7,7 +7,6 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 
-
 public class Buff extends ReactContextBaseJavaModule {
     private CloudPushService pushService;
 
@@ -23,11 +22,11 @@ public class Buff extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void getAliPushDeviceId(Promise promise) {
+    public void getAliPushDeviceId(int t, Promise promise) {
         try {
             promise.resolve(pushService.getDeviceId());
-        } catch (Exception $ex) {
-            promise.reject($ex);
+        } catch (Exception ex) {
+            promise.reject(ex);
         }
     }
 
@@ -36,8 +35,8 @@ public class Buff extends ReactContextBaseJavaModule {
         try {
             pushService.clearNotifications();
             promise.resolve(true);
-        } catch (Exception $ex) {
-            promise.reject($ex);
+        } catch (Exception ex) {
+            promise.reject(ex);
         }
     }
 }
