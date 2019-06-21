@@ -24,7 +24,7 @@ export interface CashOutApply {
   uid: number
   doctorId: number
   money: number
-  bankCardId: number
+  bankCard: Omit<DoctorBankCard, "uid" | "doctorId">
   status: CashOutApplyStatus
 }
 
