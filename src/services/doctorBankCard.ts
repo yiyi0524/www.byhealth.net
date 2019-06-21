@@ -25,21 +25,21 @@ export interface CashOutApply {
   doctorId: number
   money: number
   bankCard: Omit<DoctorBankCard, "uid" | "doctorId">
-  status: CashOutApplyStatus
+  status: number
 }
 
 /**
  * 提现申请的状态
  */
-export enum CashOutApplyStatus {
-  "wait" = 0x0,
-  "pass" = 0x1,
-  "reject" = 0x2,
+export const CASH_OUT_APPLY_STATUS = {
+  wait: 0x0,
+  pass: 0x1,
+  reject: 0x2,
 }
-export const CashOutApplyStatusZh = {
-  [CashOutApplyStatus.wait]: "审核中",
-  [CashOutApplyStatus.pass]: "提现通过",
-  [CashOutApplyStatus.reject]: "提现拒绝",
+export const CASH_OUT_APPLY_STATUS_ZH = {
+  [CASH_OUT_APPLY_STATUS.wait]: "审核中",
+  [CASH_OUT_APPLY_STATUS.pass]: "提现通过",
+  [CASH_OUT_APPLY_STATUS.reject]: "提现拒绝",
 }
 /**
  * 获取银行卡列表
