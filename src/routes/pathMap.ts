@@ -46,4 +46,5 @@ export default {
   SelectPrescriptionTpl: "SelectPrescriptionTpl",
   AddBankCard: "AddBankCard",
   EditBankCard: "EditBankCard",
+  Help: "Help",
 }

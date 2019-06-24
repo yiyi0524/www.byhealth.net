@@ -154,7 +154,7 @@ export default class Home extends Component<
         {
           id: 2,
           url: gImg.home.banner_1,
-          link: "",
+          link: pathMap.Help,
         },
         {
           id: 3,
@@ -429,7 +429,7 @@ export default class Home extends Component<
             <TouchableOpacity
               style={style.headerHelp}
               onPress={() => {
-                this.props.navigation.push(pathMap.CustomerService)
+                this.props.navigation.push(pathMap.Help)
                 // this.props.navigation.push(pathMap.Test)
               }}>
               <Text style={[globalStyle.fontSize14, globalStyle.fontStyle, style.headerHelpTitle]}>
@@ -529,7 +529,9 @@ export default class Home extends Component<
                   key={k}
                   style={style.bannerItem}
                   activeOpacity={0.8}
-                  onPress={() => console.log(v.link)}>
+                  onPress={() => {
+                    this.props.navigation.push(v.link)
+                  }}>
                   <Image style={style.bannerImg} source={v.url} />
                 </TouchableOpacity>
               )

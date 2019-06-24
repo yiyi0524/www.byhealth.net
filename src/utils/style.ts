@@ -44,6 +44,7 @@ import PrescriptionTplList from "@/assets/styles/index/prescriptionTplList"
 import AddPrescriptionTpl from "@/assets/styles/index/addPrescriptionTpl"
 import EditPrescriptionTpl from "@/assets/styles/index/editPrescriptionTpl"
 import SelectPrescriptionTplList from "@/assets/styles/advisory/prescriptionTplList"
+import Help from "@/assets/styles/index/help"
 export default {
   home,
   global,
@@ -61,6 +62,7 @@ export default {
     PrescriptionTplList,
     AddPrescriptionTpl,
     EditPrescriptionTpl,
+    Help,
   },
   user: {
     login,

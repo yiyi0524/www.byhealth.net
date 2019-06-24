@@ -39,6 +39,7 @@ import SelectPrescriptionTpl from "@/pages/advisory/PrescriptionTplList"
 import AddBankCard from "@/pages/personal_center/AddBankCard"
 import EditBankCard from "@/pages/personal_center/EditBankCard"
 import Calendar from "@/components/Calendar"
+import Help from "@pages/index/Help"
 import Home from "@pages/Home"
 import Test from "@pages/Test"
 import RealNameAuth from "@pages/user/RealNameAuth"
@@ -345,6 +346,9 @@ const StacksOverTabs = createStackNavigator({
   },
   [pathMap.EditBankCard]: {
     screen: EditBankCard,
+  },
+  [pathMap.Help]: {
+    screen: Help,
   },
 })
 export default StacksOverTabs
