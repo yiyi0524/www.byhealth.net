@@ -7,7 +7,7 @@ export interface DoctorBankCard {
   id: number
   uid: number
   doctorId: number
-  name: number
+  name: string
   idCardNo: string
   // 银行名
   bankName: string
@@ -26,6 +26,7 @@ export interface CashOutApply {
   money: number
   bankCard: Omit<DoctorBankCard, "uid" | "doctorId">
   status: number
+  ctime: string
 }
 
 /**
@@ -44,9 +45,9 @@ export const CASH_OUT_APPLY_STATUS_ZH = {
 /**
  * 获取银行卡列表
  */
-export async function list({ page = -1, limit = -1, filter }: GetListParam) {
+export function list({ page = -1, limit = -1, filter }: GetListParam) {
   return bget<{ list: DoctorBankCard[] }>({
-    url: "listBankCard",
+    url: "api/listBankCard",
     query: {
       page,
       limit,
@@ -57,36 +58,43 @@ export async function list({ page = -1, limit = -1, filter }: GetListParam) {
 /**
  * 添加银行卡
  */
-export async function add(data: Omit<DoctorBankCard, "id" | "uid" | "doctorId">) {
+export function add(data: Omit<DoctorBankCard, "id" | "uid" | "doctorId">) {
   return bpost({
-    url: "addBankCard",
+    url: "api/addBankCard",
     data,
   })
 }
 /**
  * 编辑银行卡
  */
-export async function edit(data: Omit<DoctorBankCard, "id">) {
+export function edit(data: Omit<DoctorBankCard, "uid" | "doctorId">) {
   return bpost({
-    url: "editBankCard",
+    url: "api/editBankCard",
     data,
   })
 }
 /**
  * 提现
  */
-export async function cashOut(data: { money: number }) {
+export function cashOut(data: { money: number }) {
   return bpost({
-    url: "cashOut",
+    url: "api/cashOut",
     data,
   })
 }
 /**
  * 获取提现申请列表
  */
-export async function listCashOutApply(query: GetListParam) {
+export function listCashOutApply(query: GetListParam) {
   return bget<{ list: CashOutApply[] }>({
-    url: "listCashOutApply",
+    url: "api/listCashOutApply",
     query,
   })
+}
+export default {
+  list,
+  add,
+  edit,
+  cashOut,
+  listCashOutApply,
 }

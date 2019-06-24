@@ -13,6 +13,8 @@ import AddressBookGroupDetail from "@/assets/styles/address_book/groupDetail"
 import PatientDetail from "@/assets/styles/address_book/patientDetail"
 import personalCenterIndex from "@/assets/styles/personal_center/index"
 import account from "@/assets/styles/personal_center/account"
+import addBankCard from "@/assets/styles/personal_center/addBankCard"
+import editBankCard from "@/assets/styles/personal_center/editBankCard"
 import changePwd from "@/assets/styles/personal_center/changePwd"
 import editInformation from "@/assets/styles/personal_center/editInformation"
 import about from "@/assets/styles/personal_center/about"
@@ -88,6 +90,8 @@ export default {
   personalCenter: {
     personalCenterIndex,
     account,
+    addBankCard,
+    editBankCard,
     changePwd,
     editInformation,
     about,

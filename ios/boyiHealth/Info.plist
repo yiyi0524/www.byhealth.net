@@ -32,7 +32,7 @@
 	<key>NSCameraUsageDescription</key>
 	<string>方便您拍照上传图片到博一健康</string>
 	<key>NSContactsUsageDescription</key>
-	<string></string>
+	<string/>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>为您提供更精准的定位服务</string>
 	<key>NSPhotoLibraryUsageDescription</key>

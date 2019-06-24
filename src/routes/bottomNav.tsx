@@ -36,6 +36,8 @@ import PrescriptionTplList from "@/pages/index/PrescriptionTplList"
 import AddPrescriptionTpl from "@/pages/index/AddPrescriptionTpl"
 import EditPrescriptionTpl from "@/pages/index/EditPrescriptionTpl"
 import SelectPrescriptionTpl from "@/pages/advisory/PrescriptionTplList"
+import AddBankCard from "@/pages/personal_center/AddBankCard"
+import EditBankCard from "@/pages/personal_center/EditBankCard"
 import Calendar from "@/components/Calendar"
 import Home from "@pages/Home"
 import Test from "@pages/Test"
@@ -337,6 +339,12 @@ const StacksOverTabs = createStackNavigator({
   },
   [pathMap.SelectPrescriptionTpl]: {
     screen: SelectPrescriptionTpl,
+  },
+  [pathMap.AddBankCard]: {
+    screen: AddBankCard,
+  },
+  [pathMap.EditBankCard]: {
+    screen: EditBankCard,
   },
 })
 export default StacksOverTabs

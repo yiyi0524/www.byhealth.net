@@ -1,15 +1,30 @@
 import * as userAction from "@/redux/actions/user"
 import { AppState } from "@/redux/stores/store"
 import { getBalance } from "@/services/doctor"
-import { Icon, Toast } from "@ant-design/react-native"
+import doctorBankCard, {
+  DoctorBankCard,
+  CashOutApply,
+  CASH_OUT_APPLY_STATUS_ZH,
+  CASH_OUT_APPLY_STATUS,
+} from "@/services/doctorBankCard"
+import { Icon, Toast, Modal } from "@ant-design/react-native"
 import sColor from "@styles/color"
 import gImg from "@utils/img"
 import gStyle from "@utils/style"
 import React, { Component } from "react"
-import { Image, RefreshControl, ScrollView, Text, TouchableOpacity, View } from "react-native"
-import { NavigationScreenProp } from "react-navigation"
+import {
+  Image,
+  RefreshControl,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
+  DeviceEventEmitter,
+  EmitterSubscription,
+} from "react-native"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
+import pathMap from "@/routes/pathMap"
 const style = gStyle.personalCenter.account
 const global = gStyle.global
 interface Props {
@@ -20,6 +35,16 @@ interface State {
   refreshing: boolean
   isShowAccount: boolean
   balance: number
+  name: string
+  idCardNo: string
+  // 银行名
+  bankName: string
+  cardNo: string
+  // 开户名
+  openingBank: string
+  phone: string
+  bankList: DoctorBankCard[]
+  records: CashOutApply[]
 }
 interface functionItem {
   name: string
@@ -47,7 +72,7 @@ export default class Account extends Component<
   Props & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
   State
 > {
-  static navigationOptions = ({ navigation }: { navigation: NavigationScreenProp<State> }) => {
+  static navigationOptions = () => {
     return {
       title: "账户",
       headerStyle: {
@@ -78,6 +103,7 @@ export default class Account extends Component<
     }
   }
   functionList: functionItem[] = []
+  subscription?: EmitterSubscription
   constructor(props: any) {
     super(props)
     this.state = this.getInitState()
@@ -88,18 +114,39 @@ export default class Account extends Component<
       refreshing: false,
       isShowAccount: true,
       balance: 0.0,
+      name: "",
+      idCardNo: "",
+      // 银行名
+      bankName: "",
+      cardNo: "",
+      // 开户名
+      openingBank: "",
+      phone: "",
+      bankList: [],
+      records: [],
     }
   }
   componentDidMount() {
+    this.subscription = DeviceEventEmitter.addListener(pathMap.Account + "Reload", _ => {
+      this.init()
+    })
     this.init()
   }
   init = async () => {
     const {
       data: { balance },
     } = await getBalance()
+    let {
+      data: { list: bankList },
+    } = await doctorBankCard.list({ page: 1, limit: 1, filter: {} })
+    let {
+      data: { list: records },
+    } = await doctorBankCard.listCashOutApply({ page: -1, limit: -1, filter: {} })
     this.setState({
       balance,
       hasLoad: true,
+      bankList,
+      records,
     })
   }
   onRefresh = () => {
@@ -122,6 +169,7 @@ export default class Account extends Component<
         </View>
       )
     }
+    let { bankList, records, balance } = this.state
     return (
       <>
         <ScrollView
@@ -157,7 +205,30 @@ export default class Account extends Component<
               <TouchableOpacity
                 style={style.headerCenterRightFa}
                 onPress={() => {
-                  Toast.info("暂无提现功能", 2)
+                  Modal.prompt(
+                    "提现",
+                    "请输入提现金额(元)",
+                    val => {
+                      let money = parseFloat(val) * 100
+                      if (money) {
+                        if (money > balance) {
+                          return Toast.fail("提现金额不能大于余额 ")
+                        }
+                        doctorBankCard
+                          .cashOut({ money })
+                          .then(() => {
+                            Toast.success("提交成功, 请等待审核", 3)
+                            this.init()
+                          })
+                          .catch(err => {
+                            Toast.success("提交失败,错误原因: " + err.msg, 3)
+                          })
+                      } else {
+                        Toast.info("请输入正确的金额", 2)
+                      }
+                    },
+                    "text",
+                  )
                 }}>
                 <Text style={[style.headerCenterRight, global.fontSize14, global.fontStyle]}>
                   去提现
@@ -166,39 +237,81 @@ export default class Account extends Component<
             </View>
           </View>
           {/* 银行卡部分先注释 */}
-          {/* <View style={style.bank}>
-            <TouchableOpacity style={style.addBank}>
-              <View
+          <View style={style.bank}>
+            {bankList.length === 0 ? (
+              <TouchableOpacity
+                style={style.addBank}
+                onPress={() => {
+                  this.props.navigation.push(pathMap.AddBankCard)
+                }}>
+                <View
+                  style={[
+                    style.addBankTitle,
+                    global.flex,
+                    global.alignItemsCenter,
+                    global.justifyContentCenter,
+                  ]}>
+                  <Icon name="plus" style={[style.addBankIcon, global.fontSize14]} />
+                  <Text style={[style.addBankDescription, global.fontSize14, global.fontStyle]}>
+                    绑定银行卡
+                  </Text>
+                </View>
+                <Text style={[style.addBankBtn, global.fontSize14]}>暂无绑定银行卡</Text>
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity
                 style={[
-                  style.addBankTitle,
+                  style.bankDescription,
                   global.flex,
                   global.alignItemsCenter,
-                  global.justifyContentCenter,
-                ]}>
-                <Icon name="plus" style={[style.addBankIcon, global.fontSize14]} />
-                <Text style={[style.addBankDescription, global.fontSize14, global.fontStyle]}>
-                  绑定银行卡
+                  global.justifyContentSpaceBetween,
+                ]}
+                onPress={() => {
+                  this.props.navigation.push(pathMap.EditBankCard)
+                }}>
+                <Text style={[style.bankDescriptionTitle, global.fontSize14]}>
+                  {bankList[0].bankName}
                 </Text>
-              </View>
-              <Text style={[style.addBankBtn, global.fontSize14]}>暂无绑定银行卡</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[
-                style.bankDescription,
-                global.flex,
-                global.alignItemsCenter,
-                global.justifyContentSpaceBetween,
-              ]}>
-              <Text style={[style.bankDescriptionTitle, global.fontSize14]}>当前银行卡</Text>
-              <Text style={[style.bankDescriptionTitle, global.fontSize14]}>
-                2343434********4334
-              </Text>
-              <View style={[global.flex, global.alignItemsCenter]}>
-                <Text style={[style.bankDescriptionTitle, global.fontSize14]}>去修改</Text>
-                <Icon name="right" style={[style.bankDescriptionRight, global.fontSize14]} />
-              </View>
-            </TouchableOpacity>
-          </View> */}
+                <Text style={[style.bankDescriptionTitle, global.fontSize14]}>
+                  {bankList[0].cardNo.substr(0, 4) + "************"}
+                </Text>
+                <View style={[global.flex, global.alignItemsCenter]}>
+                  <Text style={[style.bankDescriptionTitle, global.fontSize14]}>去修改</Text>
+                  <Icon name="right" style={[style.bankDescriptionRight, global.fontSize14]} />
+                </View>
+              </TouchableOpacity>
+            )}
+          </View>
+
+          <View style={records.length > 0 ? style.record : global.hidden}>
+            <Text style={style.recordTitle}>提现记录</Text>
+            {records.map((v, k) => {
+              return (
+                <View
+                  key={k}
+                  style={[
+                    style.recordItem,
+                    global.flex,
+                    global.alignItemsCenter,
+                    global.justifyContentSpaceBetween,
+                  ]}>
+                  <Text style={style.recordName}>{v.bankCard.bankName}</Text>
+                  <Text style={style.recordMoney}>{(v.money / 100).toFixed(2)}</Text>
+                  <Text
+                    style={
+                      v.status === CASH_OUT_APPLY_STATUS.pass
+                        ? style.recordSuccess
+                        : v.status === CASH_OUT_APPLY_STATUS.reject
+                        ? style.recordFail
+                        : style.recordMoney
+                    }>
+                    {CASH_OUT_APPLY_STATUS_ZH[v.status]}
+                  </Text>
+                  <Text style={style.recordRime}>{v.ctime.substr(0, 10)}</Text>
+                </View>
+              )
+            })}
+          </View>
         </ScrollView>
       </>
     )
