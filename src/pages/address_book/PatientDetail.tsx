@@ -69,6 +69,7 @@ export interface MedicalRecord {
     drugList: Drug[] //治疗的药品列表
     time: string
   }
+  doctorPatientId: number
 }
 
 const mapStateToProps = (state: AppState) => {
@@ -207,6 +208,7 @@ export default class PatientDetail extends Component<
         region,
         drugList,
       })
+      console.log(medicalRecordList)
     } catch (err) {
       console.log(err)
     }
@@ -705,6 +707,15 @@ export default class PatientDetail extends Component<
                       </Text>
                       <Icon style={[style.squareRootItemView, global.fontSize14]} name="right" />
                     </View>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={style.postInquery}
+                    onPress={() =>
+                      this.props.navigation.push(pathMap.PostInquiry, {
+                        id: v.doctorPatientId,
+                      })
+                    }>
+                    <Text style={style.postInqueryTitle}>诊后咨询 </Text>
                   </TouchableOpacity>
                 </View>
               )

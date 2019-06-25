@@ -45,6 +45,7 @@ import AddPrescriptionTpl from "@/assets/styles/index/addPrescriptionTpl"
 import EditPrescriptionTpl from "@/assets/styles/index/editPrescriptionTpl"
 import SelectPrescriptionTplList from "@/assets/styles/advisory/prescriptionTplList"
 import Help from "@/assets/styles/index/help"
+import postInquiry from "@/assets/styles/address_book/postInquiry"
 export default {
   home,
   global,
@@ -88,6 +89,7 @@ export default {
     PatientDetail,
     InquirySheet,
     MedicalRecord,
+    postInquiry,
   },
   personalCenter: {
     personalCenterIndex,

@@ -331,4 +331,17 @@ export default StyleSheet.create({
   invisiblePatients: {
     color: sColor.white,
   },
+  postInquery: {
+    height: 45,
+    lineHeight: 45,
+    borderTopWidth: 1 / PixelRatio.get(),
+    borderTopColor: "#ddd",
+  },
+  postInqueryTitle: {
+    fontSize: 14,
+    color: "#888",
+    textAlign: "center",
+    height: 45,
+    lineHeight: 45,
+  },
 })
