@@ -23,6 +23,9 @@ const config: [NavigationRouteConfigMap, StackNavigatorConfig] = [
     initialRouteName: "Index",
     headerMode: "none",
     mode: Platform.OS === "ios" ? "modal" : "card",
+    navigationOptions: {
+      headerTitleAllowFontScaling: false,
+    },
   },
 ]
 export default config

@@ -1,4 +1,4 @@
-import { Platform, Dimensions, NativeModules } from "react-native"
+import { Platform, Dimensions, NativeModules, Text, TextInput } from "react-native"
 import { BASE_URL } from "@/config/api"
 
 const os = Platform.OS
@@ -24,4 +24,10 @@ export function isDebugMode() {
     console.log("buffge: ", e)
     return false
   }
+}
+export function disableFontScale() {
+  // @ts-ignore
+  Text.defaultProps = { ...(Text.defaultProps || {}), allowFontScaling: false }
+  // @ts-ignore
+  TextInput.defaultProps = { ...(Text.defaultProps || {}), allowFontScaling: false }
 }

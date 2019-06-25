@@ -82,6 +82,7 @@ const TabNav = createBottomTabNavigator(
             </View>
           )
         },
+        headerTitleAllowFontScaling: false,
       }),
       tabBarOnPress: (obj: any) => {
         if (obj.navigation.state.params && obj.navigation.state.params.init) {
@@ -111,6 +112,7 @@ const TabNav = createBottomTabNavigator(
             obj.navigation.state.params.init()
           }
         },
+        headerTitleAllowFontScaling: false,
       }),
     },
     [pathMap.AddressBookIndex]: {
@@ -134,6 +136,7 @@ const TabNav = createBottomTabNavigator(
             obj.navigation.state.params.init()
           }
         },
+        headerTitleAllowFontScaling: false,
       }),
     },
     [pathMap.PersonalCenter]: {
@@ -157,6 +160,7 @@ const TabNav = createBottomTabNavigator(
             obj.navigation.state.params.init() //查询数据
           }
         },
+        headerTitleAllowFontScaling: false,
       }),
     },
   },
@@ -220,6 +224,8 @@ TabNav.navigationOptions = ({ navigation, screenProps }: any) => {
       borderBottomColor: sColor.colorEee,
       borderBottomWidth: 0,
     },
+    headerTitleAllowFontScaling: false,
+    headerBackAllowFontScaling: false,
   }
 }
 
