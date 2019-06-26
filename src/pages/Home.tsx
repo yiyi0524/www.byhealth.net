@@ -146,25 +146,25 @@ export default class Home extends Component<
         // },
       ],
       bannerList: [
-        {
-          id: 1,
-          url: gImg.home.banner_0,
-          link: "",
-        },
+        // {
+        //   id: 1,
+        //   url: gImg.home.banner_0,
+        //   link: "",
+        // },
         {
           id: 2,
           url: gImg.home.banner_1,
           link: pathMap.Help,
         },
-        {
-          id: 3,
-          url: gImg.home.banner_2,
-          link: "",
-        },
+        // {
+        //   id: 3,
+        //   url: gImg.home.banner_2,
+        //   link: "",
+        // },
         {
           id: 4,
           url: gImg.home.banner_3,
-          link: "",
+          link: pathMap.InvitePatients,
         },
       ],
     }
