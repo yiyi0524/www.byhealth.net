@@ -41,6 +41,7 @@ export interface communicationItem {
   consultStyle: number
   isInquiryPatient: boolean
   consultationId: number
+  hasPostInquiryMsg: boolean
 }
 interface State {
   hasLoad: boolean
@@ -86,7 +87,7 @@ export default class Index extends Component<
     }
   }
   componentDidMount() {
-    this.subscription = DeviceEventEmitter.addListener(pathMap.AddressBookIndex + "Reload", _ => {
+    this.subscription = DeviceEventEmitter.addListener(pathMap.AddressBookIndex + "Reload", () => {
       this.init()
     })
     this.init()
@@ -322,6 +323,16 @@ export default class Index extends Component<
                             global.justifyContentStart,
                             global.alignItemsCenter,
                           ]}>
+                          {!v.isInquiryPatient && v.hasPostInquiryMsg ? (
+                            <TouchableOpacity
+                              onPress={() =>
+                                this.props.navigation.push(pathMap.PostInquiry, {
+                                  id: v.id,
+                                })
+                              }>
+                              <Text>诊后咨询</Text>
+                            </TouchableOpacity>
+                          ) : null}
                           <Text
                             style={[style.firstConsultTime, global.fontStyle, global.fontSize13]}>
                             {v.ctime.substr(0, 10)}

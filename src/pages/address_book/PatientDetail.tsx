@@ -708,7 +708,7 @@ export default class PatientDetail extends Component<
                       <Icon style={[style.squareRootItemView, global.fontSize14]} name="right" />
                     </View>
                   </TouchableOpacity>
-                  <TouchableOpacity
+                  {/* <TouchableOpacity
                     style={style.postInquery}
                     onPress={() =>
                       this.props.navigation.push(pathMap.PostInquiry, {
@@ -716,7 +716,7 @@ export default class PatientDetail extends Component<
                       })
                     }>
                     <Text style={style.postInqueryTitle}>诊后咨询 </Text>
-                  </TouchableOpacity>
+                  </TouchableOpacity> */}
                 </View>
               )
             })}
