@@ -46,6 +46,8 @@ import RealNameAuth from "@pages/user/RealNameAuth"
 import sColor from "@styles/color"
 import gImg from "@utils/img"
 import React from "react"
+import PostInquiry from "@pages/address_book/PostInquiry"
+
 import { Image, StyleSheet, View } from "react-native"
 import {
   createBottomTabNavigator,
@@ -355,6 +357,9 @@ const StacksOverTabs = createStackNavigator({
   },
   [pathMap.Help]: {
     screen: Help,
+  },
+  [pathMap.PostInquiry]: {
+    screen: PostInquiry,
   },
 })
 export default StacksOverTabs
