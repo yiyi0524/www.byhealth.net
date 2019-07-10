@@ -172,7 +172,7 @@ export default class InvitePatients extends Component<
             <Text style={[style.detail, global.fontSize12]}>微信扫描上方我的二维码</Text>
             <Text style={[style.detail, global.fontSize12]}>关注 | 博一健康管理 | 公众号</Text>
             <Text style={[style.detail, global.fontSize12]}>
-              即可随时在微信与我沟通, 在家找我复诊、调方
+              即可随时在微信与我沟通, 在家找我复诊、调理
             </Text>
             <View style={style.logo}>
               <Image style={style.logoImg} source={gImg.common.logo} />
