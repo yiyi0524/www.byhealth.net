@@ -1,28 +1,28 @@
-import React, { Component } from "react"
-import { AppState } from "@/redux/stores/store"
-import { connect } from "react-redux"
-import { Dispatch } from "redux"
 import * as userAction from "@/redux/actions/user"
-import {
-  ScrollView,
-  Text,
-  View,
-  Image,
-  TouchableOpacity,
-  RefreshControl,
-  EmitterSubscription,
-  DeviceEventEmitter,
-} from "react-native"
-import { Toast, Icon, InputItem } from "@ant-design/react-native"
-import gStyle from "@utils/style"
-import gImg from "@utils/img"
+import { AppState } from "@/redux/stores/store"
 import pathMap from "@/routes/pathMap"
+import api from "@/services/api"
+import { getPicCdnUrl } from "@/utils/utils"
+import { Icon, InputItem, Toast } from "@ant-design/react-native"
 import patientApi from "@api/patient"
 import userApi from "@api/user"
 import { Picture } from "@pages/advisory/Chat"
-import { getPicFullUrl } from "@/utils/utils"
+import gImg from "@utils/img"
+import gStyle from "@utils/style"
+import React, { Component } from "react"
+import {
+  DeviceEventEmitter,
+  EmitterSubscription,
+  Image,
+  RefreshControl,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native"
+import { connect } from "react-redux"
+import { Dispatch } from "redux"
 import { Assign } from "utility-types"
-import api from "@/services/api"
 const style = gStyle.addressBook.AddressBookIndex
 const global = gStyle.global
 interface Props {
@@ -261,7 +261,7 @@ export default class Index extends Component<
                         style={style.communicationItemPic}
                         source={
                           v.avatar.url !== ""
-                            ? { uri: getPicFullUrl(v.avatar.url) }
+                            ? { uri: getPicCdnUrl(v.avatar.url) }
                             : gImg.common.defaultAvatar
                         }
                       />

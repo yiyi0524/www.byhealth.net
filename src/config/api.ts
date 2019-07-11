@@ -1,4 +1,5 @@
 export const BASE_URL = "https://www.byhealth.net"
+export const CDN_BASE_URL = "https://cdn.byhealth.net/boyi"
 export const WSS_URL = "wss://www.byhealth.net/sw"
 export const customerServicePhone = "0523-86057008"
 export const customerServiceQq = "3441159716"

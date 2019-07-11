@@ -1,7 +1,7 @@
 import * as userAction from "@/redux/actions/user"
 import { AppState } from "@/redux/stores/store"
 import consultation, { Msg } from "@/services/consultation"
-import { getPicFullUrl } from "@/utils/utils"
+import { getPicCdnUrl } from "@/utils/utils"
 import { Toast } from "@ant-design/react-native"
 import TextAreaItem from "@ant-design/react-native/lib/textarea-item"
 import sColor from "@styles/color"
@@ -215,7 +215,7 @@ export default class PatientDetail extends Component<
                                 style={style.avatar}
                                 source={
                                   v.avatar
-                                    ? { uri: getPicFullUrl(v.avatar) }
+                                    ? { uri: getPicCdnUrl(v.avatar) }
                                     : gImg.common.defaultAvatar
                                 }
                               />
@@ -235,7 +235,7 @@ export default class PatientDetail extends Component<
                               style={style.avatar}
                               source={
                                 v.avatar
-                                  ? { uri: getPicFullUrl(v.avatar) }
+                                  ? { uri: getPicCdnUrl(v.avatar) }
                                   : gImg.common.defaultAvatar
                               }
                             />

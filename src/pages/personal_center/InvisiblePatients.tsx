@@ -3,6 +3,7 @@ import * as userAction from "@/redux/actions/user"
 import { AppState } from "@/redux/stores/store"
 import pathMap from "@/routes/pathMap"
 import doctor, { GENDER, InvisiblePatient } from "@/services/doctor"
+import { getPicCdnUrl } from "@/utils/utils"
 import { Toast } from "@ant-design/react-native"
 import sColor from "@styles/color"
 import gImg from "@utils/img"
@@ -20,7 +21,6 @@ import {
 } from "react-native"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
-import { getPicFullUrl } from "@/utils/utils"
 const style = gStyle.personalCenter.InvisiblePatients
 const global = gStyle.global
 interface Props {
@@ -152,7 +152,7 @@ export default class Index extends Component<
                         style={style.avatarImg}
                         source={
                           v.avatar.url
-                            ? { uri: getPicFullUrl(v.avatar.url) }
+                            ? { uri: getPicCdnUrl(v.avatar.url) }
                             : gImg.common.defaultAvatar
                         }
                       />

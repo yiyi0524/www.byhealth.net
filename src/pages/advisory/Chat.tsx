@@ -1,43 +1,43 @@
 import global from "@/assets/styles/global"
 import DashLine from "@/components/DashLine"
+import { BASE_URL } from "@/config/api"
 import * as wsAction from "@/redux/actions/ws"
 import { AppState } from "@/redux/stores/store"
 import pathMap from "@/routes/pathMap"
-import api, { getRegion, getThumbUrl, windowHeight, uploadImg } from "@/services/api"
+import api, { getRegion, getThumbUrl, uploadImg, windowHeight } from "@/services/api"
 import { clearPatientUnreadMsgCount, closeInquiry, GENDER_ZH } from "@/services/doctor"
 import gImg from "@/utils/img"
-import { getPicFullUrl, windowWidth } from "@/utils/utils"
+import { getPicCdnUrl, getPicFullUrl, windowWidth } from "@/utils/utils"
 import { Icon, ImagePicker, Modal, Portal, TextareaItem, Toast } from "@ant-design/react-native"
 import userApi from "@api/user"
 import wsMsgApi from "@api/wsMsg"
+import imgPickerOpt from "@config/imgPickerOpt"
 import sColor from "@styles/color"
+import Buff from "@utils/Buff"
 import gStyle from "@utils/style"
 import React, { Component, ReactChild } from "react"
-import RnImagePicker from "react-native-image-picker"
-import imgPickerOpt from "@config/imgPickerOpt"
 import {
+  AppState as RnAppState,
+  AppStateStatus,
   DeviceEventEmitter,
   EmitterSubscription,
   Image,
   ImageSourcePropType,
+  KeyboardAvoidingView,
   PermissionsAndroid,
   PixelRatio,
   Platform,
   RefreshControl,
   Text,
   View,
-  KeyboardAvoidingView,
-  AppState as RnAppState,
-  AppStateStatus,
 } from "react-native"
 import { TouchableOpacity } from "react-native-gesture-handler"
+import RnImagePicker from "react-native-image-picker"
 import ImageViewer from "react-native-image-zoom-viewer"
 import { NavigationScreenProp, ScrollView } from "react-navigation"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
 import { Overwrite } from "utility-types"
-import { BASE_URL } from "@/config/api"
-import Buff from "@utils/Buff"
 const style = gStyle.advisory.advisoryChat
 interface Props {
   navigation: NavigationScreenProp<State>
@@ -1224,7 +1224,7 @@ export default class Chat extends Component<
                 style={style.itemImg}
                 source={
                   msg.sendUser.avatar.url
-                    ? { uri: getPicFullUrl(msg.sendUser.avatar.url) }
+                    ? { uri: getPicCdnUrl(msg.sendUser.avatar.url) }
                     : gImg.common.defaultAvatar
                 }
               />
@@ -1250,7 +1250,7 @@ export default class Chat extends Component<
                 style={style.itemImg}
                 source={
                   msg.sendUser.avatar.url
-                    ? { uri: getPicFullUrl(msg.sendUser.avatar.url) }
+                    ? { uri: getPicCdnUrl(msg.sendUser.avatar.url) }
                     : gImg.common.defaultAvatar
                 }
               />
@@ -1519,7 +1519,7 @@ export default class Chat extends Component<
                     }}>
                     <Image
                       style={style.patientsThemeselvesPatientImg}
-                      source={v.url ? { uri: getPicFullUrl(v.url) } : gImg.common.defaultPic}
+                      source={v.url ? { uri: getPicCdnUrl(v.url) } : gImg.common.defaultPic}
                     />
                   </TouchableOpacity>
                 )
@@ -1653,10 +1653,10 @@ export default class Chat extends Component<
   }
   openShowPic = (url: string) => {
     this.setState({
-      showPicUrl: getPicFullUrl(url),
+      showPicUrl: getPicCdnUrl(url),
       imagesViewer: [
         {
-          url: getPicFullUrl(url),
+          url: getPicCdnUrl(url),
         },
       ],
       isShowPic: true,

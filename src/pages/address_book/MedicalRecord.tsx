@@ -1,20 +1,20 @@
 import * as userAction from "@/redux/actions/user"
 import { AppState } from "@/redux/stores/store"
+import { GENDER_ZH } from "@/services/doctor"
+import hospital from "@/services/hospital"
+import patient, { medicalRecord } from "@/services/patient"
+import { getPicCdnUrl } from "@/utils/utils"
 import { Toast } from "@ant-design/react-native"
 import sColor from "@styles/color"
 import gImg from "@utils/img"
 import gStyle from "@utils/style"
+import moment from "moment"
 import React, { Component } from "react"
 import { Image, PixelRatio, RefreshControl, ScrollView, Text, View } from "react-native"
 import { TouchableOpacity } from "react-native-gesture-handler"
 import { NavigationScreenProp } from "react-navigation"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
-import patient, { medicalRecord } from "@/services/patient"
-import hospital from "@/services/hospital"
-import moment from "moment"
-import { GENDER_ZH } from "@/services/doctor"
-import { getPicFullUrl } from "@/utils/utils"
 const style = gStyle.addressBook.MedicalRecord
 const global = gStyle.global
 
@@ -189,7 +189,7 @@ export default class InquirySheet extends Component<
                   style={style.avatar}
                   source={
                     detail.patient.avatar.url
-                      ? { uri: getPicFullUrl(detail.patient.avatar.url) }
+                      ? { uri: getPicCdnUrl(detail.patient.avatar.url) }
                       : gImg.common.defaultAvatar
                   }
                 />

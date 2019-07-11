@@ -1,5 +1,5 @@
 import { Platform, Dimensions, NativeModules, Text, TextInput } from "react-native"
-import { BASE_URL } from "@/config/api"
+import { BASE_URL, CDN_BASE_URL } from "@/config/api"
 
 const os = Platform.OS
 export const isAndroid = os === "android"
@@ -11,6 +11,12 @@ export const windowHeight = Dimensions.get("window").height
  */
 export function getPicFullUrl(url: string): string {
   return url.indexOf("http") === 0 ? url : BASE_URL + url
+}
+/**
+ * 获取图片的cdn url
+ */
+export function getPicCdnUrl(url: string): string {
+  return url.indexOf("http") === 0 ? url : CDN_BASE_URL + url
 }
 /**
  * 识别开发环境是否是debug开发环境

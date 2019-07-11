@@ -1,5 +1,6 @@
 import * as userAction from "@/redux/actions/user"
 import { AppState } from "@/redux/stores/store"
+import { getPicCdnUrl } from "@/utils/utils"
 import { Icon, InputItem, Toast } from "@ant-design/react-native"
 import doctor, { GENDER } from "@api/doctor"
 import patientApi from "@api/patient"
@@ -12,7 +13,6 @@ import { Image, PixelRatio, RefreshControl, ScrollView, Text, TouchableOpacity, 
 import { NavigationScreenProp } from "react-navigation"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
-import { getPicFullUrl } from "@/utils/utils"
 import { patientItem } from "./GroupDetail"
 const style = gStyle.addressBook.AddressBookAddGroup
 const global = gStyle.global
@@ -251,7 +251,7 @@ export default class Index extends Component<
                       style={style.patientAvatar}
                       source={
                         v.avatar.url !== ""
-                          ? { uri: getPicFullUrl(v.avatar.url) }
+                          ? { uri: getPicCdnUrl(v.avatar.url) }
                           : gImg.common.defaultAvatar
                       }
                     />

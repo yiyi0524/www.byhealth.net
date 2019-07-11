@@ -1,9 +1,9 @@
-import React, { Component } from "react"
-import { Text, View, TouchableOpacity, Image, ImageSourcePropType } from "react-native"
-import ImagePicker, { ImagePickerOptions } from "react-native-image-picker"
-import { Toast } from "@ant-design/react-native"
 import { uploadImg } from "@/services/api"
-import { getPicFullUrl } from "@/utils/utils"
+import { getPicCdnUrl } from "@/utils/utils"
+import { Toast } from "@ant-design/react-native"
+import React, { Component } from "react"
+import { Image, ImageSourcePropType, Text, TouchableOpacity, View } from "react-native"
+import ImagePicker, { ImagePickerOptions } from "react-native-image-picker"
 
 // More info on all the options is below in the API Reference... just some common use cases shown here
 const options: ImagePickerOptions = {
@@ -55,7 +55,7 @@ export default class Test extends Component<Props, State> {
           .then(json => {
             console.log(json)
             let source = {
-              uri: getPicFullUrl(json.data.url),
+              uri: getPicCdnUrl(json.data.url),
             }
             this.setState({
               avatarSource: source,

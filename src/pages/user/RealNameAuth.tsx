@@ -2,8 +2,7 @@ import global from "@/assets/styles/global"
 import * as userAction from "@/redux/actions/user"
 import { AppState } from "@/redux/stores/store"
 import pathMap from "@/routes/pathMap"
-import RnImagePicker from "react-native-image-picker"
-import imgPickerOpt from "@config/imgPickerOpt"
+import { getPicCdnUrl } from "@/utils/utils"
 import {
   Icon,
   ImagePicker,
@@ -24,6 +23,7 @@ import doctorApi, {
 } from "@api/doctor"
 import hospitalApi from "@api/hospital"
 import { BASE_URL } from "@config/api"
+import imgPickerOpt from "@config/imgPickerOpt"
 import sColor from "@styles/color"
 import gImg from "@utils/img"
 import gStyle from "@utils/style"
@@ -38,11 +38,11 @@ import {
   TouchableOpacity,
   View,
 } from "react-native"
+import RnImagePicker from "react-native-image-picker"
 import { NavigationScreenProp } from "react-navigation"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
 import { Picture } from "../advisory/Chat"
-import { getPicFullUrl } from "@/utils/utils"
 const style = gStyle.user.realNameAuth
 interface Props {
   navigation: NavigationScreenProp<State>
@@ -654,7 +654,7 @@ export default class RealNameAuth extends Component<
                                           const { url, picId } = json.data
                                           let avatar = [
                                             {
-                                              url: getPicFullUrl(url),
+                                              url: getPicCdnUrl(url),
                                               picId,
                                               id: picId,
                                               title: "",
@@ -704,7 +704,7 @@ export default class RealNameAuth extends Component<
                                       const { url, picId } = json.data
                                       let avatar = [
                                         {
-                                          url: getPicFullUrl(url),
+                                          url: getPicCdnUrl(url),
                                           picId,
                                           id: picId,
                                           title: "",
@@ -1070,7 +1070,7 @@ export default class RealNameAuth extends Component<
                                           Portal.remove(uploadingImgKey)
                                           const { url, picId } = json.data
                                           let img = {
-                                            url: getPicFullUrl(url),
+                                            url: getPicCdnUrl(url),
                                             picId,
                                             id: picId,
                                             title: "",
@@ -1113,7 +1113,7 @@ export default class RealNameAuth extends Component<
                                       Portal.remove(uploadingImgKey)
                                       const { url, picId } = json.data
                                       let img = {
-                                        url: getPicFullUrl(url),
+                                        url: getPicCdnUrl(url),
                                         picId,
                                         id: picId,
                                         title: "",
@@ -1202,7 +1202,7 @@ export default class RealNameAuth extends Component<
                                           Portal.remove(uploadingImgKey)
                                           const { url, picId } = json.data
                                           let img = {
-                                            url: getPicFullUrl(url),
+                                            url: getPicCdnUrl(url),
                                             picId,
                                             id: picId,
                                             title: "",
@@ -1245,7 +1245,7 @@ export default class RealNameAuth extends Component<
                                       Portal.remove(uploadingImgKey)
                                       const { url, picId } = json.data
                                       let img = {
-                                        url: getPicFullUrl(url),
+                                        url: getPicCdnUrl(url),
                                         picId,
                                         id: picId,
                                         title: "",
@@ -1327,7 +1327,7 @@ export default class RealNameAuth extends Component<
                                           Portal.remove(uploadingImgKey)
                                           const { url, picId } = json.data
                                           let img = {
-                                            url: getPicFullUrl(url),
+                                            url: getPicCdnUrl(url),
                                             picId,
                                             id: picId,
                                             title: "",
@@ -1374,7 +1374,7 @@ export default class RealNameAuth extends Component<
                                       Portal.remove(uploadingImgKey)
                                       const { url, picId } = json.data
                                       let img = {
-                                        url: getPicFullUrl(url),
+                                        url: getPicCdnUrl(url),
                                         picId,
                                         id: picId,
                                         title: "",
@@ -1688,7 +1688,7 @@ export default class RealNameAuth extends Component<
                               const { url, picId } = json.data
                               let avatar = [
                                 {
-                                  url: getPicFullUrl(url),
+                                  url: getPicCdnUrl(url),
                                   picId,
                                   id: picId,
                                   title: "",
@@ -2023,7 +2023,7 @@ export default class RealNameAuth extends Component<
                               Portal.remove(uploadingImgKey)
                               const { url, picId } = json.data
                               let img = {
-                                url: getPicFullUrl(url),
+                                url: getPicCdnUrl(url),
                                 picId,
                                 id: picId,
                                 title: "",
@@ -2081,7 +2081,7 @@ export default class RealNameAuth extends Component<
                               Portal.remove(uploadingImgKey)
                               const { url, picId } = json.data
                               let img = {
-                                url: getPicFullUrl(url),
+                                url: getPicCdnUrl(url),
                                 picId,
                                 id: picId,
                                 title: "",
@@ -2132,7 +2132,7 @@ export default class RealNameAuth extends Component<
                               Portal.remove(uploadingImgKey)
                               const { url, picId } = json.data
                               let img = {
-                                url: getPicFullUrl(url),
+                                url: getPicCdnUrl(url),
                                 picId,
                                 id: picId,
                                 title: "",

@@ -7,7 +7,7 @@ import { addPrescription, AddPrescriptionParam, GENDER, GENDER_ZH } from "@/serv
 import { ORAL_CHINESE_DRUG_ID, TOPICAL_CHINESE_DRUG_ID } from "@/services/drug"
 import { getPatientInfo } from "@/services/patient"
 import { getPersonalInfo } from "@/services/user"
-import { getPicFullUrl } from "@/utils/utils"
+import { getPicCdnUrl } from "@/utils/utils"
 import { Icon, ImagePicker, InputItem, TextareaItem, Toast } from "@ant-design/react-native"
 import hospital from "@api/hospital"
 import DashLine from "@components/DashLine"
@@ -23,11 +23,11 @@ import {
   Image,
   KeyboardAvoidingView,
   PixelRatio,
+  Platform,
   RefreshControl,
   Text,
   TouchableOpacity,
   View,
-  Platform,
 } from "react-native"
 import { NavigationScreenProp, ScrollView } from "react-navigation"
 import { connect } from "react-redux"
@@ -249,7 +249,7 @@ export default class SquareRoot extends Component<
         hospitalMedicalRecordPicList = []
       }
       for (let k in hospitalMedicalRecordPicList) {
-        hospitalMedicalRecordPicList[k].url = getPicFullUrl(hospitalMedicalRecordPicList[k].url)
+        hospitalMedicalRecordPicList[k].url = getPicCdnUrl(hospitalMedicalRecordPicList[k].url)
       }
       this.setState({
         hasLoad: true,

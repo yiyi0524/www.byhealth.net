@@ -161,9 +161,9 @@ export default class About extends Component<
             <Text style={[style.headerTitle, global.fontSize14]}>博一健康医生版</Text>
             <Text style={[style.headerVersion, global.fontSize12]}>版本{this.state.version}</Text>
           </View>
-          <TouchableOpacity onPress={this.checkedVersion}>
+          {/* <TouchableOpacity onPress={this.checkedVersion}>
             <Text style={[style.checkedVersion, global.fontSize14]}>检测更新</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
           <View
             style={[
               style.weixin,

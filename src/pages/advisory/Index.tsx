@@ -1,30 +1,30 @@
+import global from "@/assets/styles/global"
 import { AppState } from "@/redux/stores/store"
 import pathMap from "@/routes/pathMap"
+import api from "@/services/api"
 import doctor, { GENDER } from "@/services/doctor"
-import { getPicFullUrl } from "@/utils/utils"
-import { Toast, Badge } from "@ant-design/react-native"
+import { getPicCdnUrl } from "@/utils/utils"
+import { Badge, Toast } from "@ant-design/react-native"
 import Empty from "@components/Empty"
 import * as wsAction from "@redux/actions/ws"
+import Buff from "@utils/Buff"
 import gImg from "@utils/img"
 import gStyle from "@utils/style"
 import React, { Component } from "react"
 import {
+  DeviceEventEmitter,
+  EmitterSubscription,
   Image,
   RefreshControl,
   ScrollView,
   Text,
   TouchableOpacity,
   View,
-  DeviceEventEmitter,
-  EmitterSubscription,
 } from "react-native"
 import { NavigationScreenProp } from "react-navigation"
+import { connect } from "react-redux"
 import { Dispatch } from "redux"
 import { Picture } from "./Chat"
-import { connect } from "react-redux"
-import global from "@/assets/styles/global"
-import api from "@/services/api"
-import Buff from "@utils/Buff"
 
 const style = gStyle.advisory.advisoryIndex
 const globalStyle = gStyle.global
@@ -234,7 +234,7 @@ export default class Index extends Component<
                         style={style.avatar}
                         source={
                           consultation.avatar.url
-                            ? { uri: getPicFullUrl(consultation.avatar.url) }
+                            ? { uri: getPicCdnUrl(consultation.avatar.url) }
                             : gImg.common.defaultAvatar
                         }
                       />
