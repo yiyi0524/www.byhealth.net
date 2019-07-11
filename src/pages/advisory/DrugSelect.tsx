@@ -313,7 +313,7 @@ export default class Pharmacy extends Component<Props, State> {
                             onPress={() => {
                               this.props.navigation.push(pathMap.DrugDetail, {
                                 id: drugInfo.detail.id,
-                                title: drugInfo.detail.name,
+                                name: drugInfo.detail.name,
                               })
                             }}>
                             <Text
