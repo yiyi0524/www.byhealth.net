@@ -38,6 +38,8 @@ export interface DrugItem {
   usage: string
 }
 export interface DrugInfo {
+  isChinesePatentDrug?: boolean
+  picture?: Picture | null
   categoryId?: number
   ctime?: string
   description?: string

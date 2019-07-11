@@ -48,4 +48,5 @@ export default {
   EditBankCard: "EditBankCard",
   Help: "Help",
   PostInquiry: "PostInquiry",
+  DrugDetail: "DrugDetail",
 }

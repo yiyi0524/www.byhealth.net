@@ -46,6 +46,7 @@ import EditPrescriptionTpl from "@/assets/styles/index/editPrescriptionTpl"
 import SelectPrescriptionTplList from "@/assets/styles/advisory/prescriptionTplList"
 import Help from "@/assets/styles/index/help"
 import postInquiry from "@/assets/styles/address_book/postInquiry"
+import DrugDetail from "@/assets/styles/advisory/drugDetail"
 export default {
   home,
   global,
@@ -80,6 +81,7 @@ export default {
     AdvisoryPatientDetail,
     QuickReply,
     SelectPrescriptionTplList,
+    DrugDetail,
   },
   addressBook: {
     AddressBookIndex,

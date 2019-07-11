@@ -308,11 +308,20 @@ export default class Pharmacy extends Component<Props, State> {
                             global.alignItemsCenter,
                             global.justifyContentSpaceBetween,
                           ]}>
-                          <Text
-                            style={[style.itemCenterTitle, global.fontSize14]}
-                            numberOfLines={1}>
-                            {drugInfo.detail.name}
-                          </Text>
+                          <TouchableOpacity
+                            style={style.itemCenterTitlePar}
+                            onPress={() => {
+                              this.props.navigation.push(pathMap.DrugDetail, {
+                                id: drugInfo.detail.id,
+                                title: drugInfo.detail.name,
+                              })
+                            }}>
+                            <Text
+                              style={[style.itemCenterTitle, global.fontSize14]}
+                              numberOfLines={1}>
+                              {drugInfo.detail.name}
+                            </Text>
+                          </TouchableOpacity>
                           <View
                             style={[
                               style.setCount,
@@ -335,7 +344,6 @@ export default class Pharmacy extends Component<Props, State> {
                             <View
                               style={{
                                 width: 60,
-                                textAlign: "center",
                               }}>
                               <InputItem
                                 last
@@ -601,7 +609,6 @@ export default class Pharmacy extends Component<Props, State> {
                               <View
                                 style={{
                                   width: 60,
-                                  textAlign: "center",
                                 }}>
                                 <InputItem
                                   last

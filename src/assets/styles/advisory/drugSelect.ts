@@ -97,8 +97,12 @@ export default StyleSheet.create({
   itemCenterTitleFa: {
     height: 40,
   },
+  itemCenterTitlePar: {
+    height: 40,
+  },
   itemCenterTitle: {
-    color: sColor.color333,
+    lineHeight: 40,
+    color: sColor.blue,
     flex: 1,
     marginRight: 15,
   },

@@ -397,7 +397,7 @@ export default class Home extends Component<
                     globalStyle.fontSize12,
                   ]}>
                   {" "}
-                  医疗资质{this.state.hasRealNameAuth ? "已认证" : "未认证"}{" "}
+                  医疗资质{this.state.hasRealNameAuth ? "已认证" : "未完成认证"}{" "}
                 </Text>
                 <TouchableOpacity
                   onPress={() => {
@@ -489,7 +489,7 @@ export default class Home extends Component<
               </Text>
               <Text
                 style={[style.verifiedDescription, globalStyle.fontStyle, globalStyle.fontSize12]}>
-                您还未认证, 点此认证
+                您还未完成认证, 点此认证
               </Text>
             </View>
             <Icon name="right" style={[style.verifiedIcon, globalStyle.fontSize14]} />

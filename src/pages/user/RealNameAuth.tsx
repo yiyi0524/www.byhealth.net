@@ -43,6 +43,7 @@ import { NavigationScreenProp } from "react-navigation"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
 import { Picture } from "../advisory/Chat"
+import { CASH_OUT_APPLY_STATUS } from "@/services/doctorBankCard"
 const style = gStyle.user.realNameAuth
 interface Props {
   navigation: NavigationScreenProp<State>
@@ -82,6 +83,7 @@ interface State {
   gender: [number]
   hospitalName: string
   name: string
+  rejectMsg: string
   idCardNo: string
   profile: string
   technicalTitle: [number]
@@ -220,6 +222,7 @@ export default class RealNameAuth extends Component<
       qualificationCertificatePicList: [], //医生资格证书
       technicalqualificationCertificatePicList: [], //专业技术资格证书9张
       avatarId: 0,
+      rejectMsg: "",
     }
   }
   async componentDidMount() {
@@ -359,6 +362,7 @@ export default class RealNameAuth extends Component<
         departmentId: detail.department_id !== null ? [detail.department_id] : [-1],
         profile: detail.profile,
         adeptSymptomIdList: detail.adeptSymptomList,
+        rejectMsg: detail.reject_msg,
         practisingCertificatePicList,
         qualificationCertificatePicList,
         technicalqualificationCertificatePicList,
@@ -571,6 +575,7 @@ export default class RealNameAuth extends Component<
     }
   }
   render() {
+    let { rejectMsg, status } = this.state
     if (!this.state.hasLoad) {
       return (
         <View style={style.loading}>
@@ -580,1815 +585,753 @@ export default class RealNameAuth extends Component<
         </View>
       )
     }
-    if (Platform.OS === "android") {
-      return (
-        <>
-          <View style={style.main}>
-            <ScrollView style={style.content} keyboardShouldPersistTaps="handled">
-              <View style={style.Theme}>
-                <Text style={[style.ThemeTitle, global.fontStyle, global.fontSize16]}>
-                  补充审核资料
+
+    return (
+      <>
+        <View style={style.main}>
+          <ScrollView style={style.content} keyboardShouldPersistTaps="handled">
+            <View style={style.Theme}>
+              <Text style={[style.ThemeTitle, global.fontStyle, global.fontSize16]}>
+                补充审核资料
+              </Text>
+            </View>
+            <View style={status === CASH_OUT_APPLY_STATUS.reject ? style.examine : global.hidden}>
+              <Text style={style.examineTitle}>审核未通过, 拒绝原因: {rejectMsg}</Text>
+            </View>
+            <View style={style.form}>
+              <View style={[style.formTitle, global.flex, global.alignItemsCenter]}>
+                <Text style={style.formIcon} />
+                <Text style={[style.formThem, global.fontStyle, global.fontSize14]}>
+                  请上传
+                  <Text style={[style.formImportant, global.fontStyle, global.fontSize14]}>
+                    正面照片
+                  </Text>{" "}
+                  , 我们将为您制作漂亮的头像
                 </Text>
               </View>
-              <View style={style.form}>
-                <View style={[style.formTitle, global.flex, global.alignItemsCenter]}>
-                  <Text style={style.formIcon} />
-                  <Text style={[style.formThem, global.fontStyle, global.fontSize14]}>
-                    请上传
-                    <Text style={[style.formImportant, global.fontStyle, global.fontSize14]}>
-                      正面照片
-                    </Text>{" "}
-                    , 我们将为您制作漂亮的头像
-                  </Text>
-                </View>
-                <View
-                  style={[
-                    style.formItem,
-                    style.formAvatar,
-                    global.flex,
-                    global.alignItemsCenter,
-                    global.justifyContentStart,
-                  ]}>
-                  <Text style={[style.fromItemTitle, global.fontSize14, global.fontStyle]}>
-                    头像
-                  </Text>
-                  <ImagePicker
-                    selectable={this.state.avatarSelectable}
-                    onAddImageClick={() => {
-                      try {
-                        PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.CAMERA)
-                          .then(async res => {
-                            if (!res) {
-                              try {
-                                const granted = await PermissionsAndroid.request(
-                                  PermissionsAndroid.PERMISSIONS.CAMERA,
-                                  {
-                                    title: "申请拍摄照片和录制视频权限",
-                                    message:
-                                      "博一健康需要使用您的拍摄照片和录制视频的权限,是否允许?",
-                                    buttonNeutral: "稍后询问",
-                                    buttonNegative: "禁止",
-                                    buttonPositive: "允许",
-                                  },
-                                )
-                                if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-                                  console.log("获得摄像头权限")
-                                  RnImagePicker.showImagePicker(imgPickerOpt, resp => {
-                                    const uploadingImgKey = Toast.loading(
-                                      "上传图片中",
-                                      0,
-                                      () => {},
-                                      true,
-                                    )
-                                    console.log("Response = ", resp)
-                                    if (resp.didCancel) {
-                                      Portal.remove(uploadingImgKey)
-                                    } else if (resp.error) {
-                                      Portal.remove(uploadingImgKey)
-                                      Toast.fail("选择图片失败, 错误信息: " + resp.error)
-                                    } else {
-                                      uploadImg({ url: resp.uri })
-                                        .then(json => {
-                                          Portal.remove(uploadingImgKey)
-                                          console.log(json)
-                                          const { url, picId } = json.data
-                                          let avatar = [
-                                            {
-                                              url: getPicCdnUrl(url),
-                                              picId,
-                                              id: picId,
-                                              title: "",
-                                            },
-                                          ]
-                                          this.setState({
-                                            avatarId: picId,
-                                            avatar,
-                                            avatarSelectable: false,
-                                          })
-                                        })
-                                        .catch(e => {
-                                          Portal.remove(uploadingImgKey)
-                                          Toast.fail("上传图片, 错误信息: " + e)
-                                          console.log("上传图片失败,错误信息", e)
-                                        })
-                                    }
-                                  })
-                                } else {
-                                  return Toast.info(
-                                    "您禁止了拍摄照片和录制视频权限, 请到设置中心打开",
-                                    3,
-                                  )
-                                }
-                              } catch (err) {
-                                console.warn(err)
-                              }
-                            } else {
-                              RnImagePicker.showImagePicker(imgPickerOpt, resp => {
-                                const uploadingImgKey = Toast.loading(
-                                  "上传图片中",
-                                  0,
-                                  () => {},
-                                  true,
-                                )
-                                console.log("Response = ", resp)
-                                if (resp.didCancel) {
-                                  Portal.remove(uploadingImgKey)
-                                } else if (resp.error) {
-                                  Portal.remove(uploadingImgKey)
-                                  Toast.fail("选择图片失败, 错误信息: " + resp.error)
-                                } else {
-                                  uploadImg({ url: resp.uri })
-                                    .then(json => {
-                                      Portal.remove(uploadingImgKey)
-                                      console.log(json)
-                                      const { url, picId } = json.data
-                                      let avatar = [
-                                        {
-                                          url: getPicCdnUrl(url),
-                                          picId,
-                                          id: picId,
-                                          title: "",
-                                        },
-                                      ]
-                                      this.setState({
-                                        avatarId: picId,
-                                        avatar,
-                                        avatarSelectable: false,
-                                      })
-                                    })
-                                    .catch(e => {
-                                      Portal.remove(uploadingImgKey)
-                                      Toast.fail("上传图片, 错误信息: " + e)
-                                      console.log("上传图片失败,错误信息", e)
-                                    })
-                                }
-                              })
-                            }
+              <View
+                style={[
+                  style.formItem,
+                  style.formAvatar,
+                  global.flex,
+                  global.alignItemsCenter,
+                  global.justifyContentStart,
+                ]}>
+                <Text style={[style.fromItemTitle, global.fontSize14, global.fontStyle]}>头像</Text>
+                <ImagePicker
+                  selectable={this.state.avatarSelectable}
+                  onAddImageClick={() => {
+                    RnImagePicker.showImagePicker(imgPickerOpt, resp => {
+                      const uploadingImgKey = Toast.loading("上传图片中", 0, () => {}, true)
+                      console.log("Response = ", resp)
+                      if (resp.didCancel) {
+                        Portal.remove(uploadingImgKey)
+                      } else if (resp.error) {
+                        Portal.remove(uploadingImgKey)
+                        return Toast.info("您禁止了拍摄照片和录制视频权限, 请到设置中心打开", 3)
+                      } else {
+                        uploadImg({ url: resp.uri })
+                          .then(json => {
+                            Portal.remove(uploadingImgKey)
+                            console.log(json)
+                            const { url, picId } = json.data
+                            let avatar = [
+                              {
+                                url: getPicCdnUrl(url),
+                                picId,
+                                id: picId,
+                                title: "",
+                              },
+                            ]
+                            this.setState({
+                              avatarId: picId,
+                              avatar,
+                              avatarSelectable: false,
+                            })
                           })
-                          .catch(err => {
-                            console.log("读取权限失败: " + err)
+                          .catch(e => {
+                            Portal.remove(uploadingImgKey)
+                            Toast.fail("上传图片, 错误信息: " + e)
+                            console.log("上传图片失败,错误信息", e)
                           })
-                      } catch (err) {
-                        console.log(err)
                       }
-                    }}
-                    onImageClick={() => {
-                      console.log("onImageClick")
-                    }}
-                    onChange={this.avatarChange}
-                    files={this.state.avatar}
-                  />
-                  <Text
-                    style={[style.fromItemTitle_2, global.fontSize14, global.fontStyle]}
-                    numberOfLines={2}>
-                    正面照, 清晰度高, 半身照(胸部以上、正方形图片)
-                  </Text>
-                </View>
-                <View style={style.formItem}>
-                  <InputItem
-                    clear
-                    style={[style.input, global.fontStyle, global.fontSize14]}
-                    value={this.state.name}
-                    placeholder="姓名"
-                    onChange={name => {
-                      this.setState({ name })
-                    }}
-                  />
-                </View>
-                <View
-                  style={[
-                    style.formItem,
-                    style.pickerItem,
-                    global.flex,
-                    global.justifyContentSpaceBetween,
-                    global.alignItemsCenter,
-                  ]}>
-                  <Text style={style.formItemTitle}>地区</Text>
-                  <Picker
-                    data={this.state.region}
-                    style={style.picker}
-                    value={this.state.cityId}
-                    triggerType="onPress"
-                    onChange={cityId => this.chooseCityId(cityId)}>
-                    <TouchableOpacity
-                      style={[
-                        style.pickerTitle,
-                        global.flex,
-                        global.justifyContentEnd,
-                        global.alignItemsCenter,
-                      ]}>
-                      <Text style={[style.topItemTitle, global.fontStyle, global.fontSize14]}>
-                        {this.state.cityId.length === 0
-                          ? "请选择"
-                          : this.state.regionCidMapAreaName[this.state.cityId[2]]}
-                      </Text>
-                      <Icon name="right" style={[style.inputIcon, global.fontSize16]} />
-                    </TouchableOpacity>
-                  </Picker>
-                </View>
-                <View
-                  style={[
-                    style.formItem,
-                    style.pickerItem,
-                    global.flex,
-                    global.justifyContentSpaceBetween,
-                    global.alignItemsCenter,
-                  ]}>
-                  <Text style={style.formItemTitle}>医疗机构</Text>
+                    })
+                  }}
+                  onImageClick={() => {
+                    console.log("onImageClick")
+                  }}
+                  onChange={this.avatarChange}
+                  files={this.state.avatar}
+                />
+                <Text
+                  style={[style.fromItemTitle_2, global.fontSize14, global.fontStyle]}
+                  numberOfLines={2}>
+                  正面照, 清晰度高, 半身照(胸部以上、正方形图片)
+                </Text>
+              </View>
+              <View style={style.formItem}>
+                <InputItem
+                  clear
+                  style={[style.input, global.fontStyle, global.fontSize14]}
+                  value={this.state.name}
+                  placeholder="姓名"
+                  onChange={name => {
+                    this.setState({ name })
+                  }}
+                />
+              </View>
+              <View
+                style={[
+                  style.formItem,
+                  style.pickerItem,
+                  global.flex,
+                  global.justifyContentSpaceBetween,
+                  global.alignItemsCenter,
+                ]}>
+                <Text style={style.formItemTitle}>地区</Text>
+                <Picker
+                  data={this.state.region}
+                  style={style.picker}
+                  value={this.state.cityId}
+                  triggerType="onPress"
+                  onChange={cityId => this.chooseCityId(cityId)}>
                   <TouchableOpacity
-                    style={[style.hospital, global.flex, global.justifyContentSpaceBetween]}
-                    onPress={async () => {
-                      if (this.state.cityId.length === 0) {
-                        return Toast.info("请先选择地区", 3)
-                      }
-                      this.setState({
-                        selectHospitalActive: true,
-                      })
-                    }}>
-                    <Text style={[style.hospitalTitle, global.fontSize14, global.fontStyle]}>
-                      {this.state.hospitalName === "" ? "请选择" : this.state.hospitalName}
-                    </Text>
-                    <Icon name="right" style={[style.inputIcon, global.fontSize16]} />
-                  </TouchableOpacity>
-                </View>
-                <View style={style.formItem}>
-                  <InputItem
-                    clear
-                    style={[style.input, global.fontStyle, global.fontSize14]}
-                    value={this.state.idCardNo}
-                    placeholder="身份证号码"
-                    type="number"
-                    onChange={idCardNo => {
-                      this.setState({ idCardNo })
-                    }}
-                    onBlur={(idCardNo: any) => {
-                      if (!api.idCardIDChecked(idCardNo)) {
-                        Toast.fail("身份证不正确", 3)
-                      }
-                    }}
-                  />
-                </View>
-                <View
-                  style={[
-                    style.formItem,
-                    style.pickerItem,
-                    global.flex,
-                    global.justifyContentSpaceBetween,
-                    global.alignItemsCenter,
-                  ]}>
-                  <Text style={style.formItemTitle}>性别</Text>
-                  <Picker
-                    data={this.gender}
-                    style={style.picker}
-                    cols={1}
-                    value={this.state.gender}
-                    triggerType="onPress"
-                    onChange={gender => {
-                      this.setState({
-                        gender: gender as [number],
-                      })
-                    }}>
-                    <TouchableOpacity
-                      style={[
-                        style.pickerTitle,
-                        global.flex,
-                        global.justifyContentEnd,
-                        global.alignItemsCenter,
-                      ]}>
-                      <Text style={[style.topItemTitle, global.fontStyle, global.fontSize14]}>
-                        {this.state.gender[0] === GENDER.UNDEFINED
-                          ? "请选择"
-                          : GENDER_ZH[this.state.gender[0]]}
-                      </Text>
-                      <Icon name="right" style={[style.inputIcon, global.fontSize16]} />
-                    </TouchableOpacity>
-                  </Picker>
-                </View>
-                <View
-                  style={[
-                    style.formItem,
-                    style.pickerItem,
-                    global.flex,
-                    global.justifyContentSpaceBetween,
-                    global.alignItemsCenter,
-                  ]}>
-                  <Text style={style.formItemTitle}>职称</Text>
-                  <Picker
-                    data={this.technicalTitle}
-                    style={style.picker}
-                    cols={1}
-                    value={this.state.technicalTitle}
-                    triggerType="onPress"
-                    onChange={technicalTitle => {
-                      this.setState({
-                        technicalTitle: technicalTitle as [number],
-                      })
-                    }}>
-                    <TouchableOpacity
-                      style={[
-                        style.pickerTitle,
-                        global.flex,
-                        global.justifyContentEnd,
-                        global.alignItemsCenter,
-                      ]}>
-                      <Text style={[style.topItemTitle, global.fontStyle, global.fontSize14]}>
-                        {this.state.technicalTitle[0] === -1
-                          ? "请选择"
-                          : TECHNICAL_TITLE_ZH[this.state.technicalTitle[0]]}
-                      </Text>
-                      <Icon name="right" style={[style.inputIcon, global.fontSize16]} />
-                    </TouchableOpacity>
-                  </Picker>
-                </View>
-              </View>
-              <View style={style.Theme}>
-                <Text style={[style.ThemeTitle_2, global.fontStyle, global.fontSize15]}>
-                  平台接受住院医师 ( 仅接受三甲医院 )、主治医师、副主任医师及主任医师进行入驻
-                </Text>
-              </View>
-              <View style={style.form}>
-                <View style={[style.formTitle, global.flex, global.alignItemsCenter]}>
-                  <Text style={style.formIcon} />
-                  <Text style={[style.formThem, global.fontStyle, global.fontSize14]}>
-                    科室及擅长
-                  </Text>
-                </View>
-                <View
-                  style={[
-                    style.formItem,
-                    style.pickerItem,
-                    global.flex,
-                    global.justifyContentSpaceBetween,
-                    global.alignItemsCenter,
-                  ]}>
-                  <Text style={style.formItemTitle}>科室</Text>
-                  <Picker
-                    data={this.state.hospitalDepartment}
-                    style={style.picker}
-                    cols={1}
-                    value={this.state.departmentId}
-                    triggerType="onPress"
-                    onChange={departmentId => {
-                      this.setState({
-                        departmentId: departmentId as [number],
-                      })
-                    }}>
-                    <TouchableOpacity
-                      style={[
-                        style.pickerTitle,
-                        global.flex,
-                        global.justifyContentEnd,
-                        global.alignItemsCenter,
-                      ]}>
-                      <Text style={[style.topItemTitle, global.fontStyle, global.fontSize14]}>
-                        {this.state.departmentId[0] === -1
-                          ? "请选择"
-                          : this.state.hospitalDepartmentMap[this.state.departmentId[0]]}
-                      </Text>
-                      <Icon name="right" style={[style.inputIcon, global.fontSize16]} />
-                    </TouchableOpacity>
-                  </Picker>
-                </View>
-                <View
-                  style={[
-                    style.formItem,
-                    style.pickerItem,
-                    global.flex,
-                    global.justifyContentSpaceBetween,
-                    global.alignItemsCenter,
-                  ]}>
-                  <Text style={style.formItemTitle}>擅长</Text>
-                  <TouchableOpacity
-                    style={[style.hospital, global.flex, global.justifyContentSpaceBetween]}
-                    onPress={() => {
-                      this.setState({
-                        selectAdeptSymptomActive: true,
-                      })
-                    }}>
-                    <Text style={[style.hospitalTitle, global.fontSize14, global.fontStyle]}>
-                      请选择{" "}
-                    </Text>
-                    <Icon name="right" style={[style.inputIcon, global.fontSize16]} />
-                  </TouchableOpacity>
-                </View>
-                <View style={[style.adeptSymptomIdList, global.flex, global.flexWrap]}>
-                  {this.state.adeptSymptomIdList.map((v: any, k: number) => {
-                    return (
-                      <Text
-                        key={k}
-                        style={[style.adeptSymptomIdItem, global.fontSize14, global.fontStyle]}>
-                        {v.name}
-                      </Text>
-                    )
-                  })}
-                </View>
-              </View>
-              <View style={style.form}>
-                <View style={style.separationModule} />
-                <View style={[style.formTitle, global.flex, global.alignItemsCenter]}>
-                  <Text style={style.formIcon} />
-                  <Text style={[style.formThem, global.fontStyle, global.fontSize14]}>简介</Text>
-                </View>
-                <View style={[style.formItemTextarea]}>
-                  <TextareaItem
-                    style={style.formItemTextarea}
-                    rows={4}
-                    placeholder="简介"
-                    count={100}
-                    value={this.state.profile}
-                    onChange={profile => {
-                      this.setState({
-                        profile: profile as string,
-                      })
-                    }}
-                  />
-                </View>
-              </View>
-              <View style={style.Theme}>
-                <Text style={[style.ThemeTitle, global.fontStyle, global.fontSize15]}>
-                  上传审核证书
-                </Text>
-              </View>
-              <View style={style.form}>
-                <View style={[style.formTitle, global.flex, global.alignItemsCenter]}>
-                  <Text style={style.formIcon} />
-                  <Text style={[style.formThem, global.fontStyle, global.fontSize14]}>
-                    请上传{" "}
-                    <Text style={[style.formImportant, global.fontStyle, global.fontSize14]}>
-                      {" "}
-                      医师执业证书
-                    </Text>
-                    (两张)
-                  </Text>
-                </View>
-                <View
-                  style={[
-                    style.formItemPickerImage,
-                    style.formAvatar,
-                    global.flex,
-                    global.alignItemsCenter,
-                    global.justifyContentStart,
-                  ]}>
-                  <ImagePicker
-                    selectable={this.state.practisingCertificatePicList.length < 2}
-                    onChange={this.medicalPracticeCertificateChange}
-                    files={this.state.practisingCertificatePicList}
-                    onAddImageClick={() => {
-                      try {
-                        PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.CAMERA)
-                          .then(async res => {
-                            if (!res) {
-                              try {
-                                const granted = await PermissionsAndroid.request(
-                                  PermissionsAndroid.PERMISSIONS.CAMERA,
-                                  {
-                                    title: "申请拍摄照片和录制视频权限",
-                                    message:
-                                      "博一健康需要使用您的拍摄照片和录制视频的权限,是否允许?",
-                                    buttonNeutral: "稍后询问",
-                                    buttonNegative: "禁止",
-                                    buttonPositive: "允许",
-                                  },
-                                )
-                                if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-                                  console.log("获得摄像头权限")
-                                  RnImagePicker.showImagePicker(imgPickerOpt, resp => {
-                                    const uploadingImgKey = Toast.loading(
-                                      "上传图片中",
-                                      0,
-                                      () => {},
-                                      true,
-                                    )
-                                    if (resp.didCancel) {
-                                      Portal.remove(uploadingImgKey)
-                                    } else if (resp.error) {
-                                      Portal.remove(uploadingImgKey)
-                                      Toast.fail("选择图片失败, 错误信息: " + resp.error)
-                                    } else {
-                                      uploadImg({ url: resp.uri })
-                                        .then(json => {
-                                          Portal.remove(uploadingImgKey)
-                                          const { url, picId } = json.data
-                                          let img = {
-                                            url: getPicCdnUrl(url),
-                                            picId,
-                                            id: picId,
-                                            title: "",
-                                          }
-                                          let { practisingCertificatePicList } = this.state
-                                          practisingCertificatePicList.push(img)
-                                          this.setState({ practisingCertificatePicList })
-                                        })
-                                        .catch(e => {
-                                          Portal.remove(uploadingImgKey)
-                                          Toast.fail("上传图片, 错误信息: " + e)
-                                        })
-                                    }
-                                  })
-                                } else {
-                                  return Toast.info(
-                                    "您禁止了拍摄照片和录制视频权限, 请到设置中心打开",
-                                    3,
-                                  )
-                                }
-                              } catch (err) {
-                                console.warn(err)
-                              }
-                            } else {
-                              RnImagePicker.showImagePicker(imgPickerOpt, resp => {
-                                const uploadingImgKey = Toast.loading(
-                                  "上传图片中",
-                                  0,
-                                  () => {},
-                                  true,
-                                )
-                                if (resp.didCancel) {
-                                  Portal.remove(uploadingImgKey)
-                                } else if (resp.error) {
-                                  Portal.remove(uploadingImgKey)
-                                  Toast.fail("选择图片失败, 错误信息: " + resp.error)
-                                } else {
-                                  uploadImg({ url: resp.uri })
-                                    .then(json => {
-                                      Portal.remove(uploadingImgKey)
-                                      const { url, picId } = json.data
-                                      let img = {
-                                        url: getPicCdnUrl(url),
-                                        picId,
-                                        id: picId,
-                                        title: "",
-                                      }
-                                      let { practisingCertificatePicList } = this.state
-                                      practisingCertificatePicList.push(img)
-                                      this.setState({ practisingCertificatePicList })
-                                    })
-                                    .catch(e => {
-                                      Portal.remove(uploadingImgKey)
-                                      Toast.fail("上传图片, 错误信息: " + e)
-                                    })
-                                }
-                              })
-                            }
-                          })
-                          .catch(err => {
-                            console.log("读取权限失败: " + err)
-                          })
-                      } catch (err) {
-                        console.log(err)
-                      }
-                    }}
-                  />
-                </View>
-              </View>
-              <View style={style.form}>
-                <View style={style.separationModule} />
-                <View style={[style.formTitle, global.flex, global.alignItemsCenter]}>
-                  <Text style={style.formIcon} />
-                  <Text style={[style.formThem, global.fontStyle, global.fontSize14]}>
-                    请上传{" "}
-                    <Text style={[style.formImportant, global.fontStyle, global.fontSize14]}>
-                      {" "}
-                      医师资格证书
-                    </Text>
-                    (两张)
-                  </Text>
-                </View>
-                <View
-                  style={[
-                    style.formItemPickerImage,
-                    style.formAvatar,
-                    global.flex,
-                    global.alignItemsCenter,
-                    global.justifyContentStart,
-                  ]}>
-                  <ImagePicker
-                    selectable={this.state.qualificationCertificatePicList.length < 2}
-                    onChange={this.qualificationCertificatePicIdChange}
-                    files={this.state.qualificationCertificatePicList}
-                    onAddImageClick={() => {
-                      try {
-                        PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.CAMERA)
-                          .then(async res => {
-                            if (!res) {
-                              try {
-                                const granted = await PermissionsAndroid.request(
-                                  PermissionsAndroid.PERMISSIONS.CAMERA,
-                                  {
-                                    title: "申请拍摄照片和录制视频权限",
-                                    message:
-                                      "博一健康需要使用您的拍摄照片和录制视频的权限,是否允许?",
-                                    buttonNeutral: "稍后询问",
-                                    buttonNegative: "禁止",
-                                    buttonPositive: "允许",
-                                  },
-                                )
-                                if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-                                  console.log("获得摄像头权限")
-                                  RnImagePicker.showImagePicker(imgPickerOpt, resp => {
-                                    const uploadingImgKey = Toast.loading(
-                                      "上传图片中",
-                                      0,
-                                      () => {},
-                                      true,
-                                    )
-                                    if (resp.didCancel) {
-                                      Portal.remove(uploadingImgKey)
-                                    } else if (resp.error) {
-                                      Portal.remove(uploadingImgKey)
-                                      Toast.fail("选择图片失败, 错误信息: " + resp.error)
-                                    } else {
-                                      uploadImg({ url: resp.uri })
-                                        .then(json => {
-                                          Portal.remove(uploadingImgKey)
-                                          const { url, picId } = json.data
-                                          let img = {
-                                            url: getPicCdnUrl(url),
-                                            picId,
-                                            id: picId,
-                                            title: "",
-                                          }
-                                          let { qualificationCertificatePicList } = this.state
-                                          qualificationCertificatePicList.push(img)
-                                          this.setState({ qualificationCertificatePicList })
-                                        })
-                                        .catch(e => {
-                                          Portal.remove(uploadingImgKey)
-                                          Toast.fail("上传图片, 错误信息: " + e)
-                                        })
-                                    }
-                                  })
-                                } else {
-                                  return Toast.info(
-                                    "您禁止了拍摄照片和录制视频权限, 请到设置中心打开",
-                                    3,
-                                  )
-                                }
-                              } catch (err) {
-                                console.warn(err)
-                              }
-                            } else {
-                              RnImagePicker.showImagePicker(imgPickerOpt, resp => {
-                                const uploadingImgKey = Toast.loading(
-                                  "上传图片中",
-                                  0,
-                                  () => {},
-                                  true,
-                                )
-                                if (resp.didCancel) {
-                                  Portal.remove(uploadingImgKey)
-                                } else if (resp.error) {
-                                  Portal.remove(uploadingImgKey)
-                                  Toast.fail("选择图片失败, 错误信息: " + resp.error)
-                                } else {
-                                  uploadImg({ url: resp.uri })
-                                    .then(json => {
-                                      Portal.remove(uploadingImgKey)
-                                      const { url, picId } = json.data
-                                      let img = {
-                                        url: getPicCdnUrl(url),
-                                        picId,
-                                        id: picId,
-                                        title: "",
-                                      }
-                                      let { qualificationCertificatePicList } = this.state
-                                      qualificationCertificatePicList.push(img)
-                                      this.setState({ qualificationCertificatePicList })
-                                    })
-                                    .catch(e => {
-                                      Portal.remove(uploadingImgKey)
-                                      Toast.fail("上传图片, 错误信息: " + e)
-                                    })
-                                }
-                              })
-                            }
-                          })
-                          .catch(err => {
-                            console.log("读取权限失败: " + err)
-                          })
-                      } catch (err) {
-                        console.log(err)
-                      }
-                    }}
-                  />
-                </View>
-              </View>
-              <View style={style.form}>
-                <View style={style.separationModule} />
-                <View style={[style.formTitle, global.flex, global.alignItemsCenter]}>
-                  <Text style={style.formIcon} />
-                  <Text style={[style.formThem, global.fontStyle, global.fontSize14]}>
-                    请上传{" "}
-                    <Text style={[style.formImportant, global.fontStyle, global.fontSize14]}>
-                      {" "}
-                      专业技术资格证书
-                    </Text>
-                    即职称证书(0-10张)
-                  </Text>
-                </View>
-                <View style={style.formItemImg}>
-                  <ImagePicker
-                    selectable={this.state.technicalqualificationCertificatePicList.length < 10}
-                    onChange={this.technicalqualificationCertificatePicIdChange}
-                    files={this.state.technicalqualificationCertificatePicList}
-                    onAddImageClick={() => {
-                      try {
-                        PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.CAMERA)
-                          .then(async res => {
-                            if (!res) {
-                              try {
-                                const granted = await PermissionsAndroid.request(
-                                  PermissionsAndroid.PERMISSIONS.CAMERA,
-                                  {
-                                    title: "申请拍摄照片和录制视频权限",
-                                    message:
-                                      "博一健康需要使用您的拍摄照片和录制视频的权限,是否允许?",
-                                    buttonNeutral: "稍后询问",
-                                    buttonNegative: "禁止",
-                                    buttonPositive: "允许",
-                                  },
-                                )
-                                if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-                                  console.log("获得摄像头权限")
-                                  RnImagePicker.showImagePicker(imgPickerOpt, resp => {
-                                    const uploadingImgKey = Toast.loading(
-                                      "上传图片中",
-                                      0,
-                                      () => {},
-                                      true,
-                                    )
-                                    if (resp.didCancel) {
-                                      Portal.remove(uploadingImgKey)
-                                    } else if (resp.error) {
-                                      Portal.remove(uploadingImgKey)
-                                      Toast.fail("选择图片失败, 错误信息: " + resp.error)
-                                    } else {
-                                      uploadImg({ url: resp.uri })
-                                        .then(json => {
-                                          Portal.remove(uploadingImgKey)
-                                          const { url, picId } = json.data
-                                          let img = {
-                                            url: getPicCdnUrl(url),
-                                            picId,
-                                            id: picId,
-                                            title: "",
-                                          }
-                                          let {
-                                            technicalqualificationCertificatePicList,
-                                          } = this.state
-                                          technicalqualificationCertificatePicList.push(img)
-                                          this.setState({
-                                            technicalqualificationCertificatePicList,
-                                          })
-                                        })
-                                        .catch(e => {
-                                          Portal.remove(uploadingImgKey)
-                                          Toast.fail("上传图片, 错误信息: " + e)
-                                        })
-                                    }
-                                  })
-                                } else {
-                                  return Toast.info(
-                                    "您禁止了拍摄照片和录制视频权限, 请到设置中心打开",
-                                    3,
-                                  )
-                                }
-                              } catch (err) {
-                                console.warn(err)
-                              }
-                            } else {
-                              RnImagePicker.showImagePicker(imgPickerOpt, resp => {
-                                const uploadingImgKey = Toast.loading(
-                                  "上传图片中",
-                                  0,
-                                  () => {},
-                                  true,
-                                )
-                                if (resp.didCancel) {
-                                  Portal.remove(uploadingImgKey)
-                                } else if (resp.error) {
-                                  Portal.remove(uploadingImgKey)
-                                  Toast.fail("选择图片失败, 错误信息: " + resp.error)
-                                } else {
-                                  uploadImg({ url: resp.uri })
-                                    .then(json => {
-                                      Portal.remove(uploadingImgKey)
-                                      const { url, picId } = json.data
-                                      let img = {
-                                        url: getPicCdnUrl(url),
-                                        picId,
-                                        id: picId,
-                                        title: "",
-                                      }
-                                      let { technicalqualificationCertificatePicList } = this.state
-                                      technicalqualificationCertificatePicList.push(img)
-                                      this.setState({ technicalqualificationCertificatePicList })
-                                    })
-                                    .catch(e => {
-                                      Portal.remove(uploadingImgKey)
-                                      Toast.fail("上传图片, 错误信息: " + e)
-                                    })
-                                }
-                              })
-                            }
-                          })
-                          .catch(err => {
-                            console.log("读取权限失败: " + err)
-                          })
-                      } catch (err) {
-                        console.log(err)
-                      }
-                    }}
-                  />
-                </View>
-                <View style={style.previewPic}>
-                  <Text style={[style.example, global.fontStyle, global.fontSize14]}>证书示例</Text>
-                  <Text style={[style.previewPicRequirement, global.fontSize12, global.fontStyle]}>
-                    * 确保姓名、照片、编号、执业范围、签发机关等清晰可见
-                  </Text>
-                  <Text style={[style.previewPicRequirement, global.fontSize12, global.fontStyle]}>
-                    * 需要上传证书第一、第二页, 确保包含执业地点以及变更记录
-                  </Text>
-                  <View
                     style={[
+                      style.pickerTitle,
                       global.flex,
-                      global.justifyContentSpaceAround,
+                      global.justifyContentEnd,
                       global.alignItemsCenter,
                     ]}>
-                    <TouchableOpacity
-                      onPress={() => {
-                        this.setState({
-                          previewPicFirstActive: true,
-                        })
-                      }}>
-                      <Image
-                        style={style.viewPic}
-                        source={gImg.common.technicalqualificationCertificatePicFirst}
-                      />
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                      onPress={() => {
-                        this.setState({
-                          previewPicSecondActive: true,
-                        })
-                      }}>
-                      <Image
-                        style={style.viewPic}
-                        source={gImg.common.technicalqualificationCertificatePicSecond}
-                      />
-                    </TouchableOpacity>
-                  </View>
-                </View>
+                    <Text style={[style.topItemTitle, global.fontStyle, global.fontSize14]}>
+                      {this.state.cityId.length === 0
+                        ? "请选择"
+                        : this.state.regionCidMapAreaName[this.state.cityId[2]]}
+                    </Text>
+                    <Icon name="right" style={[style.inputIcon, global.fontSize16]} />
+                  </TouchableOpacity>
+                </Picker>
               </View>
-            </ScrollView>
-            <TouchableOpacity
-              style={this.state.status !== STATUS.pass ? style.subBtn : global.hidden}
-              onPress={this.submit}>
-              <Text style={[style.subTitle, global.fontStyle, global.fontSize15]}>提交</Text>
-            </TouchableOpacity>
-            {/* 医疗机构选择 */}
-            <View style={this.state.selectHospitalActive ? style.hospitalSelect : global.hidden}>
-              <ScrollView style={style.hospitalContent} keyboardShouldPersistTaps="handled">
-                <View
-                  style={[
-                    style.hospitalAdd,
-                    global.flex,
-                    global.alignItemsCenter,
-                    global.justifyContentSpaceBetween,
-                  ]}>
-                  <Icon style={style.hospitalSearchIcon} name="search" />
-                  <View style={style.hospitalSearch}>
-                    <InputItem
-                      clear
-                      style={[style.hospitalInput, global.fontStyle, global.fontSize14]}
-                      value={this.state.hospitalName}
-                      placeholder="输入所在医疗机构"
-                      onChange={hospitalName => {
-                        this.setState({ hospitalName })
-                      }}
-                    />
-                  </View>
+              <View
+                style={[
+                  style.formItem,
+                  style.pickerItem,
+                  global.flex,
+                  global.justifyContentSpaceBetween,
+                  global.alignItemsCenter,
+                ]}>
+                <Text style={style.formItemTitle}>医疗机构</Text>
+                <TouchableOpacity
+                  style={[style.hospital, global.flex, global.justifyContentSpaceBetween]}
+                  onPress={async () => {
+                    if (this.state.cityId.length === 0) {
+                      return Toast.info("请先选择地区", 3)
+                    }
+                    this.setState({
+                      selectHospitalActive: true,
+                    })
+                  }}>
+                  <Text style={[style.hospitalTitle, global.fontSize14, global.fontStyle]}>
+                    {this.state.hospitalName === "" ? "请选择" : this.state.hospitalName}
+                  </Text>
+                  <Icon name="right" style={[style.inputIcon, global.fontSize16]} />
+                </TouchableOpacity>
+              </View>
+              <View style={style.formItem}>
+                <InputItem
+                  clear
+                  style={[style.input, global.fontStyle, global.fontSize14]}
+                  value={this.state.idCardNo}
+                  placeholder="身份证号码"
+                  type="number"
+                  onChange={idCardNo => {
+                    this.setState({ idCardNo })
+                  }}
+                  onBlur={(idCardNo: any) => {
+                    if (!api.idCardIDChecked(idCardNo)) {
+                      Toast.fail("身份证不正确", 3)
+                    }
+                  }}
+                />
+              </View>
+              <View
+                style={[
+                  style.formItem,
+                  style.pickerItem,
+                  global.flex,
+                  global.justifyContentSpaceBetween,
+                  global.alignItemsCenter,
+                ]}>
+                <Text style={style.formItemTitle}>性别</Text>
+                <Picker
+                  data={this.gender}
+                  style={style.picker}
+                  cols={1}
+                  value={this.state.gender}
+                  triggerType="onPress"
+                  onChange={gender => {
+                    this.setState({
+                      gender: gender as [number],
+                    })
+                  }}>
                   <TouchableOpacity
-                    style={style.closeBtn}
+                    style={[
+                      style.pickerTitle,
+                      global.flex,
+                      global.justifyContentEnd,
+                      global.alignItemsCenter,
+                    ]}>
+                    <Text style={[style.topItemTitle, global.fontStyle, global.fontSize14]}>
+                      {this.state.gender[0] === GENDER.UNDEFINED
+                        ? "请选择"
+                        : GENDER_ZH[this.state.gender[0]]}
+                    </Text>
+                    <Icon name="right" style={[style.inputIcon, global.fontSize16]} />
+                  </TouchableOpacity>
+                </Picker>
+              </View>
+              <View
+                style={[
+                  style.formItem,
+                  style.pickerItem,
+                  global.flex,
+                  global.justifyContentSpaceBetween,
+                  global.alignItemsCenter,
+                ]}>
+                <Text style={style.formItemTitle}>职称</Text>
+                <Picker
+                  data={this.technicalTitle}
+                  style={style.picker}
+                  cols={1}
+                  value={this.state.technicalTitle}
+                  triggerType="onPress"
+                  onChange={technicalTitle => {
+                    this.setState({
+                      technicalTitle: technicalTitle as [number],
+                    })
+                  }}>
+                  <TouchableOpacity
+                    style={[
+                      style.pickerTitle,
+                      global.flex,
+                      global.justifyContentEnd,
+                      global.alignItemsCenter,
+                    ]}>
+                    <Text style={[style.topItemTitle, global.fontStyle, global.fontSize14]}>
+                      {this.state.technicalTitle[0] === -1
+                        ? "请选择"
+                        : TECHNICAL_TITLE_ZH[this.state.technicalTitle[0]]}
+                    </Text>
+                    <Icon name="right" style={[style.inputIcon, global.fontSize16]} />
+                  </TouchableOpacity>
+                </Picker>
+              </View>
+            </View>
+            <View style={style.Theme}>
+              <Text style={[style.ThemeTitle_2, global.fontStyle, global.fontSize15]}>
+                平台接受住院医师 ( 仅接受三甲医院 )、主治医师、副主任医师及主任医师进行入驻
+              </Text>
+            </View>
+            <View style={style.form}>
+              <View style={[style.formTitle, global.flex, global.alignItemsCenter]}>
+                <Text style={style.formIcon} />
+                <Text style={[style.formThem, global.fontStyle, global.fontSize14]}>
+                  科室及擅长
+                </Text>
+              </View>
+              <View
+                style={[
+                  style.formItem,
+                  style.pickerItem,
+                  global.flex,
+                  global.justifyContentSpaceBetween,
+                  global.alignItemsCenter,
+                ]}>
+                <Text style={style.formItemTitle}>科室</Text>
+                <Picker
+                  data={this.state.hospitalDepartment}
+                  style={style.picker}
+                  cols={1}
+                  value={this.state.departmentId}
+                  triggerType="onPress"
+                  onChange={departmentId => {
+                    this.setState({
+                      departmentId: departmentId as [number],
+                    })
+                  }}>
+                  <TouchableOpacity
+                    style={[
+                      style.pickerTitle,
+                      global.flex,
+                      global.justifyContentEnd,
+                      global.alignItemsCenter,
+                    ]}>
+                    <Text style={[style.topItemTitle, global.fontStyle, global.fontSize14]}>
+                      {this.state.departmentId[0] === -1
+                        ? "请选择"
+                        : this.state.hospitalDepartmentMap[this.state.departmentId[0]]}
+                    </Text>
+                    <Icon name="right" style={[style.inputIcon, global.fontSize16]} />
+                  </TouchableOpacity>
+                </Picker>
+              </View>
+              <View
+                style={[
+                  style.formItem,
+                  style.pickerItem,
+                  global.flex,
+                  global.justifyContentSpaceBetween,
+                  global.alignItemsCenter,
+                ]}>
+                <Text style={style.formItemTitle}>擅长</Text>
+                <TouchableOpacity
+                  style={[style.hospital, global.flex, global.justifyContentSpaceBetween]}
+                  onPress={() => {
+                    this.setState({
+                      selectAdeptSymptomActive: true,
+                    })
+                  }}>
+                  <Text style={[style.hospitalTitle, global.fontSize14, global.fontStyle]}>
+                    请选择{" "}
+                  </Text>
+                  <Icon name="right" style={[style.inputIcon, global.fontSize16]} />
+                </TouchableOpacity>
+              </View>
+              <View style={[style.adeptSymptomIdList, global.flex, global.flexWrap]}>
+                {this.state.adeptSymptomIdList.map((v: any, k: number) => {
+                  return (
+                    <Text
+                      key={k}
+                      style={[style.adeptSymptomIdItem, global.fontSize14, global.fontStyle]}>
+                      {v.name}
+                    </Text>
+                  )
+                })}
+              </View>
+            </View>
+            <View style={style.form}>
+              <View style={style.separationModule} />
+              <View style={[style.formTitle, global.flex, global.alignItemsCenter]}>
+                <Text style={style.formIcon} />
+                <Text style={[style.formThem, global.fontStyle, global.fontSize14]}>简介</Text>
+              </View>
+              <View style={[style.formItemTextarea]}>
+                <TextareaItem
+                  style={style.formItemTextarea}
+                  rows={4}
+                  placeholder="简介"
+                  count={100}
+                  value={this.state.profile}
+                  onChange={profile => {
+                    this.setState({
+                      profile: profile as string,
+                    })
+                  }}
+                />
+              </View>
+            </View>
+            <View style={style.Theme}>
+              <Text style={[style.ThemeTitle, global.fontStyle, global.fontSize15]}>
+                上传审核证书
+              </Text>
+            </View>
+            <View style={style.form}>
+              <View style={[style.formTitle, global.flex, global.alignItemsCenter]}>
+                <Text style={style.formIcon} />
+                <Text style={[style.formThem, global.fontStyle, global.fontSize14]}>
+                  请上传{" "}
+                  <Text style={[style.formImportant, global.fontStyle, global.fontSize14]}>
+                    {" "}
+                    医师执业证书
+                  </Text>
+                  (两张)
+                </Text>
+              </View>
+              <View
+                style={[
+                  style.formItemPickerImage,
+                  style.formAvatar,
+                  global.flex,
+                  global.alignItemsCenter,
+                  global.justifyContentStart,
+                ]}>
+                <ImagePicker
+                  selectable={this.state.practisingCertificatePicList.length < 2}
+                  onChange={this.medicalPracticeCertificateChange}
+                  files={this.state.practisingCertificatePicList}
+                  onAddImageClick={() => {
+                    RnImagePicker.showImagePicker(imgPickerOpt, resp => {
+                      const uploadingImgKey = Toast.loading("上传图片中", 0, () => {}, true)
+                      if (resp.didCancel) {
+                        Portal.remove(uploadingImgKey)
+                      } else if (resp.error) {
+                        Portal.remove(uploadingImgKey)
+                        return Toast.info("您禁止了拍摄照片和录制视频权限, 请到设置中心打开", 3)
+                      } else {
+                        uploadImg({ url: resp.uri })
+                          .then(json => {
+                            Portal.remove(uploadingImgKey)
+                            const { url, picId } = json.data
+                            let img = {
+                              url: getPicCdnUrl(url),
+                              picId,
+                              id: picId,
+                              title: "",
+                            }
+                            let { practisingCertificatePicList } = this.state
+                            practisingCertificatePicList.push(img)
+                            this.setState({ practisingCertificatePicList })
+                          })
+                          .catch(e => {
+                            Portal.remove(uploadingImgKey)
+                            Toast.fail("上传图片, 错误信息: " + e)
+                          })
+                      }
+                    })
+                  }}
+                />
+              </View>
+            </View>
+            <View style={style.form}>
+              <View style={style.separationModule} />
+              <View style={[style.formTitle, global.flex, global.alignItemsCenter]}>
+                <Text style={style.formIcon} />
+                <Text style={[style.formThem, global.fontStyle, global.fontSize14]}>
+                  请上传{" "}
+                  <Text style={[style.formImportant, global.fontStyle, global.fontSize14]}>
+                    {" "}
+                    医师资格证书
+                  </Text>
+                  (两张)
+                </Text>
+              </View>
+              <View
+                style={[
+                  style.formItemPickerImage,
+                  style.formAvatar,
+                  global.flex,
+                  global.alignItemsCenter,
+                  global.justifyContentStart,
+                ]}>
+                <ImagePicker
+                  selectable={this.state.qualificationCertificatePicList.length < 2}
+                  onChange={this.qualificationCertificatePicIdChange}
+                  files={this.state.qualificationCertificatePicList}
+                  onAddImageClick={() => {
+                    RnImagePicker.showImagePicker(imgPickerOpt, resp => {
+                      const uploadingImgKey = Toast.loading("上传图片中", 0, () => {}, true)
+                      if (resp.didCancel) {
+                        Portal.remove(uploadingImgKey)
+                      } else if (resp.error) {
+                        Portal.remove(uploadingImgKey)
+                        return Toast.info("您禁止了拍摄照片和录制视频权限, 请到设置中心打开", 3)
+                      } else {
+                        uploadImg({ url: resp.uri })
+                          .then(json => {
+                            Portal.remove(uploadingImgKey)
+                            const { url, picId } = json.data
+                            let img = {
+                              url: getPicCdnUrl(url),
+                              picId,
+                              id: picId,
+                              title: "",
+                            }
+                            let { qualificationCertificatePicList } = this.state
+                            qualificationCertificatePicList.push(img)
+                            this.setState({ qualificationCertificatePicList })
+                          })
+                          .catch(e => {
+                            Portal.remove(uploadingImgKey)
+                            Toast.fail("上传图片, 错误信息: " + e)
+                          })
+                      }
+                    })
+                  }}
+                />
+              </View>
+            </View>
+            <View style={style.form}>
+              <View style={style.separationModule} />
+              <View style={[style.formTitle, global.flex, global.alignItemsCenter]}>
+                <Text style={style.formIcon} />
+                <Text style={[style.formThem, global.fontStyle, global.fontSize14]}>
+                  请上传{" "}
+                  <Text style={[style.formImportant, global.fontStyle, global.fontSize14]}>
+                    {" "}
+                    专业技术资格证书
+                  </Text>
+                  即职称证书(0-10张)
+                </Text>
+              </View>
+              <View style={style.formItemImg}>
+                <ImagePicker
+                  selectable={this.state.technicalqualificationCertificatePicList.length < 10}
+                  onChange={this.technicalqualificationCertificatePicIdChange}
+                  files={this.state.technicalqualificationCertificatePicList}
+                  onAddImageClick={() => {
+                    RnImagePicker.showImagePicker(imgPickerOpt, resp => {
+                      const uploadingImgKey = Toast.loading("上传图片中", 0, () => {}, true)
+                      if (resp.didCancel) {
+                        Portal.remove(uploadingImgKey)
+                      } else if (resp.error) {
+                        Portal.remove(uploadingImgKey)
+                        return Toast.info("您禁止了拍摄照片和录制视频权限, 请到设置中心打开", 3)
+                      } else {
+                        uploadImg({ url: resp.uri })
+                          .then(json => {
+                            Portal.remove(uploadingImgKey)
+                            const { url, picId } = json.data
+                            let img = {
+                              url: getPicCdnUrl(url),
+                              picId,
+                              id: picId,
+                              title: "",
+                            }
+                            let { technicalqualificationCertificatePicList } = this.state
+                            technicalqualificationCertificatePicList.push(img)
+                            this.setState({
+                              technicalqualificationCertificatePicList,
+                            })
+                          })
+                          .catch(e => {
+                            Portal.remove(uploadingImgKey)
+                            Toast.fail("上传图片, 错误信息: " + e)
+                          })
+                      }
+                    })
+                  }}
+                />
+              </View>
+              <View style={style.previewPic}>
+                <Text style={[style.example, global.fontStyle, global.fontSize14]}>证书示例</Text>
+                <Text style={[style.previewPicRequirement, global.fontSize12, global.fontStyle]}>
+                  * 确保姓名、照片、编号、执业范围、签发机关等清晰可见
+                </Text>
+                <Text style={[style.previewPicRequirement, global.fontSize12, global.fontStyle]}>
+                  * 需要上传证书第一、第二页, 确保包含执业地点以及变更记录
+                </Text>
+                <View
+                  style={[global.flex, global.justifyContentSpaceAround, global.alignItemsCenter]}>
+                  <TouchableOpacity
                     onPress={() => {
                       this.setState({
-                        selectHospitalActive: false,
-                        hospitalName: "",
-                        hospitalId: 0,
+                        previewPicFirstActive: true,
                       })
                     }}>
-                    <Text style={[style.close, global.fontSize14, global.fontStyle]}>取消</Text>
+                    <Image
+                      style={style.viewPic}
+                      source={gImg.common.technicalqualificationCertificatePicFirst}
+                    />
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() => {
+                      this.setState({
+                        previewPicSecondActive: true,
+                      })
+                    }}>
+                    <Image
+                      style={style.viewPic}
+                      source={gImg.common.technicalqualificationCertificatePicSecond}
+                    />
                   </TouchableOpacity>
                 </View>
+              </View>
+            </View>
+          </ScrollView>
+          <TouchableOpacity
+            style={this.state.status !== STATUS.pass ? style.subBtn : global.hidden}
+            onPress={this.submit}>
+            <Text style={[style.subTitle, global.fontStyle, global.fontSize15]}>提交</Text>
+          </TouchableOpacity>
+          {/* 医疗机构选择 */}
+          <View style={this.state.selectHospitalActive ? style.hospitalSelect : global.hidden}>
+            <ScrollView style={style.hospitalContent} keyboardShouldPersistTaps="handled">
+              <View
+                style={[
+                  style.hospitalAdd,
+                  global.flex,
+                  global.alignItemsCenter,
+                  global.justifyContentSpaceBetween,
+                ]}>
+                <Icon style={style.hospitalSearchIcon} name="search" />
+                <View style={style.hospitalSearch}>
+                  <InputItem
+                    clear
+                    style={[style.hospitalInput, global.fontStyle, global.fontSize14]}
+                    value={this.state.hospitalName}
+                    placeholder="输入所在医疗机构"
+                    onChange={hospitalName => {
+                      this.setState({ hospitalName })
+                    }}
+                  />
+                </View>
                 <TouchableOpacity
-                  style={[
-                    this.state.hospitalName !== "" ? style.addHospital : global.hidden,
-                    global.flex,
-                    global.alignItemsCenter,
-                    global.justifyContentCenter,
-                  ]}
+                  style={style.closeBtn}
                   onPress={() => {
                     this.setState({
                       selectHospitalActive: false,
+                      hospitalName: "",
+                      hospitalId: 0,
                     })
                   }}>
-                  <Text style={[style.addHospitalBtn, global.fontSize14, global.fontStyle]}>
-                    添加
-                  </Text>
-                  <Text
-                    numberOfLines={1}
-                    style={[style.addHospitalBtn, global.fontSize14, global.fontStyle]}>
-                    {this.state.hospitalName}
-                  </Text>
+                  <Text style={[style.close, global.fontSize14, global.fontStyle]}>取消</Text>
                 </TouchableOpacity>
-                <View style={style.hospitalList}>
-                  {this.state.hospitalList.map((v: any, k: number) => {
-                    return (
-                      <TouchableOpacity
-                        key={k}
-                        onPress={() => {
-                          this.setState({
-                            hospitalId: v.id,
-                            hospitalName: v.name,
-                            selectHospitalActive: false,
-                          })
-                        }}>
-                        <Text style={style.hospitalItem}>{v.name}</Text>
-                      </TouchableOpacity>
-                    )
-                  })}
-                </View>
-              </ScrollView>
-            </View>
-            {/* 擅长选择 */}
-            <View style={this.state.selectAdeptSymptomActive ? style.adeptSymptom : global.hidden}>
+              </View>
               <TouchableOpacity
+                style={[
+                  this.state.hospitalName !== "" ? style.addHospital : global.hidden,
+                  global.flex,
+                  global.alignItemsCenter,
+                  global.justifyContentCenter,
+                ]}
                 onPress={() => {
                   this.setState({
-                    selectAdeptSymptomActive: false,
+                    selectHospitalActive: false,
                   })
                 }}>
-                <Text style={[style.closeAdeptSymptom, global.fontStyle, global.fontSize14]}>
-                  确定并关闭
+                <Text style={[style.addHospitalBtn, global.fontSize14, global.fontStyle]}>
+                  添加
+                </Text>
+                <Text
+                  numberOfLines={1}
+                  style={[style.addHospitalBtn, global.fontSize14, global.fontStyle]}>
+                  {this.state.hospitalName}
                 </Text>
               </TouchableOpacity>
-              <ScrollView style={style.adeptSymptomContent}>
-                <View style={[style.formTitle, global.flex, global.alignItemsCenter]}>
-                  <Text style={style.formIcon} />
-                  <Text style={[style.formThem, global.fontStyle, global.fontSize14]}>
-                    选择擅长治疗疾病(最多选择10个)
-                  </Text>
-                </View>
-                {this.state.hospitalDepartmentSymptom.map((v: any, k: number) => {
+              <View style={style.hospitalList}>
+                {this.state.hospitalList.map((v: any, k: number) => {
                   return (
-                    <View key={k} style={style.symptomList}>
-                      <Text style={[style.symptomTitle, global.fontSize14, global.fontStyle]}>
-                        {v.name}
-                      </Text>
-                      <View style={[global.flex, global.flexWrap]}>
-                        {v.symptomList.map((v1: any, k1: number) => {
-                          return (
-                            <TouchableOpacity
-                              key={k1}
-                              onPress={() => {
-                                let hospitalDepartmentSymptom = this.state
-                                    .hospitalDepartmentSymptom,
-                                  adeptSymptomIdList = this.state.adeptSymptomIdList
-                                if (adeptSymptomIdList.length < 10) {
-                                  hospitalDepartmentSymptom[k].symptomList[
-                                    k1
-                                  ].isChecked = !v1.isChecked
-                                  if (v1.isChecked) {
-                                    adeptSymptomIdList.push({
-                                      id: v1.id,
-                                      name: v1.name,
-                                    })
-                                  } else {
-                                    adeptSymptomIdList = adeptSymptomIdList.filter(
-                                      v2 => v2.id !== v1.id,
-                                    )
-                                  }
-                                } else {
-                                  if (!hospitalDepartmentSymptom[k].symptomList[k1].isChecked) {
-                                    Toast.info("选择擅长治疗疾病不超过10个", 1)
-                                  } else {
-                                    hospitalDepartmentSymptom[k].symptomList[
-                                      k1
-                                    ].isChecked = !v1.isChecked
-
-                                    adeptSymptomIdList = adeptSymptomIdList.filter(
-                                      v2 => v2.id !== v1.id,
-                                    )
-                                  }
-                                }
-                                this.setState({
-                                  hospitalDepartmentSymptom,
-                                  adeptSymptomIdList,
-                                })
-                              }}>
-                              <Text
-                                style={[
-                                  v1.isChecked ? style.symptomItemActive : style.symptomItem,
-                                  global.fontSize14,
-                                  global.fontStyle,
-                                ]}>
-                                {v1.name}
-                              </Text>
-                            </TouchableOpacity>
-                          )
-                        })}
-                      </View>
-                    </View>
+                    <TouchableOpacity
+                      key={k}
+                      onPress={() => {
+                        this.setState({
+                          hospitalId: v.id,
+                          hospitalName: v.name,
+                          selectHospitalActive: false,
+                        })
+                      }}>
+                      <Text style={style.hospitalItem}>{v.name}</Text>
+                    </TouchableOpacity>
                   )
                 })}
-              </ScrollView>
-            </View>
-          </View>
-          <View style={this.state.previewPicFirstActive ? style.picView : global.hidden}>
-            <TouchableOpacity
-              onPress={() => {
-                this.setState({
-                  previewPicFirstActive: false,
-                })
-              }}>
-              <Text style={[style.closePicView, global.fontSize14, global.fontStyle]}>关闭</Text>
-            </TouchableOpacity>
-            <View style={style.viewImgFather}>
-              <Image
-                style={style.viewImg}
-                source={gImg.common.technicalqualificationCertificatePicFirst}
-              />
-            </View>
-          </View>
-          <View style={this.state.previewPicSecondActive ? style.picView : global.hidden}>
-            <TouchableOpacity
-              onPress={() => {
-                this.setState({
-                  previewPicSecondActive: false,
-                })
-              }}>
-              <Text style={[style.closePicView, global.fontSize14, global.fontStyle]}>关闭</Text>
-            </TouchableOpacity>
-            <View style={style.viewImgFather}>
-              <Image
-                style={style.viewImg}
-                source={gImg.common.technicalqualificationCertificatePicSecond}
-              />
-            </View>
-          </View>
-        </>
-      )
-    } else {
-      return (
-        <>
-          <View style={style.main}>
-            <ScrollView style={style.content} keyboardShouldPersistTaps="handled">
-              <View style={style.Theme}>
-                <Text style={[style.ThemeTitle, global.fontStyle, global.fontSize16]}>
-                  补充审核资料
-                </Text>
-              </View>
-              <View style={style.form}>
-                <View style={[style.formTitle, global.flex, global.alignItemsCenter]}>
-                  <Text style={style.formIcon} />
-                  <Text style={[style.formThem, global.fontStyle, global.fontSize14]}>
-                    请上传
-                    <Text style={[style.formImportant, global.fontStyle, global.fontSize14]}>
-                      正面照片
-                    </Text>{" "}
-                    , 我们将为您制作漂亮的头像
-                  </Text>
-                </View>
-                <View
-                  style={[
-                    style.formItem,
-                    style.formAvatar,
-                    global.flex,
-                    global.alignItemsCenter,
-                    global.justifyContentStart,
-                  ]}>
-                  <Text style={[style.fromItemTitle, global.fontSize14, global.fontStyle]}>
-                    头像
-                  </Text>
-                  <ImagePicker
-                    selectable={this.state.avatarSelectable}
-                    onAddImageClick={() => {
-                      RnImagePicker.showImagePicker(imgPickerOpt, resp => {
-                        const uploadingImgKey = Toast.loading("上传图片中", 0, () => {}, true)
-                        console.log("Response = ", resp)
-                        if (resp.didCancel) {
-                          Portal.remove(uploadingImgKey)
-                        } else if (resp.error) {
-                          Portal.remove(uploadingImgKey)
-                          return Toast.info("您禁止了拍摄照片和录制视频权限, 请到设置中心打开", 3)
-                        } else {
-                          uploadImg({ url: resp.uri })
-                            .then(json => {
-                              Portal.remove(uploadingImgKey)
-                              console.log(json)
-                              const { url, picId } = json.data
-                              let avatar = [
-                                {
-                                  url: getPicCdnUrl(url),
-                                  picId,
-                                  id: picId,
-                                  title: "",
-                                },
-                              ]
-                              this.setState({
-                                avatarId: picId,
-                                avatar,
-                                avatarSelectable: false,
-                              })
-                            })
-                            .catch(e => {
-                              Portal.remove(uploadingImgKey)
-                              Toast.fail("上传图片, 错误信息: " + e)
-                              console.log("上传图片失败,错误信息", e)
-                            })
-                        }
-                      })
-                    }}
-                    onImageClick={() => {
-                      console.log("onImageClick")
-                    }}
-                    onChange={this.avatarChange}
-                    files={this.state.avatar}
-                  />
-                  <Text
-                    style={[style.fromItemTitle_2, global.fontSize14, global.fontStyle]}
-                    numberOfLines={2}>
-                    正面照, 清晰度高, 半身照(胸部以上、正方形图片)
-                  </Text>
-                </View>
-                <View style={style.formItem}>
-                  <InputItem
-                    clear
-                    style={[style.input, global.fontStyle, global.fontSize14]}
-                    value={this.state.name}
-                    placeholder="姓名"
-                    onChange={name => {
-                      this.setState({ name })
-                    }}
-                  />
-                </View>
-                <View
-                  style={[
-                    style.formItem,
-                    style.pickerItem,
-                    global.flex,
-                    global.justifyContentSpaceBetween,
-                    global.alignItemsCenter,
-                  ]}>
-                  <Text style={style.formItemTitle}>地区</Text>
-                  <Picker
-                    data={this.state.region}
-                    style={style.picker}
-                    value={this.state.cityId}
-                    triggerType="onPress"
-                    onChange={cityId => this.chooseCityId(cityId)}>
-                    <TouchableOpacity
-                      style={[
-                        style.pickerTitle,
-                        global.flex,
-                        global.justifyContentEnd,
-                        global.alignItemsCenter,
-                      ]}>
-                      <Text style={[style.topItemTitle, global.fontStyle, global.fontSize14]}>
-                        {this.state.cityId.length === 0
-                          ? "请选择"
-                          : this.state.regionCidMapAreaName[this.state.cityId[2]]}
-                      </Text>
-                      <Icon name="right" style={[style.inputIcon, global.fontSize16]} />
-                    </TouchableOpacity>
-                  </Picker>
-                </View>
-                <View
-                  style={[
-                    style.formItem,
-                    style.pickerItem,
-                    global.flex,
-                    global.justifyContentSpaceBetween,
-                    global.alignItemsCenter,
-                  ]}>
-                  <Text style={style.formItemTitle}>医疗机构</Text>
-                  <TouchableOpacity
-                    style={[style.hospital, global.flex, global.justifyContentSpaceBetween]}
-                    onPress={async () => {
-                      if (this.state.cityId.length === 0) {
-                        return Toast.info("请先选择地区", 3)
-                      }
-                      this.setState({
-                        selectHospitalActive: true,
-                      })
-                    }}>
-                    <Text style={[style.hospitalTitle, global.fontSize14, global.fontStyle]}>
-                      {this.state.hospitalName === "" ? "请选择" : this.state.hospitalName}
-                    </Text>
-                    <Icon name="right" style={[style.inputIcon, global.fontSize16]} />
-                  </TouchableOpacity>
-                </View>
-                <View style={style.formItem}>
-                  <InputItem
-                    clear
-                    style={[style.input, global.fontStyle, global.fontSize14]}
-                    value={this.state.idCardNo}
-                    placeholder="身份证号码"
-                    type="number"
-                    onChange={idCardNo => {
-                      this.setState({ idCardNo })
-                    }}
-                    onBlur={(idCardNo: any) => {
-                      if (!api.idCardIDChecked(idCardNo)) {
-                        Toast.fail("身份证不正确", 3)
-                      }
-                    }}
-                  />
-                </View>
-                <View
-                  style={[
-                    style.formItem,
-                    style.pickerItem,
-                    global.flex,
-                    global.justifyContentSpaceBetween,
-                    global.alignItemsCenter,
-                  ]}>
-                  <Text style={style.formItemTitle}>性别</Text>
-                  <Picker
-                    data={this.gender}
-                    style={style.picker}
-                    cols={1}
-                    value={this.state.gender}
-                    triggerType="onPress"
-                    onChange={gender => {
-                      this.setState({
-                        gender: gender as [number],
-                      })
-                    }}>
-                    <TouchableOpacity
-                      style={[
-                        style.pickerTitle,
-                        global.flex,
-                        global.justifyContentEnd,
-                        global.alignItemsCenter,
-                      ]}>
-                      <Text style={[style.topItemTitle, global.fontStyle, global.fontSize14]}>
-                        {this.state.gender[0] === GENDER.UNDEFINED
-                          ? "请选择"
-                          : GENDER_ZH[this.state.gender[0]]}
-                      </Text>
-                      <Icon name="right" style={[style.inputIcon, global.fontSize16]} />
-                    </TouchableOpacity>
-                  </Picker>
-                </View>
-                <View
-                  style={[
-                    style.formItem,
-                    style.pickerItem,
-                    global.flex,
-                    global.justifyContentSpaceBetween,
-                    global.alignItemsCenter,
-                  ]}>
-                  <Text style={style.formItemTitle}>职称</Text>
-                  <Picker
-                    data={this.technicalTitle}
-                    style={style.picker}
-                    cols={1}
-                    value={this.state.technicalTitle}
-                    triggerType="onPress"
-                    onChange={technicalTitle => {
-                      this.setState({
-                        technicalTitle: technicalTitle as [number],
-                      })
-                    }}>
-                    <TouchableOpacity
-                      style={[
-                        style.pickerTitle,
-                        global.flex,
-                        global.justifyContentEnd,
-                        global.alignItemsCenter,
-                      ]}>
-                      <Text style={[style.topItemTitle, global.fontStyle, global.fontSize14]}>
-                        {this.state.technicalTitle[0] === -1
-                          ? "请选择"
-                          : TECHNICAL_TITLE_ZH[this.state.technicalTitle[0]]}
-                      </Text>
-                      <Icon name="right" style={[style.inputIcon, global.fontSize16]} />
-                    </TouchableOpacity>
-                  </Picker>
-                </View>
-              </View>
-              <View style={style.Theme}>
-                <Text style={[style.ThemeTitle_2, global.fontStyle, global.fontSize15]}>
-                  平台接受住院医师 ( 仅接受三甲医院 )、主治医师、副主任医师及主任医师进行入驻
-                </Text>
-              </View>
-              <View style={style.form}>
-                <View style={[style.formTitle, global.flex, global.alignItemsCenter]}>
-                  <Text style={style.formIcon} />
-                  <Text style={[style.formThem, global.fontStyle, global.fontSize14]}>
-                    科室及擅长
-                  </Text>
-                </View>
-                <View
-                  style={[
-                    style.formItem,
-                    style.pickerItem,
-                    global.flex,
-                    global.justifyContentSpaceBetween,
-                    global.alignItemsCenter,
-                  ]}>
-                  <Text style={style.formItemTitle}>科室</Text>
-                  <Picker
-                    data={this.state.hospitalDepartment}
-                    style={style.picker}
-                    cols={1}
-                    value={this.state.departmentId}
-                    triggerType="onPress"
-                    onChange={departmentId => {
-                      this.setState({
-                        departmentId: departmentId as [number],
-                      })
-                    }}>
-                    <TouchableOpacity
-                      style={[
-                        style.pickerTitle,
-                        global.flex,
-                        global.justifyContentEnd,
-                        global.alignItemsCenter,
-                      ]}>
-                      <Text style={[style.topItemTitle, global.fontStyle, global.fontSize14]}>
-                        {this.state.departmentId[0] === -1
-                          ? "请选择"
-                          : this.state.hospitalDepartmentMap[this.state.departmentId[0]]}
-                      </Text>
-                      <Icon name="right" style={[style.inputIcon, global.fontSize16]} />
-                    </TouchableOpacity>
-                  </Picker>
-                </View>
-                <View
-                  style={[
-                    style.formItem,
-                    style.pickerItem,
-                    global.flex,
-                    global.justifyContentSpaceBetween,
-                    global.alignItemsCenter,
-                  ]}>
-                  <Text style={style.formItemTitle}>擅长</Text>
-                  <TouchableOpacity
-                    style={[style.hospital, global.flex, global.justifyContentSpaceBetween]}
-                    onPress={() => {
-                      this.setState({
-                        selectAdeptSymptomActive: true,
-                      })
-                    }}>
-                    <Text style={[style.hospitalTitle, global.fontSize14, global.fontStyle]}>
-                      请选择{" "}
-                    </Text>
-                    <Icon name="right" style={[style.inputIcon, global.fontSize16]} />
-                  </TouchableOpacity>
-                </View>
-                <View style={[style.adeptSymptomIdList, global.flex, global.flexWrap]}>
-                  {this.state.adeptSymptomIdList.map((v: any, k: number) => {
-                    return (
-                      <Text
-                        key={k}
-                        style={[style.adeptSymptomIdItem, global.fontSize14, global.fontStyle]}>
-                        {v.name}
-                      </Text>
-                    )
-                  })}
-                </View>
-              </View>
-              <View style={style.form}>
-                <View style={style.separationModule} />
-                <View style={[style.formTitle, global.flex, global.alignItemsCenter]}>
-                  <Text style={style.formIcon} />
-                  <Text style={[style.formThem, global.fontStyle, global.fontSize14]}>简介</Text>
-                </View>
-                <View style={[style.formItemTextarea]}>
-                  <TextareaItem
-                    style={style.formItemTextarea}
-                    rows={4}
-                    placeholder="简介"
-                    count={100}
-                    value={this.state.profile}
-                    onChange={profile => {
-                      this.setState({
-                        profile: profile as string,
-                      })
-                    }}
-                  />
-                </View>
-              </View>
-              <View style={style.Theme}>
-                <Text style={[style.ThemeTitle, global.fontStyle, global.fontSize15]}>
-                  上传审核证书
-                </Text>
-              </View>
-              <View style={style.form}>
-                <View style={[style.formTitle, global.flex, global.alignItemsCenter]}>
-                  <Text style={style.formIcon} />
-                  <Text style={[style.formThem, global.fontStyle, global.fontSize14]}>
-                    请上传{" "}
-                    <Text style={[style.formImportant, global.fontStyle, global.fontSize14]}>
-                      {" "}
-                      医师执业证书
-                    </Text>
-                    (两张)
-                  </Text>
-                </View>
-                <View
-                  style={[
-                    style.formItemPickerImage,
-                    style.formAvatar,
-                    global.flex,
-                    global.alignItemsCenter,
-                    global.justifyContentStart,
-                  ]}>
-                  <ImagePicker
-                    selectable={this.state.practisingCertificatePicList.length < 2}
-                    onChange={this.medicalPracticeCertificateChange}
-                    files={this.state.practisingCertificatePicList}
-                    onAddImageClick={() => {
-                      RnImagePicker.showImagePicker(imgPickerOpt, resp => {
-                        const uploadingImgKey = Toast.loading("上传图片中", 0, () => {}, true)
-                        if (resp.didCancel) {
-                          Portal.remove(uploadingImgKey)
-                        } else if (resp.error) {
-                          Portal.remove(uploadingImgKey)
-                          return Toast.info("您禁止了拍摄照片和录制视频权限, 请到设置中心打开", 3)
-                        } else {
-                          uploadImg({ url: resp.uri })
-                            .then(json => {
-                              Portal.remove(uploadingImgKey)
-                              const { url, picId } = json.data
-                              let img = {
-                                url: getPicCdnUrl(url),
-                                picId,
-                                id: picId,
-                                title: "",
-                              }
-                              let { practisingCertificatePicList } = this.state
-                              practisingCertificatePicList.push(img)
-                              this.setState({ practisingCertificatePicList })
-                            })
-                            .catch(e => {
-                              Portal.remove(uploadingImgKey)
-                              Toast.fail("上传图片, 错误信息: " + e)
-                            })
-                        }
-                      })
-                    }}
-                  />
-                </View>
-              </View>
-              <View style={style.form}>
-                <View style={style.separationModule} />
-                <View style={[style.formTitle, global.flex, global.alignItemsCenter]}>
-                  <Text style={style.formIcon} />
-                  <Text style={[style.formThem, global.fontStyle, global.fontSize14]}>
-                    请上传{" "}
-                    <Text style={[style.formImportant, global.fontStyle, global.fontSize14]}>
-                      {" "}
-                      医师资格证书
-                    </Text>
-                    (两张)
-                  </Text>
-                </View>
-                <View
-                  style={[
-                    style.formItemPickerImage,
-                    style.formAvatar,
-                    global.flex,
-                    global.alignItemsCenter,
-                    global.justifyContentStart,
-                  ]}>
-                  <ImagePicker
-                    selectable={this.state.qualificationCertificatePicList.length < 2}
-                    onChange={this.qualificationCertificatePicIdChange}
-                    files={this.state.qualificationCertificatePicList}
-                    onAddImageClick={() => {
-                      RnImagePicker.showImagePicker(imgPickerOpt, resp => {
-                        const uploadingImgKey = Toast.loading("上传图片中", 0, () => {}, true)
-                        if (resp.didCancel) {
-                          Portal.remove(uploadingImgKey)
-                        } else if (resp.error) {
-                          Portal.remove(uploadingImgKey)
-                          return Toast.info("您禁止了拍摄照片和录制视频权限, 请到设置中心打开", 3)
-                        } else {
-                          uploadImg({ url: resp.uri })
-                            .then(json => {
-                              Portal.remove(uploadingImgKey)
-                              const { url, picId } = json.data
-                              let img = {
-                                url: getPicCdnUrl(url),
-                                picId,
-                                id: picId,
-                                title: "",
-                              }
-                              let { qualificationCertificatePicList } = this.state
-                              qualificationCertificatePicList.push(img)
-                              this.setState({ qualificationCertificatePicList })
-                            })
-                            .catch(e => {
-                              Portal.remove(uploadingImgKey)
-                              Toast.fail("上传图片, 错误信息: " + e)
-                            })
-                        }
-                      })
-                    }}
-                  />
-                </View>
-              </View>
-              <View style={style.form}>
-                <View style={style.separationModule} />
-                <View style={[style.formTitle, global.flex, global.alignItemsCenter]}>
-                  <Text style={style.formIcon} />
-                  <Text style={[style.formThem, global.fontStyle, global.fontSize14]}>
-                    请上传{" "}
-                    <Text style={[style.formImportant, global.fontStyle, global.fontSize14]}>
-                      {" "}
-                      专业技术资格证书
-                    </Text>
-                    即职称证书(0-10张)
-                  </Text>
-                </View>
-                <View style={style.formItemImg}>
-                  <ImagePicker
-                    selectable={this.state.technicalqualificationCertificatePicList.length < 10}
-                    onChange={this.technicalqualificationCertificatePicIdChange}
-                    files={this.state.technicalqualificationCertificatePicList}
-                    onAddImageClick={() => {
-                      RnImagePicker.showImagePicker(imgPickerOpt, resp => {
-                        const uploadingImgKey = Toast.loading("上传图片中", 0, () => {}, true)
-                        if (resp.didCancel) {
-                          Portal.remove(uploadingImgKey)
-                        } else if (resp.error) {
-                          Portal.remove(uploadingImgKey)
-                          return Toast.info("您禁止了拍摄照片和录制视频权限, 请到设置中心打开", 3)
-                        } else {
-                          uploadImg({ url: resp.uri })
-                            .then(json => {
-                              Portal.remove(uploadingImgKey)
-                              const { url, picId } = json.data
-                              let img = {
-                                url: getPicCdnUrl(url),
-                                picId,
-                                id: picId,
-                                title: "",
-                              }
-                              let { technicalqualificationCertificatePicList } = this.state
-                              technicalqualificationCertificatePicList.push(img)
-                              this.setState({
-                                technicalqualificationCertificatePicList,
-                              })
-                            })
-                            .catch(e => {
-                              Portal.remove(uploadingImgKey)
-                              Toast.fail("上传图片, 错误信息: " + e)
-                            })
-                        }
-                      })
-                    }}
-                  />
-                </View>
-                <View style={style.previewPic}>
-                  <Text style={[style.example, global.fontStyle, global.fontSize14]}>证书示例</Text>
-                  <Text style={[style.previewPicRequirement, global.fontSize12, global.fontStyle]}>
-                    * 确保姓名、照片、编号、执业范围、签发机关等清晰可见
-                  </Text>
-                  <Text style={[style.previewPicRequirement, global.fontSize12, global.fontStyle]}>
-                    * 需要上传证书第一、第二页, 确保包含执业地点以及变更记录
-                  </Text>
-                  <View
-                    style={[
-                      global.flex,
-                      global.justifyContentSpaceAround,
-                      global.alignItemsCenter,
-                    ]}>
-                    <TouchableOpacity
-                      onPress={() => {
-                        this.setState({
-                          previewPicFirstActive: true,
-                        })
-                      }}>
-                      <Image
-                        style={style.viewPic}
-                        source={gImg.common.technicalqualificationCertificatePicFirst}
-                      />
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                      onPress={() => {
-                        this.setState({
-                          previewPicSecondActive: true,
-                        })
-                      }}>
-                      <Image
-                        style={style.viewPic}
-                        source={gImg.common.technicalqualificationCertificatePicSecond}
-                      />
-                    </TouchableOpacity>
-                  </View>
-                </View>
               </View>
             </ScrollView>
+          </View>
+          {/* 擅长选择 */}
+          <View style={this.state.selectAdeptSymptomActive ? style.adeptSymptom : global.hidden}>
             <TouchableOpacity
-              style={this.state.status !== STATUS.pass ? style.subBtn : global.hidden}
-              onPress={this.submit}>
-              <Text style={[style.subTitle, global.fontStyle, global.fontSize15]}>提交</Text>
+              onPress={() => {
+                this.setState({
+                  selectAdeptSymptomActive: false,
+                })
+              }}>
+              <Text style={[style.closeAdeptSymptom, global.fontStyle, global.fontSize14]}>
+                确定并关闭
+              </Text>
             </TouchableOpacity>
-            {/* 医疗机构选择 */}
-            <View style={this.state.selectHospitalActive ? style.hospitalSelect : global.hidden}>
-              <ScrollView style={style.hospitalContent} keyboardShouldPersistTaps="handled">
-                <View
-                  style={[
-                    style.hospitalAdd,
-                    global.flex,
-                    global.alignItemsCenter,
-                    global.justifyContentSpaceBetween,
-                  ]}>
-                  <Icon style={style.hospitalSearchIcon} name="search" />
-                  <View style={style.hospitalSearch}>
-                    <InputItem
-                      clear
-                      style={[style.hospitalInput, global.fontStyle, global.fontSize14]}
-                      value={this.state.hospitalName}
-                      placeholder="输入所在医疗机构"
-                      onChange={hospitalName => {
-                        this.setState({ hospitalName })
-                      }}
-                    />
-                  </View>
-                  <TouchableOpacity
-                    style={style.closeBtn}
-                    onPress={() => {
-                      this.setState({
-                        selectHospitalActive: false,
-                        hospitalName: "",
-                        hospitalId: 0,
-                      })
-                    }}>
-                    <Text style={[style.close, global.fontSize14, global.fontStyle]}>取消</Text>
-                  </TouchableOpacity>
-                </View>
-                <TouchableOpacity
-                  style={[
-                    this.state.hospitalName !== "" ? style.addHospital : global.hidden,
-                    global.flex,
-                    global.alignItemsCenter,
-                    global.justifyContentCenter,
-                  ]}
-                  onPress={() => {
-                    this.setState({
-                      selectHospitalActive: false,
-                    })
-                  }}>
-                  <Text style={[style.addHospitalBtn, global.fontSize14, global.fontStyle]}>
-                    添加
-                  </Text>
-                  <Text
-                    numberOfLines={1}
-                    style={[style.addHospitalBtn, global.fontSize14, global.fontStyle]}>
-                    {this.state.hospitalName}
-                  </Text>
-                </TouchableOpacity>
-                <View style={style.hospitalList}>
-                  {this.state.hospitalList.map((v: any, k: number) => {
-                    return (
-                      <TouchableOpacity
-                        key={k}
-                        onPress={() => {
-                          this.setState({
-                            hospitalId: v.id,
-                            hospitalName: v.name,
-                            selectHospitalActive: false,
-                          })
-                        }}>
-                        <Text style={style.hospitalItem}>{v.name}</Text>
-                      </TouchableOpacity>
-                    )
-                  })}
-                </View>
-              </ScrollView>
-            </View>
-            {/* 擅长选择 */}
-            <View style={this.state.selectAdeptSymptomActive ? style.adeptSymptom : global.hidden}>
-              <TouchableOpacity
-                onPress={() => {
-                  this.setState({
-                    selectAdeptSymptomActive: false,
-                  })
-                }}>
-                <Text style={[style.closeAdeptSymptom, global.fontStyle, global.fontSize14]}>
-                  确定并关闭
+            <ScrollView style={style.adeptSymptomContent}>
+              <View style={[style.formTitle, global.flex, global.alignItemsCenter]}>
+                <Text style={style.formIcon} />
+                <Text style={[style.formThem, global.fontStyle, global.fontSize14]}>
+                  选择擅长治疗疾病(最多选择10个)
                 </Text>
-              </TouchableOpacity>
-              <ScrollView style={style.adeptSymptomContent}>
-                <View style={[style.formTitle, global.flex, global.alignItemsCenter]}>
-                  <Text style={style.formIcon} />
-                  <Text style={[style.formThem, global.fontStyle, global.fontSize14]}>
-                    选择擅长治疗疾病(最多选择10个)
-                  </Text>
-                </View>
-                {this.state.hospitalDepartmentSymptom.map((v: any, k: number) => {
-                  return (
-                    <View key={k} style={style.symptomList}>
-                      <Text style={[style.symptomTitle, global.fontSize14, global.fontStyle]}>
-                        {v.name}
-                      </Text>
-                      <View style={[global.flex, global.flexWrap]}>
-                        {v.symptomList.map((v1: any, k1: number) => {
-                          return (
-                            <TouchableOpacity
-                              key={k1}
-                              onPress={() => {
-                                let hospitalDepartmentSymptom = this.state
-                                    .hospitalDepartmentSymptom,
-                                  adeptSymptomIdList = this.state.adeptSymptomIdList
-                                if (adeptSymptomIdList.length < 10) {
+              </View>
+              {this.state.hospitalDepartmentSymptom.map((v: any, k: number) => {
+                return (
+                  <View key={k} style={style.symptomList}>
+                    <Text style={[style.symptomTitle, global.fontSize14, global.fontStyle]}>
+                      {v.name}
+                    </Text>
+                    <View style={[global.flex, global.flexWrap]}>
+                      {v.symptomList.map((v1: any, k1: number) => {
+                        return (
+                          <TouchableOpacity
+                            key={k1}
+                            onPress={() => {
+                              let hospitalDepartmentSymptom = this.state.hospitalDepartmentSymptom,
+                                adeptSymptomIdList = this.state.adeptSymptomIdList
+                              if (adeptSymptomIdList.length < 10) {
+                                hospitalDepartmentSymptom[k].symptomList[
+                                  k1
+                                ].isChecked = !v1.isChecked
+                                if (v1.isChecked) {
+                                  adeptSymptomIdList.push({
+                                    id: v1.id,
+                                    name: v1.name,
+                                  })
+                                } else {
+                                  adeptSymptomIdList = adeptSymptomIdList.filter(
+                                    v2 => v2.id !== v1.id,
+                                  )
+                                }
+                              } else {
+                                if (!hospitalDepartmentSymptom[k].symptomList[k1].isChecked) {
+                                  Toast.info("选择擅长治疗疾病不超过10个", 1)
+                                } else {
                                   hospitalDepartmentSymptom[k].symptomList[
                                     k1
                                   ].isChecked = !v1.isChecked
-                                  if (v1.isChecked) {
-                                    adeptSymptomIdList.push({
-                                      id: v1.id,
-                                      name: v1.name,
-                                    })
-                                  } else {
-                                    adeptSymptomIdList = adeptSymptomIdList.filter(
-                                      v2 => v2.id !== v1.id,
-                                    )
-                                  }
-                                } else {
-                                  if (!hospitalDepartmentSymptom[k].symptomList[k1].isChecked) {
-                                    Toast.info("选择擅长治疗疾病不超过10个", 1)
-                                  } else {
-                                    hospitalDepartmentSymptom[k].symptomList[
-                                      k1
-                                    ].isChecked = !v1.isChecked
 
-                                    adeptSymptomIdList = adeptSymptomIdList.filter(
-                                      v2 => v2.id !== v1.id,
-                                    )
-                                  }
+                                  adeptSymptomIdList = adeptSymptomIdList.filter(
+                                    v2 => v2.id !== v1.id,
+                                  )
                                 }
-                                this.setState({
-                                  hospitalDepartmentSymptom,
-                                  adeptSymptomIdList,
-                                })
-                              }}>
-                              <Text
-                                style={[
-                                  v1.isChecked ? style.symptomItemActive : style.symptomItem,
-                                  global.fontSize14,
-                                  global.fontStyle,
-                                ]}>
-                                {v1.name}
-                              </Text>
-                            </TouchableOpacity>
-                          )
-                        })}
-                      </View>
+                              }
+                              this.setState({
+                                hospitalDepartmentSymptom,
+                                adeptSymptomIdList,
+                              })
+                            }}>
+                            <Text
+                              style={[
+                                v1.isChecked ? style.symptomItemActive : style.symptomItem,
+                                global.fontSize14,
+                                global.fontStyle,
+                              ]}>
+                              {v1.name}
+                            </Text>
+                          </TouchableOpacity>
+                        )
+                      })}
                     </View>
-                  )
-                })}
-              </ScrollView>
-            </View>
+                  </View>
+                )
+              })}
+            </ScrollView>
           </View>
-          <View style={this.state.previewPicFirstActive ? style.picView : global.hidden}>
-            <TouchableOpacity
-              onPress={() => {
-                this.setState({
-                  previewPicFirstActive: false,
-                })
-              }}>
-              <Text style={[style.closePicView, global.fontSize14, global.fontStyle]}>关闭</Text>
-            </TouchableOpacity>
-            <View style={style.viewImgFather}>
-              <Image
-                style={style.viewImg}
-                source={gImg.common.technicalqualificationCertificatePicFirst}
-              />
-            </View>
+        </View>
+        <View style={this.state.previewPicFirstActive ? style.picView : global.hidden}>
+          <TouchableOpacity
+            onPress={() => {
+              this.setState({
+                previewPicFirstActive: false,
+              })
+            }}>
+            <Text style={[style.closePicView, global.fontSize14, global.fontStyle]}>关闭</Text>
+          </TouchableOpacity>
+          <View style={style.viewImgFather}>
+            <Image
+              style={style.viewImg}
+              source={gImg.common.technicalqualificationCertificatePicFirst}
+            />
           </View>
-          <View style={this.state.previewPicSecondActive ? style.picView : global.hidden}>
-            <TouchableOpacity
-              onPress={() => {
-                this.setState({
-                  previewPicSecondActive: false,
-                })
-              }}>
-              <Text style={[style.closePicView, global.fontSize14, global.fontStyle]}>关闭</Text>
-            </TouchableOpacity>
-            <View style={style.viewImgFather}>
-              <Image
-                style={style.viewImg}
-                source={gImg.common.technicalqualificationCertificatePicSecond}
-              />
-            </View>
+        </View>
+        <View style={this.state.previewPicSecondActive ? style.picView : global.hidden}>
+          <TouchableOpacity
+            onPress={() => {
+              this.setState({
+                previewPicSecondActive: false,
+              })
+            }}>
+            <Text style={[style.closePicView, global.fontSize14, global.fontStyle]}>关闭</Text>
+          </TouchableOpacity>
+          <View style={style.viewImgFather}>
+            <Image
+              style={style.viewImg}
+              source={gImg.common.technicalqualificationCertificatePicSecond}
+            />
           </View>
-        </>
-      )
-    }
+        </View>
+      </>
+    )
   }
 }

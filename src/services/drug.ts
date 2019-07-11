@@ -20,6 +20,8 @@ export interface Drug {
     id: number
     name: string
   }
+  //药品名称
+  name: string
   // 是否为中成药
   isChinesePatentDrug: boolean
   // 西药还是中药
@@ -43,10 +45,16 @@ export interface Drug {
   notes: string
   // 药物相互作用
   drugInteraction: string
+  //单位
+  unit: string
 }
 export async function getDetail(query: { id: number }) {
   return bget<{ detail: Drug }>({
     url: "/user/drug/detail",
     query,
   })
+}
+
+export default {
+  getDetail,
 }

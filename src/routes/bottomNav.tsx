@@ -38,6 +38,7 @@ import EditPrescriptionTpl from "@/pages/index/EditPrescriptionTpl"
 import SelectPrescriptionTpl from "@/pages/advisory/PrescriptionTplList"
 import AddBankCard from "@/pages/personal_center/AddBankCard"
 import EditBankCard from "@/pages/personal_center/EditBankCard"
+import DrugDetail from "@/pages/advisory/DrugDetail"
 import Calendar from "@/components/Calendar"
 import Help from "@pages/index/Help"
 import Home from "@pages/Home"
@@ -360,6 +361,9 @@ const StacksOverTabs = createStackNavigator({
   },
   [pathMap.PostInquiry]: {
     screen: PostInquiry,
+  },
+  [pathMap.DrugDetail]: {
+    screen: DrugDetail,
   },
 })
 export default StacksOverTabs

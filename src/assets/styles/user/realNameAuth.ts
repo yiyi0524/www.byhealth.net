@@ -372,4 +372,11 @@ export default StyleSheet.create({
     width: 350,
     resizeMode: "contain",
   },
+  examine: {
+    padding: 15,
+  },
+  examineTitle: {
+    fontSize: 14,
+    color: sColor.mainRed,
+  },
 })
