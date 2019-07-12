@@ -83,7 +83,7 @@
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
   [CloudPushSDK registerDevice:deviceToken withCallback:^(CloudPushCallbackResult *res) {
     if (res.success) {
-      NSLog(@"Register deviceToken success.");
+      NSLog(@"Register deviceToken success.%@",deviceToken);
     } else {
       NSLog(@"Register deviceToken failed, error: %@", res.error);
     }
