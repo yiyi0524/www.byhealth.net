@@ -160,6 +160,12 @@ export default StyleSheet.create({
     bottom: 0,
     justifyContent: "center",
     alignItems: "center",
+    width: windowWidth,
+  },
+  showImgPar: {
+    position: "relative",
+    width: windowWidth,
+    height: windowHeight,
   },
   showImg: {
     width: 350,
@@ -329,5 +335,23 @@ export default StyleSheet.create({
 
   invisiblePatients: {
     color: sColor.white,
+  },
+  close: {
+    padding: 15,
+    position: "absolute",
+    top: 15,
+    right: 15,
+    zIndex: 10,
+  },
+  closeIcon: {
+    color: "#fff",
+    fontSize: 20,
+    textAlign: "center",
+    borderWidth: 2,
+    borderColor: "#fff",
+    width: 30,
+    height: 30,
+    borderRadius: 100,
+    lineHeight: 30,
   },
 })

@@ -344,4 +344,27 @@ export default StyleSheet.create({
     height: 45,
     lineHeight: 45,
   },
+  showImgPar: {
+    position: "relative",
+    width: windowWidth,
+    height: windowHeight,
+  },
+  close: {
+    padding: 15,
+    position: "absolute",
+    top: 15,
+    right: 15,
+    zIndex: 10,
+  },
+  closeIcon: {
+    color: "#fff",
+    fontSize: 20,
+    textAlign: "center",
+    borderWidth: 2,
+    borderColor: "#fff",
+    width: 30,
+    height: 30,
+    borderRadius: 100,
+    lineHeight: 30,
+  },
 })

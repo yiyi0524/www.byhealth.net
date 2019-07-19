@@ -177,7 +177,7 @@ interface State {
   imageIdx: number
   selectPic: Picture[]
 }
-interface imagesViewer {
+export interface imagesViewer {
   url: string
   width?: number
   height?: number

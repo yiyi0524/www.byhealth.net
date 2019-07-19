@@ -1,10 +1,10 @@
 import * as userAction from "@/redux/actions/user"
 import { AppState } from "@/redux/stores/store"
 import pathMap from "@/routes/pathMap"
-import api, { getThumbUrl } from "@/services/api"
+import api, { getThumbUrl, windowWidth, windowHeight } from "@/services/api"
 import doctor, { GENDER, GENDER_ZH } from "@/services/doctor"
 import hospital from "@/services/hospital"
-import { getPicFullUrl } from "@/utils/utils"
+import { getPicFullUrl, getPicCdnUrl } from "@/utils/utils"
 import { Icon, Modal, Toast } from "@ant-design/react-native"
 import { IconNames } from "@ant-design/react-native/lib/icon"
 import patientApi, { Drug, InquirySheet } from "@api/patient"
@@ -26,7 +26,9 @@ import { TouchableOpacity } from "react-native-gesture-handler"
 import { NavigationScreenProp } from "react-navigation"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
-import { Picture } from "../advisory/Chat"
+import { Picture, imagesViewer } from "../advisory/Chat"
+import ImageViewer from "react-native-image-zoom-viewer"
+import { BASE_URL } from "@/config/api"
 const style = gStyle.advisory.AdvisoryPatientDetail
 const global = gStyle.global
 /**
@@ -97,7 +99,7 @@ interface State {
   consultationId: number
   inquirySheetIcon: IconNames
   patientInfo: PatientInfo
-  showImg: any
+  showImg: imagesViewer[]
   region: Region[]
   medicalRecordList: MedicalRecord[]
   drugList: drugCategory[]
@@ -153,7 +155,13 @@ export default class PatientDetail extends Component<
       isShowMode: false,
       showInquirySheet: false,
       inquirySheetIcon: "down",
-      showImg: gImg.common.defaultAvatar,
+      showImg: [
+        {
+          url: "https://www.byhealth.net/static/media/collapsed_logo.db8ef9b3.png",
+          // width: windowWidth,
+          // height: windowHeight,
+        },
+      ],
       uid: this.props.navigation.getParam("patientUid"),
       consultationId: this.props.navigation.getParam("consultationId"),
       region: [],
@@ -241,7 +249,11 @@ export default class PatientDetail extends Component<
   showMode = (img: string) => {
     this.setState({
       isShowMode: true,
-      showImg: img,
+      showImg: [
+        {
+          url: getPicCdnUrl(img),
+        },
+      ],
     })
   }
   setInvisiblePatients = async () => {
@@ -800,22 +812,31 @@ export default class PatientDetail extends Component<
 
         {/* 图片查看器 */}
         <View style={this.state.isShowMode ? style.showMode : global.hidden}>
-          <TouchableOpacity
-            onPress={() => {
-              this.setState({
-                isShowMode: false,
-                showImg: gImg.common.defaultAvatar,
-              })
-            }}>
-            <Image
-              style={style.showImg}
-              source={
-                this.state.showImg !== gImg.common.defaultAvatar
-                  ? { uri: this.state.showImg }
-                  : this.state.showImg
-              }
+          <View style={style.close}>
+            <Icon
+              onPress={() => {
+                this.setState({
+                  showImg: [
+                    {
+                      url: BASE_URL + "/static/media/collapsed_logo.db8ef9b3.png",
+                    },
+                  ],
+                  isShowMode: false,
+                })
+              }}
+              style={style.closeIcon}
+              name="close"
             />
-          </TouchableOpacity>
+          </View>
+          <View style={style.showImgPar}>
+            <ImageViewer
+              saveToLocalByLongPress={false}
+              imageUrls={this.state.showImg}
+              index={0}
+              maxOverflow={0}
+              onCancel={() => {}}
+            />
+          </View>
         </View>
       </View>
     )
