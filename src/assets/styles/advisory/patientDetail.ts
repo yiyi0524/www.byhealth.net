@@ -164,6 +164,7 @@ export default StyleSheet.create({
   },
   showImgPar: {
     position: "relative",
+    top:15,
     width: windowWidth,
     height: windowHeight,
   },

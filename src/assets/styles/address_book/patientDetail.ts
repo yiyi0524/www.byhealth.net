@@ -348,6 +348,7 @@ export default StyleSheet.create({
     position: "relative",
     width: windowWidth,
     height: windowHeight,
+    top: 15,
   },
   close: {
     padding: 15,
