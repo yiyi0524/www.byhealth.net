@@ -47,10 +47,15 @@ import SelectPrescriptionTplList from "@/assets/styles/advisory/prescriptionTplL
 import Help from "@/assets/styles/index/help"
 import postInquiry from "@/assets/styles/address_book/postInquiry"
 import DrugDetail from "@/assets/styles/advisory/drugDetail"
+import uploadPrescription from "@/assets/styles/index/uploadPrescription"
+import uploadPrescriptionList from "@/assets/styles/index/uploadPrescriptionList"
+import uploadPrescriptionDetail from "@/assets/styles/index/uploadPrescriptionDetail"
 export default {
   home,
   global,
   index: {
+    uploadPrescriptionDetail,
+    uploadPrescriptionList,
     Prescription,
     InvitePatients,
     DiagnosisSettings,
@@ -65,6 +70,7 @@ export default {
     AddPrescriptionTpl,
     EditPrescriptionTpl,
     Help,
+    uploadPrescription,
   },
   user: {
     login,

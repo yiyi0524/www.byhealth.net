@@ -717,7 +717,106 @@ export function getUnreadMsgCount() {
     url: "api/getUnreadMsgCount",
   })
 }
+/**
+ * todo 上传处方
+ */
+export function uploadPrescription(data: { serviceMoney: number; prescriptionPicList: any }) {
+  return bpost({
+    url: "api/uploadPrescription",
+    data,
+  })
+}
+/**
+ * todo 上传处方列表
+ */
+export function listUploadPrescription(query: GetListParam) {
+  console.log(query)
+  return {
+    data: {
+      list: [
+        {
+          id: 1,
+          name: "吴大伟",
+          isShipping: false,
+          ctime: "2019-08-23 10:00:00",
+        },
+        {
+          id: 2,
+          name: "吴二伟",
+          isShipping: true,
+          ctime: "2019-08-23 10:00:00",
+        },
+        {
+          id: 3,
+          name: "吴小伟",
+          isShipping: true,
+          ctime: "2019-08-23 10:00:00",
+        },
+        {
+          id: 4,
+          name: "吴中伟",
+          isShipping: false,
+          ctime: "2019-08-23 10:00:00",
+        },
+      ],
+    },
+  }
+  // return bget({
+  //   url: "api/listUploadPrescription",
+  //   query,
+  // })
+}
+/**
+ * todo 上传处方详情
+ */
+export function uploadPrescriptionDetail(query: { id: number }) {
+  console.log(query)
+  return {
+    data: {
+      detail: {
+        id: 1,
+        name: "吴大伟",
+        serviceMoney: 12000,
+        ctime: "2019-08-23 10:00:00",
+        prescriptionPicList: [
+          {
+            id: 1,
+            title: "",
+            url: "/uploads/20190528/a10f5bec3c7316373fbed6d48a56971e.jpg",
+          },
+          {
+            id: 2,
+            title: "",
+            url: "/uploads/20190528/a10f5bec3c7316373fbed6d48a56971e.jpg",
+          },
+          {
+            id: 3,
+            title: "",
+            url: "/uploads/20190528/a10f5bec3c7316373fbed6d48a56971e.jpg",
+          },
+          {
+            id: 4,
+            title: "",
+            url: "/uploads/20190528/a10f5bec3c7316373fbed6d48a56971e.jpg",
+          },
+          {
+            id: 5,
+            title: "",
+            url: "/uploads/20190528/a10f5bec3c7316373fbed6d48a56971e.jpg",
+          },
+        ],
+      } as { name: string; ctime: string; serviceMoney: number; prescriptionPicList: Picture[] },
+    },
+  }
+  // return bget({
+  //   url: "api/uploadPrescriptionDetail",
+  //   query,
+  // })
+}
 export default {
+  uploadPrescriptionDetail,
+  listUploadPrescription,
+  uploadPrescription,
   getUnreadMsgCount,
   clearPatientUnreadMsgCount,
   deletePrescriptionTpl,

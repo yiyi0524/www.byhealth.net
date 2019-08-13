@@ -49,4 +49,7 @@ export default {
   Help: "Help",
   PostInquiry: "PostInquiry",
   DrugDetail: "DrugDetail",
+  UploadPrescription: "UploadPrescription",
+  UploadPrescriptionList: "UploadPrescriptionList",
+  UploadPrescriptionDetail: "UploadPrescriptionDetail",
 }

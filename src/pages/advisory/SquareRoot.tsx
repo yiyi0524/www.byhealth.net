@@ -383,7 +383,7 @@ export default class SquareRoot extends Component<
                 </Text>
               </View>
               <View style={[style.diagnosisItem, global.flex, global.alignItemsCenter]}>
-                <Text style={[style.diagnosisItemTitle, global.fontSize14]}>辨病</Text>
+                <Text style={[style.diagnosisItemTitle, global.fontSize14]}>辩病</Text>
                 <View style={style.diagnosisItemInput}>
                   <TextareaItem
                     style={style.input}
@@ -1340,7 +1340,7 @@ export default class SquareRoot extends Component<
       prescriptionDrugCategoryList,
     } = this.state
     if (discrimination === "") {
-      return Toast.info("请输入辨病", 3)
+      return Toast.info("请输入辩病", 3)
     }
     if (syndromeDifferentiation === "") {
       return Toast.info("请输入辨证", 3)

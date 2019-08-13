@@ -44,10 +44,13 @@ import Help from "@pages/index/Help"
 import Home from "@pages/Home"
 import Test from "@pages/Test"
 import RealNameAuth from "@pages/user/RealNameAuth"
+import UploadPrescription from "@pages/index/UploadPrescription"
 import sColor from "@styles/color"
 import gImg from "@utils/img"
 import React from "react"
 import PostInquiry from "@pages/address_book/PostInquiry"
+import UploadPrescriptionList from "@pages/index/UploadPrescriptionList"
+import UploadPrescriptionDetail from "@pages/index/UploadPrescriptionDetail"
 
 import { Image, StyleSheet, View } from "react-native"
 import {
@@ -364,6 +367,15 @@ const StacksOverTabs = createStackNavigator({
   },
   [pathMap.DrugDetail]: {
     screen: DrugDetail,
+  },
+  [pathMap.UploadPrescription]: {
+    screen: UploadPrescription,
+  },
+  [pathMap.UploadPrescriptionList]: {
+    screen: UploadPrescriptionList,
+  },
+  [pathMap.UploadPrescriptionDetail]: {
+    screen: UploadPrescriptionDetail,
   },
 })
 export default StacksOverTabs

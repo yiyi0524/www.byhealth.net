@@ -106,6 +106,11 @@ export default class Home extends Component<
         title: "处方模板",
         link: pathMap.PrescriptionTpl,
       },
+      {
+        icon: gImg.home.uploadPrescription,
+        title: "上传处方",
+        link: pathMap.UploadPrescription,
+      },
     ]
   }
   getInitState = (): State => {
