@@ -23,6 +23,10 @@ interface State {
   name: string
   serviceMoney: number
   ctime: string
+  expressName: string
+  expressNo: string
+  advice: string
+  status: string
   prescriptionPicList: Picture[]
 }
 type DefaultProps = {}
@@ -55,6 +59,10 @@ export default class UploadPrescriptionDetail extends Component<Props & DefaultP
     return {
       hasLoad: false,
       isShowImg: false,
+      expressName: "",
+      expressNo: "",
+      advice: "",
+      status: "",
       showImgUrl: [],
       name: "",
       serviceMoney: 0,
@@ -70,7 +78,16 @@ export default class UploadPrescriptionDetail extends Component<Props & DefaultP
       let id = this.props.navigation.getParam("id")
       let {
         data: {
-          detail: { name, serviceMoney, prescriptionPicList, ctime },
+          detail: {
+            name,
+            serviceMoney,
+            prescriptionPicList,
+            ctime,
+            expressName,
+            expressNo,
+            advice,
+            status,
+          },
         },
       } = await doctorApi.uploadPrescriptionDetail({ id })
       this.setState({
@@ -79,6 +96,10 @@ export default class UploadPrescriptionDetail extends Component<Props & DefaultP
         serviceMoney,
         prescriptionPicList,
         ctime,
+        expressName,
+        expressNo,
+        advice,
+        status,
         showImgUrl:
           prescriptionPicList.length > 0
             ? [{ url: getPicFullUrl(prescriptionPicList[0].url) }]
@@ -97,6 +118,10 @@ export default class UploadPrescriptionDetail extends Component<Props & DefaultP
       isShowImg,
       showImgUrl,
       ctime,
+      expressName,
+      expressNo,
+      advice,
+      status,
     } = this.state
     if (!hasLoad) {
       return (
@@ -118,6 +143,22 @@ export default class UploadPrescriptionDetail extends Component<Props & DefaultP
             <View style={[style.item, global.flex, global.alignItemsCenter]}>
               <Text style={style.title}>诊后管理费(元)</Text>
               <Text style={style.input}>{(serviceMoney / 100).toFixed(2)}</Text>
+            </View>
+            <View style={[style.item, global.flex, global.alignItemsCenter]}>
+              <Text style={style.title}>物流单号</Text>
+              <Text style={style.input}>{expressNo}</Text>
+            </View>
+            <View style={[style.item, global.flex, global.alignItemsCenter]}>
+              <Text style={style.title}>快递名称</Text>
+              <Text style={style.input}>{expressName}</Text>
+            </View>
+            <View style={[style.item, global.flex, global.alignItemsCenter]}>
+              <Text style={style.title}>医嘱</Text>
+              <Text style={style.input}>{advice}</Text>
+            </View>
+            <View style={[style.item, global.flex, global.alignItemsCenter]}>
+              <Text style={style.title}>发货状态</Text>
+              <Text style={style.input}>{status}</Text>
             </View>
             <View style={[style.item, { borderBottomWidth: 0 }]}>
               <Text style={[style.title, style.titleCenter]}>处方(图片)列表</Text>

@@ -7,13 +7,13 @@ import { Image, Text, TouchableOpacity, View } from "react-native"
 import { ScrollView } from "react-native-gesture-handler"
 import { NavigationScreenProp } from "react-navigation"
 import pathMap from "@/routes/pathMap"
-import doctorApi from "@api/doctor"
+import doctorApi, { PRESCRIPTION_STATUS_Map } from "@api/doctor"
 import moment from "moment"
 const style = gSass.index.uploadPrescriptionList
 interface Prescription {
   id: number
   name: string
-  isShipping: boolean
+  status: string
   ctime: string
 }
 interface Props {
@@ -101,8 +101,13 @@ export default class UploadPrescriptionList extends Component<Props & DefaultPro
                 }}>
                 <Text style={style.name}>{v.name}</Text>
                 <Text style={style.ctime}>{moment(v.ctime).format("YYYY-MM-DD")}</Text>
-                <Text style={[style.shipping, !v.isShipping && style.wait]}>
-                  {v.isShipping ? "已发货" : "待发货"}
+                <Text
+                  style={[
+                    style.shipping,
+                    v.status === PRESCRIPTION_STATUS_Map.等待发送 && style.wait,
+                    v.status === PRESCRIPTION_STATUS_Map.发送成功 && style.success,
+                  ]}>
+                  {v.status}
                 </Text>
               </TouchableOpacity>
             )

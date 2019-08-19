@@ -61,6 +61,7 @@ export default StyleSheet.create({
   content: {
     flex: 1,
     marginTop: 8,
+    marginBottom: 8,
   },
   item: {
     backgroundColor: "#fff",
@@ -77,6 +78,7 @@ export default StyleSheet.create({
     marginBottom: 12,
   },
   input: {
+    flex: 1,
     fontSize: 14,
     color: "#333",
   },

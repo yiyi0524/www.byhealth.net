@@ -717,6 +717,11 @@ export function getUnreadMsgCount() {
     url: "api/getUnreadMsgCount",
   })
 }
+export const PRESCRIPTION_STATUS_Map = {
+  等待发送: "等待发送",
+  发送成功: "发送成功",
+  取消发送: "取消发送",
+}
 /**
  * todo 上传处方
  */
@@ -737,25 +742,25 @@ export function listUploadPrescription(query: GetListParam) {
         {
           id: 1,
           name: "吴大伟",
-          isShipping: false,
+          status: "等待发送",
           ctime: "2019-08-23 10:00:00",
         },
         {
           id: 2,
           name: "吴二伟",
-          isShipping: true,
+          status: "发送成功",
           ctime: "2019-08-23 10:00:00",
         },
         {
           id: 3,
           name: "吴小伟",
-          isShipping: true,
+          status: "发送成功",
           ctime: "2019-08-23 10:00:00",
         },
         {
           id: 4,
           name: "吴中伟",
-          isShipping: false,
+          status: "取消发送",
           ctime: "2019-08-23 10:00:00",
         },
       ],
@@ -769,6 +774,17 @@ export function listUploadPrescription(query: GetListParam) {
 /**
  * todo 上传处方详情
  */
+interface UploadPrescription {
+  id: number
+  name: string
+  serviceMoney: number
+  ctime: string
+  expressName: string
+  expressNo: string
+  advice: string
+  status: string
+  prescriptionPicList: Picture[]
+}
 export function uploadPrescriptionDetail(query: { id: number }) {
   console.log(query)
   return {
@@ -778,6 +794,11 @@ export function uploadPrescriptionDetail(query: { id: number }) {
         name: "吴大伟",
         serviceMoney: 12000,
         ctime: "2019-08-23 10:00:00",
+        expressName: "中通快递",
+        expressNo: "q8498293",
+        advice:
+          "多喝水多喝水多喝水多喝水多喝水多喝水多喝水多喝水多喝水多喝水多喝水多喝水多喝水多喝水多喝水多喝水多喝水多喝水多喝水多喝水多喝水多喝水多喝水多喝水多喝水多喝水多喝水多喝水多喝水多喝水",
+        status: "等待发送",
         prescriptionPicList: [
           {
             id: 1,
@@ -805,10 +826,10 @@ export function uploadPrescriptionDetail(query: { id: number }) {
             url: "/uploads/20190528/a10f5bec3c7316373fbed6d48a56971e.jpg",
           },
         ],
-      } as { name: string; ctime: string; serviceMoney: number; prescriptionPicList: Picture[] },
+      } as UploadPrescription,
     },
   }
-  // return bget({
+  // return bget<{detail:UploadPrescription}>({
   //   url: "api/uploadPrescriptionDetail",
   //   query,
   // })

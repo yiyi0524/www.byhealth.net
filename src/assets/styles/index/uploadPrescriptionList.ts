@@ -49,9 +49,12 @@ export default StyleSheet.create({
   },
   shipping: {
     fontSize: 14,
-    color: "#168ee7",
+    color: "#dd4f43",
   },
   wait: {
-    color: "#a1d1f4",
+    color: "#4a8af4",
+  },
+  success: {
+    color: "#1aa15f",
   },
 })

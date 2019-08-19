@@ -202,7 +202,7 @@ export default class UploadPrescription extends Component<Props & DefaultProps, 
             <Text style={[style.title, style.titleCenter]}>处方(图片)列表</Text>
             <View style={[style.detail, style.uploadImg]}>
               <ImagePicker
-                selectable={prescriptionPicList.length < 2}
+                selectable={prescriptionPicList.length < 20}
                 onChange={this.prescriptionPicChange}
                 files={prescriptionPicList}
                 onAddImageClick={() => {
