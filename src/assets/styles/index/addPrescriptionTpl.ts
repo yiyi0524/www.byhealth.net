@@ -45,6 +45,12 @@ export default StyleSheet.create({
   addPrescriptionTplHeaderInput: {
     flex: 1,
   },
+  addPrescriptionTplDetail: {
+    flex: 1,
+    fontSize: 14,
+    color: "#666",
+    marginLeft: 20,
+  },
   input: {
     color: sColor.color666,
     fontSize: 14,

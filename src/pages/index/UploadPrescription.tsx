@@ -5,7 +5,7 @@ import { Text, View, Image, TouchableOpacity, Linking } from "react-native"
 import gImg from "@utils/img"
 import gSass from "@utils/style"
 import global from "@/assets/styles/global"
-import { InputItem, ImagePicker, Portal, Toast, Icon } from "@ant-design/react-native"
+import { InputItem, ImagePicker, Portal, Toast, Icon, TextareaItem } from "@ant-design/react-native"
 import RnImagePicker from "react-native-image-picker"
 import { uploadImg } from "@/services/api"
 import { getPicCdnUrl } from "@/utils/utils"
@@ -20,6 +20,7 @@ interface State {
   isShowImg: boolean
   name: string
   serviceMoney: string
+  advice: string
   prescriptionPicList: any
 }
 type DefaultProps = {}
@@ -61,6 +62,7 @@ export default class UploadPrescription extends Component<Props & DefaultProps, 
       hasLoad: false,
       isShowImg: false,
       name: "",
+      advice: "",
       serviceMoney: "",
       prescriptionPicList: [],
     }
@@ -81,7 +83,7 @@ export default class UploadPrescription extends Component<Props & DefaultProps, 
     }
   }
   save = () => {
-    let { serviceMoney, prescriptionPicList, name } = this.state
+    let { serviceMoney, prescriptionPicList, name, advice } = this.state
     if (name === "") {
       return Toast.info("请填写患者姓名", 1)
     }
@@ -94,6 +96,7 @@ export default class UploadPrescription extends Component<Props & DefaultProps, 
     let data = {
       name,
       serviceMoney: parseInt(serviceMoney) * 100,
+      advice,
       prescriptionPicList,
     }
     doctorApi
@@ -111,7 +114,7 @@ export default class UploadPrescription extends Component<Props & DefaultProps, 
       })
   }
   render() {
-    let { hasLoad, serviceMoney, prescriptionPicList, name, isShowImg } = this.state
+    let { hasLoad, serviceMoney, prescriptionPicList, name, isShowImg, advice } = this.state
     if (!hasLoad) {
       return (
         <View style={style.loading}>
@@ -133,7 +136,9 @@ export default class UploadPrescription extends Component<Props & DefaultProps, 
         </View>
         <View style={style.content}>
           <View style={[style.item, global.flex, global.alignItemsCenter]}>
-            <Text style={style.title}>患者姓名</Text>
+            <View style={style.titlePar}>
+              <Text style={style.title}>患者姓名</Text>
+            </View>
             <View style={style.detail}>
               <InputItem
                 style={style.input}
@@ -150,7 +155,9 @@ export default class UploadPrescription extends Component<Props & DefaultProps, 
             </View>
           </View>
           <View style={[style.item, global.flex, global.alignItemsCenter]}>
-            <Text style={style.title}>诊后管理费(元)</Text>
+            <View style={style.titlePar}>
+              <Text style={style.title}>诊后管理费</Text>
+            </View>
             <View style={style.detail}>
               <InputItem
                 style={style.input}
@@ -158,6 +165,7 @@ export default class UploadPrescription extends Component<Props & DefaultProps, 
                 placeholder="请输入诊后管理费"
                 last
                 clear
+                extra="元"
                 onChange={val => {
                   let serviceMoney: number | string = parseFloat(val)
                   if (isNaN(serviceMoney)) {
@@ -170,10 +178,28 @@ export default class UploadPrescription extends Component<Props & DefaultProps, 
               />
             </View>
           </View>
-          <View style={[style.item, { borderBottomWidth: 0 }]}>
+          <View style={[style.item, global.flex, global.alignItemsCenter]}>
             <View style={style.titlePar}>
-              <Text style={[style.title, style.titleCenter]}>处方(图片)列表</Text>
+              <Text style={style.title}>医嘱</Text>
             </View>
+            <View style={style.detail}>
+              <TextareaItem
+                style={[style.input, { paddingTop: 13, paddingLeft: 20 }]}
+                value={advice}
+                placeholder="请输入医嘱"
+                last
+                clear
+                autoHeight
+                onChange={val => {
+                  this.setState({
+                    advice: val + "",
+                  })
+                }}
+              />
+            </View>
+          </View>
+          <View style={[style.item, { borderBottomWidth: 0 }]}>
+            <Text style={[style.title, style.titleCenter]}>处方(图片)列表</Text>
             <View style={[style.detail, style.uploadImg]}>
               <ImagePicker
                 selectable={prescriptionPicList.length < 2}

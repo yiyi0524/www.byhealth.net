@@ -3,6 +3,8 @@ import * as userAction from "@/redux/actions/user"
 import { AppState } from "@/redux/stores/store"
 import pathMap from "@/routes/pathMap"
 import { windowWidth } from "@/services/api"
+import doctor from "@/services/doctor"
+import { ORAL_CHINESE_DRUG_ID, TOPICAL_CHINESE_DRUG_ID } from "@/services/drug"
 import hospital from "@/services/hospital"
 import { Icon, InputItem, Toast } from "@ant-design/react-native"
 import sColor from "@styles/color"
@@ -23,8 +25,7 @@ import { NavigationScreenProp } from "react-navigation"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
 import { CategoryItem } from "../advisory/DrugSelect"
-import { PrescriptionDrugInfo, PrescriptionDrugCategory } from "../advisory/SquareRoot"
-import doctor from "@/services/doctor"
+import { PrescriptionDrugCategory, PrescriptionDrugInfo } from "../advisory/SquareRoot"
 const style = gStyle.index.AddPrescriptionTpl
 const global = gStyle.global
 interface Props {
@@ -39,6 +40,7 @@ interface State {
   //每天几剂
   dailyDose: number
   //一剂几次使用
+  total: number //药品总价
   everyDoseUseCount: number
   categoryName: string
   tplName: string
@@ -108,6 +110,7 @@ export default class AddPrescriptionTpl extends Component<
       doseCount: 0,
       //每天几剂
       dailyDose: 0,
+      total: 0,
       //一剂几次使用
       everyDoseUseCount: 0,
       categoryName: "",
@@ -230,6 +233,19 @@ export default class AddPrescriptionTpl extends Component<
       )
     }
     const { categoryId, drugList, categoryName } = this.state
+    let total = 0,
+      drugCategoryMoney = 0
+    for (let v of drugList) {
+      drugCategoryMoney += v.count * (v.detail.price / 1000)
+      if (
+        v.detail.category_id === ORAL_CHINESE_DRUG_ID ||
+        v.detail.category_id === TOPICAL_CHINESE_DRUG_ID
+      ) {
+        total += drugCategoryMoney * (this.state.doseCount || 1)
+      } else {
+        total += drugCategoryMoney
+      }
+    }
     return (
       <>
         <ScrollView
@@ -268,7 +284,7 @@ export default class AddPrescriptionTpl extends Component<
                 <View style={style.spot} />
               </View>
               <DashLine width={windowWidth - 30} backgroundColor={"#ddd"} len={45} />
-              {categoryId === 1 || categoryId === 2 ? (
+              {categoryId === ORAL_CHINESE_DRUG_ID || categoryId === TOPICAL_CHINESE_DRUG_ID ? (
                 <View style={style.drugCategoryItem}>
                   <Text style={[style.drugCategoryName, global.fontSize15]}>{categoryName}</Text>
                   {this.state.drugList.length === 0 ? (
@@ -459,6 +475,13 @@ export default class AddPrescriptionTpl extends Component<
                   }}
                 />
               </View>
+            </View>
+            <View style={[style.addPrescriptionTplHeader, global.flex, global.alignItemsCenter]}>
+              <Text style={[style.addPrescriptionTplHeaderTitle, global.fontSize14]}>
+                药品总价{" "}
+              </Text>
+              <Text style={style.addPrescriptionTplDetail}>¥ {total.toFixed(2)}</Text>
+              <Text>元</Text>
             </View>
             <TouchableOpacity onPress={this.addPrescriptionTpl}>
               <Text style={[style.addPrescriptionTplBtn, global.fontSize14]}>保存</Text>

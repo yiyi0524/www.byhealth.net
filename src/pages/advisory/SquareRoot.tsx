@@ -115,6 +115,7 @@ export interface Drug {
   manufacturer: string
   signature: string
   ctime: string
+  category_id?: number
 }
 const mapStateToProps = (state: AppState) => {
   return {
