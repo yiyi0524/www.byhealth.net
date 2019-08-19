@@ -734,7 +734,7 @@ export default class PatientDetail extends Component<
             })}
           </View>
         </ScrollView>
-        {/* <View
+        <View
           style={[
             style.bottomBtn,
             global.flex,
@@ -756,7 +756,7 @@ export default class PatientDetail extends Component<
             }>
             <Text style={[style.bottomTitle, global.fontSize14, global.fontStyle]}>开方</Text>
           </TouchableOpacity>
-        </View> */}
+        </View>
 
         {/* 图片查看器 */}
         <View style={this.state.isShowMode ? style.showMode : global.hidden}>

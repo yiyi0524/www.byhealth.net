@@ -477,8 +477,8 @@ export default class Index extends Component<
           </View>
           <View style={style.editInput}>
             <TextareaItem
-              rows={4}
-              maxLength={10000}
+              rows={6}
+              count={800}
               placeholder="请输入简介"
               value={this.state.doctorInfo.profile}
               onChange={profile => {
