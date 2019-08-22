@@ -128,9 +128,11 @@ export default class Index extends Component<
     })
   }
   init = async () => {
+    const res = await doctor.getPatientGroupList({ page: -1, limit: -1, filter: {} })
+    console.log(res)
     let {
       data: { list: patientGroupList },
-    } = await doctor.getPatientGroupList({ page: -1, limit: -1, filter: {} })
+    } = res
     this.setState({
       hasLoad: true,
       patientGroupList,

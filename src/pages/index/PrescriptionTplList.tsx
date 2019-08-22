@@ -200,6 +200,7 @@ export default class PrescriptionTplList extends Component<
                 <SwipeAction
                   key={k}
                   autoClose
+                  disabled={prescription.isSystemTpl}
                   style={{ backgroundColor: "transparent", marginTop: 8 }}
                   right={[
                     {
@@ -233,9 +234,16 @@ export default class PrescriptionTplList extends Component<
                       <Text style={[style.prescriptionTitle, global.fontSize14]} numberOfLines={1}>
                         {prescription.name}
                       </Text>
-                      <Text style={[style.prescriptionTime, global.fontSize12]}>
-                        {prescription.ctime.substr(0, 10)}
-                      </Text>
+                      <View>
+                        <Text style={[style.prescriptionTime, global.fontSize12]}>
+                          {prescription.ctime.substr(0, 10)}
+                        </Text>
+                        {prescription.isSystemTpl && (
+                          <Text style={[{ color: "red", marginTop: 10 }, global.fontSize12]}>
+                            经典方
+                          </Text>
+                        )}
+                      </View>
                     </View>
                     <Text style={[style.prescriptionDetail, global.fontSize14]} numberOfLines={1}>
                       {drugStr}

@@ -13,6 +13,7 @@ import imgPickerOpt from "@config/imgPickerOpt"
 import doctorApi from "@api/doctor"
 import { NavigationScreenProp } from "react-navigation"
 import pathMap from "@/routes/pathMap"
+import { Picture } from "../advisory/Chat"
 const style = gSass.index.uploadPrescription
 interface Props {}
 interface State {
@@ -21,7 +22,7 @@ interface State {
   name: string
   serviceMoney: string
   advice: string
-  prescriptionPicList: any
+  prescriptionPicList: Picture[]
 }
 type DefaultProps = {}
 
@@ -97,7 +98,7 @@ export default class UploadPrescription extends Component<Props & DefaultProps, 
       name,
       serviceMoney: parseInt(serviceMoney) * 100,
       advice,
-      prescriptionPicList,
+      prescriptionPicList: prescriptionPicList.map(v => v.id),
     }
     doctorApi
       .uploadPrescription(data)
@@ -268,11 +269,11 @@ export default class UploadPrescription extends Component<Props & DefaultProps, 
             global.justifyContentCenter,
           ]}
           onPress={() => {
-            Linking.openURL("tel:0523-86057008")
+            Linking.openURL("tel:4000566629")
           }}>
           <Icon style={style.icon} name="customer-service" />
           <Text style={style.phoneTitle}>客服热线: </Text>
-          <Text style={style.phone}>0523-86057008</Text>
+          <Text style={style.phone}>4000566629</Text>
         </TouchableOpacity>
         <TouchableOpacity
           activeOpacity={1}

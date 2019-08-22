@@ -97,7 +97,7 @@ export default class Index extends Component<
     let {
       data: { list: communicationList },
     } = await patientApi.getAddressBoolPatientList({ page: -1, limit: -1, filter: {} })
-    let { patientList } = this.state
+    let patientList: patientItem[] = []
     for (let v of communicationList) {
       patientList.push({
         uid: v.uid,
@@ -116,7 +116,7 @@ export default class Index extends Component<
   }
   onRefresh = () => {
     this.setState({ refreshing: true })
-    Promise.all([this.init(), new Promise(s => setTimeout(s, 500))])
+    this.init()
       .then(_ => {
         this.setState({ refreshing: false })
       })

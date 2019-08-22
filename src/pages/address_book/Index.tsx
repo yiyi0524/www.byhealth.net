@@ -40,6 +40,7 @@ export interface communicationItem {
   ctime: string
   consultStyle: number
   isInquiryPatient: boolean
+  isScanJoin: boolean
   consultationId: number
   hasPostInquiryMsg: boolean
 }
@@ -269,7 +270,7 @@ export default class Index extends Component<
                     <View style={[style.groupTheme, global.justifyContentCenter]}>
                       <Text
                         style={[style.communicationItemTitle, global.fontSize14, global.fontStyle]}>
-                        {v.name}
+                        {v.name} {v.isScanJoin ? "扫码加入" : ""}
                       </Text>
                       <View
                         style={[

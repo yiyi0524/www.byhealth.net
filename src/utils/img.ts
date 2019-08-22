@@ -51,7 +51,6 @@ export default {
     selectPhoto: require("@img/advisory/select-photo.png"),
     voice: require("@img/advisory/voice.png"),
     customerServicePhone: require("@img/advisory/customer-service-phone.png"),
-    customerServiceQQ: require("@img/advisory/customer-service-qq.png"),
     customerServiceWeixin: require("@img/advisory/customer-service-weixin.png"),
     aboutWeixin: require("@img/advisory/customer-service-weixin.png"),
   },

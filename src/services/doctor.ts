@@ -218,7 +218,7 @@ export function setInquirySetup(data: {
   })
 }
 /**
- *  todo 获取患者分组列表 返回值不正确
+ *  获取患者分组列表 返回值不正确
  */
 export async function getPatientGroupList(param: GetListParam) {
   return bget<{ list: patientGroupItem[] }>({
@@ -618,6 +618,7 @@ export function getMyInvitePatientQrCode() {
 }
 export interface PrescriptionTpl {
   id: number
+  isSystemTpl: boolean
   categoryId: number
   name: string
   ctime: string
@@ -628,7 +629,7 @@ export interface PrescriptionTpl {
   everyDoseUseCount: number
 }
 /**
- *  todo 获取处方模板列列表
+ *  获取处方模板列列表
  *  filter:{
  *    categoryId:{,
  *      condiction:TYPE.eq,
@@ -717,62 +718,36 @@ export function getUnreadMsgCount() {
     url: "api/getUnreadMsgCount",
   })
 }
-export const PRESCRIPTION_STATUS_Map = {
-  等待发送: "等待发送",
-  发送成功: "发送成功",
-  取消发送: "取消发送",
+export const UPLOAD_PRESCRIPTION_STATUS = {
+  waitSend: "等待发送",
+  hasSend: "发送成功",
+  cancelOrder: "取消发送",
 }
 /**
- * todo 上传处方
+ *  上传处方
  */
-export function uploadPrescription(data: { serviceMoney: number; prescriptionPicList: any }) {
+export function uploadPrescription(data: {
+  name: string
+  advice: string
+  serviceMoney: number
+  prescriptionPicList: any
+}) {
   return bpost({
-    url: "api/uploadPrescription",
+    url: "api/uploadLocalPrescription",
     data,
   })
 }
 /**
- * todo 上传处方列表
+ * 上传处方列表
  */
 export function listUploadPrescription(query: GetListParam) {
-  console.log(query)
-  return {
-    data: {
-      list: [
-        {
-          id: 1,
-          name: "吴大伟",
-          status: "等待发送",
-          ctime: "2019-08-23 10:00:00",
-        },
-        {
-          id: 2,
-          name: "吴二伟",
-          status: "发送成功",
-          ctime: "2019-08-23 10:00:00",
-        },
-        {
-          id: 3,
-          name: "吴小伟",
-          status: "发送成功",
-          ctime: "2019-08-23 10:00:00",
-        },
-        {
-          id: 4,
-          name: "吴中伟",
-          status: "取消发送",
-          ctime: "2019-08-23 10:00:00",
-        },
-      ],
-    },
-  }
-  // return bget({
-  //   url: "api/listUploadPrescription",
-  //   query,
-  // })
+  return bget<{ list: Pick<UploadPrescription, "id" | "name" | "status" | "ctime">[] }>({
+    url: "api/listUploadPrescription",
+    query,
+  })
 }
 /**
- * todo 上传处方详情
+ * 上传处方详情
  */
 interface UploadPrescription {
   id: number
@@ -782,57 +757,14 @@ interface UploadPrescription {
   expressName: string
   expressNo: string
   advice: string
-  status: string
+  status: "hasSend" | "cancelOrder" | "waitSend"
   prescriptionPicList: Picture[]
 }
 export function uploadPrescriptionDetail(query: { id: number }) {
-  console.log(query)
-  return {
-    data: {
-      detail: {
-        id: 1,
-        name: "吴大伟",
-        serviceMoney: 12000,
-        ctime: "2019-08-23 10:00:00",
-        expressName: "中通快递",
-        expressNo: "q8498293",
-        advice:
-          "多喝水多喝水多喝水多喝水多喝水多喝水多喝水多喝水多喝水多喝水多喝水多喝水多喝水多喝水多喝水多喝水多喝水多喝水多喝水多喝水多喝水多喝水多喝水多喝水多喝水多喝水多喝水多喝水多喝水多喝水",
-        status: "等待发送",
-        prescriptionPicList: [
-          {
-            id: 1,
-            title: "",
-            url: "/uploads/20190528/a10f5bec3c7316373fbed6d48a56971e.jpg",
-          },
-          {
-            id: 2,
-            title: "",
-            url: "/uploads/20190528/a10f5bec3c7316373fbed6d48a56971e.jpg",
-          },
-          {
-            id: 3,
-            title: "",
-            url: "/uploads/20190528/a10f5bec3c7316373fbed6d48a56971e.jpg",
-          },
-          {
-            id: 4,
-            title: "",
-            url: "/uploads/20190528/a10f5bec3c7316373fbed6d48a56971e.jpg",
-          },
-          {
-            id: 5,
-            title: "",
-            url: "/uploads/20190528/a10f5bec3c7316373fbed6d48a56971e.jpg",
-          },
-        ],
-      } as UploadPrescription,
-    },
-  }
-  // return bget<{detail:UploadPrescription}>({
-  //   url: "api/uploadPrescriptionDetail",
-  //   query,
-  // })
+  return bget<{ detail: UploadPrescription }>({
+    url: "api/uploadPrescriptionDetail",
+    query,
+  })
 }
 export default {
   uploadPrescriptionDetail,

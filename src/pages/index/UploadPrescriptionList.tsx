@@ -7,13 +7,13 @@ import { Image, Text, TouchableOpacity, View } from "react-native"
 import { ScrollView } from "react-native-gesture-handler"
 import { NavigationScreenProp } from "react-navigation"
 import pathMap from "@/routes/pathMap"
-import doctorApi, { PRESCRIPTION_STATUS_Map } from "@api/doctor"
+import doctorApi, { UPLOAD_PRESCRIPTION_STATUS } from "@api/doctor"
 import moment from "moment"
 const style = gSass.index.uploadPrescriptionList
 interface Prescription {
   id: number
   name: string
-  status: string
+  status: "cancelOrder" | "hasSend" | "waitSend"
   ctime: string
 }
 interface Props {
@@ -62,7 +62,7 @@ export default class UploadPrescriptionList extends Component<Props & DefaultPro
     try {
       let {
         data: { list: prescriptionList },
-      } = await doctorApi.listUploadPrescription({ page: 0, limit: 0, filter: {} })
+      } = await doctorApi.listUploadPrescription({ page: 1, limit: 100, filter: {} })
       this.setState({
         hasLoad: true,
         prescriptionList,
@@ -104,10 +104,10 @@ export default class UploadPrescriptionList extends Component<Props & DefaultPro
                 <Text
                   style={[
                     style.shipping,
-                    v.status === PRESCRIPTION_STATUS_Map.等待发送 && style.wait,
-                    v.status === PRESCRIPTION_STATUS_Map.发送成功 && style.success,
+                    v.status === UPLOAD_PRESCRIPTION_STATUS.cancelOrder && style.wait,
+                    v.status === UPLOAD_PRESCRIPTION_STATUS.hasSend && style.success,
                   ]}>
-                  {v.status}
+                  {UPLOAD_PRESCRIPTION_STATUS[v.status]}
                 </Text>
               </TouchableOpacity>
             )
