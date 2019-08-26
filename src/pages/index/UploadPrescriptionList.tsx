@@ -99,7 +99,7 @@ export default class UploadPrescriptionList extends Component<Props & DefaultPro
                 onPress={() => {
                   this.props.navigation.push(pathMap.UploadPrescriptionDetail, { id: v.id })
                 }}>
-                <Text style={style.name}>{v.name}</Text>
+                <Text style={style.name}>{v.name || "未命名"}</Text>
                 <Text style={style.ctime}>{moment(v.ctime).format("YYYY-MM-DD")}</Text>
                 <Text
                   style={[

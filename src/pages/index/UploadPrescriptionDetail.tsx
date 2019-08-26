@@ -2,7 +2,7 @@ import global from "@/assets/styles/global"
 import { BASE_URL } from "@/config/api"
 import { getPicFullUrl } from "@/utils/utils"
 import { Icon } from "@ant-design/react-native"
-import doctorApi from "@api/doctor"
+import doctorApi, { UPLOAD_PRESCRIPTION_STATUS } from "@api/doctor"
 import sColor from "@styles/color"
 import gImg from "@utils/img"
 import gSass from "@utils/style"
@@ -26,7 +26,7 @@ interface State {
   expressName: string
   expressNo: string
   advice: string
-  status: string
+  status: "cancelOrder" | "hasSend" | "waitSend"
   prescriptionPicList: Picture[]
 }
 type DefaultProps = {}
@@ -62,7 +62,7 @@ export default class UploadPrescriptionDetail extends Component<Props & DefaultP
       expressName: "",
       expressNo: "",
       advice: "",
-      status: "",
+      status: "waitSend",
       showImgUrl: [],
       name: "",
       serviceMoney: 0,
@@ -123,6 +123,7 @@ export default class UploadPrescriptionDetail extends Component<Props & DefaultP
       advice,
       status,
     } = this.state
+    console.log(this.state)
     if (!hasLoad) {
       return (
         <View style={style.loading}>
@@ -142,7 +143,7 @@ export default class UploadPrescriptionDetail extends Component<Props & DefaultP
             </View>
             <View style={[style.item, global.flex, global.alignItemsCenter]}>
               <Text style={style.title}>诊后管理费(元)</Text>
-              <Text style={style.input}>{(serviceMoney / 100).toFixed(2)}</Text>
+              <Text style={style.input}>{(serviceMoney / 100 || 0).toFixed(2)}</Text>
             </View>
             <View style={[style.item, global.flex, global.alignItemsCenter]}>
               <Text style={style.title}>物流单号</Text>
@@ -158,7 +159,7 @@ export default class UploadPrescriptionDetail extends Component<Props & DefaultP
             </View>
             <View style={[style.item, global.flex, global.alignItemsCenter]}>
               <Text style={style.title}>发货状态</Text>
-              <Text style={style.input}>{status}</Text>
+              <Text style={style.input}>{UPLOAD_PRESCRIPTION_STATUS[status]}</Text>
             </View>
             <View style={[style.item, { borderBottomWidth: 0 }]}>
               <Text style={[style.title, style.titleCenter]}>处方(图片)列表</Text>

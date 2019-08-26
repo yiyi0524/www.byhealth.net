@@ -85,18 +85,18 @@ export default class UploadPrescription extends Component<Props & DefaultProps, 
   }
   save = () => {
     let { serviceMoney, prescriptionPicList, name, advice } = this.state
-    if (name === "") {
-      return Toast.info("请填写患者姓名", 1)
-    }
-    if (serviceMoney === "") {
-      return Toast.info("请填写诊后管理费", 1)
-    }
+    // if (name === "") {
+    //   return Toast.info("请填写患者姓名", 1)
+    // }
+    // if (serviceMoney === "") {
+    //   return Toast.info("请填写诊后管理费", 1)
+    // }
     if (prescriptionPicList.length === 0) {
       return Toast.info("请上传处方", 1)
     }
     let data = {
       name,
-      serviceMoney: parseInt(serviceMoney) * 100,
+      serviceMoney: parseInt(serviceMoney) * 100 || 0,
       advice,
       prescriptionPicList: prescriptionPicList.map(v => v.id),
     }
@@ -138,7 +138,7 @@ export default class UploadPrescription extends Component<Props & DefaultProps, 
         <View style={style.content}>
           <View style={[style.item, global.flex, global.alignItemsCenter]}>
             <View style={style.titlePar}>
-              <Text style={style.title}>患者姓名</Text>
+              <Text style={style.title}>患者姓名(选填)</Text>
             </View>
             <View style={style.detail}>
               <InputItem
@@ -157,7 +157,7 @@ export default class UploadPrescription extends Component<Props & DefaultProps, 
           </View>
           <View style={[style.item, global.flex, global.alignItemsCenter]}>
             <View style={style.titlePar}>
-              <Text style={style.title}>诊后管理费</Text>
+              <Text style={style.title}>诊后管理费(选填)</Text>
             </View>
             <View style={style.detail}>
               <InputItem
@@ -181,7 +181,7 @@ export default class UploadPrescription extends Component<Props & DefaultProps, 
           </View>
           <View style={[style.item, global.flex, global.alignItemsCenter]}>
             <View style={style.titlePar}>
-              <Text style={style.title}>医嘱</Text>
+              <Text style={style.title}>医嘱(选填)</Text>
             </View>
             <View style={style.detail}>
               <TextareaItem
@@ -256,7 +256,7 @@ export default class UploadPrescription extends Component<Props & DefaultProps, 
           <View style={style.btnPar}>
             <View style={style.btnBg}>
               <TouchableOpacity onPress={this.save}>
-                <Text style={style.btnTitle}>提交订单</Text>
+                <Text style={style.btnTitle}>上传处方</Text>
               </TouchableOpacity>
             </View>
           </View>

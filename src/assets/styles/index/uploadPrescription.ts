@@ -81,7 +81,7 @@ export default StyleSheet.create({
     color: "#666",
   },
   titlePar: {
-    width: 70,
+    width: 100,
   },
   titleCenter: {
     lineHeight: 40,

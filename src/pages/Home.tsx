@@ -108,7 +108,7 @@ export default class Home extends Component<
       },
       {
         icon: gImg.home.uploadPrescription,
-        title: "上传处方",
+        title: "拍照处方",
         link: pathMap.UploadPrescription,
       },
     ]

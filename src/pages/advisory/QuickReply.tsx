@@ -39,7 +39,7 @@ interface State {
   quickReplyList: QuickReply[]
 }
 
-export default class Pharmacy extends Component<Props, State> {
+export default class QuickReplyScreen extends Component<Props, State> {
   static navigationOptions = ({
     navigation,
   }: {

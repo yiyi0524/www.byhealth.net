@@ -15,13 +15,16 @@ interface Props {
   navigation: NavigationScreenProp<State>
   categoryList: CategoryItem[]
   activeId: number
+  isInSession?: boolean
   prescriptionDrugCategoryList: PrescriptionDrugCategory[]
   chooseCategory: (id: number) => void
   closeChooseCategory: () => void
 }
 interface State {}
-
 export default class Pharmacy extends Component<Props, State> {
+  static defaultProps = {
+    isInSession: false,
+  }
   constructor(props: any) {
     super(props)
     this.state = this.getInitState()
@@ -45,11 +48,20 @@ export default class Pharmacy extends Component<Props, State> {
                     key={category.id}
                     style={this.props.activeId === category.id ? styles.item : styles.item}
                     onPress={async () => {
-                      await this.props.chooseCategory(category.id)
-                      await this.props.navigation.push(pathMap.DrugSelect, {
-                        categoryList: this.props.categoryList,
-                        activeId: this.props.activeId,
-                        prescriptionDrugCategoryList: this.props.prescriptionDrugCategoryList,
+                      const {
+                        chooseCategory,
+                        navigation,
+                        activeId,
+                        categoryList,
+                        prescriptionDrugCategoryList,
+                        isInSession,
+                      } = this.props
+                      await chooseCategory(category.id)
+                      await navigation.push(pathMap.DrugSelect, {
+                        categoryList,
+                        activeId: category.id,
+                        isInSession,
+                        prescriptionDrugCategoryList,
                       })
                       await this.props.closeChooseCategory()
                     }}>
@@ -60,24 +72,6 @@ export default class Pharmacy extends Component<Props, State> {
                 )
               })}
             </View>
-            {/* <View style={styles.listRight}>
-              <TouchableOpacity
-                style={styles.listRightItem}
-                onPress={() => {
-                  this.props.navigation.push(pathMap.DrugSelect, {
-                    categoryList: this.props.categoryList,
-                    activeId: this.props.activeId,
-                    chooseDrugInfo: this.props.chooseDrugInfo,
-                  })
-                  this.props.closeChooseCategory()
-                }}>
-                <Text style={[styles.listRightTitle, global.fontSize14]}>
-                  点击选择
-                  <Text style={[global.fontSize14, { color: sColor.mainRed }]}>博一自营</Text>
-                  药房药品
-                </Text>
-              </TouchableOpacity>
-            </View> */}
           </View>
         </ScrollView>
       </View>
