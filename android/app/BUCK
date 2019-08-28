@@ -35,12 +35,12 @@ android_library(
 
 android_build_config(
     name = "build_config",
-    package = "net.byhealth.boyi",
+    package = "com.boyi",
 )
 
 android_resource(
     name = "res",
-    package = "net.byhealth.boyi",
+    package = "com.boyi",
     res = "src/main/res",
 )
 
