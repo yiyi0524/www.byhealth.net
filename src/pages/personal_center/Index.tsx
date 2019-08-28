@@ -21,10 +21,11 @@ import {
 } from "react-native"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
+import { NavigationScreenProp } from "react-navigation";
 const style = gStyle.personalCenter.personalCenterIndex
 const global = gStyle.global
 interface Props {
-  navigation: any
+  navigation: NavigationScreenProp<any>
 }
 interface State {
   hasLoad: boolean
@@ -227,7 +228,10 @@ export default class Index extends Component<
                   <View key={k}>
                     <View style={style.separationModule} />
                     <TouchableOpacity
-                      onPress={this.logout}
+                      onPress={()=>{
+                        this.props.navigation.navigate(pathMap.Test)
+                        // this.logout()
+                      }}
                       style={[
                         style.item,
                         global.flex,

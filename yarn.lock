@@ -861,6 +861,15 @@
   resolved "http://registry.npm.taobao.org/@react-native-community/async-storage/download/@react-native-community/async-storage-1.3.3.tgz#fbcd09c68be0f91362c1bc5696802d8e281cf67d"
   integrity sha1-+80Jxovg+RNiwbxWloAtjigc9n0=
 
+"@react-native-community/audio-toolkit@^2.0.2":
+  version "2.0.2"
+  resolved "https://registry.npm.taobao.org/@react-native-community/audio-toolkit/download/@react-native-community/audio-toolkit-2.0.2.tgz#ae553211bb9b6a8be8c0b25e017b6cbf7e60621e"
+  integrity sha1-rlUyEbubaovowLJeAXtsv35gYh4=
+  dependencies:
+    async "^2.0.0"
+    eventemitter3 "^1.2.0"
+    lodash "^4.13.1"
+
 "@react-native-community/cli@^1.2.1":
   version "1.9.2"
   resolved "http://registry.npm.taobao.org/@react-native-community/cli/download/@react-native-community/cli-1.9.2.tgz#d033ab141df3a476e628aecd9c99534b5cb0d63e"
@@ -1379,6 +1388,13 @@ async-limiter@~1.0.0:
   version "1.0.0"
   resolved "http://registry.npm.taobao.org/async-limiter/download/async-limiter-1.0.0.tgz#78faed8c3d074ab81f22b4e985d79e8738f720f8"
   integrity sha1-ePrtjD0HSrgfIrTphdeehzj3IPg=
+
+async@^2.0.0:
+  version "2.6.3"
+  resolved "https://registry.npm.taobao.org/async/download/async-2.6.3.tgz#d72625e2344a3656e3a3ad4fa749fa83299d82ff"
+  integrity sha1-1yYl4jRKNlbjo61Pp0n6gymdgv8=
+  dependencies:
+    lodash "^4.17.14"
 
 async@^2.4.0, async@^2.6.1:
   version "2.6.2"
@@ -2337,6 +2353,11 @@ eventemitter2@^1.0.0:
   version "1.0.5"
   resolved "https://registry.npm.taobao.org/eventemitter2/download/eventemitter2-1.0.5.tgz#f983610517b1737c0b9dc643beca93893c04df18"
   integrity sha1-+YNhBRexc3wLncZDvsqTiTwE3xg=
+
+eventemitter3@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.npm.taobao.org/eventemitter3/download/eventemitter3-1.2.0.tgz?cache=0&sync_timestamp=1560950873670&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Feventemitter3%2Fdownload%2Feventemitter3-1.2.0.tgz#1c86991d816ad1e504750e73874224ecf3bec508"
+  integrity sha1-HIaZHYFq0eUEdQ5zh0Ik7PO+xQg=
 
 eventemitter3@^3.0.0:
   version "3.1.0"
@@ -4061,6 +4082,11 @@ lodash.throttle@^4.1.1:
   resolved "http://registry.npm.taobao.org/lodash.throttle/download/lodash.throttle-4.1.1.tgz#c23e91b710242ac70c37f1e1cda9274cc39bf2f4"
   integrity sha1-wj6RtxAkKscMN/HhzaknTMOb8vQ=
 
+lodash@^4.13.1, lodash@^4.17.14:
+  version "4.17.15"
+  resolved "https://registry.npm.taobao.org/lodash/download/lodash-4.17.15.tgz?cache=0&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Flodash%2Fdownload%2Flodash-4.17.15.tgz#b447f6670a0455bbfeedd11392eff330ea097548"
+  integrity sha1-tEf2ZwoEVbv+7dETku/zMOoJdUg=
+
 lodash@^4.17.11, lodash@^4.17.5, lodash@^4.3.0, lodash@^4.6.1:
   version "4.17.11"
   resolved "http://registry.npm.taobao.org/lodash/download/lodash-4.17.11.tgz#b39ea6229ef607ecd89e2c8df12536891cac9b8d"
@@ -5533,6 +5559,11 @@ react-native-parsed-text@^0.0.20:
     babel-plugin-check-es2015-constants "6.22.0"
     prop-types "^15.5.10"
 
+react-native-permissions@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.npm.taobao.org/react-native-permissions/download/react-native-permissions-1.2.0.tgz#0deb616bf1565c17c91f1cb1f953809b2892c29e"
+  integrity sha1-Detha/FWXBfJHxyx+VOAmyiSwp4=
+
 react-native-qrcode@^0.2.7:
   version "0.2.7"
   resolved "http://registry.npm.taobao.org/react-native-qrcode/download/react-native-qrcode-0.2.7.tgz#d103166fb1a5b53643e8bf7b88c0672e689ac4f8"
@@ -5620,10 +5651,10 @@ react-native-view-shot@^2.5.0:
   resolved "http://registry.npm.taobao.org/react-native-view-shot/download/react-native-view-shot-2.5.0.tgz#428a997f470d3148d0067c5b46abd988ef1aa4c0"
   integrity sha1-QoqZf0cNMUjQBnxbRqvZiO8apMA=
 
-react-native@0.59.1:
-  version "0.59.1"
-  resolved "http://registry.npm.taobao.org/react-native/download/react-native-0.59.1.tgz#3274dcc0f9558799bd41c8092acac2a79bd627ce"
-  integrity sha1-MnTcwPlVh5m9QcgJKsrCp5vWJ84=
+react-native@0.59.10:
+  version "0.59.10"
+  resolved "https://registry.npm.taobao.org/react-native/download/react-native-0.59.10.tgz?cache=0&sync_timestamp=1566917136077&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Freact-native%2Fdownload%2Freact-native-0.59.10.tgz#352f381e382f93a0403be499c9e384bf51c2591c"
+  integrity sha1-NS84Hjgvk6BAO+SZyeOEv1HCWRw=
   dependencies:
     "@babel/runtime" "^7.0.0"
     "@react-native-community/cli" "^1.2.1"
