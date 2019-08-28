@@ -61,3 +61,12 @@ buck-out/
 
 # CocoaPods
 /ios/Pods/
+
+### buff
+.history/
+__tests__
+/nbproject
+.expo/
+juiceNote
+yarn.lock
+*.update
