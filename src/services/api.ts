@@ -441,10 +441,32 @@ export function checkUpdate() {
     },
   })
 }
+export interface FileRes {
+  fileId: number
+  name: string
+  url: string
+}
+/**
+ * 上传音频
+ */
+export function uploadAudio(uri: string) {
+  let formData = new FormData()
+  formData.append("name", "file")
+  formData.append("file", {
+    // @ts-ignore
+    uri,
+    name: "file.aac",
+    type: "audio/x-aac",
+  })
+  return BuffReq<FileRes>(BASE_URL, "/uploadAudio", formData, "POST", "include", {
+    "Content-Type": "multipart/form-data",
+  })
+}
 export default {
   checkUpdate,
   getThumbUrl,
   uploadImg,
+  uploadAudio,
   bget,
   bpost,
   isLogin,

@@ -10,8 +10,8 @@ export interface WsState {
   // 未读消息数量统计
   unReadMsgCountRecord: Record<Uid, UnReadMsgCount>
   chatMsg: Record<number, Msg[]>
-  wsGet: ({ url, query: {} }: { url: string; query?: {} }) => boolean
-  wsPost: ({ url, data: {} }: { url: string; data?: {} }) => boolean
+  wsGet: (data: { url: string; query?: Object }) => boolean
+  wsPost: (data: { url: string; data?: Object }) => boolean
 }
 export const initState: WsState = {
   currScreen: "",

@@ -37,6 +37,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
     },
   }
 }
+// @ts-ignore
 @connect(
   mapStateToProps,
   mapDispatchToProps,
@@ -127,7 +128,7 @@ export default class DiagnosisSettings extends Component<
                 <Text style={[style.headerTitle, global.fontSize14]}>在平台搜不到我</Text>
               </View>
               <Switch
-                checked={this.state.allowSearch === ALLOW_SEARCH_ME.TRUE}
+                checked={this.state.allowSearch === ALLOW_SEARCH_ME.FALSE}
                 onChange={this.changeAllowNoSearch}
               />
             </View>

@@ -16,8 +16,8 @@ import {
   Text,
   TouchableOpacity,
   View,
-  WebView,
 } from "react-native"
+import { WebView } from "react-native-webview"
 import { NavigationScreenProp } from "react-navigation"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
@@ -47,6 +47,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
     },
   }
 }
+// @ts-ignore
 @connect(
   mapStateToProps,
   mapDispatchToProps,

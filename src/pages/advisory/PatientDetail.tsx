@@ -1,10 +1,11 @@
+import { BASE_URL } from "@/config/api"
 import * as userAction from "@/redux/actions/user"
 import { AppState } from "@/redux/stores/store"
 import pathMap from "@/routes/pathMap"
-import api, { getThumbUrl, windowWidth, windowHeight } from "@/services/api"
+import api, { getThumbUrl } from "@/services/api"
 import doctor, { GENDER, GENDER_ZH } from "@/services/doctor"
 import hospital from "@/services/hospital"
-import { getPicFullUrl, getPicCdnUrl } from "@/utils/utils"
+import { getPicCdnUrl, getPicFullUrl } from "@/utils/utils"
 import { Icon, Modal, Toast } from "@ant-design/react-native"
 import { IconNames } from "@ant-design/react-native/lib/icon"
 import patientApi, { Drug, InquirySheet } from "@api/patient"
@@ -23,12 +24,11 @@ import {
   View,
 } from "react-native"
 import { TouchableOpacity } from "react-native-gesture-handler"
+import ImageViewer from "react-native-image-zoom-viewer"
 import { NavigationScreenProp } from "react-navigation"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
-import { Picture, imagesViewer } from "../advisory/Chat"
-import ImageViewer from "react-native-image-zoom-viewer"
-import { BASE_URL } from "@/config/api"
+import { imagesViewer, Picture } from "../advisory/Chat"
 const style = gStyle.advisory.AdvisoryPatientDetail
 const global = gStyle.global
 /**
@@ -116,6 +116,7 @@ export interface Region {
   areaName: string
   children: Region[]
 }
+// @ts-ignore
 @connect(
   mapStateToProps,
   mapDispatchToProps,
@@ -388,9 +389,7 @@ export default class PatientDetail extends Component<
               <Text style={[style.medicalHistoryItemTitle, global.fontSize14, global.fontStyle]}>
                 过敏历史
               </Text>
-              <Text
-                style={[style.medicalHistoryItemDetail, global.fontSize14, global.fontStyle]}
-                numberOfLines={1}>
+              <Text style={[style.medicalHistoryItemDetail, global.fontSize14, global.fontStyle]}>
                 {patientInfo.allergyHistory || "无"}
               </Text>
             </View>
@@ -398,9 +397,7 @@ export default class PatientDetail extends Component<
               <Text style={[style.medicalHistoryItemTitle, global.fontSize14, global.fontStyle]}>
                 既往病史
               </Text>
-              <Text
-                style={[style.medicalHistoryItemDetail, global.fontSize14, global.fontStyle]}
-                numberOfLines={1}>
+              <Text style={[style.medicalHistoryItemDetail, global.fontSize14, global.fontStyle]}>
                 {patientInfo.medicalHistory || "无"}
               </Text>
             </View>
@@ -408,9 +405,7 @@ export default class PatientDetail extends Component<
               <Text style={[style.medicalHistoryItemTitle, global.fontSize14, global.fontStyle]}>
                 患者自述
               </Text>
-              <Text
-                style={[style.medicalHistoryItemDetail, global.fontSize14, global.fontStyle]}
-                numberOfLines={1}>
+              <Text style={[style.medicalHistoryItemDetail, global.fontSize14, global.fontStyle]}>
                 {patientInfo.state || "无"}
               </Text>
             </View>

@@ -9,7 +9,7 @@ import { AppState as RnAppState } from "react-native"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
 import { Overwrite } from "utility-types"
-import { MsgType, Picture } from "./advisory/Chat"
+import { MsgType, Picture, File } from "./advisory/Chat"
 import pathMap from "@/routes/pathMap"
 /**
  * 一条消息
@@ -30,6 +30,7 @@ export interface Msg<T = any> {
   msg?: string
   extraData?: T
   pic?: Picture
+  file?: File
   dom?: ReactChild
   sendTime: string
 }

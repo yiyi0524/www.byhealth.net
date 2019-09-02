@@ -114,16 +114,20 @@ export default StyleSheet.create({
     backgroundColor: sColor.white,
   },
   medicalHistoryItem: {
-    height: 45,
+    flexWrap: "wrap",
     borderBottomWidth: 1 / PixelRatio.get(),
     borderBottomColor: sColor.colorDdd,
   },
   medicalHistoryItemTitle: {
+    marginTop: 5,
     color: sColor.color999,
   },
   medicalHistoryItemDetail: {
     color: sColor.color333,
     marginLeft: 10,
+    marginTop: 5,
+    marginRight: 5,
+    marginBottom: 5,
   },
   medicalRecordPic: {
     marginTop: 8,
@@ -164,7 +168,7 @@ export default StyleSheet.create({
   },
   showImgPar: {
     position: "relative",
-    top:15,
+    top: 15,
     width: windowWidth,
     height: windowHeight,
   },

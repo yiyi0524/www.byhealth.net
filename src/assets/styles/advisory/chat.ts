@@ -230,6 +230,7 @@ export default StyleSheet.create({
     width: 35,
     height: 35,
     resizeMode: "cover",
+    marginRight: 10,
   },
   bottomInputSendBtn: {
     color: sColor.white,

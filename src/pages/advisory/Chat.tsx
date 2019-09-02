@@ -4,7 +4,7 @@ import { BASE_URL } from "@/config/api"
 import * as wsAction from "@/redux/actions/ws"
 import { AppState } from "@/redux/stores/store"
 import pathMap from "@/routes/pathMap"
-import api, { getRegion, getThumbUrl, uploadImg, windowHeight } from "@/services/api"
+import api, { getRegion, getThumbUrl, uploadAudio, uploadImg, windowHeight } from "@/services/api"
 import { clearPatientUnreadMsgCount, closeInquiry, GENDER_ZH } from "@/services/doctor"
 import gImg from "@/utils/img"
 import { getPicCdnUrl, getPicFullUrl, windowWidth } from "@/utils/utils"
@@ -12,10 +12,11 @@ import { Icon, ImagePicker, Modal, Portal, TextareaItem, Toast } from "@ant-desi
 import userApi from "@api/user"
 import wsMsgApi from "@api/wsMsg"
 import imgPickerOpt from "@config/imgPickerOpt"
+import { Msg } from "@pages/Ws"
 import sColor from "@styles/color"
 import Buff from "@utils/Buff"
 import gStyle from "@utils/style"
-import React, { Component, ReactChild } from "react"
+import React, { Component } from "react"
 import {
   AppState as RnAppState,
   AppStateStatus,
@@ -31,17 +32,22 @@ import {
   Text,
   View,
 } from "react-native"
+import { AudioRecorder, AudioUtils } from "react-native-audio"
 import { TouchableOpacity } from "react-native-gesture-handler"
 import RnImagePicker from "react-native-image-picker"
 import ImageViewer from "react-native-image-zoom-viewer"
+import Permissions from "react-native-permissions"
 import { NavigationScreenProp, ScrollView } from "react-navigation"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
 import { Overwrite } from "utility-types"
 const style = gStyle.advisory.advisoryChat
+const audioPath = AudioUtils.CachesDirectoryPath + "/tempAudio.aac"
+export type ChatMode = "text" | "audio"
 interface Props {
   navigation: NavigationScreenProp<State>
 }
+
 /**
  * 枚举类型
  */
@@ -52,6 +58,7 @@ export enum MsgType {
   patientsThemselves, //患者信息
   treatmentPlan, //治疗方案
   pong,
+  audio,
 }
 export interface bottomNavItem {
   title: string
@@ -72,27 +79,11 @@ export interface Picture {
   title: string
   url: string
 }
-/**
- * 一条消息
- */
-export interface Msg<T = any> {
+export interface File {
   id: number
-  sendUser: {
-    uid: number
-    avatar: Picture
-    name: string
-  }
-  receiveUser: {
-    uid: number
-    avatar: Picture
-    name: string
-  }
-  type: MsgType
-  msg?: string
-  extraData?: T
-  pic?: Picture
-  dom?: ReactChild
-  sendTime: string
+  fileId?: number
+  title: string
+  url: string
 }
 
 /**
@@ -147,6 +138,14 @@ export interface PatientsThemselves {
   }
 }
 interface State {
+  // 是否有录音权限
+  hasMicAuth: boolean
+  // 是否正在录音
+  isRecord: boolean
+  // 录音时长
+  recordTime: number
+  // 聊天模式
+  chatMode: ChatMode
   // 是否刚刚在后台
   lastIsInBackground: boolean
   shouldScrollToEnd: boolean
@@ -206,6 +205,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
     },
   }
 }
+// @ts-ignore
 @connect(
   mapStateToProps,
   mapDispatchToProps,
@@ -301,6 +301,10 @@ export default class Chat extends Component<
   getInitState = (): State => {
     let patientUid = this.props.navigation.getParam("patientUid")
     return {
+      hasMicAuth: false,
+      isRecord: false,
+      recordTime: 0,
+      chatMode: "text",
       lastIsInBackground: false,
       shouldScrollToEnd: true,
       hasLoad: false,
@@ -351,6 +355,53 @@ export default class Chat extends Component<
     this.requestReadExteralStorage()
     setTimeout(() => this.myScroll && this.myScroll.scrollToEnd(), 100)
     RnAppState.addEventListener("change", this.onAppStateChange)
+    Permissions.check("microphone").then(resp => {
+      if (resp === "authorized") {
+        this.setState({
+          hasMicAuth: true,
+        })
+      }
+    })
+    AudioRecorder.onProgress = data => {
+      this.setState({ recordTime: Math.floor(data.currentTime) })
+    }
+    AudioRecorder.onFinished = data => {
+      console.log("onFinished: ", data)
+    }
+  }
+  checkAudioRecordAuth = () => {
+    return new Promise((s, j) => {
+      Permissions.check("microphone")
+        .then(resp => {
+          // Response is one of: 'authorized', 'denied', 'restricted', or 'undetermined'
+          if (resp !== "authorized") {
+            Permissions.request("microphone").then(status => {
+              if (status === "authorized") {
+                s()
+              } else {
+                j()
+              }
+            })
+          } else {
+            s()
+          }
+        })
+        .catch(() => {
+          j()
+        })
+    })
+      .then(() => {
+        this.setState({ hasMicAuth: true })
+      })
+      .catch(() => this.setState({ hasMicAuth: false }))
+  }
+  cancelRecord = () => {
+    this.setState({
+      isRecord: false,
+    })
+    AudioRecorder.stopRecording().catch(err => {
+      console.log("取消录音失败,", err)
+    })
   }
   componentWillUnmount() {
     //移除监听
@@ -441,6 +492,81 @@ export default class Chat extends Component<
       })
     }
   }
+
+  onRecordPressIn = () => {
+    const { hasMicAuth, isRecord } = this.state
+    if (!hasMicAuth) {
+      console.log("当前没有录音权限")
+      this.checkAudioRecordAuth()
+      return
+    }
+    if (isRecord) {
+      console.log("当前正在录音,取消")
+      return
+    }
+    this.setState(
+      {
+        isRecord: true,
+      },
+      () => {
+        console.log("正在录音")
+        AudioRecorder.prepareRecordingAtPath(audioPath, {
+          SampleRate: 22050,
+          Channels: 1,
+          AudioQuality: "Low",
+          AudioEncoding: "aac",
+        }).then(() => {
+          AudioRecorder.startRecording()
+            .then(val => console.log("开始录音成功,", val))
+            .catch(err => {
+              console.error(err)
+              this.setState({ isRecord: false })
+            })
+        })
+      },
+    )
+  }
+  onRecordPressOut = () => {
+    const { isRecord, patientUid } = this.state
+    if (!isRecord) {
+      return
+    }
+    const { recordTime } = this.state
+    if (recordTime < 1) {
+      console.log("录音时间过短正在取消")
+      this.cancelRecord()
+      return
+    }
+    this.setState({
+      isRecord: false,
+    })
+    AudioRecorder.stopRecording().then(val => {
+      console.log(val)
+      this.setState({
+        recordTime: 0,
+      })
+      let filePrefix = Platform.OS === "android" ? "file://" : ""
+      uploadAudio(filePrefix + val)
+        .then(json => {
+          console.log(json)
+          const {
+            data: { fileId, url },
+          } = json
+          this.props.ws.wsPost({
+            url: "/ws/sendMsg",
+            data: {
+              file: {
+                url,
+                fileId,
+              },
+              type: MsgType.audio,
+              patientUid,
+            },
+          })
+        })
+        .catch(err => console.log(err))
+    })
+  }
   render() {
     if (!this.state.hasLoad) {
       return (
@@ -451,551 +577,109 @@ export default class Chat extends Component<
         </View>
       )
     }
-    if (Platform.OS === "android") {
-      return (
-        <>
-          <View style={style.main}>
-            <ScrollView
-              ref={ref => (this.myScroll = ref)}
-              style={style.content}
-              onContentSizeChange={() => {
-                if (this.myScroll && this.state.shouldScrollToEnd) {
-                  this.myScroll.scrollToEnd()
-                  this.setState({
-                    shouldScrollToEnd: false,
-                  })
-                }
-              }}
-              refreshControl={
-                <RefreshControl
-                  refreshing={this.state.refreshing}
-                  onRefresh={this.getMoreMsgList}
-                />
-              }>
-              <View style={style.list}>
-                <Text
-                  style={[
-                    this.state.hasMoreRecord ? style.downloadMore : global.hidden,
-                    global.fontStyle,
-                    global.fontSize12,
-                  ]}>
-                  下拉查看更多聊天记录
-                </Text>
-                {Array.isArray(this.props.ws.chatMsg[this.state.patientUid]) &&
-                  this.props.ws.chatMsg[this.state.patientUid].map((v: any, k) => {
-                    let formatMsg: Msg | null = null
-                    switch (v.type) {
-                      case MsgType.txt:
-                        formatMsg = this.txtFormat(v)
-                        break
-                      case MsgType.picture:
-                        formatMsg = this.pictureFormat(v)
-                        break
-                      case MsgType.inquirySheet:
-                        formatMsg = this.inquirySheetFormat(v)
-                        break
-                      case MsgType.patientsThemselves:
-                        formatMsg = this.patientsThemselvesFormat(v)
-                        break
-                      case MsgType.treatmentPlan:
-                        formatMsg = this.treatmentPlanFormat(v)
-                        break
-                      default:
-                        break
-                    }
-                    if (formatMsg) {
-                      return <View key={k}>{formatMsg.dom}</View>
-                    }
-                  })}
+    const { chatMode, isRecord, recordTime } = this.state
+    return (
+      <KeyboardAvoidingView
+        enabled={Platform.OS !== "android"}
+        behavior="padding"
+        style={{ flex: 1 }}
+        keyboardVerticalOffset={90}>
+        <View style={style.main}>
+          <ScrollView
+            ref={ref => (this.myScroll = ref)}
+            style={style.content}
+            onContentSizeChange={() => {
+              if (this.myScroll && this.state.shouldScrollToEnd) {
+                this.myScroll.scrollToEnd()
+                this.setState({
+                  shouldScrollToEnd: false,
+                })
+              }
+            }}
+            refreshControl={
+              <RefreshControl refreshing={this.state.refreshing} onRefresh={this.getMoreMsgList} />
+            }>
+            <View style={style.list}>
+              <Text
+                style={[
+                  this.state.hasMoreRecord ? style.downloadMore : global.hidden,
+                  global.fontStyle,
+                  global.fontSize12,
+                ]}>
+                下拉查看更多聊天记录
+              </Text>
+              {Array.isArray(this.props.ws.chatMsg[this.state.patientUid]) &&
+                this.props.ws.chatMsg[this.state.patientUid].map((v: any, k) => {
+                  let formatMsg: Msg | null = null
+                  switch (v.type) {
+                    case MsgType.txt:
+                      formatMsg = this.txtFormat(v)
+                      break
+                    case MsgType.picture:
+                      formatMsg = this.pictureFormat(v)
+                      break
+                    case MsgType.inquirySheet:
+                      formatMsg = this.inquirySheetFormat(v)
+                      break
+                    case MsgType.patientsThemselves:
+                      formatMsg = this.patientsThemselvesFormat(v)
+                      break
+                    case MsgType.treatmentPlan:
+                      formatMsg = this.treatmentPlanFormat(v)
+                      break
+                    case MsgType.audio:
+                      formatMsg = this.audioFormat(v)
+                      break
+                    default:
+                      break
+                  }
+                  if (formatMsg) {
+                    return <View key={k}>{formatMsg.dom}</View>
+                  }
+                })}
+            </View>
+          </ScrollView>
+          <View style={style.bottom}>
+            <View style={style.bottomNav}>
+              <View
+                style={[
+                  this.state.isShowBottomNav ? style.bottomNavListActive : style.bottomNavList,
+                  global.flex,
+                  global.alignItemsCenter,
+                  global.flexWrap,
+                ]}>
+                {this.bottomNavList.map((v: bottomNavItem, k: number) => {
+                  return (
+                    <TouchableOpacity
+                      onPress={() => this.selectBottomNav(v)}
+                      key={k}
+                      style={style.bottomNavItem}>
+                      <View style={style.bottomNavItemPicFa}>
+                        <Image style={style.bottomNavItemPic} source={v.icon} />
+                      </View>
+                      <Text style={[style.bottomNavItemTitle, global.fontSize13, global.fontStyle]}>
+                        {v.title}
+                      </Text>
+                    </TouchableOpacity>
+                  )
+                })}
               </View>
-            </ScrollView>
-            <View style={style.bottom}>
-              <View style={style.bottomNav}>
+              <View style={style.bottomInputFa}>
                 <View
                   style={[
-                    this.state.isShowBottomNav ? style.bottomNavListActive : style.bottomNavList,
+                    style.bottomInput,
                     global.flex,
+                    global.justifyContentSpaceBetween,
                     global.alignItemsCenter,
-                    global.flexWrap,
                   ]}>
-                  {this.bottomNavList.map((v: bottomNavItem, k: number) => {
-                    return (
-                      <TouchableOpacity
-                        onPress={() => this.selectBottomNav(v)}
-                        key={k}
-                        style={style.bottomNavItem}>
-                        <View style={style.bottomNavItemPicFa}>
-                          <Image style={style.bottomNavItemPic} source={v.icon} />
-                        </View>
-                        <Text
-                          style={[style.bottomNavItemTitle, global.fontSize13, global.fontStyle]}>
-                          {v.title}
-                        </Text>
-                      </TouchableOpacity>
-                    )
-                  })}
-                </View>
-                <View style={style.bottomInputFa}>
-                  <View
-                    style={[
-                      style.bottomInput,
-                      global.flex,
-                      global.justifyContentSpaceBetween,
-                      global.alignItemsCenter,
-                    ]}>
-                    <TouchableOpacity>
-                      {/* <Image
-                        style={style.bottomInputImg}
-                        source={gImg.advisory.voice}
-                      /> */}
-                    </TouchableOpacity>
-                    <View style={style.inputFa}>
-                      <TextareaItem
-                        style={style.input}
-                        placeholder="请输入"
-                        autoHeight
-                        clear
-                        last
-                        ref={ref => (this.msgInput = ref)}
-                        value={this.state.sendMsg}
-                        onChange={val => {
-                          val = val || ""
-                          this.setState({
-                            sendMsg: val,
-                          })
-                        }}
-                      />
-                    </View>
-                    <TouchableOpacity onPress={this.sendMsg}>
-                      <Text style={[style.bottomInputSendBtn, global.fontSize14, global.fontStyle]}>
-                        发送
-                      </Text>
-                    </TouchableOpacity>
-                  </View>
-                  <View
-                    style={[
-                      this.state.isShowBottomPicSelect ? style.selectPicActive : style.selectPic,
-                      global.flex,
-                      global.alignItemsCenter,
-                      global.justifyContentSpaceAround,
-                    ]}>
-                    <View style={style.selectPicFa}>
-                      <View style={style.imgSelector}>
-                        <ImagePicker
-                          // onChange={this.selectPic}
-                          files={this.state.selectPic}
-                          onAddImageClick={() => {
-                            try {
-                              PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.CAMERA)
-                                .then(async res => {
-                                  if (!res) {
-                                    try {
-                                      const granted = await PermissionsAndroid.request(
-                                        PermissionsAndroid.PERMISSIONS.CAMERA,
-                                        {
-                                          title: "申请拍摄照片和录制视频权限",
-                                          message:
-                                            "博一健康需要使用您的拍摄照片和录制视频的权限,是否允许?",
-                                          buttonNeutral: "稍后询问",
-                                          buttonNegative: "禁止",
-                                          buttonPositive: "允许",
-                                        },
-                                      )
-                                      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-                                        console.log("获得摄像头权限")
-                                        RnImagePicker.launchImageLibrary(imgPickerOpt, resp => {
-                                          const uploadingImgKey = Toast.loading(
-                                            "上传图片中",
-                                            0,
-                                            () => {},
-                                            true,
-                                          )
-                                          if (resp.didCancel) {
-                                            Portal.remove(uploadingImgKey)
-                                          } else if (resp.error) {
-                                            Portal.remove(uploadingImgKey)
-                                            return Toast.info(
-                                              "您禁止了拍摄照片和录制视频权限, 请到设置中心打开",
-                                              3,
-                                            )
-                                          } else {
-                                            uploadImg({ url: resp.uri })
-                                              .then(json => {
-                                                Portal.remove(uploadingImgKey)
-                                                this.setState({
-                                                  isShowBottomNav: false,
-                                                  isShowBottomPicSelect: false,
-                                                })
-                                                const { patientUid } = this.state
-                                                const { url, picId } = json.data
-                                                this.props.ws.wsPost({
-                                                  url: "/ws/sendMsg",
-                                                  data: {
-                                                    pic: {
-                                                      url,
-                                                      picId,
-                                                    },
-                                                    type: MsgType.picture,
-                                                    patientUid,
-                                                  },
-                                                })
-                                              })
-                                              .catch(e => {
-                                                Portal.remove(uploadingImgKey)
-                                                Toast.fail("上传图片, 错误信息: " + e)
-                                              })
-                                          }
-                                        })
-                                      } else {
-                                        return Toast.info(
-                                          "您禁止了拍摄照片和录制视频权限, 请到设置中心打开",
-                                          3,
-                                        )
-                                      }
-                                    } catch (err) {
-                                      console.warn(err)
-                                    }
-                                  } else {
-                                    RnImagePicker.launchImageLibrary(imgPickerOpt, resp => {
-                                      const uploadingImgKey = Toast.loading(
-                                        "上传图片中",
-                                        0,
-                                        () => {},
-                                        true,
-                                      )
-                                      if (resp.didCancel) {
-                                        Portal.remove(uploadingImgKey)
-                                      } else if (resp.error) {
-                                        Portal.remove(uploadingImgKey)
-                                        return Toast.info(
-                                          "您禁止了拍摄照片和录制视频权限, 请到设置中心打开",
-                                          3,
-                                        )
-                                      } else {
-                                        uploadImg({ url: resp.uri })
-                                          .then(json => {
-                                            Portal.remove(uploadingImgKey)
-                                            this.setState({
-                                              isShowBottomNav: false,
-                                              isShowBottomPicSelect: false,
-                                            })
-                                            const { patientUid } = this.state
-                                            const { url, picId } = json.data
-                                            this.props.ws.wsPost({
-                                              url: "/ws/sendMsg",
-                                              data: {
-                                                pic: {
-                                                  url,
-                                                  picId,
-                                                },
-                                                type: MsgType.picture,
-                                                patientUid,
-                                              },
-                                            })
-                                          })
-                                          .catch(e => {
-                                            Portal.remove(uploadingImgKey)
-                                            Toast.fail("上传图片, 错误信息: " + e)
-                                          })
-                                      }
-                                    })
-                                  }
-                                })
-                                .catch(err => {
-                                  console.log("读取权限失败: " + err)
-                                })
-                            } catch (err) {
-                              console.log(err)
-                            }
-                          }}
-                        />
-                      </View>
-                      <Image source={gImg.advisory.selectPic} style={style.pickerImg} />
-                      <Text style={[style.selectTitle, global.fontSize14, global.fontStyle]}>
-                        图片
-                      </Text>
-                    </View>
-                    <TouchableOpacity
-                      style={style.selectPicFa}
-                      onPress={() => {
-                        try {
-                          PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.CAMERA)
-                            .then(async res => {
-                              if (!res) {
-                                try {
-                                  const granted = await PermissionsAndroid.request(
-                                    PermissionsAndroid.PERMISSIONS.CAMERA,
-                                    {
-                                      title: "申请拍摄照片和录制视频权限",
-                                      message:
-                                        "博一健康需要使用您的拍摄照片和录制视频的权限,是否允许?",
-                                      buttonNeutral: "稍后询问",
-                                      buttonNegative: "禁止",
-                                      buttonPositive: "允许",
-                                    },
-                                  )
-                                  if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-                                    console.log("获得摄像头权限")
-                                    RnImagePicker.launchCamera(imgPickerOpt, resp => {
-                                      const uploadingImgKey = Toast.loading(
-                                        "上传图片中",
-                                        0,
-                                        () => {},
-                                        true,
-                                      )
-                                      if (resp.didCancel) {
-                                        Portal.remove(uploadingImgKey)
-                                      } else if (resp.error) {
-                                        Portal.remove(uploadingImgKey)
-                                        return Toast.info(
-                                          "您禁止了拍摄照片和录制视频权限, 请到设置中心打开",
-                                          3,
-                                        )
-                                      } else {
-                                        uploadImg({ url: resp.uri })
-                                          .then(json => {
-                                            Portal.remove(uploadingImgKey)
-                                            this.setState({
-                                              isShowBottomNav: false,
-                                              isShowBottomPicSelect: false,
-                                            })
-                                            const { patientUid } = this.state
-                                            const { url, picId } = json.data
-                                            this.props.ws.wsPost({
-                                              url: "/ws/sendMsg",
-                                              data: {
-                                                pic: {
-                                                  url,
-                                                  picId,
-                                                },
-                                                type: MsgType.picture,
-                                                patientUid,
-                                              },
-                                            })
-                                          })
-                                          .catch(e => {
-                                            Portal.remove(uploadingImgKey)
-                                            Toast.fail("上传图片, 错误信息: " + e)
-                                          })
-                                      }
-                                    })
-                                  } else {
-                                    Toast.info(
-                                      "您禁止了拍摄照片和录制视频权限, 请到设置中心打开",
-                                      3,
-                                    )
-                                  }
-                                } catch (err) {
-                                  console.warn(err)
-                                }
-                              } else {
-                                RnImagePicker.launchCamera(imgPickerOpt, resp => {
-                                  const uploadingImgKey = Toast.loading(
-                                    "上传图片中",
-                                    0,
-                                    () => {},
-                                    true,
-                                  )
-                                  if (resp.didCancel) {
-                                    Portal.remove(uploadingImgKey)
-                                  } else if (resp.error) {
-                                    Portal.remove(uploadingImgKey)
-                                    return Toast.info(
-                                      "您禁止了拍摄照片和录制视频权限, 请到设置中心打开",
-                                      3,
-                                    )
-                                  } else {
-                                    uploadImg({ url: resp.uri })
-                                      .then(json => {
-                                        Portal.remove(uploadingImgKey)
-                                        this.setState({
-                                          isShowBottomNav: false,
-                                          isShowBottomPicSelect: false,
-                                        })
-                                        const { patientUid } = this.state
-                                        const { url, picId } = json.data
-                                        this.props.ws.wsPost({
-                                          url: "/ws/sendMsg",
-                                          data: {
-                                            pic: {
-                                              url,
-                                              picId,
-                                            },
-                                            type: MsgType.picture,
-                                            patientUid,
-                                          },
-                                        })
-                                      })
-                                      .catch(e => {
-                                        Portal.remove(uploadingImgKey)
-                                        Toast.fail("上传图片, 错误信息: " + e)
-                                      })
-                                  }
-                                })
-                              }
-                            })
-                            .catch(err => {
-                              console.log("读取权限失败: " + err)
-                            })
-                        } catch (err) {
-                          console.log(err)
-                        }
-                      }}>
-                      <Image source={gImg.advisory.selectPhoto} style={style.selectImg} />
-                      <Text style={[style.selectTitle, global.fontSize14, global.fontStyle]}>
-                        拍照
-                      </Text>
-                    </TouchableOpacity>
-                  </View>
-                </View>
-              </View>
-            </View>
-          </View>
-          {/* 图片查看器 */}
-          {/* <View style={this.state.isShowPic ? style.showPic : global.hidden}>
-            <TouchableOpacity onPress={this.closeShowPic} activeOpacity={0.8}>
-              <View style={style.howImgFa}>
-                <Image
-                  style={style.showImg}
-                  source={
-                    this.state.showPicUrl
-                      ? {
-                          uri: getPicFullUrl(this.state.showPicUrl),
-                        }
-                      : gImg.common.defaultPic
-                  }
-                />
-              </View>
-            </TouchableOpacity>
-          </View> */}
-          <View style={this.state.isShowPic ? style.showPic : global.hidden}>
-            <View style={style.howImgFa}>
-              <View style={style.close}>
-                <Icon
-                  onPress={() => {
-                    this.setState({
-                      imagesViewer: [
-                        {
-                          url: BASE_URL + "/static/media/collapsed_logo.db8ef9b3.png",
-                        },
-                      ],
-                      isShowPic: false,
-                    })
-                  }}
-                  style={style.closeIcon}
-                  name="close"
-                />
-              </View>
-              <ImageViewer
-                saveToLocalByLongPress={false}
-                imageUrls={this.state.imagesViewer}
-                index={this.state.imageIdx}
-                maxOverflow={0}
-                onCancel={() => {}}
-              />
-            </View>
-          </View>
-        </>
-      )
-    } else {
-      return (
-        <>
-          <KeyboardAvoidingView behavior="padding" style={{ flex: 1 }} keyboardVerticalOffset={90}>
-            <View style={style.main}>
-              <ScrollView
-                ref={ref => (this.myScroll = ref)}
-                style={style.content}
-                onContentSizeChange={() => {
-                  if (this.myScroll && this.state.shouldScrollToEnd) {
-                    this.myScroll.scrollToEnd()
-                    this.setState({
-                      shouldScrollToEnd: false,
-                    })
-                  }
-                }}
-                refreshControl={
-                  <RefreshControl
-                    refreshing={this.state.refreshing}
-                    onRefresh={this.getMoreMsgList}
-                  />
-                }>
-                <View style={style.list}>
-                  <Text
-                    style={[
-                      this.state.hasMoreRecord ? style.downloadMore : global.hidden,
-                      global.fontStyle,
-                      global.fontSize12,
-                    ]}>
-                    下拉查看更多聊天记录
-                  </Text>
-                  {Array.isArray(this.props.ws.chatMsg[this.state.patientUid]) &&
-                    this.props.ws.chatMsg[this.state.patientUid].map((v: any, k) => {
-                      let formatMsg: Msg | null = null
-                      switch (v.type) {
-                        case MsgType.txt:
-                          formatMsg = this.txtFormat(v)
-                          break
-                        case MsgType.picture:
-                          formatMsg = this.pictureFormat(v)
-                          break
-                        case MsgType.inquirySheet:
-                          formatMsg = this.inquirySheetFormat(v)
-                          break
-                        case MsgType.patientsThemselves:
-                          formatMsg = this.patientsThemselvesFormat(v)
-                          break
-                        case MsgType.treatmentPlan:
-                          formatMsg = this.treatmentPlanFormat(v)
-                          break
-                        default:
-                          break
-                      }
-                      if (formatMsg) {
-                        return <View key={k}>{formatMsg.dom}</View>
-                      }
-                    })}
-                </View>
-              </ScrollView>
-              <View style={style.bottom}>
-                <View style={style.bottomNav}>
-                  <View
-                    style={[
-                      this.state.isShowBottomNav ? style.bottomNavListActive : style.bottomNavList,
-                      global.flex,
-                      global.alignItemsCenter,
-                      global.flexWrap,
-                    ]}>
-                    {this.bottomNavList.map((v: bottomNavItem, k: number) => {
-                      return (
-                        <TouchableOpacity
-                          onPress={() => this.selectBottomNav(v)}
-                          key={k}
-                          style={style.bottomNavItem}>
-                          <View style={style.bottomNavItemPicFa}>
-                            <Image style={style.bottomNavItemPic} source={v.icon} />
-                          </View>
-                          <Text
-                            style={[style.bottomNavItemTitle, global.fontSize13, global.fontStyle]}>
-                            {v.title}
-                          </Text>
-                        </TouchableOpacity>
-                      )
-                    })}
-                  </View>
-                  <View style={style.bottomInputFa}>
-                    <View
-                      style={[
-                        style.bottomInput,
-                        global.flex,
-                        global.justifyContentSpaceBetween,
-                        global.alignItemsCenter,
-                      ]}>
-                      <TouchableOpacity>
-                        {/* <Image
-                        style={style.bottomInputImg}
-                        source={gImg.advisory.voice}
-                      /> */}
-                      </TouchableOpacity>
+                  <TouchableOpacity onPress={this.changeMode}>
+                    <Image
+                      style={style.bottomInputImg}
+                      source={chatMode === "text" ? gImg.advisory.voice : gImg.advisory.text}
+                    />
+                  </TouchableOpacity>
+                  {chatMode === "text" ? (
+                    <>
                       <View style={style.inputFa}>
                         <TextareaItem
                           style={style.input}
@@ -1019,21 +703,233 @@ export default class Chat extends Component<
                           发送
                         </Text>
                       </TouchableOpacity>
+                    </>
+                  ) : (
+                    <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+                      <TouchableOpacity
+                        style={{ width: "100%" }}
+                        onPressIn={this.onRecordPressIn}
+                        onPressOut={this.onRecordPressOut}>
+                        <Text>{isRecord ? "松开发送录音 " + recordTime : "按下录音"}</Text>
+                      </TouchableOpacity>
                     </View>
-                    <View
-                      style={[
-                        this.state.isShowBottomPicSelect ? style.selectPicActive : style.selectPic,
-                        global.flex,
-                        global.alignItemsCenter,
-                        global.justifyContentSpaceAround,
-                      ]}>
-                      <View style={style.selectPicFa}>
-                        <View style={style.imgSelector}>
-                          <ImagePicker
-                            // onChange={this.selectPic}
-                            files={this.state.selectPic}
-                            onAddImageClick={() => {
-                              RnImagePicker.launchImageLibrary(imgPickerOpt, resp => {
+                  )}
+                </View>
+                <View
+                  style={[
+                    this.state.isShowBottomPicSelect ? style.selectPicActive : style.selectPic,
+                    global.flex,
+                    global.alignItemsCenter,
+                    global.justifyContentSpaceAround,
+                  ]}>
+                  <View style={style.selectPicFa}>
+                    <View style={style.imgSelector}>
+                      <ImagePicker
+                        // onChange={this.selectPic}
+                        files={this.state.selectPic}
+                        onAddImageClick={() => {
+                          try {
+                            PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.CAMERA)
+                              .then(async res => {
+                                if (!res) {
+                                  try {
+                                    const granted = await PermissionsAndroid.request(
+                                      PermissionsAndroid.PERMISSIONS.CAMERA,
+                                      {
+                                        title: "申请拍摄照片和录制视频权限",
+                                        message:
+                                          "博一健康需要使用您的拍摄照片和录制视频的权限,是否允许?",
+                                        buttonNeutral: "稍后询问",
+                                        buttonNegative: "禁止",
+                                        buttonPositive: "允许",
+                                      },
+                                    )
+                                    if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+                                      console.log("获得摄像头权限")
+                                      RnImagePicker.launchImageLibrary(imgPickerOpt, resp => {
+                                        const uploadingImgKey = Toast.loading(
+                                          "上传图片中",
+                                          0,
+                                          () => {},
+                                          true,
+                                        )
+                                        if (resp.didCancel) {
+                                          Portal.remove(uploadingImgKey)
+                                        } else if (resp.error) {
+                                          Portal.remove(uploadingImgKey)
+                                          return Toast.info(
+                                            "您禁止了拍摄照片和录制视频权限, 请到设置中心打开",
+                                            3,
+                                          )
+                                        } else {
+                                          uploadImg({ url: resp.uri })
+                                            .then(json => {
+                                              Portal.remove(uploadingImgKey)
+                                              this.setState({
+                                                isShowBottomNav: false,
+                                                isShowBottomPicSelect: false,
+                                              })
+                                              const { patientUid } = this.state
+                                              const { url, picId } = json.data
+                                              this.props.ws.wsPost({
+                                                url: "/ws/sendMsg",
+                                                data: {
+                                                  pic: {
+                                                    url,
+                                                    picId,
+                                                  },
+                                                  type: MsgType.picture,
+                                                  patientUid,
+                                                },
+                                              })
+                                            })
+                                            .catch(e => {
+                                              Portal.remove(uploadingImgKey)
+                                              Toast.fail("上传图片, 错误信息: " + e)
+                                            })
+                                        }
+                                      })
+                                    } else {
+                                      return Toast.info(
+                                        "您禁止了拍摄照片和录制视频权限, 请到设置中心打开",
+                                        3,
+                                      )
+                                    }
+                                  } catch (err) {
+                                    console.warn(err)
+                                  }
+                                } else {
+                                  RnImagePicker.launchImageLibrary(imgPickerOpt, resp => {
+                                    const uploadingImgKey = Toast.loading(
+                                      "上传图片中",
+                                      0,
+                                      () => {},
+                                      true,
+                                    )
+                                    if (resp.didCancel) {
+                                      Portal.remove(uploadingImgKey)
+                                    } else if (resp.error) {
+                                      Portal.remove(uploadingImgKey)
+                                      return Toast.info(
+                                        "您禁止了拍摄照片和录制视频权限, 请到设置中心打开",
+                                        3,
+                                      )
+                                    } else {
+                                      uploadImg({ url: resp.uri })
+                                        .then(json => {
+                                          Portal.remove(uploadingImgKey)
+                                          this.setState({
+                                            isShowBottomNav: false,
+                                            isShowBottomPicSelect: false,
+                                          })
+                                          const { patientUid } = this.state
+                                          const { url, picId } = json.data
+                                          this.props.ws.wsPost({
+                                            url: "/ws/sendMsg",
+                                            data: {
+                                              pic: {
+                                                url,
+                                                picId,
+                                              },
+                                              type: MsgType.picture,
+                                              patientUid,
+                                            },
+                                          })
+                                        })
+                                        .catch(e => {
+                                          Portal.remove(uploadingImgKey)
+                                          Toast.fail("上传图片, 错误信息: " + e)
+                                        })
+                                    }
+                                  })
+                                }
+                              })
+                              .catch(err => {
+                                console.log("读取权限失败: " + err)
+                              })
+                          } catch (err) {
+                            console.log(err)
+                          }
+                        }}
+                      />
+                    </View>
+                    <Image source={gImg.advisory.selectPic} style={style.pickerImg} />
+                    <Text style={[style.selectTitle, global.fontSize14, global.fontStyle]}>
+                      图片
+                    </Text>
+                  </View>
+                  <TouchableOpacity
+                    style={style.selectPicFa}
+                    onPress={() => {
+                      try {
+                        PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.CAMERA)
+                          .then(async res => {
+                            if (!res) {
+                              try {
+                                const granted = await PermissionsAndroid.request(
+                                  PermissionsAndroid.PERMISSIONS.CAMERA,
+                                  {
+                                    title: "申请拍摄照片和录制视频权限",
+                                    message:
+                                      "博一健康需要使用您的拍摄照片和录制视频的权限,是否允许?",
+                                    buttonNeutral: "稍后询问",
+                                    buttonNegative: "禁止",
+                                    buttonPositive: "允许",
+                                  },
+                                )
+                                if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+                                  console.log("获得摄像头权限")
+                                  RnImagePicker.launchCamera(imgPickerOpt, resp => {
+                                    const uploadingImgKey = Toast.loading(
+                                      "上传图片中",
+                                      0,
+                                      () => {},
+                                      true,
+                                    )
+                                    if (resp.didCancel) {
+                                      Portal.remove(uploadingImgKey)
+                                    } else if (resp.error) {
+                                      Portal.remove(uploadingImgKey)
+                                      return Toast.info(
+                                        "您禁止了拍摄照片和录制视频权限, 请到设置中心打开",
+                                        3,
+                                      )
+                                    } else {
+                                      uploadImg({ url: resp.uri })
+                                        .then(json => {
+                                          Portal.remove(uploadingImgKey)
+                                          this.setState({
+                                            isShowBottomNav: false,
+                                            isShowBottomPicSelect: false,
+                                          })
+                                          const { patientUid } = this.state
+                                          const { url, picId } = json.data
+                                          this.props.ws.wsPost({
+                                            url: "/ws/sendMsg",
+                                            data: {
+                                              pic: {
+                                                url,
+                                                picId,
+                                              },
+                                              type: MsgType.picture,
+                                              patientUid,
+                                            },
+                                          })
+                                        })
+                                        .catch(e => {
+                                          Portal.remove(uploadingImgKey)
+                                          Toast.fail("上传图片, 错误信息: " + e)
+                                        })
+                                    }
+                                  })
+                                } else {
+                                  Toast.info("您禁止了拍摄照片和录制视频权限, 请到设置中心打开", 3)
+                                }
+                              } catch (err) {
+                                console.warn(err)
+                              }
+                            } else {
+                              RnImagePicker.launchCamera(imgPickerOpt, resp => {
                                 const uploadingImgKey = Toast.loading(
                                   "上传图片中",
                                   0,
@@ -1076,114 +972,60 @@ export default class Chat extends Component<
                                     })
                                 }
                               })
-                            }}
-                          />
-                        </View>
-                        <Image source={gImg.advisory.selectPic} style={style.pickerImg} />
-                        <Text style={[style.selectTitle, global.fontSize14, global.fontStyle]}>
-                          图片
-                        </Text>
-                      </View>
-                      <TouchableOpacity
-                        style={style.selectPicFa}
-                        onPress={() => {
-                          RnImagePicker.launchCamera(imgPickerOpt, resp => {
-                            const uploadingImgKey = Toast.loading("上传图片中", 0, () => {}, true)
-                            if (resp.didCancel) {
-                              Portal.remove(uploadingImgKey)
-                            } else if (resp.error) {
-                              Portal.remove(uploadingImgKey)
-                              return Toast.info(
-                                "您禁止了拍摄照片和录制视频权限, 请到设置中心打开",
-                                3,
-                              )
-                            } else {
-                              uploadImg({ url: resp.uri })
-                                .then(json => {
-                                  Portal.remove(uploadingImgKey)
-                                  this.setState({
-                                    isShowBottomNav: false,
-                                    isShowBottomPicSelect: false,
-                                  })
-                                  const { patientUid } = this.state
-                                  const { url, picId } = json.data
-                                  this.props.ws.wsPost({
-                                    url: "/ws/sendMsg",
-                                    data: {
-                                      pic: {
-                                        url,
-                                        picId,
-                                      },
-                                      type: MsgType.picture,
-                                      patientUid,
-                                    },
-                                  })
-                                })
-                                .catch(e => {
-                                  Portal.remove(uploadingImgKey)
-                                  Toast.fail("上传图片, 错误信息: " + e)
-                                })
                             }
                           })
-                        }}>
-                        <Image source={gImg.advisory.selectPhoto} style={style.selectImg} />
-                        <Text style={[style.selectTitle, global.fontSize14, global.fontStyle]}>
-                          拍照
-                        </Text>
-                      </TouchableOpacity>
-                    </View>
-                  </View>
+                          .catch(err => {
+                            console.log("读取权限失败: " + err)
+                          })
+                      } catch (err) {
+                        console.log(err)
+                      }
+                    }}>
+                    <Image source={gImg.advisory.selectPhoto} style={style.selectImg} />
+                    <Text style={[style.selectTitle, global.fontSize14, global.fontStyle]}>
+                      拍照
+                    </Text>
+                  </TouchableOpacity>
                 </View>
               </View>
             </View>
-            {/* 图片查看器 */}
-            {/* <View style={this.state.isShowPic ? style.showPic : global.hidden}>
-            <TouchableOpacity onPress={this.closeShowPic} activeOpacity={0.8}>
-              <View style={style.howImgFa}>
-                <Image
-                  style={style.showImg}
-                  source={
-                    this.state.showPicUrl
-                      ? {
-                          uri: getPicFullUrl(this.state.showPicUrl),
-                        }
-                      : gImg.common.defaultPic
-                  }
-                />
-              </View>
-            </TouchableOpacity>
-          </View> */}
-            <View style={this.state.isShowPic ? style.showPic : global.hidden}>
-              <View style={style.howImgFa}>
-                <View style={style.close}>
-                  <Icon
-                    onPress={() => {
-                      this.setState({
-                        imagesViewer: [
-                          {
-                            url: BASE_URL + "/static/media/collapsed_logo.db8ef9b3.png",
-                          },
-                        ],
-                        isShowPic: false,
-                      })
-                    }}
-                    style={style.closeIcon}
-                    name="close"
-                  />
-                </View>
-                <ImageViewer
-                  saveToLocalByLongPress={false}
-                  imageUrls={this.state.imagesViewer}
-                  index={this.state.imageIdx}
-                  maxOverflow={0}
-                  onCancel={() => {}}
-                />
-              </View>
+          </View>
+        </View>
+        {/* 图片查看器 */}
+        <View style={this.state.isShowPic ? style.showPic : global.hidden}>
+          <View style={style.howImgFa}>
+            <View style={style.close}>
+              <Icon
+                onPress={() => {
+                  this.setState({
+                    imagesViewer: [
+                      {
+                        url: BASE_URL + "/static/media/collapsed_logo.db8ef9b3.png",
+                      },
+                    ],
+                    isShowPic: false,
+                  })
+                }}
+                style={style.closeIcon}
+                name="close"
+              />
             </View>
-          </KeyboardAvoidingView>
-        </>
-      )
-    }
+            <ImageViewer
+              saveToLocalByLongPress={false}
+              imageUrls={this.state.imagesViewer}
+              index={this.state.imageIdx}
+              maxOverflow={0}
+              onCancel={() => {}}
+            />
+          </View>
+        </View>
+      </KeyboardAvoidingView>
+    )
+  }
+  changeMode = () => {
+    this.setState({
+      chatMode: this.state.chatMode === "audio" ? "text" : "audio",
+    })
   }
   getMsgList = async (
     page: number,
@@ -1332,6 +1174,17 @@ export default class Chat extends Component<
     )
     return msg
   }
+  audioFormat = (serverMsg: Exclude<Overwrite<Msg, { file: File }>, "dom">) => {
+    let msg: Overwrite<Msg, { file: File }> = serverMsg
+    // let isSelfMsg = msg.sendUser.uid === this.state.info.id
+    msg.dom = (
+      <View>
+        <Text>语音消息{msg.file.id}</Text>
+      </View>
+    )
+    return msg
+  }
+
   // 治疗方案
   treatmentPlanFormat = (
     serverMsg: Exclude<Overwrite<Msg, { extraData: TreatmentPlan }>, "dom">,
@@ -1669,7 +1522,6 @@ export default class Chat extends Component<
     })
   }
   selectPic = (files: Array<{}>, operationType: string) => {
-    Toast.info("11", 1)
     if (operationType === "add") {
       let key = Toast.loading("上传图片中")
       api
