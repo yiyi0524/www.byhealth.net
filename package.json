@@ -17,6 +17,7 @@
     "@ant-design/react-native": "^3.1.15",
     "@types/react-native-permissions": "^1.1.1",
     "classnames": "^2.2.6",
+    "hermes-engine": "0.1.1",
     "jsbdk": "git://github.com/buffge/jsbdk.git#master",
     "moment": "^2.24.0",
     "qs": "^6.8.0",
