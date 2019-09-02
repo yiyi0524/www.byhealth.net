@@ -144,6 +144,18 @@ export default StyleSheet.create({
     borderRadius: 5,
     overflow: "hidden",
   },
+  leftAudio: {
+    padding: 8,
+    borderRadius: 5,
+    overflow: "hidden",
+    backgroundColor: sColor.white,
+  },
+  rightAudio: {
+    padding: 8,
+    borderRadius: 5,
+    overflow: "hidden",
+    backgroundColor: sColor.lightChatBlue,
+  },
   itemPicImg: {
     resizeMode: "contain",
     height: 130,

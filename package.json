@@ -30,6 +30,7 @@
     "react-native-image-zoom-viewer": "^2.2.26",
     "react-native-permissions": "^1.2.0",
     "react-native-qrcode": "https://github.com/buffge/react-native-qrcode#master",
+    "react-native-sound": "^0.11.0",
     "react-native-webview": "^6.9.0",
     "react-navigation": "^3.12.1",
     "react-redux": "6.*",

@@ -89,7 +89,6 @@ export default StyleSheet.create({
     flex: 1,
   },
   agreement: {
-    paddingLeft: 30,
     paddingRight: 30,
     paddingBottom: 40,
   },

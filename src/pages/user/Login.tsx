@@ -13,6 +13,7 @@ import global from "@/assets/styles/global"
 import api from "@api/api"
 import { NavigationScreenProp } from "react-navigation"
 import { DeviceEventEmitter } from "react-native"
+import gColor from "@styles/color"
 
 const style = gStyle.user.login
 interface Props {
@@ -44,6 +45,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
     },
   }
 }
+// @ts-ignore
 @connect(
   mapStateToProps,
   mapDispatchToProps,
@@ -262,7 +264,18 @@ export default class Login extends Component<
                   }}
                 />
                 <TouchableOpacity style={style.verificationBtn} onPress={this.getVerificationCode}>
-                  <Text style={[style.verificationCode, global.fontSize14, global.fontStyle]}>
+                  <Text
+                    style={[
+                      style.verificationCode,
+                      global.fontSize14,
+                      global.fontStyle,
+                      {
+                        backgroundColor:
+                          this.state.verificationCodeMsg === "获取验证码"
+                            ? gColor.mainRed
+                            : gColor.colorCcc,
+                      },
+                    ]}>
                     {this.state.verificationCodeMsg}
                   </Text>
                 </TouchableOpacity>

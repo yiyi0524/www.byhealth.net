@@ -7,7 +7,7 @@ import pathMap from "@/routes/pathMap"
 import api, { getRegion, getThumbUrl, uploadAudio, uploadImg, windowHeight } from "@/services/api"
 import { clearPatientUnreadMsgCount, closeInquiry, GENDER_ZH } from "@/services/doctor"
 import gImg from "@/utils/img"
-import { getPicCdnUrl, getPicFullUrl, windowWidth } from "@/utils/utils"
+import { getPicCdnUrl, getPicFullUrl, windowWidth, getFileCdnUrl } from "@/utils/utils"
 import { Icon, ImagePicker, Modal, Portal, TextareaItem, Toast } from "@ant-design/react-native"
 import userApi from "@api/user"
 import wsMsgApi from "@api/wsMsg"
@@ -17,6 +17,7 @@ import sColor from "@styles/color"
 import Buff from "@utils/Buff"
 import gStyle from "@utils/style"
 import React, { Component } from "react"
+import Sound from "react-native-sound"
 import {
   AppState as RnAppState,
   AppStateStatus,
@@ -138,6 +139,9 @@ export interface PatientsThemselves {
   }
 }
 interface State {
+  // 当前播放的音频的id
+  currAudioMsgId: number
+  isPalyAudio: boolean
   // 是否有录音权限
   hasMicAuth: boolean
   // 是否正在录音
@@ -294,6 +298,7 @@ export default class Chat extends Component<
   myScroll: ScrollView | null = null
   msgInput: TextareaItem | null = null
   listener?: EmitterSubscription
+  whoosh: Sound | null = null
   constructor(props: any) {
     super(props)
     this.state = this.getInitState()
@@ -301,6 +306,8 @@ export default class Chat extends Component<
   getInitState = (): State => {
     let patientUid = this.props.navigation.getParam("patientUid")
     return {
+      currAudioMsgId: 0,
+      isPalyAudio: false,
       hasMicAuth: false,
       isRecord: false,
       recordTime: 0,
@@ -492,7 +499,6 @@ export default class Chat extends Component<
       })
     }
   }
-
   onRecordPressIn = () => {
     const { hasMicAuth, isRecord } = this.state
     if (!hasMicAuth) {
@@ -710,7 +716,20 @@ export default class Chat extends Component<
                         style={{ width: "100%" }}
                         onPressIn={this.onRecordPressIn}
                         onPressOut={this.onRecordPressOut}>
-                        <Text>{isRecord ? "松开发送录音 " + recordTime : "按下录音"}</Text>
+                        <View
+                          style={{
+                            width: 150,
+                            padding: 13,
+                            alignItems: "center",
+                            backgroundColor: isRecord ? sColor.white : sColor.mainRed,
+                          }}>
+                          <Text
+                            style={{
+                              color: isRecord ? sColor.color666 : sColor.white,
+                            }}>
+                            {isRecord ? "松开发送录音 " + recordTime : "按下录音"}
+                          </Text>
+                        </View>
                       </TouchableOpacity>
                     </View>
                   )}
@@ -1175,16 +1194,82 @@ export default class Chat extends Component<
     return msg
   }
   audioFormat = (serverMsg: Exclude<Overwrite<Msg, { file: File }>, "dom">) => {
+    const { isPalyAudio, currAudioMsgId } = this.state
     let msg: Overwrite<Msg, { file: File }> = serverMsg
-    // let isSelfMsg = msg.sendUser.uid === this.state.info.id
+    let isSelfMsg = msg.sendUser.uid === this.state.info.id
     msg.dom = (
       <View>
-        <Text>语音消息{msg.file.id}</Text>
+        {isSelfMsg ? (
+          <View style={isSelfMsg ? style.item : global.hidden}>
+            <Text style={[style.sendTime, global.fontStyle, global.fontSize12]}>
+              {msg.sendTime.substr(0, 16)}
+            </Text>
+            <View style={[style.leftItem, global.flex, global.justifyContentEnd]}>
+              <TouchableOpacity
+                style={style.rightAudio}
+                onPress={() => this.startPlayAudio(msg.id, msg.file.url)}>
+                <View style={{ alignItems: "flex-end", paddingRight: 10, width: 80 }}>
+                  <Image
+                    style={{ width: 15, height: 15 }}
+                    source={
+                      isPalyAudio && currAudioMsgId === msg.id
+                        ? gImg.common.rightSoundPlaying
+                        : gImg.common.rightSound
+                    }
+                  />
+                </View>
+              </TouchableOpacity>
+              <View style={style.rightItemIcon} />
+              <View style={style.itemPic}>
+                <Image
+                  style={style.itemImg}
+                  source={
+                    msg.sendUser.avatar.url
+                      ? { uri: getThumbUrl({ path: getPicFullUrl(msg.sendUser.avatar.url) }) }
+                      : gImg.common.defaultAvatar
+                  }
+                />
+              </View>
+            </View>
+          </View>
+        ) : (
+          <View style={isSelfMsg ? global.hidden : style.item}>
+            <Text style={[style.sendTime, global.fontStyle, global.fontSize12]}>
+              {msg.sendTime.substr(0, 16)}
+            </Text>
+            <View style={[style.leftItem, global.flex]}>
+              <View style={style.itemPic}>
+                <Image
+                  style={style.itemImg}
+                  source={
+                    msg.sendUser.avatar.url
+                      ? { uri: getThumbUrl({ path: getPicFullUrl(msg.sendUser.avatar.url) }) }
+                      : gImg.common.defaultAvatar
+                  }
+                />
+              </View>
+              <View style={isSelfMsg ? global.hidden : style.leftItemIcon} />
+              <TouchableOpacity
+                style={style.leftAudio}
+                onPress={() => this.startPlayAudio(msg.id, msg.file.url)}>
+                <View style={{ alignItems: "flex-start", paddingRight: 10, width: 80 }}>
+                  <Image
+                    style={{ width: 15, height: 15 }}
+                    source={
+                      isPalyAudio && currAudioMsgId === msg.id
+                        ? gImg.common.leftSoundPlaying
+                        : gImg.common.leftSound
+                    }
+                  />
+                </View>
+              </TouchableOpacity>
+            </View>
+          </View>
+        )}
       </View>
     )
     return msg
   }
-
   // 治疗方案
   treatmentPlanFormat = (
     serverMsg: Exclude<Overwrite<Msg, { extraData: TreatmentPlan }>, "dom">,
@@ -1390,6 +1475,56 @@ export default class Chat extends Component<
       </View>
     )
     return msg
+  }
+  startPlayAudio = (msgId: number, url: string) => {
+    const { isPalyAudio } = this.state
+    if (isPalyAudio && this.whoosh) {
+      this.stopPlayAudio()
+      return
+    }
+    this.whoosh = new Sound(getFileCdnUrl(url), Sound.MAIN_BUNDLE, error => {
+      if (error) {
+        console.log("failed to load the sound", error)
+        this.whoosh && this.whoosh.release()
+        this.whoosh = null
+        return
+      }
+      this.setState({
+        currAudioMsgId: msgId,
+        isPalyAudio: true,
+      })
+      // loaded successfully
+      // console.log("duration in seconds: " + whoosh.getDuration())
+      // Play the sound with an onEnd callback
+      this.whoosh &&
+        this.whoosh.play(success => {
+          if (success) {
+            console.log("successfully finished playing")
+          } else {
+            Toast.fail("播放音频失败")
+          }
+          this.setState(
+            {
+              isPalyAudio: false,
+              currAudioMsgId: 0,
+            },
+            this.stopPlayAudio,
+          )
+        })
+    })
+  }
+  stopPlayAudio = () => {
+    const { isPalyAudio } = this.state
+    if (isPalyAudio && this.whoosh) {
+      this.whoosh.stop(() => {
+        this.setState({
+          isPalyAudio: false,
+          currAudioMsgId: 0,
+        })
+        this.whoosh && this.whoosh.release()
+        this.whoosh = null
+      })
+    }
   }
   getMoreMsgList = async () => {
     this.setState({ refreshing: true })

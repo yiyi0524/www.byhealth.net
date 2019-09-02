@@ -19,6 +19,10 @@ export default {
     loading: require("@img/common/loadding.gif"),
     flag: require("@img/common/flag.png"),
     injury: require("@img/common/injury.jpg"),
+    leftSound: require("@img/common/leftSound.png"),
+    rightSound: require("@img/common/rightSound.png"),
+    leftSoundPlaying: require("@img/common/leftSoundPlaying.gif"),
+    rightSoundPlaying: require("@img/common/rightSoundPlaying.gif"),
   },
   home: {
     prescriptionTemplate: require("@img/home/moban.png"),

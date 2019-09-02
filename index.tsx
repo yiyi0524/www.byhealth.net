@@ -15,4 +15,5 @@ const Root = () => (
   </Provider>
 )
 disableFontScale()
+console.disableYellowBox = true
 AppRegistry.registerComponent(appName, () => Root)

@@ -19,13 +19,26 @@ export function getPicCdnUrl(url: string): string {
   return url.indexOf("http") === 0 ? url : CDN_BASE_URL + url
 }
 /**
+ * 获取文件的cdn url
+ */
+export function getFileCdnUrl(url: string): string {
+  return getPicCdnUrl(url)
+}
+// declare module NativeModules {
+//   export const SourceCode: {
+//     scriptURL: string
+//   }
+// }
+/**
  * 识别开发环境是否是debug开发环境
  */
 export function isDebugMode() {
   try {
     const { scriptURL } = NativeModules.SourceCode
-    const devEvn = scriptURL.split("&")[1]
-    return devEvn === "dev=true"
+    return (
+      (scriptURL as string).indexOf("dev=true") === -1 ||
+      (scriptURL as string).indexOf("http://localhost") === 0
+    )
   } catch (e) {
     console.log("buffge: ", e)
     return false

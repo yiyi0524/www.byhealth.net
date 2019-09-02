@@ -529,7 +529,8 @@ export default class SquareRoot extends Component<
                                     category.dailyDose > 0 &&
                                     doseCount < category.dailyDose
                                   ) {
-                                    return Toast.fail("剂量总数不能小于每日剂量数")
+                                    prescriptionDrugCategoryList[k].dailyDose = 0
+                                    // return Toast.fail("剂量总数不能小于每日剂量数")
                                   }
                                   prescriptionDrugCategoryList[k].doseCount = doseCount
                                   this.setState({

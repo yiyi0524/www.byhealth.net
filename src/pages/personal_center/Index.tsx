@@ -230,8 +230,8 @@ export default class Index extends Component<
                     <View style={style.separationModule} />
                     <TouchableOpacity
                       onPress={() => {
-                        this.props.navigation.navigate(pathMap.Test)
-                        // this.logout()
+                        // this.props.navigation.navigate(pathMap.Test)
+                        this.logout()
                       }}
                       style={[
                         style.item,

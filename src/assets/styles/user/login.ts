@@ -63,7 +63,6 @@ export default StyleSheet.create({
     width: 100,
     height: 30,
     lineHeight: 30,
-    backgroundColor: sColor.colorCcc,
     color: sColor.white,
     textAlign: "center",
     borderRadius: 5,

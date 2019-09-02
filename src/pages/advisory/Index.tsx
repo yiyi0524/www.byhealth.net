@@ -288,12 +288,21 @@ export default class Index extends Component<
                         numberOfLines={1}>
                         {currMsgInfo.currMsg || "无消息"}
                       </Text>
-                      <Badge dot style={[consultation.isWaitReply ? null : global.hidden]}>
-                        <Text style={[style.replay, global.fontSize12]}>待回复</Text>
-                      </Badge>
-                      <Badge dot style={[consultation.isWaitBuyDrug ? null : global.hidden]}>
-                        <Text style={[style.replay, global.fontSize12]}>待购药</Text>
-                      </Badge>
+                      {consultation.isWaitReply && (
+                        <Badge dot>
+                          <Text style={[style.replay, global.fontSize12]}>待回复</Text>
+                        </Badge>
+                      )}
+                      {consultation.isWaitBuyDrug && (
+                        <Badge dot>
+                          <Text style={[style.replay, global.fontSize12]}>待购药</Text>
+                        </Badge>
+                      )}
+                      {!consultation.isWaitBuyDrug && !consultation.isWaitBuyDrug && (
+                        <Badge>
+                          <Text style={[style.replay, global.fontSize12]}>问诊中</Text>
+                        </Badge>
+                      )}
                       {consultation.patientUid in unReadMsgCountRecord &&
                       unReadMsgCountRecord[consultation.patientUid] > 0 ? (
                         <Badge
