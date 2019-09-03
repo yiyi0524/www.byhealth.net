@@ -24,7 +24,7 @@ import {
 import { NavigationScreenProp } from "react-navigation"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
-import { Picture } from "./Chat"
+import { Picture, MsgType } from "./Chat"
 
 const style = gStyle.advisory.advisoryIndex
 const globalStyle = gStyle.global
@@ -134,8 +134,8 @@ export default class Index extends Component<
   }
   onRefresh = () => {
     this.setState({ refreshing: true })
-    Promise.all([this.init(), new Promise(s => setTimeout(s, 500))])
-      .then(_ => {
+    this.init()
+      .then(() => {
         this.setState({ refreshing: false })
       })
       .catch(err => {
@@ -155,12 +155,21 @@ export default class Index extends Component<
   // 获取用户当前的消息信息
   getCurrMsgInfo = (consultation: ConsultationItem): { currMsg: string; currMsgTime: string } => {
     let lastMsg = this.getUserWsLastMsg(consultation.patientUid)
-    let currMsg, currMsgTime
+    let currMsg = "",
+      currMsgTime = ""
     if (!lastMsg) {
       currMsg = consultation.currMsg
       currMsgTime = consultation.currMsgTime
     } else {
-      currMsg = lastMsg.msg || ""
+      if (lastMsg.type === MsgType.audio) {
+        currMsg = "语音消息"
+      } else if (lastMsg.type === MsgType.picture) {
+        currMsg = "图片消息"
+      } else if (lastMsg.type === MsgType.treatmentPlan) {
+        currMsg = "处方消息"
+      } else if (lastMsg.type === MsgType.txt) {
+        currMsg = lastMsg.msg || ""
+      }
       currMsgTime = lastMsg.sendTime
     }
     return {

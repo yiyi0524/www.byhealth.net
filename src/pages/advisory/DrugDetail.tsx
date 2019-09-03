@@ -78,7 +78,6 @@ export default class DrugDetail extends Component<Props, State> {
       let {
         data: { detail },
       } = await drugApi.getDetail({ id })
-      console.log(detail)
       this.setState({
         hasLoad: true,
         detail: {

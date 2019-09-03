@@ -393,7 +393,6 @@ class CalendarMode extends React.Component<Props, State> {
     let { isSitting, timeMapSittingRecord, selectHospital } = this.state
     isSitting = time + "-" + stage in timeMapSittingRecord ? SITTING.TRUE : SITTING.FALSE
     selectHospital = isSitting === SITTING.TRUE ? [timeMapSittingRecord[time + "-" + stage]] : []
-    console.log(timeMapSittingRecord)
     this.setState({
       day: time,
       stage,
