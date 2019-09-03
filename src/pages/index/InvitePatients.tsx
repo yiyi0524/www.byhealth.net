@@ -10,7 +10,7 @@ import gStyle from "@utils/style"
 import React, { Component } from "react"
 import { Image, PixelRatio, RefreshControl, Text, View } from "react-native"
 import { ScrollView, TouchableOpacity } from "react-native-gesture-handler"
-import QRCode from "react-native-qrcode"
+import QRCode from "react-native-qrcode-svg"
 import { NavigationScreenProp } from "react-navigation"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
@@ -45,6 +45,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
     },
   }
 }
+// @ts-ignore
 @connect(
   mapStateToProps,
   mapDispatchToProps,
@@ -167,7 +168,7 @@ export default class InvitePatients extends Component<
             <Text style={[style.detail, global.fontSize14]}>在家随时找我</Text>
             <Text style={[style.title, global.fontSize24]}>复诊调方</Text>
             <View style={style.qrCode}>
-              <QRCode value={this.state.inviteUrl} size={120} bgColor="#252525" fgColor="white" />
+              <QRCode value={this.state.inviteUrl} logoSize={120} logoBackgroundColor="#252525" />
             </View>
             <Text style={[style.detail, global.fontSize12]}>微信扫描上方我的二维码</Text>
             <Text style={[style.detail, global.fontSize12]}>关注 | 博一健康管理 | 公众号</Text>
@@ -180,11 +181,6 @@ export default class InvitePatients extends Component<
             </View>
           </View>
         </ScrollView>
-        {/* <View style={style.share}>
-          <TouchableOpacity onPress={this.shareBusinessCard}>
-            <Text style={[style.shareTitle, global.fontSize14]}>分享二维码名片</Text>
-          </TouchableOpacity>
-        </View> */}
       </View>
     )
   }

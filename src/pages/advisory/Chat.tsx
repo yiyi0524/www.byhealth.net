@@ -711,20 +711,28 @@ export default class Chat extends Component<
                       </TouchableOpacity>
                     </>
                   ) : (
-                    <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+                    <View
+                      style={{
+                        flex: 1,
+                        // alignItems: "center",
+                        justifyContent: "center",
+                      }}>
                       <TouchableOpacity
                         style={{ width: "100%" }}
                         onPressIn={this.onRecordPressIn}
                         onPressOut={this.onRecordPressOut}>
                         <View
                           style={{
-                            width: 150,
+                            width: "100%",
+                            borderRadius: 5,
                             padding: 13,
+                            justifyContent: "center",
                             alignItems: "center",
                             backgroundColor: isRecord ? sColor.white : sColor.mainRed,
                           }}>
                           <Text
                             style={{
+                              textAlign: "center",
                               color: isRecord ? sColor.color666 : sColor.white,
                             }}>
                             {isRecord ? "松开发送录音 " + recordTime : "按下录音"}
@@ -1208,7 +1216,15 @@ export default class Chat extends Component<
               <TouchableOpacity
                 style={style.rightAudio}
                 onPress={() => this.startPlayAudio(msg.id, msg.file.url)}>
-                <View style={{ alignItems: "flex-end", paddingRight: 10, width: 80 }}>
+                <View
+                  style={{
+                    alignItems: "flex-end",
+                    justifyContent: "center",
+                    paddingRight: 10,
+                    width: 80,
+                    paddingTop: 3,
+                    paddingBottom: 3,
+                  }}>
                   <Image
                     style={{ width: 15, height: 15 }}
                     source={
@@ -1252,7 +1268,15 @@ export default class Chat extends Component<
               <TouchableOpacity
                 style={style.leftAudio}
                 onPress={() => this.startPlayAudio(msg.id, msg.file.url)}>
-                <View style={{ alignItems: "flex-start", paddingRight: 10, width: 80 }}>
+                <View
+                  style={{
+                    alignItems: "flex-start",
+                    justifyContent: "center",
+                    paddingRight: 10,
+                    width: 80,
+                    paddingTop: 3,
+                    paddingBottom: 3,
+                  }}>
                   <Image
                     style={{ width: 15, height: 15 }}
                     source={

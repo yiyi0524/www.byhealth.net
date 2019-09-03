@@ -14,5 +14,4 @@ declare module "*.gif" {
   const value: any
   export default value
 }
-declare module "react-native-update"
-declare module "react-native-background-job"
+declare module "idcard"
