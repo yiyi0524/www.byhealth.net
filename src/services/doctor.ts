@@ -579,6 +579,7 @@ interface SittingInfo {
   stage: DayStage
   sittingHospitalId: number //坐诊医院id
   isSitting: boolean
+  isMonthContinuous: boolean
 }
 /**
  * 编辑坐诊信息

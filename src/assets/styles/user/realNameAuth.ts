@@ -124,9 +124,10 @@ export default StyleSheet.create({
     marginRight: 15,
   },
   fromItemTitle_2: {
-    width: 160,
+    width: 120,
     color: sColor.colorCcc,
     marginLeft: 15,
+    marginRight: 5,
   },
   hospital: {
     paddingRight: 15,

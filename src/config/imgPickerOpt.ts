@@ -2,7 +2,7 @@ import { ImagePickerOptions } from "react-native-image-picker"
 const opt: ImagePickerOptions = {
   // 不生成 base64 图片,可以提升性能
   noData: true,
-  allowsEditing: true,
+  allowsEditing: false,
   // 文件质量 0-1 之间
   quality: 1,
   mediaType: "photo",

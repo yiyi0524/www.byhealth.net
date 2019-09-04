@@ -1,7 +1,7 @@
 import doctor, { STAGE, SITTING, STAGE_ZH } from "@/services/doctor"
 import hospital from "@/services/hospital"
 import { windowWidth } from "@/utils/utils"
-import { Radio, Modal, Picker, Icon, Toast } from "@ant-design/react-native"
+import { Radio, Modal, Picker, Icon, Toast, Checkbox } from "@ant-design/react-native"
 import moment from "moment"
 import React, { Fragment } from "react"
 import {
@@ -15,6 +15,7 @@ import {
 } from "react-native"
 import global from "@/assets/styles/global"
 import pathMap from "@/routes/pathMap"
+import { OnChangeParams } from "@ant-design/react-native/lib/checkbox/PropsType"
 const RadioItem = Radio.RadioItem
 // 一天的时间段
 export enum DayStage {
@@ -25,6 +26,8 @@ export enum DayStage {
 interface Props {}
 interface sittingHospitalMapList extends Record<string, string> {}
 interface State {
+  // 本月持续相同设置
+  isMonthContinuous: boolean
   isShowMode: boolean
   // 医院id 映射 颜色 不同的医生的坐诊信息颜色不一样
   hospitalIdMapColor: Record<number, string>
@@ -88,6 +91,7 @@ class CalendarMode extends React.Component<Props, State> {
   constructor(props: any) {
     super(props)
     this.state = {
+      isMonthContinuous: false,
       isShowMode: false,
       isSitting: 0,
       stage: 0,
@@ -109,7 +113,7 @@ class CalendarMode extends React.Component<Props, State> {
     }
   }
   componentDidMount() {
-    this.subscription = DeviceEventEmitter.addListener(pathMap.SittingHospital + "Reload", _ => {
+    this.subscription = DeviceEventEmitter.addListener(pathMap.SittingHospital + "Reload", () => {
       this.init()
     })
     this.init()
@@ -125,10 +129,9 @@ class CalendarMode extends React.Component<Props, State> {
         dayCount = dMoment.daysInMonth(),
         { calendar } = this.state,
         firstDayWeekday = moment()
-          .year(calendar.year)
-          .month(calendar.month - 1)
           .date(1)
           .isoWeekday()
+      console.log(firstDayWeekday)
       calendar.year = dMoment.year()
       calendar.month = dMoment.month() + 1
       calendar.dateList = []
@@ -197,6 +200,34 @@ class CalendarMode extends React.Component<Props, State> {
     } catch (err) {
       console.log(err)
     }
+  }
+  buildFmtWeek = (time: moment.MomentInput): string => {
+    let weekDay = moment(time).format("d")
+    let day = "星期一"
+    switch (weekDay) {
+      case "0":
+        day = "星期一"
+        break
+      case "1":
+        day = "星期二"
+        break
+      case "2":
+        day = "星期三"
+        break
+      case "3":
+        day = "星期四"
+        break
+      case "4":
+        day = "星期五"
+        break
+      case "5":
+        day = "星期六"
+        break
+      case "6":
+        day = "星期天"
+        break
+    }
+    return day
   }
   buildCalendar = () => {
     let { timeMapSittingRecord } = this.state
@@ -402,15 +433,17 @@ class CalendarMode extends React.Component<Props, State> {
     })
   }
   editSittingInfo = async () => {
+    const { day, stage, selectHospital, isSitting, isMonthContinuous } = this.state
     try {
       if (this.state.selectHospital.length === 0 || this.state.selectHospital[0] === 0) {
         return Toast.info("请选择医疗机构", 3)
       }
       await doctor.editSittingInfo({
-        time: this.state.day + " 00:00:00",
-        stage: this.state.stage,
-        sittingHospitalId: this.state.selectHospital[0],
-        isSitting: this.state.isSitting === SITTING.TRUE,
+        time: day + " 00:00:00",
+        stage,
+        sittingHospitalId: selectHospital[0],
+        isSitting: isSitting === SITTING.TRUE,
+        isMonthContinuous,
       })
       Toast.success("设置成功", 1)
       DeviceEventEmitter.emit(pathMap.SittingHospital + "Reload", null)
@@ -427,31 +460,8 @@ class CalendarMode extends React.Component<Props, State> {
     }
   }
   render() {
-    let day = "",
-      time = this.state.day
-    switch (moment(time).format("d")) {
-      case "0":
-        day = "星期一"
-        break
-      case "1":
-        day = "星期二"
-        break
-      case "2":
-        day = "星期三"
-        break
-      case "3":
-        day = "星期四"
-        break
-      case "4":
-        day = "星期五"
-        break
-      case "5":
-        day = "星期六"
-        break
-      case "6":
-        day = "星期天"
-        break
-    }
+    let time = this.state.day
+    let day = this.buildFmtWeek(time)
     return (
       <View style={style.main}>
         <View style={style.head}>
@@ -544,6 +554,28 @@ class CalendarMode extends React.Component<Props, State> {
                 }}>
                 不作诊
               </RadioItem>
+            </View>
+            <View
+              style={[
+                style.modeItem,
+                { alignItems: "center", justifyContent: "center", marginTop: 5 },
+              ]}>
+              <Checkbox
+                style={{ justifyContent: "center" }}
+                onChange={(param: OnChangeParams) => {
+                  const {
+                    target: { checked },
+                  } = param
+                  this.setState({
+                    isMonthContinuous: checked,
+                  })
+                }}
+                checked={this.state.isMonthContinuous}>
+                <Text style={{ marginLeft: 5 }}>
+                  本月之后的每个{this.buildFmtWeek(this.state.day)}
+                  {STAGE_ZH[this.state.stage]}都{this.state.isSitting ? "坐诊" : "不坐诊"}
+                </Text>
+              </Checkbox>
             </View>
           </View>
           <TouchableOpacity onPress={this.editSittingInfo}>
@@ -659,10 +691,10 @@ const style = StyleSheet.create({
   },
   mode: {
     padding: 15,
-    height: 200,
+    height: 220,
   },
   modeItem: {
-    height: 45,
+    minHeight: 45,
   },
   modeItemTitle: {
     color: "#333",

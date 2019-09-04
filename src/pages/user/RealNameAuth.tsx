@@ -126,6 +126,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
     },
   }
 }
+// @ts-ignore
 @connect(
   mapStateToProps,
   mapDispatchToProps,
@@ -665,9 +666,11 @@ export default class RealNameAuth extends Component<
                 />
                 <Text
                   style={[style.fromItemTitle_2, global.fontSize14, global.fontStyle]}
-                  numberOfLines={2}>
-                  正面照, 清晰度高, 半身照(胸部以上、正方形图片)
+                  // numberOfLines={3}
+                >
+                  正面照, 清晰度高, 半身照(胸部以上、正方形图片) 示例:
                 </Text>
+                <Image style={{ width: 80, height: 80 }} source={gImg.common.doctorAvatarDemo} />
               </View>
               <View style={style.formItem}>
                 <InputItem
@@ -1059,7 +1062,7 @@ export default class RealNameAuth extends Component<
                     {" "}
                     专业技术资格证书
                   </Text>
-                  即职称证书(0-10张)
+                  即职称证书(选填)
                 </Text>
               </View>
               <View style={style.formItemImg}>

@@ -67,7 +67,7 @@ export default class SittingInformation extends Component<
   }: {
     navigation: NavigationScreenProp<State, NavParams>
   }) => ({
-    title: "坐诊信息",
+    title: "本月坐诊信息",
     headerStyle: {
       backgroundColor: sColor.white,
       height: 50,

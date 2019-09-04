@@ -23,6 +23,7 @@ export default {
     rightSound: require("@img/common/rightSound.png"),
     leftSoundPlaying: require("@img/common/leftSoundPlaying.gif"),
     rightSoundPlaying: require("@img/common/rightSoundPlaying.gif"),
+    doctorAvatarDemo: require("@img/common/doctorAvatarDemo.jpg"),
   },
   home: {
     prescriptionTemplate: require("@img/home/moban.png"),
