@@ -5,6 +5,7 @@
 	};
 	objectVersion = 46;
 	objects = {
+
 /* Begin PBXBuildFile section */
 		13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB11A68108700A75B9A /* LaunchScreen.xib */; };
@@ -15,9 +16,9 @@
 		15AAD1DB231E66BB00B9BD77 /* Buff.m in Sources */ = {isa = PBXBuildFile; fileRef = 15AAD1DA231E66BB00B9BD77 /* Buff.m */; };
 		15AAD1DE231E674100B9BD77 /* Buff.h in Sources */ = {isa = PBXBuildFile; fileRef = 15AAD1DC231E66C000B9BD77 /* Buff.h */; };
 		15AAD1E0231FBC5200B9BD77 /* AliyunEmasServices-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 15AAD1D9231E652100B9BD77 /* AliyunEmasServices-Info.plist */; };
-		CE445854A90F5216D3245ACE /* libPods-博一健康.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6FD74CD7B39C57908ACA5B1E /* libPods-博一健康.a */; };
 		803F1D75A87546468ADDCD74 /* antfill.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4884E535607A49A085B339A3 /* antfill.ttf */; };
 		AEB5E365FEFF440EBE2C4F2B /* antoutline.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6540A8ED13DA47AEBA038A84 /* antoutline.ttf */; };
+		CE445854A90F5216D3245ACE /* libPods-博一健康.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6FD74CD7B39C57908ACA5B1E /* libPods-博一健康.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -36,10 +37,10 @@
 		15AAD1DC231E66C000B9BD77 /* Buff.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Buff.h; path = "../../rn-boyi-old/ios/boyiHealth/Buff.h"; sourceTree = "<group>"; };
 		15AAD1DD231E66DE00B9BD77 /* boyi.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = boyi.entitlements; path = boyi/boyi.entitlements; sourceTree = "<group>"; };
 		4448CC2873D58C06CE399C36 /* Pods-博一健康.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-博一健康.release.xcconfig"; path = "Target Support Files/Pods-博一健康/Pods-博一健康.release.xcconfig"; sourceTree = "<group>"; };
+		4884E535607A49A085B339A3 /* antfill.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = antfill.ttf; path = "../node_modules/@ant-design/icons-react-native/fonts/antfill.ttf"; sourceTree = "<group>"; };
+		6540A8ED13DA47AEBA038A84 /* antoutline.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = antoutline.ttf; path = "../node_modules/@ant-design/icons-react-native/fonts/antoutline.ttf"; sourceTree = "<group>"; };
 		6FD74CD7B39C57908ACA5B1E /* libPods-博一健康.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-博一健康.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
-		4884E535607A49A085B339A3 /* antfill.ttf */ = {isa = PBXFileReference; name = "antfill.ttf"; path = "../node_modules/@ant-design/icons-react-native/fonts/antfill.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		6540A8ED13DA47AEBA038A84 /* antoutline.ttf */ = {isa = PBXFileReference; name = "antoutline.ttf"; path = "../node_modules/@ant-design/icons-react-native/fonts/antoutline.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -83,6 +84,15 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		7848FE6A8D4E4D36A8C8131A /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				4884E535607A49A085B339A3 /* antfill.ttf */,
+				6540A8ED13DA47AEBA038A84 /* antoutline.ttf */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
@@ -122,16 +132,6 @@
 			);
 			path = Pods;
 			sourceTree = "<group>";
-		};
-		7848FE6A8D4E4D36A8C8131A /* Resources */ = {
-			isa = "PBXGroup";
-			children = (
-				4884E535607A49A085B339A3 /* antfill.ttf */,
-				6540A8ED13DA47AEBA038A84 /* antoutline.ttf */,
-			);
-			name = Resources;
-			sourceTree = "<group>";
-			path = "";
 		};
 /* End PBXGroup section */
 
