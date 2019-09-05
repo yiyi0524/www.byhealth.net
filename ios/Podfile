@@ -1,8 +1,9 @@
 platform :ios, '9.0'
 require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
-
-target 'boyi' do
-  # Pods for boyi
+source 'https://github.com/aliyun/aliyun-specs.git'
+target '博一健康' do
+  # Pods for 博一健康
+  pod 'AlicloudPush', '~> 1.9.8'
   pod 'React', :path => '../node_modules/react-native/'
   pod 'React-Core', :path => '../node_modules/react-native/React'
   pod 'React-DevSupport', :path => '../node_modules/react-native/React'
@@ -26,21 +27,5 @@ target 'boyi' do
   pod 'DoubleConversion', :podspec => '../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec'
   pod 'glog', :podspec => '../node_modules/react-native/third-party-podspecs/glog.podspec'
   pod 'Folly', :podspec => '../node_modules/react-native/third-party-podspecs/Folly.podspec'
-
-  target 'boyiTests' do
-    inherit! :search_paths
-    # Pods for testing
-  end
-
   use_native_modules!
-end
-
-target 'boyi-tvOS' do
-  # Pods for boyi-tvOS
-
-  target 'boyi-tvOSTests' do
-    inherit! :search_paths
-    # Pods for testing
-  end
-
 end

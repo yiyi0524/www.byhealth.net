@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "0940"
+   LastUpgradeVersion = "1030"
    version = "1.3">
    <BuildAction
-      parallelizeBuildables = "NO"
+      parallelizeBuildables = "YES"
       buildImplicitDependencies = "YES">
       <BuildActionEntries>
          <BuildActionEntry
@@ -14,37 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "2D2A28121D9B038B00D4039D"
-               BuildableName = "libReact.a"
-               BlueprintName = "React-tvOS"
-               ReferencedContainer = "container:../node_modules/react-native/React/React.xcodeproj">
-            </BuildableReference>
-         </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "YES"
-            buildForProfiling = "YES"
-            buildForArchiving = "YES"
-            buildForAnalyzing = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "2D02E47A1E0B4A5D006451C7"
-               BuildableName = "boyi-tvOS.app"
-               BlueprintName = "boyi-tvOS"
-               ReferencedContainer = "container:boyi.xcodeproj">
-            </BuildableReference>
-         </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "YES"
-            buildForProfiling = "NO"
-            buildForArchiving = "NO"
-            buildForAnalyzing = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "2D02E48F1E0B4A5D006451C7"
-               BuildableName = "boyi-tvOSTests.xctest"
-               BlueprintName = "boyi-tvOSTests"
+               BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
+               BuildableName = "boyi.app"
+               BlueprintName = "&#x535a;&#x4e00;&#x5065;&#x5eb7;"
                ReferencedContainer = "container:boyi.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -56,23 +28,13 @@
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "2D02E48F1E0B4A5D006451C7"
-               BuildableName = "boyi-tvOSTests.xctest"
-               BlueprintName = "boyi-tvOSTests"
-               ReferencedContainer = "container:boyi.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
       </Testables>
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "2D02E47A1E0B4A5D006451C7"
-            BuildableName = "boyi-tvOS.app"
-            BlueprintName = "boyi-tvOS"
+            BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
+            BuildableName = "boyi.app"
+            BlueprintName = "&#x535a;&#x4e00;&#x5065;&#x5eb7;"
             ReferencedContainer = "container:boyi.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -93,9 +55,9 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "2D02E47A1E0B4A5D006451C7"
-            BuildableName = "boyi-tvOS.app"
-            BlueprintName = "boyi-tvOS"
+            BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
+            BuildableName = "boyi.app"
+            BlueprintName = "&#x535a;&#x4e00;&#x5065;&#x5eb7;"
             ReferencedContainer = "container:boyi.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -112,9 +74,9 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "2D02E47A1E0B4A5D006451C7"
-            BuildableName = "boyi-tvOS.app"
-            BlueprintName = "boyi-tvOS"
+            BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
+            BuildableName = "boyi.app"
+            BlueprintName = "&#x535a;&#x4e00;&#x5065;&#x5eb7;"
             ReferencedContainer = "container:boyi.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
