@@ -1,21 +1,13 @@
-import doctor, { STAGE, SITTING, STAGE_ZH } from "@/services/doctor"
-import hospital from "@/services/hospital"
-import { windowWidth } from "@/utils/utils"
-import { Radio, Modal, Picker, Icon, Toast, Checkbox } from "@ant-design/react-native"
-import moment from "moment"
-import React, { Fragment } from "react"
-import {
-  PixelRatio,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-  DeviceEventEmitter,
-  EmitterSubscription,
-} from "react-native"
-import global from "@/assets/styles/global"
-import pathMap from "@/routes/pathMap"
-import { OnChangeParams } from "@ant-design/react-native/lib/checkbox/PropsType"
+import global from "@/assets/styles/global";
+import pathMap from "@/routes/pathMap";
+import doctor, { SITTING, STAGE, STAGE_ZH } from "@/services/doctor";
+import hospital from "@/services/hospital";
+import { windowWidth } from "@/utils/utils";
+import { Checkbox, Icon, Modal, Picker, Radio, Toast } from "@ant-design/react-native";
+import { OnChangeParams } from "@ant-design/react-native/lib/checkbox/PropsType";
+import moment from "moment";
+import React, { Fragment } from "react";
+import { DeviceEventEmitter, EmitterSubscription, PixelRatio, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 const RadioItem = Radio.RadioItem
 // 一天的时间段
 export enum DayStage {
@@ -46,7 +38,7 @@ interface State {
   selectHospital: number[]
   isSitting: number
   day: string
-  stage: number
+  stage: DayStage
 }
 interface picker {
   value: number
