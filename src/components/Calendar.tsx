@@ -1,13 +1,21 @@
-import global from "@/assets/styles/global";
-import pathMap from "@/routes/pathMap";
-import doctor, { SITTING, STAGE, STAGE_ZH } from "@/services/doctor";
-import hospital from "@/services/hospital";
-import { windowWidth } from "@/utils/utils";
-import { Checkbox, Icon, Modal, Picker, Radio, Toast } from "@ant-design/react-native";
-import { OnChangeParams } from "@ant-design/react-native/lib/checkbox/PropsType";
-import moment from "moment";
-import React, { Fragment } from "react";
-import { DeviceEventEmitter, EmitterSubscription, PixelRatio, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import global from "@/assets/styles/global"
+import pathMap from "@/routes/pathMap"
+import doctor, { SITTING, STAGE, STAGE_ZH } from "@/services/doctor"
+import hospital from "@/services/hospital"
+import { windowWidth } from "@/utils/utils"
+import { Checkbox, Icon, Modal, Picker, Radio, Toast } from "@ant-design/react-native"
+import { OnChangeParams } from "@ant-design/react-native/lib/checkbox/PropsType"
+import moment from "moment"
+import React, { Fragment } from "react"
+import {
+  DeviceEventEmitter,
+  EmitterSubscription,
+  PixelRatio,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native"
 const RadioItem = Radio.RadioItem
 // 一天的时间段
 export enum DayStage {
@@ -195,28 +203,29 @@ class CalendarMode extends React.Component<Props, State> {
   }
   buildFmtWeek = (time: moment.MomentInput): string => {
     let weekDay = moment(time).format("d")
+    console.log(time, weekDay)
     let day = "星期一"
     switch (weekDay) {
-      case "0":
+      case "1":
         day = "星期一"
         break
-      case "1":
+      case "2":
         day = "星期二"
         break
-      case "2":
+      case "3":
         day = "星期三"
         break
-      case "3":
+      case "4":
         day = "星期四"
         break
-      case "4":
+      case "5":
         day = "星期五"
         break
-      case "5":
+      case "6":
         day = "星期六"
         break
-      case "6":
-        day = "星期天"
+      case "0":
+        day = "星期日"
         break
     }
     return day
