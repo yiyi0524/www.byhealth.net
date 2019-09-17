@@ -36,7 +36,7 @@ export function isDebugMode() {
   try {
     const { scriptURL } = NativeModules.SourceCode
     return (
-      (scriptURL as string).indexOf("dev=true") === -1 ||
+      (scriptURL as string).indexOf("dev=true") !== -1 ||
       (scriptURL as string).indexOf("http://localhost") === 0
     )
   } catch (e) {

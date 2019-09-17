@@ -131,8 +131,8 @@ android {
         applicationId "net.byhealth.boyi"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 16
-        versionName "1.1.14"
+        versionCode 18
+        versionName "1.1.16"
     }
     splits {
         abi {
