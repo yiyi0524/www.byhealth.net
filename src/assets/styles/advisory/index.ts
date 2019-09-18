@@ -52,7 +52,9 @@ export default StyleSheet.create({
     height: 35,
     backgroundColor: sColor.colorDdd,
   },
-  msgList: {},
+  msgList: {
+    paddingBottom: 15,
+  },
   msgItem: {
     padding: 15,
     paddingTop: 10,

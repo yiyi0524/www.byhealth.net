@@ -6,6 +6,16 @@ import { ConsultationItem } from "@/pages/advisory/Index"
 import { PrescriptionDrugCategory, PrescriptionDrugInfo } from "@/pages/advisory/SquareRoot"
 import { Drug as DrugInfo } from "@api/patient"
 import { bget, bpost, GetListParam } from "./api"
+/**
+ * 扫码用户
+ */
+export interface ScanUser {
+  openid: string
+  nick: string
+  avatar: string
+  scanTime: string
+  gender: number
+}
 export const ALLOW_INQUIRY = {
   FALSE: 0x0,
   TRUE: 0x1,
@@ -767,7 +777,16 @@ export function uploadPrescriptionDetail(query: { id: number }) {
     query,
   })
 }
+/**
+ * 获取扫码用户列表
+ */
+export function listScanUser() {
+  return bget<{ list: ScanUser[] }>({
+    url: "api/listScanUser",
+  })
+}
 export default {
+  listScanUser,
   uploadPrescriptionDetail,
   listUploadPrescription,
   uploadPrescription,

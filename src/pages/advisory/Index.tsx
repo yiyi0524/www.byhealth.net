@@ -2,7 +2,7 @@ import global from "@/assets/styles/global"
 import { AppState } from "@/redux/stores/store"
 import pathMap from "@/routes/pathMap"
 import api from "@/services/api"
-import doctor, { GENDER } from "@/services/doctor"
+import doctor, { GENDER, ScanUser } from "@/services/doctor"
 import { getPicCdnUrl } from "@/utils/utils"
 import { Badge, Toast } from "@ant-design/react-native"
 import Empty from "@components/Empty"
@@ -25,7 +25,7 @@ import { NavigationScreenProp } from "react-navigation"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
 import { Picture, MsgType } from "./Chat"
-
+import { Accordion } from "@ant-design/react-native"
 const style = gStyle.advisory.advisoryIndex
 const globalStyle = gStyle.global
 
@@ -50,6 +50,7 @@ interface State {
   hasLoad: boolean
   refreshing: boolean
   consultationList: ConsultationItem[]
+  scanUserList: ScanUser[]
 }
 const mapStateToProps = (state: AppState) => {
   return {
@@ -88,6 +89,7 @@ export default class Index extends Component<
       hasLoad: true,
       refreshing: false,
       consultationList: [],
+      scanUserList: [],
     }
   }
   componentDidMount() {
@@ -110,9 +112,15 @@ export default class Index extends Component<
         return
       }
       Buff.clearNotifications()
+      const listConsultationPromise = doctor.listConsultation({ page: -1, limit: -1 })
+      const listScanUserPromise = doctor.listScanUser()
+
       let {
         data: { list: consultationList },
-      } = await doctor.listConsultation({ page: -1, limit: -1 })
+      } = await listConsultationPromise
+      let {
+        data: { list: scanUserList },
+      } = await listScanUserPromise
       for (let consultation of consultationList) {
         if (consultation.doctorUnreadMsgCount !== 0) {
           this.props.setUserUnReadMsgCount({
@@ -121,8 +129,10 @@ export default class Index extends Component<
           })
         }
       }
+      console.log(scanUserList)
       this.setState({
         hasLoad: true,
+        scanUserList,
         consultationList,
       })
     } catch (err) {
@@ -326,6 +336,52 @@ export default class Index extends Component<
               )
             })}
             {this.state.consultationList.length === 0 ? <Empty /> : null}
+            <View style={{ padding: 10, marginTop: 5 }}>
+              <Text style={{ fontSize: 16 }}>微信扫码用户</Text>
+            </View>
+            <View style={[{ flex: 1 }]}>
+              {this.state.scanUserList.map(scanUser => {
+                return (
+                  <View
+                    style={[
+                      style.msgItem,
+                      globalStyle.flex,
+                      globalStyle.justifyContentSpaceBetween,
+                      globalStyle.alignItemsCenter,
+                    ]}
+                    key={scanUser.openid}>
+                    <View style={style.baseInformation}>
+                      <View style={style.avatarFormat}>
+                        <Image
+                          style={style.avatar}
+                          source={
+                            scanUser.avatar ? { uri: scanUser.avatar } : gImg.common.defaultAvatar
+                          }
+                        />
+                      </View>
+                    </View>
+                    <View style={style.msgCenter}>
+                      <View
+                        style={[
+                          globalStyle.flex,
+                          globalStyle.justifyContentSpaceBetween,
+                          globalStyle.alignItemsCenter,
+                        ]}>
+                        <Text
+                          style={[style.msgName, globalStyle.fontSize15, globalStyle.fontStyle]}
+                          numberOfLines={1}>
+                          {scanUser.nick}
+                        </Text>
+                        <Text
+                          style={[style.msgTime, globalStyle.fontSize13, globalStyle.fontStyle]}>
+                          扫码时间: {scanUser.scanTime}
+                        </Text>
+                      </View>
+                    </View>
+                  </View>
+                )
+              })}
+            </View>
           </View>
         </ScrollView>
       </>
