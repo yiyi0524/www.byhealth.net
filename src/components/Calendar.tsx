@@ -553,7 +553,7 @@ class CalendarMode extends React.Component<Props, State> {
                     this.setState({ isSitting: SITTING.FALSE })
                   }
                 }}>
-                不作诊
+                不坐诊
               </RadioItem>
             </View>
             <View
