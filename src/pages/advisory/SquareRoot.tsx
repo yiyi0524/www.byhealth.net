@@ -4,7 +4,11 @@ import * as userAction from "@/redux/actions/user"
 import { AppState } from "@/redux/stores/store"
 import api, { windowWidth } from "@/services/api"
 import { addPrescription, AddPrescriptionParam, GENDER, GENDER_ZH } from "@/services/doctor"
-import { ORAL_CHINESE_DRUG_ID, TOPICAL_CHINESE_DRUG_ID } from "@/services/drug"
+import {
+  ORAL_CHINESE_DRUG_ID,
+  TOPICAL_CHINESE_DRUG_ID,
+  EXTERN_CHINESE_DRUG_ID,
+} from "@/services/drug"
 import { getPatientInfo } from "@/services/patient"
 import { getPersonalInfo } from "@/services/user"
 import { getPicCdnUrl } from "@/utils/utils"
@@ -132,6 +136,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
     },
   }
 }
+// @ts-ignore
 @connect(
   mapStateToProps,
   mapDispatchToProps,
@@ -331,7 +336,8 @@ export default class SquareRoot extends Component<
       // 如果为中药
       if (
         prescriptionDrugCategory.id === ORAL_CHINESE_DRUG_ID ||
-        prescriptionDrugCategory.id === TOPICAL_CHINESE_DRUG_ID
+        prescriptionDrugCategory.id === TOPICAL_CHINESE_DRUG_ID ||
+        prescriptionDrugCategory.id === EXTERN_CHINESE_DRUG_ID
       ) {
         drugMoney += drugCategoryMoney * (prescriptionDrugCategory.doseCount || 1)
       } else {
@@ -469,7 +475,11 @@ export default class SquareRoot extends Component<
                   <Text style={[style.empty, global.fontSize14]}>暂无</Text>
                 ) : null}
                 {this.state.prescriptionDrugCategoryList.map((category, k) => {
-                  if (category.id === 1 || category.id === 2) {
+                  if (
+                    category.id === ORAL_CHINESE_DRUG_ID ||
+                    category.id === TOPICAL_CHINESE_DRUG_ID ||
+                    category.id === EXTERN_CHINESE_DRUG_ID
+                  ) {
                     /* 中药 */
                     return (
                       <View
@@ -497,7 +507,7 @@ export default class SquareRoot extends Component<
                                   {drugInfo.detail.name}
                                 </Text>
                                 <Text style={[style.chooseDrugCount, global.fontSize14]}>
-                                  {drugInfo.count} {drugInfo.detail.unit}
+                                  {drugInfo.count} * {drugInfo.detail.unit}
                                 </Text>
                               </View>
                             )
@@ -855,7 +865,11 @@ export default class SquareRoot extends Component<
       return Toast.info("请选择药材", 3)
     }
     for (let category of prescriptionDrugCategoryList) {
-      if (category.id === ORAL_CHINESE_DRUG_ID || category.id === TOPICAL_CHINESE_DRUG_ID) {
+      if (
+        category.id === ORAL_CHINESE_DRUG_ID ||
+        category.id === TOPICAL_CHINESE_DRUG_ID ||
+        category.id === EXTERN_CHINESE_DRUG_ID
+      ) {
         if (!category.doseCount || category.doseCount < 1) {
           return Toast.info("中药剂数必填", 2)
         }

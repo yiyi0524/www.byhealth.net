@@ -15,6 +15,11 @@ import { Image, PixelRatio, RefreshControl, Text, View } from "react-native"
 import { NavigationScreenProp, ScrollView } from "react-navigation"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
+import {
+  ORAL_CHINESE_DRUG_ID,
+  TOPICAL_CHINESE_DRUG_ID,
+  EXTERN_CHINESE_DRUG_ID,
+} from "@/services/drug"
 const style = gStyle.index.PrescriptionDetail
 const mapStateToProps = (state: AppState) => {
   return {
@@ -299,7 +304,11 @@ export default class SquareRoot extends Component<
                     }
                   }
                 }
-                if (v.categoryId === 1 || v.categoryId === 2) {
+                if (
+                  v.categoryId === ORAL_CHINESE_DRUG_ID ||
+                  v.categoryId === TOPICAL_CHINESE_DRUG_ID ||
+                  v.categoryId === EXTERN_CHINESE_DRUG_ID
+                ) {
                   // 中药
                   return (
                     <View style={style.drugCategory} key={k}>
@@ -321,7 +330,7 @@ export default class SquareRoot extends Component<
                               style={[style.traditionalChineseMedicineItem, { marginLeft: 15 }]}
                               key={k1}>
                               <Text style={[style.drugName, global.fontSize14]}>
-                                {drugName} {v1.count} {unit}
+                                {drugName} {v1.count} * {unit}
                               </Text>
                             </View>
                           )

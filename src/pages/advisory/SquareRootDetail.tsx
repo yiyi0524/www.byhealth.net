@@ -16,6 +16,11 @@ import { Image, PixelRatio, RefreshControl, Text, View } from "react-native"
 import { NavigationScreenProp, ScrollView } from "react-navigation"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
+import {
+  ORAL_CHINESE_DRUG_ID,
+  EXTERN_CHINESE_DRUG_ID,
+  TOPICAL_CHINESE_DRUG_ID,
+} from "@/services/drug"
 const style = gStyle.advisory.SquareRootDetail
 const mapStateToProps = (state: AppState) => {
   return {
@@ -234,7 +239,11 @@ export default class SquareRoot extends Component<
                     }
                   }
                 }
-                if (v.categoryId === 1 || v.categoryId === 2) {
+                if (
+                  v.categoryId === ORAL_CHINESE_DRUG_ID ||
+                  v.categoryId === EXTERN_CHINESE_DRUG_ID ||
+                  v.categoryId === TOPICAL_CHINESE_DRUG_ID
+                ) {
                   return (
                     <View style={style.drugCategoryItem} key={k}>
                       <View style={[]}>
@@ -278,7 +287,7 @@ export default class SquareRoot extends Component<
                                   {drugItem}
                                 </Text>
                                 <Text style={[style.drugItemTitle, global.fontSize12]}>
-                                  {v.count} {unit}
+                                  {v.count} * {unit}
                                 </Text>
                               </View>
                             )

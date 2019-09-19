@@ -58,7 +58,7 @@ export default StyleSheet.create({
   },
   list: {
     backgroundColor: sColor.white,
-    minHeight: windowHeight - 100,
+    minHeight: windowHeight - 200,
     paddingBottom: 15,
   },
   theme: {

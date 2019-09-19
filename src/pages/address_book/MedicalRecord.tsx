@@ -15,6 +15,7 @@ import { TouchableOpacity } from "react-native-gesture-handler"
 import { NavigationScreenProp } from "react-navigation"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
+import { ORAL_CHINESE_DRUG_ID, EXTERN_CHINESE_DRUG_ID } from "@/services/drug"
 const style = gStyle.addressBook.MedicalRecord
 const global = gStyle.global
 
@@ -228,7 +229,11 @@ export default class InquirySheet extends Component<
                     }
                   }
                 }
-                if (v.categoryId === 1 || v.categoryId === 2) {
+                if (
+                  v.categoryId === ORAL_CHINESE_DRUG_ID ||
+                  v.categoryId === EXTERN_CHINESE_DRUG_ID ||
+                  v.categoryId === TOPICAL_CHINESE_DRUG_ID
+                ) {
                   return (
                     <View style={style.drugCategory} key={k}>
                       <Text style={[style.drugCategoryTitle, global.fontSize14]}>

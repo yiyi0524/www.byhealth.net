@@ -25,6 +25,11 @@ import { connect } from "react-redux"
 import { Dispatch } from "redux"
 import { CategoryItem } from "../advisory/DrugSelect"
 import { PrescriptionDrugCategory } from "../advisory/SquareRoot"
+import {
+  ORAL_CHINESE_DRUG_ID,
+  TOPICAL_CHINESE_DRUG_ID,
+  EXTERN_CHINESE_DRUG_ID,
+} from "@/services/drug"
 const style = gStyle.index.EditPrescriptionTpl
 const global = gStyle.global
 interface Props {
@@ -190,7 +195,11 @@ export default class EditPrescriptionTpl extends Component<
     if (advice === "") {
       return Toast.info("请输入医嘱", 2)
     }
-    if (this.state.categoryId === 1 || this.state.categoryId === 2) {
+    if (
+      this.state.categoryId === ORAL_CHINESE_DRUG_ID ||
+      this.state.categoryId === TOPICAL_CHINESE_DRUG_ID ||
+      this.state.categoryId === TOPICAL_CHINESE_DRUG_ID
+    ) {
       if (doseCount === 0) {
         return Toast.info("请输入药剂总数", 2)
       }
@@ -273,7 +282,9 @@ export default class EditPrescriptionTpl extends Component<
                 <View style={style.spot} />
               </View>
               <DashLine width={windowWidth - 30} backgroundColor={"#ddd"} len={45} />
-              {categoryId === 1 || categoryId === 2 ? (
+              {categoryId === ORAL_CHINESE_DRUG_ID ||
+              categoryId === TOPICAL_CHINESE_DRUG_ID ||
+              categoryId === EXTERN_CHINESE_DRUG_ID ? (
                 <View style={style.drugCategoryItem}>
                   <Text style={[style.drugCategoryName, global.fontSize15]}>{categoryName}</Text>
                   <View
@@ -287,7 +298,7 @@ export default class EditPrescriptionTpl extends Component<
                             global.fontSize14,
                             style.traditionalChineseMedicine,
                           ]}>
-                          {drugInfo.detail.name} {drugInfo.count} {drugInfo.detail.unit}
+                          {drugInfo.detail.name} {drugInfo.count} * {drugInfo.detail.unit}
                         </Text>
                       )
                     })}

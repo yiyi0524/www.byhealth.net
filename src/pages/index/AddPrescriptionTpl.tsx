@@ -4,7 +4,11 @@ import { AppState } from "@/redux/stores/store"
 import pathMap from "@/routes/pathMap"
 import { windowWidth } from "@/services/api"
 import doctor from "@/services/doctor"
-import { ORAL_CHINESE_DRUG_ID, TOPICAL_CHINESE_DRUG_ID } from "@/services/drug"
+import {
+  ORAL_CHINESE_DRUG_ID,
+  TOPICAL_CHINESE_DRUG_ID,
+  EXTERN_CHINESE_DRUG_ID,
+} from "@/services/drug"
 import hospital from "@/services/hospital"
 import { Icon, InputItem, Toast } from "@ant-design/react-native"
 import sColor from "@styles/color"
@@ -181,7 +185,11 @@ export default class AddPrescriptionTpl extends Component<
     if (this.state.advice === "") {
       return Toast.info("请输入医嘱", 2)
     }
-    if (this.state.categoryId === 1 || this.state.categoryId === 2) {
+    if (
+      this.state.categoryId === ORAL_CHINESE_DRUG_ID ||
+      this.state.categoryId === TOPICAL_CHINESE_DRUG_ID ||
+      this.state.categoryId === EXTERN_CHINESE_DRUG_ID
+    ) {
       if (this.state.doseCount === 0) {
         return Toast.info("请输入药剂总数", 2)
       }
@@ -239,6 +247,7 @@ export default class AddPrescriptionTpl extends Component<
       drugCategoryMoney += v.count * (v.detail.price / 1000)
       if (
         v.detail.category_id === ORAL_CHINESE_DRUG_ID ||
+        v.detail.category_id === EXTERN_CHINESE_DRUG_ID ||
         v.detail.category_id === TOPICAL_CHINESE_DRUG_ID
       ) {
         total += drugCategoryMoney * (this.state.doseCount || 1)
@@ -284,7 +293,9 @@ export default class AddPrescriptionTpl extends Component<
                 <View style={style.spot} />
               </View>
               <DashLine width={windowWidth - 30} backgroundColor={"#ddd"} len={45} />
-              {categoryId === ORAL_CHINESE_DRUG_ID || categoryId === TOPICAL_CHINESE_DRUG_ID ? (
+              {categoryId === ORAL_CHINESE_DRUG_ID ||
+              categoryId === TOPICAL_CHINESE_DRUG_ID ||
+              categoryId === EXTERN_CHINESE_DRUG_ID ? (
                 <View style={style.drugCategoryItem}>
                   <Text style={[style.drugCategoryName, global.fontSize15]}>{categoryName}</Text>
                   {this.state.drugList.length === 0 ? (
@@ -301,7 +312,7 @@ export default class AddPrescriptionTpl extends Component<
                             global.fontSize14,
                             style.traditionalChineseMedicine,
                           ]}>
-                          {drugInfo.detail.name} {drugInfo.count} {drugInfo.detail.unit}
+                          {drugInfo.detail.name} {drugInfo.count} * {drugInfo.detail.unit}
                         </Text>
                       )
                     })}

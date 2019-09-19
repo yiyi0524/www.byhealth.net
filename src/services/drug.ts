@@ -10,6 +10,8 @@ export const TYPE_ZH = {
 }
 // 内服中药id
 export const ORAL_CHINESE_DRUG_ID = 1
+// 扩展中药 -- 广东一方药业颗粒
+export const EXTERN_CHINESE_DRUG_ID = 84
 // 外用中药id
 export const TOPICAL_CHINESE_DRUG_ID = 2
 // 中成药id
