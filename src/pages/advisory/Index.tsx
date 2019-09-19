@@ -25,7 +25,6 @@ import { NavigationScreenProp } from "react-navigation"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
 import { Picture, MsgType } from "./Chat"
-import { Accordion } from "@ant-design/react-native"
 const style = gStyle.advisory.advisoryIndex
 const globalStyle = gStyle.global
 
