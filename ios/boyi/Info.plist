@@ -23,7 +23,9 @@
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>14</string>
+	<string>17</string>
+	<key>LSApplicationCategoryType</key>
+	<string></string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
@@ -40,6 +42,8 @@
 		</dict>
 	</dict>
 	<key>NSAppleMusicUsageDescription</key>
+	<string>方便您使用博一健康app</string>
+	<key>NSBluetoothAlwaysUsageDescription</key>
 	<string>方便您使用博一健康app</string>
 	<key>NSBluetoothPeripheralUsageDescription</key>
 	<string>方便您使用博一健康app</string>
