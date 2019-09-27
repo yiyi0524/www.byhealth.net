@@ -922,7 +922,7 @@ export default class RealNameAuth extends Component<
                   style={style.formItemTextarea}
                   rows={4}
                   placeholder="简介"
-                  count={100}
+                  count={10000}
                   value={this.state.profile}
                   onChange={profile => {
                     this.setState({
@@ -1235,7 +1235,7 @@ export default class RealNameAuth extends Component<
               <View style={[style.formTitle, global.flex, global.alignItemsCenter]}>
                 <Text style={style.formIcon} />
                 <Text style={[style.formThem, global.fontStyle, global.fontSize14]}>
-                  选择擅长治疗疾病(最多选择10个)
+                  选择擅长治疗疾病
                 </Text>
               </View>
               {this.state.hospitalDepartmentSymptom.map((v: any, k: number) => {
@@ -1252,7 +1252,7 @@ export default class RealNameAuth extends Component<
                             onPress={() => {
                               let hospitalDepartmentSymptom = this.state.hospitalDepartmentSymptom,
                                 adeptSymptomIdList = this.state.adeptSymptomIdList
-                              if (adeptSymptomIdList.length < 10) {
+                              if (adeptSymptomIdList.length < 10000) {
                                 hospitalDepartmentSymptom[k].symptomList[
                                   k1
                                 ].isChecked = !v1.isChecked
@@ -1268,7 +1268,7 @@ export default class RealNameAuth extends Component<
                                 }
                               } else {
                                 if (!hospitalDepartmentSymptom[k].symptomList[k1].isChecked) {
-                                  Toast.info("选择擅长治疗疾病不超过10个", 1)
+                                  Toast.info("选择擅长治疗疾病不超过10000个", 1)
                                 } else {
                                   hospitalDepartmentSymptom[k].symptomList[
                                     k1

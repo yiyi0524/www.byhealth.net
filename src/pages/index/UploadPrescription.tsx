@@ -161,6 +161,7 @@ export default class UploadPrescription extends Component<Props & DefaultProps, 
             </View>
             <View style={style.detail}>
               <InputItem
+                type="number"
                 style={style.input}
                 value={serviceMoney}
                 placeholder="请输入诊后管理费"

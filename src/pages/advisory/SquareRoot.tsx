@@ -590,6 +590,7 @@ export default class SquareRoot extends Component<
                               <InputItem
                                 last
                                 style={style.doseInput}
+                                type="number"
                                 placeholder="0"
                                 value={
                                   !category.everyDoseUseCount || category.everyDoseUseCount === 0
@@ -782,6 +783,7 @@ export default class SquareRoot extends Component<
                 <Text style={[style.diagnosisItemTitle, global.fontSize14]}>诊后管理费</Text>
                 <View style={style.percentageOfCommission}>
                   <InputItem
+                    type="number"
                     labelNumber={1}
                     disabled={this.state.prescriptionDrugCategoryList.length === 0}
                     style={style.percentageOfCommissionInput}

@@ -310,6 +310,7 @@ export default class EditPrescriptionTpl extends Component<
                       <View style={style.doseInputFather}>
                         <InputItem
                           last
+                          type="number"
                           style={style.doseInput}
                           placeholder="0"
                           value={
@@ -335,6 +336,7 @@ export default class EditPrescriptionTpl extends Component<
                       <View style={style.doseInputFather}>
                         <InputItem
                           last
+                          type="number"
                           style={style.doseInput}
                           placeholder="0"
                           value={
@@ -362,6 +364,7 @@ export default class EditPrescriptionTpl extends Component<
                       <View style={style.doseInputFather}>
                         <InputItem
                           last
+                          type="number"
                           style={style.doseInput}
                           placeholder="0"
                           value={

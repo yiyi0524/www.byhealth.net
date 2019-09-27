@@ -380,6 +380,7 @@ export default class Register extends Component<
               </View>
               <View style={style.formItem}>
                 <InputItem
+                  type="number"
                   style={[style.input, global.fontStyle, global.fontSize14]}
                   value={this.state.verificationCode}
                   placeholder="验证码"

@@ -32,6 +32,7 @@ export interface ConsultationItem {
   isWaitReply: boolean
   isWaitBuyDrug: boolean
   id: number
+  openid: string
   gender: number
   doctorUnreadMsgCount: number
   patientUid: number
@@ -197,6 +198,8 @@ export default class Index extends Component<
       )
     }
     let { unReadMsgCountRecord } = this.props.ws
+    let consultationOpenIdList = this.state.consultationList.map(v => v.openid)
+    console.log(consultationOpenIdList)
     return (
       <>
         <ScrollView
@@ -339,47 +342,49 @@ export default class Index extends Component<
               <Text style={{ fontSize: 16 }}>微信扫码用户</Text>
             </View>
             <View style={[{ flex: 1 }]}>
-              {this.state.scanUserList.map(scanUser => {
-                return (
-                  <View
-                    style={[
-                      style.msgItem,
-                      globalStyle.flex,
-                      globalStyle.justifyContentSpaceBetween,
-                      globalStyle.alignItemsCenter,
-                    ]}
-                    key={scanUser.openid}>
-                    <View style={style.baseInformation}>
-                      <View style={style.avatarFormat}>
-                        <Image
-                          style={style.avatar}
-                          source={
-                            scanUser.avatar ? { uri: scanUser.avatar } : gImg.common.defaultAvatar
-                          }
-                        />
+              {this.state.scanUserList
+                .filter(user => !consultationOpenIdList.includes(user.openid))
+                .map(scanUser => {
+                  return (
+                    <View
+                      style={[
+                        style.msgItem,
+                        globalStyle.flex,
+                        globalStyle.justifyContentSpaceBetween,
+                        globalStyle.alignItemsCenter,
+                      ]}
+                      key={scanUser.openid}>
+                      <View style={style.baseInformation}>
+                        <View style={style.avatarFormat}>
+                          <Image
+                            style={style.avatar}
+                            source={
+                              scanUser.avatar ? { uri: scanUser.avatar } : gImg.common.defaultAvatar
+                            }
+                          />
+                        </View>
+                      </View>
+                      <View style={style.msgCenter}>
+                        <View
+                          style={[
+                            globalStyle.flex,
+                            globalStyle.justifyContentSpaceBetween,
+                            globalStyle.alignItemsCenter,
+                          ]}>
+                          <Text
+                            style={[style.msgName, globalStyle.fontSize15, globalStyle.fontStyle]}
+                            numberOfLines={1}>
+                            {scanUser.nick}
+                          </Text>
+                          <Text
+                            style={[style.msgTime, globalStyle.fontSize13, globalStyle.fontStyle]}>
+                            扫码时间: {scanUser.scanTime}
+                          </Text>
+                        </View>
                       </View>
                     </View>
-                    <View style={style.msgCenter}>
-                      <View
-                        style={[
-                          globalStyle.flex,
-                          globalStyle.justifyContentSpaceBetween,
-                          globalStyle.alignItemsCenter,
-                        ]}>
-                        <Text
-                          style={[style.msgName, globalStyle.fontSize15, globalStyle.fontStyle]}
-                          numberOfLines={1}>
-                          {scanUser.nick}
-                        </Text>
-                        <Text
-                          style={[style.msgTime, globalStyle.fontSize13, globalStyle.fontStyle]}>
-                          扫码时间: {scanUser.scanTime}
-                        </Text>
-                      </View>
-                    </View>
-                  </View>
-                )
-              })}
+                  )
+                })}
             </View>
           </View>
         </ScrollView>

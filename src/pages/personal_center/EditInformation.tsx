@@ -3,7 +3,7 @@ import * as userAction from "@/redux/actions/user"
 import { AppState } from "@/redux/stores/store"
 import pathMap from "@/routes/pathMap"
 import api from "@/services/api"
-import { GENDER_ZH, TECHNICAL_TITLE_ZH, setAdeptSymptomIdList, setProfile } from "@/services/doctor"
+import { GENDER_ZH, setAdeptSymptomIdList, setProfile, TECHNICAL_TITLE_ZH } from "@/services/doctor"
 import { TextareaItem, Toast } from "@ant-design/react-native"
 import hospitalApi from "@api/hospital"
 import userApi, { DoctorInfo } from "@api/user"
@@ -17,6 +17,7 @@ import { connect } from "react-redux"
 import { Dispatch } from "redux"
 import { Overwrite } from "utility-types"
 import { Picture } from "../advisory/Chat"
+import Input from "@ant-design/react-native/lib/input-item/Input"
 const style = gStyle.personalCenter.editInformation
 const global = gStyle.global
 interface Props {
@@ -85,6 +86,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
     },
   }
 }
+//@ts-ignore
 @connect(
   mapStateToProps,
   mapDispatchToProps,
@@ -285,7 +287,7 @@ export default class Index extends Component<
     })
     try {
       await setProfile({ profile: this.state.doctorInfo.profile })
-      Toast.success("我的简介设置成功", 2)
+      Toast.success("我的简介设置成功", 1)
     } catch (err) {
       console.log(err)
       Toast.fail("我的简介设置失败, 错误信息: " + err.msg, 3)
@@ -396,6 +398,34 @@ export default class Index extends Component<
               {this.state.doctorInfo.profile}
             </Text>
           </View>
+          {/* 编辑个人简介 */}
+          <View style={this.state.isEditProfile ? style.editProfile : global.hidden}>
+            <View style={[style.selectDepartmentTitle, global.flex, global.alignItemsCenter]}>
+              <View style={style.selectDepartmentIcon} />
+              <Text style={[style.selectDepartmentTheme, global.fontSize16]}>我的简介</Text>
+            </View>
+            <View style={style.editInput}>
+              <TextareaItem
+                rows={6}
+                count={10000}
+                placeholder="请输入简介"
+                value={this.state.doctorInfo.profile}
+                onChange={profile => {
+                  if (profile) {
+                    let doctorInfo = this.state.doctorInfo
+                    doctorInfo.profile = profile
+                    this.setState({
+                      doctorInfo,
+                    })
+                  }
+                }}
+                style={style.editProfileInput}
+              />
+            </View>
+            <TouchableOpacity onPress={this.editProfile}>
+              <Text style={[style.editProfileBtn, global.fontSize14]}>完成</Text>
+            </TouchableOpacity>
+          </View>
         </ScrollView>
         {/* <View style={style.viewFa}>
           <TouchableOpacity>
@@ -469,34 +499,6 @@ export default class Index extends Component<
             })}
           </View>
         </ScrollView>
-        {/* 编辑个人简介 */}
-        <View style={this.state.isEditProfile ? style.editProfile : global.hidden}>
-          <View style={[style.selectDepartmentTitle, global.flex, global.alignItemsCenter]}>
-            <View style={style.selectDepartmentIcon} />
-            <Text style={[style.selectDepartmentTheme, global.fontSize16]}>我的简介</Text>
-          </View>
-          <View style={style.editInput}>
-            <TextareaItem
-              rows={6}
-              count={800}
-              placeholder="请输入简介"
-              value={this.state.doctorInfo.profile}
-              onChange={profile => {
-                if (profile) {
-                  let doctorInfo = this.state.doctorInfo
-                  doctorInfo.profile = profile
-                  this.setState({
-                    doctorInfo,
-                  })
-                }
-              }}
-              style={style.editProfileInput}
-            />
-          </View>
-          <TouchableOpacity onPress={this.editProfile}>
-            <Text style={[style.editProfileBtn, global.fontSize14]}>完成</Text>
-          </TouchableOpacity>
-        </View>
       </View>
     )
   }

@@ -323,6 +323,7 @@ export default class AddPrescriptionTpl extends Component<
                       <Text style={[style.doseTitle, global.fontSize14]}>共</Text>
                       <View style={style.doseInputFather}>
                         <InputItem
+                          type="number"
                           last
                           style={style.doseInput}
                           placeholder="0"
@@ -350,6 +351,7 @@ export default class AddPrescriptionTpl extends Component<
                       <View style={style.doseInputFather}>
                         <InputItem
                           last
+                          type="number"
                           style={style.doseInput}
                           placeholder="0"
                           value={this.state.dailyDose === 0 ? "" : this.state.dailyDose + ""}
@@ -378,6 +380,7 @@ export default class AddPrescriptionTpl extends Component<
                       <View style={style.doseInputFather}>
                         <InputItem
                           last
+                          type="number"
                           style={style.doseInput}
                           placeholder="0"
                           value={

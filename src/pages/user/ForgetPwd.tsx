@@ -195,6 +195,7 @@ export default class ForgetPwd extends Component<
             </View>
             <View style={style.inputItem}>
               <InputItem
+                type="number"
                 value={this.state.verificationCode}
                 style={style.input}
                 placeholder="验证码"
