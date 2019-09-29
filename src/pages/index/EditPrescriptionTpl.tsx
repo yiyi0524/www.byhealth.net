@@ -60,6 +60,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
     },
   }
 }
+//@ts-ignore
 @connect(
   mapStateToProps,
   mapDispatchToProps,
@@ -116,6 +117,7 @@ export default class EditPrescriptionTpl extends Component<
         dailyDose: 0,
         doseCount: 0,
         everyDoseUseCount: 0,
+        isSystemTpl: false,
       },
       categoryList: [],
     }

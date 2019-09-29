@@ -17,7 +17,7 @@ import { connect } from "react-redux"
 import { Dispatch } from "redux"
 import { Overwrite } from "utility-types"
 import { Picture } from "../advisory/Chat"
-import Input from "@ant-design/react-native/lib/input-item/Input"
+
 const style = gStyle.personalCenter.editInformation
 const global = gStyle.global
 interface Props {

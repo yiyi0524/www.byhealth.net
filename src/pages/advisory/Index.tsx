@@ -199,7 +199,6 @@ export default class Index extends Component<
     }
     let { unReadMsgCountRecord } = this.props.ws
     let consultationOpenIdList = this.state.consultationList.map(v => v.openid)
-    console.log(consultationOpenIdList)
     return (
       <>
         <ScrollView

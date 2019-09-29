@@ -5,9 +5,9 @@ import { AppState } from "@/redux/stores/store"
 import api, { windowWidth } from "@/services/api"
 import { addPrescription, AddPrescriptionParam, GENDER, GENDER_ZH } from "@/services/doctor"
 import {
+  EXTERN_CHINESE_DRUG_ID,
   ORAL_CHINESE_DRUG_ID,
   TOPICAL_CHINESE_DRUG_ID,
-  EXTERN_CHINESE_DRUG_ID,
 } from "@/services/drug"
 import { getPatientInfo } from "@/services/patient"
 import { getPersonalInfo } from "@/services/user"
@@ -22,6 +22,7 @@ import gImg from "@utils/img"
 import gStyle from "@utils/style"
 import React, { Component } from "react"
 import {
+  Alert,
   DeviceEventEmitter,
   EmitterSubscription,
   Image,
@@ -32,12 +33,16 @@ import {
   Text,
   TouchableOpacity,
   View,
+  BackHandler,
+  NativeEventSubscription,
 } from "react-native"
 import { NavigationScreenProp, ScrollView } from "react-navigation"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
 import { MsgType, Picture } from "./Chat"
+import { CurrSetPrescription } from "@/redux/reducers/user"
 const style = gStyle.advisory.SquareRoot
+
 interface Props {
   navigation: NavigationScreenProp<State>
 }
@@ -125,6 +130,7 @@ const mapStateToProps = (state: AppState) => {
   return {
     isLogin: state.user.isLogin,
     name: state.user.name,
+    currSetPrescription: state.user.currSetPrescription,
     uid: state.user.uid,
     ws: state.ws,
   }
@@ -133,6 +139,12 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
   return {
     login: (preload: userAction.UserInfo) => {
       dispatch(userAction.userLogin(preload))
+    },
+    saveCurrSetPrescription: (preload: CurrSetPrescription) => {
+      dispatch(userAction.saveCurrSetPrescription(preload))
+    },
+    delCurrSetPrescription: () => {
+      dispatch(userAction.delCurrSetPrescription())
     },
   }
 }
@@ -145,7 +157,8 @@ export default class SquareRoot extends Component<
   Props & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
   State
 > {
-  static navigationOptions = () => {
+  static navigationOptions = (opts: any) => {
+    const { navigation } = opts
     return {
       title: "在线开方",
       headerStyle: {
@@ -163,10 +176,55 @@ export default class SquareRoot extends Component<
         fontSize: 14,
         textAlign: "center",
       },
+      headerLeft: (
+        <View>
+          <TouchableOpacity
+            onPress={() => {
+              Alert.alert("", "是否保存开方内容", [
+                {
+                  text: "否",
+                  onPress: () => {
+                    const delCurrSetPrescription = navigation.getParam("delCurrSetPrescription")
+                    delCurrSetPrescription()
+                    navigation.goBack()
+                  },
+                },
+                {
+                  text: "保存并返回",
+                  onPress: () => {
+                    let getState: () => State = navigation.getParam("getState")
+                    let saveCurrSetPrescription: (
+                      preload: CurrSetPrescription,
+                    ) => void = navigation.getParam("saveCurrSetPrescription")
+                    let state = getState()
+                    const {
+                      advice,
+                      discrimination,
+                      prescriptionDrugCategoryList,
+                      serviceMoney,
+                      syndromeDifferentiation,
+                    } = state
+                    saveCurrSetPrescription({
+                      advice,
+                      discrimination,
+                      prescriptionDrugCategoryList,
+                      serviceMoney,
+                      syndromeDifferentiation,
+                    })
+                    navigation.goBack()
+                  },
+                },
+              ])
+            }}>
+            <Text style={{ marginLeft: 10 }}>返回</Text>
+          </TouchableOpacity>
+        </View>
+      ),
       headerRight: <Text />,
     }
   }
   listener?: EmitterSubscription
+  hardwareBackPressListener?: NativeEventSubscription
   constructor(props: any) {
     super(props)
     this.state = this.getInitState()
@@ -205,21 +263,68 @@ export default class SquareRoot extends Component<
     }
   }
   componentDidMount() {
+    this.props.navigation.setParams({
+      getState: () => this.state,
+      saveCurrSetPrescription: this.props.saveCurrSetPrescription,
+      delCurrSetPrescription: this.props.delCurrSetPrescription,
+    })
     this.listener = DeviceEventEmitter.addListener(
       pathMap.SquareRoot + "Reload",
       (prescriptionDrugCategoryList: PrescriptionDrugCategory[]) => {
-        console.log(prescriptionDrugCategoryList)
         this.setState({
           prescriptionDrugCategoryList,
         })
       },
     )
+    this.hardwareBackPressListener = BackHandler.addEventListener(
+      "hardwareBackPress",
+      this.onHardwareBackPress,
+    )
     this.init()
+    this.initSavedPrescriptionInfo()
   }
   componentWillUnmount() {
     //移除监听
     if (this.listener) {
       this.listener.remove()
+    }
+    if (this.hardwareBackPressListener) {
+      this.hardwareBackPressListener.remove()
+    }
+  }
+  onHardwareBackPress = () => {
+    const {
+      advice,
+      discrimination,
+      prescriptionDrugCategoryList,
+      serviceMoney,
+      syndromeDifferentiation,
+    } = this.state
+    this.props.saveCurrSetPrescription({
+      advice,
+      discrimination,
+      prescriptionDrugCategoryList,
+      serviceMoney,
+      syndromeDifferentiation,
+    })
+  }
+  initSavedPrescriptionInfo = () => {
+    const { currSetPrescription } = this.props
+    if (currSetPrescription) {
+      const {
+        advice,
+        discrimination,
+        prescriptionDrugCategoryList,
+        serviceMoney,
+        syndromeDifferentiation,
+      } = currSetPrescription
+      this.setState({
+        advice,
+        discrimination,
+        prescriptionDrugCategoryList,
+        serviceMoney,
+        syndromeDifferentiation,
+      })
     }
   }
   getDrugList = () => {}
@@ -908,6 +1013,7 @@ export default class SquareRoot extends Component<
             patientUid,
           },
         })
+        this.props.delCurrSetPrescription()
         this.props.navigation.goBack()
       })
       .catch(err => {

@@ -353,11 +353,12 @@ export default class Chat extends Component<
     }
   }
   componentDidMount() {
-    this.listener = DeviceEventEmitter.addListener(pathMap.SquareRoot + "Reload", quickReplyMsg => {
-      this.setState({
-        sendMsg: quickReplyMsg,
-      })
-    })
+    // this.listener = DeviceEventEmitter.addListener(pathMap.SquareRoot + "Reload", quickReplyMsg => {
+
+    //   this.setState({
+    //     sendMsg: quickReplyMsg,
+    //   })
+    // })
     this.init()
     this.requestReadExteralStorage()
     setTimeout(() => this.myScroll && this.myScroll.scrollToEnd(), 100)

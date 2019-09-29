@@ -1,14 +1,13 @@
+import global from "@/assets/styles/global"
 import * as userAction from "@/redux/actions/user"
 import { AppState } from "@/redux/stores/store"
+import { Icon, InputItem, Toast } from "@ant-design/react-native"
+import api from "@api/api"
 import gStyle from "@utils/style"
 import React, { Component } from "react"
-import { TouchableOpacity, View, Text } from "react-native"
-import { InputItem, Toast, Icon } from "@ant-design/react-native"
-import pathMap from "@routes/pathMap"
+import { Text, TouchableOpacity, View } from "react-native"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
-import global from "@/assets/styles/global"
-import api from "@api/api"
 const style = gStyle.user.forgetPwd
 interface Props {
   navigation: any
