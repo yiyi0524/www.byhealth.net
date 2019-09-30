@@ -476,38 +476,7 @@ export default class Chat extends Component<
       })
     }
   }
-  onRecordPressIn = async () => {
-    await Permissions.check("microphone")
-      .then(res => {
-        if (res !== "authorized") {
-          try {
-            Permissions.request("microphone").then(status => {
-              if (status === "authorized") {
-                this.setState({
-                  hasMicAuth: true,
-                })
-              } else {
-                this.setState({
-                  hasMicAuth: false,
-                })
-                return Toast.info("您禁止了录音功能, 请到设置中心打开", 3)
-              }
-            })
-          } catch (err) {
-            console.warn(err)
-          }
-        } else {
-          this.setState({
-            hasMicAuth: true,
-          })
-        }
-      })
-      .catch(err => {
-        this.setState({
-          hasMicAuth: false,
-        })
-        console.log("读取权限失败: " + err)
-      })
+  onRecordPressIn = () => {
     const { hasMicAuth, isRecord } = this.state
     if (!hasMicAuth) {
       console.log("当前没有录音权限")
