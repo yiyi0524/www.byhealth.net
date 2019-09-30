@@ -43,7 +43,7 @@ import { connect } from "react-redux"
 import { Dispatch } from "redux"
 import { Overwrite } from "utility-types"
 const style = gStyle.advisory.advisoryChat
-const audioPath = AudioUtils.CachesDirectoryPath + "/tempAudio.aac"
+const audioPath = AudioUtils.DocumentDirectoryPath + "/tempAudio.aac"
 export type ChatMode = "text" | "audio"
 interface Props {
   navigation: NavigationScreenProp<State>
@@ -479,7 +479,6 @@ export default class Chat extends Component<
   onRecordPressIn = () => {
     const { hasMicAuth, isRecord } = this.state
     if (!hasMicAuth) {
-      console.log("当前没有录音权限")
       this.checkAudioRecordAuth()
       return
     }
@@ -492,83 +491,52 @@ export default class Chat extends Component<
         isRecord: true,
       },
       () => {
-        console.log("正在录音")
+        console.log("正在录音", audioPath)
         AudioRecorder.prepareRecordingAtPath(audioPath, {
           SampleRate: 22050,
           Channels: 1,
           AudioQuality: "Low",
           AudioEncoding: "aac",
-        }).then(() => {
-          AudioRecorder.startRecording()
-            .then(val => console.log("开始录音成功,", val))
-            .catch(err => {
-              console.error(err)
-              this.setState({ isRecord: false })
-            })
         })
+          .then(() => {
+            AudioRecorder.startRecording()
+              .then(val => console.log("开始录音成功,", val))
+              .catch(err => {
+                console.error(err)
+                this.setState({ isRecord: false })
+              })
+          })
+          .catch(err => {
+            console.error(err)
+          })
       },
     )
   }
   checkAudioRecordAuth = () => {
-    try {
+    return new Promise((s, j) => {
       Permissions.check("microphone")
-        .then(res => {
-          if (res !== "authorized") {
-            try {
-              Permissions.request("microphone").then(status => {
-                if (status === "authorized") {
-                  this.setState({
-                    hasMicAuth: true,
-                  })
-                } else {
-                  this.setState({
-                    hasMicAuth: false,
-                  })
-                  return Toast.info("您禁止了录音功能, 请到设置中心打开", 3)
-                }
-              })
-            } catch (err) {
-              console.warn(err)
-            }
-          } else {
-            this.setState({
-              hasMicAuth: true,
+        .then(resp => {
+          // Response is one of: 'authorized', 'denied', 'restricted', or 'undetermined'
+          if (resp !== "authorized") {
+            Permissions.request("microphone").then(status => {
+              if (status === "authorized") {
+                s()
+              } else {
+                j()
+              }
             })
+          } else {
+            s()
           }
         })
-        .catch(err => {
-          this.setState({
-            hasMicAuth: false,
-          })
-          console.log("读取权限失败: " + err)
+        .catch(() => {
+          j()
         })
-    } catch (err) {
-      console.log(err)
-    }
-    // return new Promise((s, j) => {
-    //   Permissions.check("microphone")
-    //     .then(resp => {
-    //       // Response is one of: 'authorized', 'denied', 'restricted', or 'undetermined'
-    //       if (resp !== "authorized") {
-    //         Permissions.request("microphone").then(status => {
-    //           if (status === "authorized") {
-    //             s()
-    //           } else {
-    //             j()
-    //           }
-    //         })
-    //       } else {
-    //         s()
-    //       }
-    //     })
-    //     .catch(() => {
-    //       j()
-    //     })
-    // })
-    //   .then(() => {
-    //     this.setState({ hasMicAuth: true })
-    //   })
-    //   .catch(() => this.setState({ hasMicAuth: false }))
+    })
+      .then(() => {
+        this.setState({ hasMicAuth: true })
+      })
+      .catch(() => this.setState({ hasMicAuth: false }))
   }
   onRecordPressOut = () => {
     const { isRecord, patientUid } = this.state
@@ -1516,7 +1484,7 @@ export default class Chat extends Component<
       this.stopPlayAudio()
       return
     }
-    this.whoosh = new Sound(getFileCdnUrl(url), Sound.MAIN_BUNDLE, error => {
+    this.whoosh = new Sound(getFileCdnUrl(url), "", error => {
       if (error) {
         console.log("failed to load the sound", error)
         this.whoosh && this.whoosh.release()
