@@ -875,6 +875,115 @@ export default class Chat extends Component<
                               .catch(err => {
                                 console.log("读取权限失败: " + err)
                               })
+                            Permissions.check("camera")
+                              .then(async res => {
+                                if (!res) {
+                                  try {
+                                    Permissions.request("camera").then(status => {
+                                      if (status === "authorized") {
+                                        console.log("获得摄像头权限")
+                                        RnImagePicker.launchImageLibrary(imgPickerOpt, resp => {
+                                          const uploadingImgKey = Toast.loading(
+                                            "上传图片中",
+                                            0,
+                                            () => {},
+                                            true,
+                                          )
+                                          if (resp.didCancel) {
+                                            Portal.remove(uploadingImgKey)
+                                          } else if (resp.error) {
+                                            Portal.remove(uploadingImgKey)
+                                            return Toast.info(
+                                              "您禁止了拍摄照片和录制视频权限, 请到设置中心打开",
+                                              3,
+                                            )
+                                          } else {
+                                            uploadImg({ url: resp.uri })
+                                              .then(json => {
+                                                Portal.remove(uploadingImgKey)
+                                                this.setState({
+                                                  isShowBottomNav: false,
+                                                  isShowBottomPicSelect: false,
+                                                })
+                                                const { patientUid } = this.state
+                                                const { url, picId } = json.data
+                                                this.props.ws.wsPost({
+                                                  url: "/ws/sendMsg",
+                                                  data: {
+                                                    pic: {
+                                                      url,
+                                                      picId,
+                                                    },
+                                                    type: MsgType.picture,
+                                                    patientUid,
+                                                  },
+                                                })
+                                              })
+                                              .catch(e => {
+                                                Portal.remove(uploadingImgKey)
+                                                Toast.fail("上传图片, 错误信息: " + e)
+                                              })
+                                          }
+                                        })
+                                      } else {
+                                        return Toast.info(
+                                          "您禁止了拍摄照片和录制视频权限, 请到设置中心打开",
+                                          3,
+                                        )
+                                      }
+                                    })
+                                  } catch (err) {
+                                    console.warn(err)
+                                  }
+                                } else {
+                                  RnImagePicker.launchImageLibrary(imgPickerOpt, resp => {
+                                    const uploadingImgKey = Toast.loading(
+                                      "上传图片中",
+                                      0,
+                                      () => {},
+                                      true,
+                                    )
+                                    if (resp.didCancel) {
+                                      Portal.remove(uploadingImgKey)
+                                    } else if (resp.error) {
+                                      Portal.remove(uploadingImgKey)
+                                      return Toast.info(
+                                        "您禁止了拍摄照片和录制视频权限, 请到设置中心打开",
+                                        3,
+                                      )
+                                    } else {
+                                      uploadImg({ url: resp.uri })
+                                        .then(json => {
+                                          Portal.remove(uploadingImgKey)
+                                          this.setState({
+                                            isShowBottomNav: false,
+                                            isShowBottomPicSelect: false,
+                                          })
+                                          const { patientUid } = this.state
+                                          const { url, picId } = json.data
+                                          this.props.ws.wsPost({
+                                            url: "/ws/sendMsg",
+                                            data: {
+                                              pic: {
+                                                url,
+                                                picId,
+                                              },
+                                              type: MsgType.picture,
+                                              patientUid,
+                                            },
+                                          })
+                                        })
+                                        .catch(e => {
+                                          Portal.remove(uploadingImgKey)
+                                          Toast.fail("上传图片, 错误信息: " + e)
+                                        })
+                                    }
+                                  })
+                                }
+                              })
+                              .catch(err => {
+                                console.log("读取权限失败: " + err)
+                              })
                           } catch (err) {
                             console.log(err)
                           }
@@ -953,6 +1062,115 @@ export default class Chat extends Component<
                                 } else {
                                   Toast.info("您禁止了拍摄照片和录制视频权限, 请到设置中心打开", 3)
                                 }
+                              } catch (err) {
+                                console.warn(err)
+                              }
+                            } else {
+                              RnImagePicker.launchCamera(imgPickerOpt, resp => {
+                                const uploadingImgKey = Toast.loading(
+                                  "上传图片中",
+                                  0,
+                                  () => {},
+                                  true,
+                                )
+                                if (resp.didCancel) {
+                                  Portal.remove(uploadingImgKey)
+                                } else if (resp.error) {
+                                  Portal.remove(uploadingImgKey)
+                                  return Toast.info(
+                                    "您禁止了拍摄照片和录制视频权限, 请到设置中心打开",
+                                    3,
+                                  )
+                                } else {
+                                  uploadImg({ url: resp.uri })
+                                    .then(json => {
+                                      Portal.remove(uploadingImgKey)
+                                      this.setState({
+                                        isShowBottomNav: false,
+                                        isShowBottomPicSelect: false,
+                                      })
+                                      const { patientUid } = this.state
+                                      const { url, picId } = json.data
+                                      this.props.ws.wsPost({
+                                        url: "/ws/sendMsg",
+                                        data: {
+                                          pic: {
+                                            url,
+                                            picId,
+                                          },
+                                          type: MsgType.picture,
+                                          patientUid,
+                                        },
+                                      })
+                                    })
+                                    .catch(e => {
+                                      Portal.remove(uploadingImgKey)
+                                      Toast.fail("上传图片, 错误信息: " + e)
+                                    })
+                                }
+                              })
+                            }
+                          })
+                          .catch(err => {
+                            console.log("读取权限失败: " + err)
+                          })
+                        Permissions.check("camera")
+                          .then(async res => {
+                            if (!res) {
+                              try {
+                                Permissions.request("camera").then(status => {
+                                  if (status === "authorized") {
+                                    console.log("获得摄像头权限")
+                                    RnImagePicker.launchCamera(imgPickerOpt, resp => {
+                                      const uploadingImgKey = Toast.loading(
+                                        "上传图片中",
+                                        0,
+                                        () => {},
+                                        true,
+                                      )
+                                      if (resp.didCancel) {
+                                        Portal.remove(uploadingImgKey)
+                                      } else if (resp.error) {
+                                        Portal.remove(uploadingImgKey)
+                                        return Toast.info(
+                                          "您禁止了拍摄照片和录制视频权限, 请到设置中心打开",
+                                          3,
+                                        )
+                                      } else {
+                                        uploadImg({ url: resp.uri })
+                                          .then(json => {
+                                            Portal.remove(uploadingImgKey)
+                                            this.setState({
+                                              isShowBottomNav: false,
+                                              isShowBottomPicSelect: false,
+                                            })
+                                            const { patientUid } = this.state
+                                            const { url, picId } = json.data
+                                            this.props.ws.wsPost({
+                                              url: "/ws/sendMsg",
+                                              data: {
+                                                pic: {
+                                                  url,
+                                                  picId,
+                                                },
+                                                type: MsgType.picture,
+                                                patientUid,
+                                              },
+                                            })
+                                          })
+                                          .catch(e => {
+                                            Portal.remove(uploadingImgKey)
+                                            Toast.fail("上传图片, 错误信息: " + e)
+                                          })
+                                      }
+                                    })
+                                  } else {
+                                    Toast.info(
+                                      "您禁止了拍摄照片和录制视频权限, 请到设置中心打开",
+                                      3,
+                                    )
+                                  }
+                                })
                               } catch (err) {
                                 console.warn(err)
                               }
