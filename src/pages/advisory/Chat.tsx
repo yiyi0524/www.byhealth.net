@@ -378,32 +378,7 @@ export default class Chat extends Component<
       console.log("onFinished: ", data)
     }
   }
-  checkAudioRecordAuth = () => {
-    return new Promise((s, j) => {
-      Permissions.check("microphone")
-        .then(resp => {
-          // Response is one of: 'authorized', 'denied', 'restricted', or 'undetermined'
-          if (resp !== "authorized") {
-            Permissions.request("microphone").then(status => {
-              if (status === "authorized") {
-                s()
-              } else {
-                j()
-              }
-            })
-          } else {
-            s()
-          }
-        })
-        .catch(() => {
-          j()
-        })
-    })
-      .then(() => {
-        this.setState({ hasMicAuth: true })
-      })
-      .catch(() => this.setState({ hasMicAuth: false }))
-  }
+
   cancelRecord = () => {
     this.setState({
       isRecord: false,
@@ -501,7 +476,38 @@ export default class Chat extends Component<
       })
     }
   }
-  onRecordPressIn = () => {
+  onRecordPressIn = async () => {
+    await Permissions.check("microphone")
+      .then(res => {
+        if (res !== "authorized") {
+          try {
+            Permissions.request("microphone").then(status => {
+              if (status === "authorized") {
+                this.setState({
+                  hasMicAuth: true,
+                })
+              } else {
+                this.setState({
+                  hasMicAuth: false,
+                })
+                return Toast.info("您禁止了录音功能, 请到设置中心打开", 3)
+              }
+            })
+          } catch (err) {
+            console.warn(err)
+          }
+        } else {
+          this.setState({
+            hasMicAuth: true,
+          })
+        }
+      })
+      .catch(err => {
+        this.setState({
+          hasMicAuth: false,
+        })
+        console.log("读取权限失败: " + err)
+      })
     const { hasMicAuth, isRecord } = this.state
     if (!hasMicAuth) {
       console.log("当前没有录音权限")
@@ -533,6 +539,32 @@ export default class Chat extends Component<
         })
       },
     )
+  }
+  checkAudioRecordAuth = () => {
+    return new Promise((s, j) => {
+      Permissions.check("microphone")
+        .then(resp => {
+          // Response is one of: 'authorized', 'denied', 'restricted', or 'undetermined'
+          if (resp !== "authorized") {
+            Permissions.request("microphone").then(status => {
+              if (status === "authorized") {
+                s()
+              } else {
+                j()
+              }
+            })
+          } else {
+            s()
+          }
+        })
+        .catch(() => {
+          j()
+        })
+    })
+      .then(() => {
+        this.setState({ hasMicAuth: true })
+      })
+      .catch(() => this.setState({ hasMicAuth: false }))
   }
   onRecordPressOut = () => {
     const { isRecord, patientUid } = this.state
