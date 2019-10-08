@@ -1089,7 +1089,7 @@ export default class SquareRoot extends Component<
         }
       }
     }
-    // todo 接口添加tplName(string)字段 诊后药事管理费(string)没有添加到接口中
+    // todo 接口添加tplName(string)字段 诊后药事管理费afterDiagnosisDrugMoney(string)没有添加到接口中
     if (isSaveToTpl) {
       if (tplName === "") {
         return Toast.info("请输入模板名称", 3)
