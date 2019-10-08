@@ -2,6 +2,7 @@ import { communicationItem } from "@/pages/address_book/Index"
 import { MedicalRecord } from "@/pages/address_book/PatientDetail"
 import { Picture } from "@/pages/advisory/Chat"
 import { bget, GetListParam } from "./api"
+import { PrescriptionDrugCategory } from "@/pages/advisory/SquareRoot"
 export async function getAddressBoolPatientList({ page = -1, limit = -1, filter }: GetListParam) {
   return bget<{ list: communicationItem[] }>({
     url: "api/getAddressBoolPatientList",
@@ -169,7 +170,19 @@ export async function inquirySheet({ consultationId }: { consultationId: number 
     },
   })
 }
+/**
+ *   获取患者上次开方信息
+ */
+export async function getLastPrescriptionInfo({ patientUid }: { patientUid: number }) {
+  return bget<{ detail: PrescriptionDrugCategory[] | null }>({
+    url: "api/getLastPrescriptionInfo",
+    query: {
+      patientUid,
+    },
+  })
+}
 export default {
+  getLastPrescriptionInfo,
   getAddressBoolPatientList,
   getPatientInfo,
   getInquirySheet,

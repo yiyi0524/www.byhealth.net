@@ -25,8 +25,8 @@
     "lodash": "^4.17.15",
     "moment": "^2.24.0",
     "qs": "^6.8.0",
-    "react": "16.8.6",
-    "react-native": "0.60.5",
+    "react": "16.9.0",
+    "react-native": "^0.61.2",
     "react-native-audio": "^4.3.0",
     "react-native-device-info": "^2.3.2",
     "react-native-gesture-handler": "^1.4.1",
@@ -44,9 +44,9 @@
     "redux": "^4.0.4"
   },
   "devDependencies": {
-    "@babel/core": "^7.5.5",
+    "@babel/core": "^7.6.2",
     "@babel/plugin-proposal-decorators": "^7.4.4",
-    "@babel/runtime": "^7.5.5",
+    "@babel/runtime": "^7.6.2",
     "@react-native-community/async-storage": "^1.6.1",
     "@react-native-community/eslint-config": "^0.0.5",
     "@types/classnames": "^2.2.9",
@@ -68,7 +68,7 @@
     "jest": "^24.9.0",
     "jetifier": "^1.6.4",
     "metro-react-native-babel-preset": "^0.56.0",
-    "react-test-renderer": "16.8.6",
+    "react-test-renderer": "16.9.0",
     "redux-devtools-extension": "^2.13.8",
     "typescript": "^3.5.3",
     "utility-types": "^3.7.0"

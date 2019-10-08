@@ -381,6 +381,7 @@ export interface AddPrescriptionParam {
   patientUid: number
   discrimination: string
   serviceMoney?: number
+  drugServiceMoney?: number
   syndromeDifferentiation: string
   advice: string
   drugCategoryList: PrescriptionDrugCategory[]

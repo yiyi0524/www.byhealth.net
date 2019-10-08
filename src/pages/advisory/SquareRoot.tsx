@@ -9,7 +9,7 @@ import {
   ORAL_CHINESE_DRUG_ID,
   TOPICAL_CHINESE_DRUG_ID,
 } from "@/services/drug"
-import { getPatientInfo } from "@/services/patient"
+import { getPatientInfo, getLastPrescriptionInfo } from "@/services/patient"
 import { getPersonalInfo } from "@/services/user"
 import { getPicCdnUrl } from "@/utils/utils"
 import { Icon, ImagePicker, InputItem, TextareaItem, Toast } from "@ant-design/react-native"
@@ -55,7 +55,7 @@ interface State {
   //是否保存为模板
   isSaveToTpl: boolean
   tplName: string
-  afterDiagnosisDrugMoney: string
+  drugServiceMoney: string
   hasLoad: boolean
   refreshing: boolean
   // 药品价格
@@ -243,7 +243,7 @@ export default class SquareRoot extends Component<
       //是否保存为模板
       isSaveToTpl: false,
       tplName: "",
-      afterDiagnosisDrugMoney: "",
+      drugServiceMoney: "",
       //剂量
       dose: "",
       //每次几剂
@@ -272,6 +272,7 @@ export default class SquareRoot extends Component<
     }
   }
   componentDidMount() {
+    const { currSetPrescription } = this.props
     this.props.navigation.setParams({
       getState: () => this.state,
       saveCurrSetPrescription: this.props.saveCurrSetPrescription,
@@ -290,7 +291,13 @@ export default class SquareRoot extends Component<
       this.onHardwareBackPress,
     )
     this.init()
-    this.initSavedPrescriptionInfo()
+    if (currSetPrescription) {
+      console.log("正在初始化redux处方信息")
+      this.initSavedPrescriptionInfo()
+    } else {
+      console.log("正在初始化上次处方信息")
+      this.initLastPrescriptionInfo()
+    }
   }
   componentWillUnmount() {
     //移除监听
@@ -316,6 +323,22 @@ export default class SquareRoot extends Component<
       serviceMoney,
       syndromeDifferentiation,
     })
+  }
+  initLastPrescriptionInfo = async () => {
+    let patientUid = this.props.navigation.getParam("patientUid")
+    try {
+      const {
+        data: { detail: prescriptionDrugCategoryList },
+      } = await getLastPrescriptionInfo({ patientUid })
+      console.log("last Prescription", prescriptionDrugCategoryList)
+      if (prescriptionDrugCategoryList) {
+        this.setState({
+          prescriptionDrugCategoryList,
+        })
+      }
+    } catch (e) {
+      console.log(e)
+    }
   }
   initSavedPrescriptionInfo = () => {
     const { currSetPrescription } = this.props
@@ -440,7 +463,7 @@ export default class SquareRoot extends Component<
       prescriptionDrugCategoryList,
       isSaveToTpl,
       tplName,
-      afterDiagnosisDrugMoney,
+      drugServiceMoney,
     } = this.state
     let drugMoney = 0
     for (let prescriptionDrugCategory of prescriptionDrugCategoryList) {
@@ -936,7 +959,6 @@ export default class SquareRoot extends Component<
                   ¥ {drugMoney.toFixed(2)}
                 </Text>
               </View>
-              {/* 诊后药事管理费 */}
               <View
                 style={[
                   style.diagnosisItem,
@@ -944,47 +966,13 @@ export default class SquareRoot extends Component<
                   global.alignItemsCenter,
                   global.justifyContentSpaceBetween,
                 ]}>
-                <Text style={[style.diagnosisItemTitle, global.fontSize14]}>诊后药事管理费</Text>
+                <Text style={[style.diagnosisItemTitle, global.fontSize14]}>药事服务费</Text>
                 <View style={style.percentageOfCommission}>
                   <InputItem
                     type="number"
                     labelNumber={1}
-                    style={style.percentageOfCommissionInput}
-                    placeholder={"0"}
-                    value={afterDiagnosisDrugMoney}
-                    onChange={val => {
-                      let afterDiagnosisDrugMoney: number | string = parseFloat(val)
-                      if (isNaN(afterDiagnosisDrugMoney)) {
-                        afterDiagnosisDrugMoney = ""
-                      }
-                      this.setState({
-                        afterDiagnosisDrugMoney: afterDiagnosisDrugMoney + "",
-                      })
-                    }}
-                    onBlur={() => {
-                      if (afterDiagnosisDrugMoney === "") {
-                        this.setState({
-                          afterDiagnosisDrugMoney: afterDiagnosisDrugMoney + "",
-                        })
-                      }
-                    }}>
-                    %
-                  </InputItem>
-                </View>
-              </View>
-              <View
-                style={[
-                  style.diagnosisItem,
-                  global.flex,
-                  global.alignItemsCenter,
-                  global.justifyContentSpaceBetween,
-                ]}>
-                <Text style={[style.diagnosisItemTitle, global.fontSize14]}>诊后管理费</Text>
-                <View style={style.percentageOfCommission}>
-                  <InputItem
-                    type="number"
-                    labelNumber={1}
-                    disabled={this.state.prescriptionDrugCategoryList.length === 0}
+                    disabled
+                    // disabled={this.state.prescriptionDrugCategoryList.length === 0}
                     style={style.percentageOfCommissionInput}
                     placeholder={this.state.serviceMoney === "" ? calcServiceMoney : "0.00"}
                     value={this.state.serviceMoney}
@@ -1001,6 +989,42 @@ export default class SquareRoot extends Component<
                       if (this.state.serviceMoney === "") {
                         this.setState({
                           serviceMoney: calcServiceMoney + "",
+                        })
+                      }
+                    }}>
+                    ¥
+                  </InputItem>
+                </View>
+              </View>
+              {/* 诊后药事管理费 */}
+              <View
+                style={[
+                  style.diagnosisItem,
+                  global.flex,
+                  global.alignItemsCenter,
+                  global.justifyContentSpaceBetween,
+                ]}>
+                <Text style={[style.diagnosisItemTitle, global.fontSize14]}>诊后管理费</Text>
+                <View style={style.percentageOfCommission}>
+                  <InputItem
+                    type="number"
+                    labelNumber={1}
+                    style={style.percentageOfCommissionInput}
+                    placeholder={"0"}
+                    value={drugServiceMoney}
+                    onChange={val => {
+                      let drugServiceMoney: number | string = parseFloat(val)
+                      if (isNaN(drugServiceMoney)) {
+                        drugServiceMoney = ""
+                      }
+                      this.setState({
+                        drugServiceMoney: drugServiceMoney + "",
+                      })
+                    }}
+                    onBlur={() => {
+                      if (drugServiceMoney === "") {
+                        this.setState({
+                          drugServiceMoney: drugServiceMoney + "",
                         })
                       }
                     }}>
@@ -1053,11 +1077,12 @@ export default class SquareRoot extends Component<
       discrimination,
       syndromeDifferentiation,
       serviceMoney,
+      drugServiceMoney,
       patientInfo: { uid: patientUid },
       prescriptionDrugCategoryList,
       isSaveToTpl,
       tplName,
-      afterDiagnosisDrugMoney,
+      // drugServiceMoney,
     } = this.state
     if (discrimination === "") {
       return Toast.info("请输入辩病", 3)
@@ -1089,7 +1114,6 @@ export default class SquareRoot extends Component<
         }
       }
     }
-    // todo 接口添加tplName(string)字段 诊后药事管理费afterDiagnosisDrugMoney(string)没有添加到接口中
     if (isSaveToTpl) {
       if (tplName === "") {
         return Toast.info("请输入模板名称", 3)
@@ -1104,6 +1128,9 @@ export default class SquareRoot extends Component<
     }
     if (serviceMoney !== "") {
       args.serviceMoney = parseFloat(serviceMoney) * 100
+    }
+    if (drugServiceMoney !== "") {
+      args.drugServiceMoney = parseFloat(drugServiceMoney) * 100
     }
     if (isSaveToTpl) {
       args.tplName = _.trim(tplName)

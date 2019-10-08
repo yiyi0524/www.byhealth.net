@@ -80,6 +80,7 @@ export default class Index extends Component<
   State
 > {
   subscription?: EmitterSubscription
+  bgUpdateTimer?: number
   constructor(props: any) {
     super(props)
     this.state = this.getInitState()
@@ -97,10 +98,14 @@ export default class Index extends Component<
     this.subscription = DeviceEventEmitter.addListener(pathMap.AdvisoryIndex + "Reload", _ => {
       this.init()
     })
+    this.bgUpdateTimer = setInterval(this.bgUpdate, 5000)
   }
   componentWillUnmount() {
     if (this.subscription) {
       this.subscription.remove()
+    }
+    if (this.bgUpdateTimer) {
+      clearInterval(this.bgUpdateTimer)
     }
   }
   init = async () => {
@@ -121,6 +126,7 @@ export default class Index extends Component<
       let {
         data: { list: scanUserList },
       } = await listScanUserPromise
+
       for (let consultation of consultationList) {
         if (consultation.doctorUnreadMsgCount !== 0) {
           this.props.setUserUnReadMsgCount({
@@ -140,6 +146,41 @@ export default class Index extends Component<
         hasLoad: true,
       })
       Toast.fail("获取咨询列表失败, 错误信息: " + err.msg)
+    }
+  }
+  bgUpdate = async () => {
+    console.log("正在更新")
+    try {
+      let isLogin = await api.isLogin()
+      if (!isLogin) {
+        this.props.navigation.navigate(pathMap.Login)
+        return
+      }
+      Buff.clearNotifications()
+      const listConsultationPromise = doctor.listConsultation({ page: -1, limit: -1 })
+      const listScanUserPromise = doctor.listScanUser()
+
+      let {
+        data: { list: consultationList },
+      } = await listConsultationPromise
+      let {
+        data: { list: scanUserList },
+      } = await listScanUserPromise
+
+      for (let consultation of consultationList) {
+        if (consultation.doctorUnreadMsgCount !== 0) {
+          this.props.setUserUnReadMsgCount({
+            uid: consultation.patientUid,
+            count: consultation.doctorUnreadMsgCount,
+          })
+        }
+      }
+      this.setState({
+        scanUserList,
+        consultationList,
+      })
+    } catch (err) {
+      console.log(err)
     }
   }
   onRefresh = () => {

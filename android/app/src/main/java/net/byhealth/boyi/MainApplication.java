@@ -1,20 +1,19 @@
 package net.byhealth.boyi;
 
 import android.app.Application;
-import android.util.Log;
+import android.content.Context;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Build;
-
-
+import android.util.Log;
 import com.alibaba.sdk.android.man.MANService;
 import com.alibaba.sdk.android.man.MANServiceProvider;
 import com.alibaba.sdk.android.push.CloudPushService;
 import com.alibaba.sdk.android.push.CommonCallback;
 import com.alibaba.sdk.android.push.noonesdk.PushServiceFactory;
-
+import java.lang.reflect.InvocationTargetException;
 import com.facebook.react.PackageList;
 import com.facebook.hermes.reactexecutor.HermesExecutorFactory;
 import com.facebook.react.bridge.JavaScriptExecutorFactory;
@@ -61,8 +60,10 @@ public class MainApplication extends Application implements ReactApplication {
     public void onCreate() {
         super.onCreate();
         SoLoader.init(this, /* native exopackage */ false);
+        initializeFlipper(this); // Remove this line if you don't want Flipper enabled
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            NotificationManager mNotificationManager = (NotificationManager) getSystemService(
+                    Context.NOTIFICATION_SERVICE);
             // 通知渠道的id
             String id = "1";
             // 用户可以看到的通知渠道的名字.
@@ -78,11 +79,37 @@ public class MainApplication extends Application implements ReactApplication {
             mChannel.setLightColor(Color.RED);
             // 设置通知出现时的震动（如果 android 设备支持的话）
             mChannel.enableVibration(true);
-            mChannel.setVibrationPattern(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400});
+            mChannel.setVibrationPattern(new long[] { 100, 200, 300, 400, 500, 400, 300, 200, 400 });
             // 最后在notificationmanager中创建该通知渠道
             mNotificationManager.createNotificationChannel(mChannel);
         }
         initPushService(this);
+    }
+
+    /**
+     * Loads Flipper in React Native templates.
+     *
+     * @param context
+     */
+    private static void initializeFlipper(Context context) {
+        if (BuildConfig.DEBUG) {
+            try {
+                /*
+                 * We use reflection here to pick up the class that initializes Flipper, since
+                 * Flipper library is not available in release mode
+                 */
+                Class<?> aClass = Class.forName("com.facebook.flipper.ReactNativeFlipper");
+                aClass.getMethod("initializeFlipper", Context.class).invoke(null, context);
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            } catch (NoSuchMethodException e) {
+                e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            } catch (InvocationTargetException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     /**

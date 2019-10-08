@@ -491,7 +491,6 @@ export default class Chat extends Component<
         isRecord: true,
       },
       () => {
-        console.log("正在录音", audioPath)
         AudioRecorder.prepareRecordingAtPath(audioPath, {
           SampleRate: 22050,
           Channels: 1,
