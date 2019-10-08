@@ -377,6 +377,7 @@ export async function getPrescriptionDetail({ prescriptionId }: { prescriptionId
 //   drug_list: DbSaveDrugInfo[]
 // }
 export interface AddPrescriptionParam {
+  tplName?: string
   patientUid: number
   discrimination: string
   serviceMoney?: number

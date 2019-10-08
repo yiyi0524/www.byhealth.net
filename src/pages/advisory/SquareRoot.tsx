@@ -41,6 +41,7 @@ import { connect } from "react-redux"
 import { Dispatch } from "redux"
 import { MsgType, Picture } from "./Chat"
 import { CurrSetPrescription } from "@/redux/reducers/user"
+import _ from "lodash"
 const style = gStyle.advisory.SquareRoot
 
 interface Props {
@@ -51,6 +52,10 @@ interface State {
   isSelectPharmacy: boolean
   // 是否为选择药品模式
   isSelectDrug: boolean
+  //是否保存为模板
+  isSaveToTpl: boolean
+  tplName: string
+  afterDiagnosisDrugMoney: string
   hasLoad: boolean
   refreshing: boolean
   // 药品价格
@@ -235,6 +240,10 @@ export default class SquareRoot extends Component<
       refreshing: false,
       isSelectPharmacy: false,
       isSelectDrug: false,
+      //是否保存为模板
+      isSaveToTpl: false,
+      tplName: "",
+      afterDiagnosisDrugMoney: "",
       //剂量
       dose: "",
       //每次几剂
@@ -426,7 +435,13 @@ export default class SquareRoot extends Component<
         </View>
       )
     }
-    const { patientInfo, prescriptionDrugCategoryList } = this.state
+    const {
+      patientInfo,
+      prescriptionDrugCategoryList,
+      isSaveToTpl,
+      tplName,
+      afterDiagnosisDrugMoney,
+    } = this.state
     let drugMoney = 0
     for (let prescriptionDrugCategory of prescriptionDrugCategoryList) {
       // 某分类的药品总价
@@ -463,6 +478,7 @@ export default class SquareRoot extends Component<
           style={{ flex: 1 }}
           keyboardVerticalOffset={70}>
           <ScrollView
+            keyboardShouldPersistTaps="always"
             style={style.main}
             refreshControl={
               <RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh} />
@@ -820,6 +836,48 @@ export default class SquareRoot extends Component<
                   <Text style={[style.important, global.fontSize14]}>编辑药材</Text>
                 </View>
               </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => {
+                  this.setState({
+                    isSaveToTpl: !isSaveToTpl,
+                    tplName: isSaveToTpl ? tplName : "",
+                  })
+                }}>
+                <View style={[style.editDrug, global.flex, global.alignItemsCenter]}>
+                  <Icon
+                    style={[
+                      style.editDrugIcon,
+                      global.fontSize16,
+                      isSaveToTpl ? style.important : style.saveTpl,
+                    ]}
+                    name="check-square"
+                  />
+                  <Text style={[isSaveToTpl ? style.important : style.saveTpl, global.fontSize14]}>
+                    同时保存为模板
+                  </Text>
+                </View>
+              </TouchableOpacity>
+              <View
+                style={[
+                  isSaveToTpl ? style.tplName : global.hidden,
+                  global.flex,
+                  global.alignItemsCenter,
+                ]}>
+                <Text style={[style.tplTitle, global.fontSize14]}>模板名称</Text>
+                <View style={style.name}>
+                  <InputItem
+                    clear
+                    style={[global.fontSize14, style.input]}
+                    placeholder="请输入模板名称"
+                    value={tplName}
+                    onChange={tplName => {
+                      this.setState({
+                        tplName,
+                      })
+                    }}
+                  />
+                </View>
+              </View>
             </View>
             {/* 选填 */}
             <View style={style.diagnosis}>
@@ -877,6 +935,42 @@ export default class SquareRoot extends Component<
                 <Text style={[style.diagnosisItemTitle, global.fontSize14]}>
                   ¥ {drugMoney.toFixed(2)}
                 </Text>
+              </View>
+              {/* 诊后药事管理费 */}
+              <View
+                style={[
+                  style.diagnosisItem,
+                  global.flex,
+                  global.alignItemsCenter,
+                  global.justifyContentSpaceBetween,
+                ]}>
+                <Text style={[style.diagnosisItemTitle, global.fontSize14]}>诊后药事管理费</Text>
+                <View style={style.percentageOfCommission}>
+                  <InputItem
+                    type="number"
+                    labelNumber={1}
+                    style={style.percentageOfCommissionInput}
+                    placeholder={"0"}
+                    value={afterDiagnosisDrugMoney}
+                    onChange={val => {
+                      let afterDiagnosisDrugMoney: number | string = parseFloat(val)
+                      if (isNaN(afterDiagnosisDrugMoney)) {
+                        afterDiagnosisDrugMoney = ""
+                      }
+                      this.setState({
+                        afterDiagnosisDrugMoney: afterDiagnosisDrugMoney + "",
+                      })
+                    }}
+                    onBlur={() => {
+                      if (afterDiagnosisDrugMoney === "") {
+                        this.setState({
+                          afterDiagnosisDrugMoney: afterDiagnosisDrugMoney + "",
+                        })
+                      }
+                    }}>
+                    %
+                  </InputItem>
+                </View>
               </View>
               <View
                 style={[
@@ -961,6 +1055,9 @@ export default class SquareRoot extends Component<
       serviceMoney,
       patientInfo: { uid: patientUid },
       prescriptionDrugCategoryList,
+      isSaveToTpl,
+      tplName,
+      afterDiagnosisDrugMoney,
     } = this.state
     if (discrimination === "") {
       return Toast.info("请输入辩病", 3)
@@ -971,6 +1068,7 @@ export default class SquareRoot extends Component<
     if (prescriptionDrugCategoryList.length === 0) {
       return Toast.info("请选择药材", 3)
     }
+
     for (let category of prescriptionDrugCategoryList) {
       if (
         category.id === ORAL_CHINESE_DRUG_ID ||
@@ -991,7 +1089,12 @@ export default class SquareRoot extends Component<
         }
       }
     }
-
+    // todo 接口添加tplName(string)字段 诊后药事管理费(string)没有添加到接口中
+    if (isSaveToTpl) {
+      if (tplName === "") {
+        return Toast.info("请输入模板名称", 3)
+      }
+    }
     let args: AddPrescriptionParam = {
       advice,
       discrimination,
@@ -1001,6 +1104,9 @@ export default class SquareRoot extends Component<
     }
     if (serviceMoney !== "") {
       args.serviceMoney = parseFloat(serviceMoney) * 100
+    }
+    if (isSaveToTpl) {
+      args.tplName = _.trim(tplName)
     }
     addPrescription(args)
       .then(json => {

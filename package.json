@@ -11,15 +11,18 @@
     "bundle-ios": "react-native bundle --platform ios --dev false --entry-file index.tsx --bundle-output ios/main.jsbundle --assets-dest ios",
     "android": "react-native run-android",
     "clean": "cd android && ./gradlew clean",
-    "resetCache": "yarn start --resetCache"
+    "resetCache": "yarn start --resetCache",
+    "adb": "adb shell input keyevent 82"
   },
   "dependencies": {
     "@ant-design/react-native": "^3.1.15",
+    "@types/lodash": "^4.14.142",
     "@types/react-native-permissions": "^1.1.1",
     "classnames": "^2.2.6",
     "hermes-engine": "0.1.1",
     "idcard": "^4.1.0",
     "jsbdk": "git://github.com/buffge/jsbdk.git#master",
+    "lodash": "^4.17.15",
     "moment": "^2.24.0",
     "qs": "^6.8.0",
     "react": "16.8.6",

@@ -247,4 +247,14 @@ export default StyleSheet.create({
     fontSize: 14,
     color: sColor.mainRed,
   },
+  saveTpl: {
+    color: "#ccc",
+  },
+  tplName: {},
+  tplTitle: {
+    color: "#666",
+  },
+  name: {
+    flex: 1,
+  },
 })
