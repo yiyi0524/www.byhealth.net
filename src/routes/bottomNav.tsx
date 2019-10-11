@@ -76,7 +76,7 @@ const TabNav = createBottomTabNavigator(
     [pathMap.Home]: {
       screen: Home,
       headerMode: "none",
-      navigationOptions: ({}) => ({
+      navigationOptions: () => ({
         title: "医馆",
         tabBarIcon: ({ focused }: { focused: boolean }) => {
           return (
@@ -100,7 +100,7 @@ const TabNav = createBottomTabNavigator(
     [pathMap.AdvisoryIndex]: {
       screen: AdvisoryIndex,
       headerMode: "none",
-      navigationOptions: ({}) => ({
+      navigationOptions: () => ({
         title: "咨询",
         tabBarIcon: ({ focused }: { focused: boolean }) => {
           return (
@@ -124,7 +124,7 @@ const TabNav = createBottomTabNavigator(
     [pathMap.AddressBookIndex]: {
       screen: AddressBookIndex,
       headerMode: "none",
-      navigationOptions: ({}) => ({
+      navigationOptions: () => ({
         title: "通讯录",
         tabBarIcon: ({ focused }: { focused: boolean }) => {
           return (
@@ -148,7 +148,7 @@ const TabNav = createBottomTabNavigator(
     [pathMap.PersonalCenter]: {
       screen: PersonalCenter,
       headerMode: "none",
-      navigationOptions: ({}) => ({
+      navigationOptions: () => ({
         title: "我的",
         tabBarIcon: ({ focused }: { focused: boolean }) => {
           return (

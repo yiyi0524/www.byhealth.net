@@ -139,6 +139,7 @@ export interface PatientsThemselves {
   }
 }
 interface State {
+  isStopRecord: boolean
   // 当前播放的音频的id
   currAudioMsgId: number
   isPalyAudio: boolean
@@ -306,6 +307,7 @@ export default class Chat extends Component<
   getInitState = (): State => {
     let patientUid = this.props.navigation.getParam("patientUid")
     return {
+      isStopRecord: false,
       currAudioMsgId: 0,
       isPalyAudio: false,
       hasMicAuth: false,
@@ -370,22 +372,38 @@ export default class Chat extends Component<
         })
       }
     })
-
+    AudioRecorder.prepareRecordingAtPath(audioPath, {
+      SampleRate: 22050,
+      Channels: 1,
+      AudioQuality: "Low",
+      AudioEncoding: "aac",
+      AudioEncodingBitRate: 32000,
+    })
     AudioRecorder.onProgress = data => {
       this.setState({ recordTime: Math.floor(data.currentTime) })
     }
     AudioRecorder.onFinished = data => {
       console.log("onFinished: ", data)
+      if (Platform.OS === "ios") {
+        console.log(data)
+        this.finishRecording(data.status === "OK", data.audioFileURL, 0)
+      }
     }
   }
-
+  finishRecording = (didSucceed: boolean, filePath: string, fileSize: number) => {
+    console.log(didSucceed)
+    console.log(
+      `Finished recording of duration ${
+        this.state.recordTime
+      } seconds at path: ${filePath} and size of ${fileSize || 0} bytes`,
+    )
+  }
   cancelRecord = () => {
     this.setState({
       isRecord: false,
+      isStopRecord: true,
     })
-    AudioRecorder.stopRecording().catch(err => {
-      console.log("取消录音失败,", err)
-    })
+    AudioRecorder.stopRecording()
   }
   componentWillUnmount() {
     //移除监听
@@ -478,6 +496,7 @@ export default class Chat extends Component<
   }
   onRecordPressIn = () => {
     const { hasMicAuth, isRecord } = this.state
+    console.log(hasMicAuth, "pressIn")
     if (!hasMicAuth) {
       this.checkAudioRecordAuth()
       return
@@ -491,23 +510,17 @@ export default class Chat extends Component<
         isRecord: true,
       },
       () => {
-        AudioRecorder.prepareRecordingAtPath(audioPath, {
-          SampleRate: 22050,
-          Channels: 1,
-          AudioQuality: "Low",
-          AudioEncoding: "aac",
-        })
-          .then(() => {
-            AudioRecorder.startRecording()
-              .then(val => console.log("开始录音成功,", val))
-              .catch(err => {
-                console.error(err)
-                this.setState({ isRecord: false })
-              })
+        console.log("is pre record at path")
+        if (this.state.isStopRecord) {
+          AudioRecorder.prepareRecordingAtPath(audioPath, {
+            SampleRate: 22050,
+            Channels: 1,
+            AudioQuality: "Low",
+            AudioEncoding: "aac",
+            AudioEncodingBitRate: 32000,
           })
-          .catch(err => {
-            console.error(err)
-          })
+        }
+        AudioRecorder.startRecording()
       },
     )
   }
@@ -537,8 +550,9 @@ export default class Chat extends Component<
       })
       .catch(() => this.setState({ hasMicAuth: false }))
   }
-  onRecordPressOut = () => {
+  onRecordPressOut = async () => {
     const { isRecord, patientUid } = this.state
+    console.log(isRecord, "pressOut")
     if (!isRecord) {
       return
     }
@@ -549,15 +563,17 @@ export default class Chat extends Component<
       return
     }
     this.setState({
+      isStopRecord: true,
       isRecord: false,
     })
-    AudioRecorder.stopRecording().then(val => {
-      console.log(val)
+    try {
+      await AudioRecorder.stopRecording()
       this.setState({
         recordTime: 0,
       })
+
       let filePrefix = Platform.OS === "android" ? "file://" : ""
-      uploadAudio(filePrefix + val)
+      uploadAudio(filePrefix + audioPath)
         .then(json => {
           console.log(json)
           const {
@@ -576,7 +592,10 @@ export default class Chat extends Component<
           })
         })
         .catch(err => console.log(err))
-    })
+    } catch (err) {
+      console.error(err)
+      return
+    }
   }
   render() {
     if (!this.state.hasLoad) {
