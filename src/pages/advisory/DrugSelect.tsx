@@ -30,8 +30,8 @@ interface Props {
   navigation: NavigationScreenProp<
     State,
     {
-      categoryList: CategoryItem[]
       isInSession: boolean
+      categoryList: CategoryItem[]
       activeId: number
       prescriptionDrugCategoryList: PrescriptionDrugCategory[]
     }
@@ -65,9 +65,9 @@ export default class DrugSelect extends Component<Props, State> {
     navigation: NavigationScreenProp<
       State,
       {
+        isInSession?: boolean
         categoryList: CategoryItem[]
         activeId: number
-        isInSession?: boolean
         prescriptionDrugCategoryList: PrescriptionDrugCategory[]
       }
     >
@@ -128,6 +128,7 @@ export default class DrugSelect extends Component<Props, State> {
         <TouchableOpacity
           onPress={() => {
             let prescriptionDrugCategoryList = navigation.state.params!.prescriptionDrugCategoryList
+            console.log(prescriptionDrugCategoryList)
             for (let drugCategory of prescriptionDrugCategoryList) {
               for (let drug of drugCategory.drugList) {
                 if (drug.count <= 0) {
@@ -175,9 +176,9 @@ export default class DrugSelect extends Component<Props, State> {
   }
   async componentDidMount() {
     this.init()
-    // this.props.navigation.setParams({
-    //   navigatePress: () => this.state.prescriptionDrugCategoryList,
-    // })
+    this.props.navigation.setParams({
+      prescriptionDrugCategoryList: this.state.prescriptionDrugCategoryList,
+    })
   }
   init = async () => {
     this.setState({
@@ -245,6 +246,7 @@ export default class DrugSelect extends Component<Props, State> {
       )
     }
     const isInSession = this.props.navigation.state.params!.isInSession
+    const drugCategoryId = this.props.navigation.state.params!.activeId
     return (
       <KeyboardAvoidingView
         enabled={Platform.OS !== "android"}
@@ -281,8 +283,15 @@ export default class DrugSelect extends Component<Props, State> {
             <View style={style.headerLine} />
             <TouchableOpacity
               onPress={() => {
+                let prescriptionDrugCategoryList = this.state.prescriptionDrugCategoryList
+                prescriptionDrugCategoryList = prescriptionDrugCategoryList.filter(
+                  v => v.id !== drugCategoryId,
+                )
+                this.props.navigation.setParams({
+                  prescriptionDrugCategoryList,
+                })
                 this.setState({
-                  prescriptionDrugCategoryList: [],
+                  prescriptionDrugCategoryList,
                 })
               }}>
               <Text style={[style.headerItem, global.fontSize14]}>清空处方</Text>
@@ -298,6 +307,9 @@ export default class DrugSelect extends Component<Props, State> {
             {/* 当前已经选择的药品信息 */}
             <View style={this.state.search === "" ? style.drugList : global.hidden}>
               {this.state.prescriptionDrugCategoryList.map((category, k) => {
+                if (category.id !== drugCategoryId) {
+                  return false
+                }
                 return category.drugList.map((drugInfo, k2) => {
                   setTimeout(() => {
                     if (this.state.currDrugId === drugInfo.id) {

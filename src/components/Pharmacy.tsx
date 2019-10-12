@@ -51,7 +51,7 @@ export default class Pharmacy extends Component<Props, State> {
                       const {
                         chooseCategory,
                         navigation,
-                        activeId,
+                        // activeId,
                         categoryList,
                         prescriptionDrugCategoryList,
                         isInSession,
@@ -61,6 +61,7 @@ export default class Pharmacy extends Component<Props, State> {
                         categoryList,
                         activeId: category.id,
                         isInSession,
+                        // prescriptionDrugCategoryList,
                         prescriptionDrugCategoryList,
                       })
                       await this.props.closeChooseCategory()
