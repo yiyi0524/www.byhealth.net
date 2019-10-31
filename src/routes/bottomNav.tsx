@@ -51,6 +51,7 @@ import React from "react"
 import PostInquiry from "@pages/address_book/PostInquiry"
 import UploadPrescriptionList from "@pages/index/UploadPrescriptionList"
 import UploadPrescriptionDetail from "@pages/index/UploadPrescriptionDetail"
+import GroupChat from "@pages/group_chat/Index"
 
 import { Image, StyleSheet, View } from "react-native"
 import {
@@ -116,6 +117,30 @@ const TabNav = createBottomTabNavigator(
           obj.navigation.navigate(obj.navigation.state.routeName)
           if (obj.navigation.state.params && obj.navigation.state.params.init) {
             obj.navigation.state.params.init()
+          }
+        },
+        headerTitleAllowFontScaling: false,
+      }),
+    },
+    [pathMap.Chat]: {
+      screen: GroupChat,
+      headerMode: "none",
+      navigationOptions: () => ({
+        title: "聊天室",
+        tabBarIcon: ({ focused }: { focused: boolean }) => {
+          return (
+            <View style={style.iconFa}>
+              <Image
+                style={style.icon}
+                source={focused ? gImg.common.chatActive : gImg.common.chat}
+              />
+            </View>
+          )
+        },
+        tabBarOnPress: (obj: any) => {
+          obj.navigation.navigate(obj.navigation.state.routeName) //跳转
+          if (obj.navigation.state.params && obj.navigation.state.params.init) {
+            obj.navigation.state.params.init() //查询数据
           }
         },
         headerTitleAllowFontScaling: false,
@@ -199,7 +224,7 @@ const TabNav = createBottomTabNavigator(
 )
 TabNav.navigationOptions = ({ navigation, screenProps }: any) => {
   const childOptions = getActiveChildNavigationOptions(navigation, screenProps)
-  if (childOptions.title === "医馆") {
+  if (childOptions.title === "医馆" || childOptions.title === "聊天室") {
     return {
       title: childOptions.title,
       headerTitleStyle: {

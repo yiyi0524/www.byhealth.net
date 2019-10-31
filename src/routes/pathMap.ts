@@ -52,4 +52,5 @@ export default {
   UploadPrescription: "UploadPrescription",
   UploadPrescriptionList: "UploadPrescriptionList",
   UploadPrescriptionDetail: "UploadPrescriptionDetail",
+  Chat: "Chat",
 }

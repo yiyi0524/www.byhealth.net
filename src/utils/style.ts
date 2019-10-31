@@ -50,6 +50,7 @@ import DrugDetail from "@/assets/styles/advisory/drugDetail"
 import uploadPrescription from "@/assets/styles/index/uploadPrescription"
 import uploadPrescriptionList from "@/assets/styles/index/uploadPrescriptionList"
 import uploadPrescriptionDetail from "@/assets/styles/index/uploadPrescriptionDetail"
+import chatIndex from "@/assets/styles/group_chat/index"
 export default {
   home,
   global,
@@ -114,6 +115,9 @@ export default {
   common: {
     RegisterAgreement,
     LawAgreement,
+  },
+  groupChat: {
+    index: chatIndex,
   },
   admin: {},
 }

@@ -1,0 +1,246 @@
+import global from "@/assets/styles/global"
+import gImg from "@utils/img"
+import gSass from "@utils/style"
+import React, { Component } from "react"
+import { Image, ScrollView, Text, View, RefreshControl } from "react-native"
+import { Toast, InputItem, Icon } from "@ant-design/react-native"
+import { TouchableOpacity } from "react-native-gesture-handler"
+import { TAB, TAB_ZH, listGroupChat, STATUS, GroupChat } from "@/services/groupChat"
+import { TYPE } from "@/utils/constant"
+import Empty from "@/components/Empty"
+import moment from "moment"
+const style = gSass.groupChat.index
+
+interface Props {}
+interface State {
+  hasLoad: boolean
+  refreshing: boolean
+  page: number
+  limit: number
+  filter: Record<string, any>
+  currentPage: number
+  search: string
+  list: GroupChat[]
+}
+type DefaultProps = {}
+
+export default class Index extends Component<Props & DefaultProps, State> {
+  static defaultProps: DefaultProps
+  constructor(props: any) {
+    super(props)
+    this.state = this.getInitState()
+  }
+  getInitState = (): State => {
+    return {
+      hasLoad: false,
+      refreshing: false,
+      currentPage: TAB.GROUP_CHAT,
+      page: -1,
+      limit: -1,
+      filter: {},
+      search: "",
+      list: [],
+    }
+  }
+  componentDidMount() {
+    this.init()
+  }
+  init = async () => {
+    try {
+      this.listGroupChat()
+      this.setState({
+        hasLoad: true,
+      })
+    } catch (err) {
+      console.log(err)
+    }
+  }
+  listGroupChat = async () => {
+    let { page, limit, currentPage, filter } = this.state
+    try {
+      if (currentPage === TAB.GROUP_CHAT) {
+        filter = {
+          status: {
+            condition: TYPE.eq,
+            val: STATUS.NOT_JOINED,
+          },
+        }
+      } else {
+        filter = {
+          status: {
+            condition: TYPE.eq,
+            val: STATUS.JOINED,
+          },
+        }
+      }
+      let listGroupChatMode = listGroupChat({ page, limit, filter })
+      let {
+        data: { list },
+      } = await listGroupChatMode
+      this.setState({
+        list,
+      })
+    } catch (err) {
+      console.log(err)
+    }
+  }
+  onRefresh = () => {
+    this.setState({ refreshing: true })
+    Promise.all([this.init(), new Promise(s => setTimeout(s, 500))])
+      .then(_ => {
+        this.setState({ refreshing: false })
+      })
+      .catch(err => {
+        Toast.fail("刷新失败,错误信息: " + err.msg)
+      })
+  }
+  render() {
+    let { hasLoad, currentPage } = this.state
+    if (!hasLoad) {
+      return (
+        <View style={style.loading}>
+          <View style={style.loadingPic}>
+            <Image style={style.loadingImg} source={gImg.common.loading} />
+          </View>
+        </View>
+      )
+    }
+    return (
+      <View style={style.main}>
+        <View style={[style.tabs, global.flex, global.jCenter]}>
+          <TouchableOpacity style={[style.tabChild]} onPress={() => this.changeTab(0)}>
+            <Text
+              style={[style.tabChildTitle, currentPage === TAB.GROUP_CHAT ? style.active : null]}>
+              {TAB_ZH[TAB.GROUP_CHAT]}
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={[style.tabChild]} onPress={() => this.changeTab(1)}>
+            <Text
+              style={[
+                style.tabChildTitle,
+                currentPage === TAB.MY_GROUP_CHAT ? style.active : null,
+              ]}>
+              {TAB_ZH[TAB.MY_GROUP_CHAT]}
+            </Text>
+          </TouchableOpacity>
+        </View>
+        <ScrollView
+          keyboardShouldPersistTaps="always"
+          style={style.tab}
+          refreshControl={
+            <RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh} />
+          }>
+          {this.groupChat()}
+        </ScrollView>
+      </View>
+    )
+  }
+  //改变tab
+  changeTab = (currentPage: number) => {
+    this.setState(
+      {
+        currentPage,
+      },
+      this.listGroupChat,
+    )
+  }
+  groupChat = () => {
+    let { search, list, currentPage } = this.state
+    return (
+      <View style={style.group}>
+        <View
+          style={[
+            currentPage === TAB.GROUP_CHAT ? style.search : global.hidden,
+            global.flex,
+            global.aCenter,
+            global.jCenter,
+          ]}>
+          <Icon style={style.searchIcon} size="sm" name="search" />
+          <View style={style.searchInputPar}>
+            <InputItem
+              clear
+              last
+              style={style.searchInput}
+              value={search}
+              onChange={search => {
+                this.setState({
+                  search,
+                })
+              }}
+              placeholder='大家都在搜 " 口腔医疗 "'
+            />
+          </View>
+        </View>
+        <View style={style.list}>
+          {list.length > 0 ? (
+            list.map((v, k) => {
+              let joinedTime = "",
+                currentTime = moment().dayOfYear()
+              if (currentPage === TAB.MY_GROUP_CHAT && v.joinedTime) {
+                let day: number = currentTime - moment(v.joinedTime).dayOfYear()
+                if (day > 2) {
+                  joinedTime = v.joinedTime.substr(0, 10)
+                } else if (day === 2) {
+                  joinedTime = "前天"
+                } else if (day === 1) {
+                  joinedTime = "昨天"
+                } else if (day < 1) {
+                  let minute: number = moment().minute() - moment(v.joinedTime).minute()
+                  if (minute > 10) {
+                    let hour: number = parseInt(v.joinedTime.substr(11, 2))
+                    if (hour <= 12) {
+                      joinedTime = "上午" + v.joinedTime.substr(11, 5)
+                    } else {
+                      let amHour = hour - 12
+                      joinedTime = "下午" + amHour + v.joinedTime.substr(13, 3)
+                    }
+                  } else {
+                    if (minute <= 10 && minute > 5) {
+                      joinedTime = minute + "分钟前"
+                    } else {
+                      joinedTime = "刚刚"
+                    }
+                  }
+                }
+              }
+              return (
+                <TouchableOpacity
+                  style={[style.item, global.flex, global.aCenter]}
+                  key={k}
+                  onPress={this.addOrDetail}>
+                  <View style={style.avatarPar}>
+                    {/* <Image style={style.avatar} source={v.pic.url?{uri:getPicFullUrl(v.pic.url)}:gImg.common.defaultAvatar}></Image> */}
+                    <Image style={style.avatar} source={v.pic.url}></Image>
+                  </View>
+                  <View style={style.info}>
+                    <View style={[style.title, global.flex, global.jBetween]}>
+                      <Text style={style.name} numberOfLines={1}>
+                        {v.title}
+                      </Text>
+                      {currentPage === TAB.GROUP_CHAT ? (
+                        <Text style={style.add}>立即加入</Text>
+                      ) : (
+                        <Text style={style.addTime}>{joinedTime}</Text>
+                      )}
+                    </View>
+                    <View style={[style.descPar, global.flex, global.aCenter]}>
+                      <Text style={style.desc} numberOfLines={1}>
+                        {v.desc}
+                      </Text>
+                      {currentPage === TAB.MY_GROUP_CHAT && v.msgCount && v.msgCount !== 0 ? (
+                        <Text style={[style.tags]}>{v.msgCount > 10 ? "..." : v.msgCount}</Text>
+                      ) : null}
+                    </View>
+                  </View>
+                </TouchableOpacity>
+              )
+            })
+          ) : (
+            <Empty />
+          )}
+        </View>
+      </View>
+    )
+  }
+  addOrDetail = () => {}
+}

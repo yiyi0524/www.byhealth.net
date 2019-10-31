@@ -37,6 +37,21 @@ export default StyleSheet.create({
   flexNoWrap: {
     flexWrap: "nowrap",
   },
+  aCenter: {
+    alignItems: "center",
+  },
+  jCenter: {
+    justifyContent: "center",
+  },
+  jBetween: {
+    justifyContent: "space-between",
+  },
+  jAround: {
+    justifyContent: "space-around",
+  },
+  wrap: {
+    flexWrap: "wrap",
+  },
   fontStyle: {
     // fontFamily: "微软雅黑"
   },

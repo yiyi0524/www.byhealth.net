@@ -8,6 +8,8 @@ export default {
     addressBookActive: require("@img/common/address_book_active.png"),
     advisory: require("@img/common/advisory.png"),
     advisoryActive: require("@img/common/advisory_active.png"),
+    chat: require("@img/common/chat.png"),
+    chatActive: require("@img/common/chat_active.png"),
     defaultAvatar: require("@img/common/default_avatar.jpg"),
     logo: require("@img/common/logo.png"),
     man: require("@img/common/man.png"),
