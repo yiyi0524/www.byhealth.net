@@ -3,20 +3,27 @@ import gImg from "@utils/img"
 import gSass from "@utils/style"
 import React, { Component } from "react"
 import { Image, ScrollView, Text, View, RefreshControl } from "react-native"
-import { Toast, InputItem, Icon } from "@ant-design/react-native"
+import { Toast, InputItem, Icon, Modal } from "@ant-design/react-native"
 import { TouchableOpacity } from "react-native-gesture-handler"
-import { TAB, TAB_ZH, listGroupChat, STATUS, GroupChat } from "@/services/groupChat"
+import { TAB, TAB_ZH, listGroupChat, STATUS, GroupChat, addGroupChat } from "@/services/groupChat"
 import { TYPE } from "@/utils/constant"
 import Empty from "@/components/Empty"
 import moment from "moment"
+import { NavigationScreenProp } from "react-navigation"
+import pathMap from "@/routes/pathMap"
 const style = gSass.groupChat.index
 
-interface Props {}
+interface Props {
+  navigation: NavigationScreenProp<any>
+}
 interface State {
   hasLoad: boolean
   refreshing: boolean
+  isAddGroupChat: boolean
+  groupChatId: number
   page: number
   limit: number
+  groupChatName: string
   filter: Record<string, any>
   currentPage: number
   search: string
@@ -34,7 +41,10 @@ export default class Index extends Component<Props & DefaultProps, State> {
     return {
       hasLoad: false,
       refreshing: false,
+      isAddGroupChat: false,
       currentPage: TAB.GROUP_CHAT,
+      groupChatId: 0,
+      groupChatName: "",
       page: -1,
       limit: -1,
       filter: {},
@@ -56,7 +66,7 @@ export default class Index extends Component<Props & DefaultProps, State> {
     }
   }
   listGroupChat = async () => {
-    let { page, limit, currentPage, filter } = this.state
+    let { page, limit, currentPage, filter, search } = this.state
     try {
       if (currentPage === TAB.GROUP_CHAT) {
         filter = {
@@ -64,12 +74,20 @@ export default class Index extends Component<Props & DefaultProps, State> {
             condition: TYPE.eq,
             val: STATUS.NOT_JOINED,
           },
+          search: {
+            condition: TYPE.eqString,
+            val: search,
+          },
         }
       } else {
         filter = {
           status: {
             condition: TYPE.eq,
             val: STATUS.JOINED,
+          },
+          search: {
+            condition: TYPE.eqString,
+            val: search,
           },
         }
       }
@@ -145,7 +163,7 @@ export default class Index extends Component<Props & DefaultProps, State> {
     )
   }
   groupChat = () => {
-    let { search, list, currentPage } = this.state
+    let { search, list, currentPage, isAddGroupChat } = this.state
     return (
       <View style={style.group}>
         <View
@@ -163,9 +181,12 @@ export default class Index extends Component<Props & DefaultProps, State> {
               style={style.searchInput}
               value={search}
               onChange={search => {
-                this.setState({
-                  search,
-                })
+                this.setState(
+                  {
+                    search,
+                  },
+                  this.listGroupChat,
+                )
               }}
               placeholder='大家都在搜 " 口腔医疗 "'
             />
@@ -174,43 +195,15 @@ export default class Index extends Component<Props & DefaultProps, State> {
         <View style={style.list}>
           {list.length > 0 ? (
             list.map((v, k) => {
-              let joinedTime = "",
-                currentTime = moment().dayOfYear()
-              if (currentPage === TAB.MY_GROUP_CHAT && v.joinedTime) {
-                let day: number = currentTime - moment(v.joinedTime).dayOfYear()
-                if (day > 2) {
-                  joinedTime = v.joinedTime.substr(0, 10)
-                } else if (day === 2) {
-                  joinedTime = "前天"
-                } else if (day === 1) {
-                  joinedTime = "昨天"
-                } else if (day < 1) {
-                  let minute: number = moment().minute() - moment(v.joinedTime).minute()
-                  if (minute > 10) {
-                    let hour: number = parseInt(v.joinedTime.substr(11, 2))
-                    if (hour <= 12) {
-                      joinedTime = "上午" + v.joinedTime.substr(11, 5)
-                    } else {
-                      let amHour = hour - 12
-                      joinedTime = "下午" + amHour + v.joinedTime.substr(13, 3)
-                    }
-                  } else {
-                    if (minute <= 10 && minute > 5) {
-                      joinedTime = minute + "分钟前"
-                    } else {
-                      joinedTime = "刚刚"
-                    }
-                  }
-                }
-              }
+              let joinedTime = v.joinedTime ? this.getTime(v.joinedTime) : ""
               return (
                 <TouchableOpacity
                   style={[style.item, global.flex, global.aCenter]}
                   key={k}
-                  onPress={this.addOrDetail}>
+                  onPress={() => this.addOrDetail(v.id, v.title)}>
                   <View style={style.avatarPar}>
                     {/* <Image style={style.avatar} source={v.pic.url?{uri:getPicFullUrl(v.pic.url)}:gImg.common.defaultAvatar}></Image> */}
-                    <Image style={style.avatar} source={v.pic.url}></Image>
+                    <Image style={style.avatar} source={gImg.common.defaultAvatar}></Image>
                   </View>
                   <View style={style.info}>
                     <View style={[style.title, global.flex, global.jBetween]}>
@@ -239,8 +232,97 @@ export default class Index extends Component<Props & DefaultProps, State> {
             <Empty />
           )}
         </View>
+        <Modal style={style.modal} visible={isAddGroupChat} footer={[]} maskClosable>
+          <View style={style.picPar}>
+            <Image style={style.pic} source={gImg.common.defaultAvatar}></Image>
+          </View>
+          <View style={style.groupTitlePar}>
+            <Text style={style.groupTitle} numberOfLines={1}>
+              广东省中西医结合学会肾病委员会
+            </Text>
+          </View>
+          <View style={style.groupDescPar}>
+            <Text style={style.groupDesc} numberOfLines={3}>
+              本聊天室用于中医学术交流，学术论文查看于 中医学术交流，学术论文查看于中医学术交流
+              学术论文查看
+            </Text>
+          </View>
+          <TouchableOpacity onPress={this.addGroup}>
+            <Text style={style.btn}>立即加入</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={this.leave}>
+            <Text style={[style.btn, style.leave]}>马上离开</Text>
+          </TouchableOpacity>
+        </Modal>
       </View>
     )
   }
-  addOrDetail = () => {}
+  //获取时间
+  getTime = (time: string) => {
+    let { currentPage } = this.state
+    let joinedTime = "",
+      currentTime = moment().dayOfYear()
+    if (currentPage === TAB.MY_GROUP_CHAT && time) {
+      let day: number = currentTime - moment(time).dayOfYear()
+      if (day > 2) {
+        joinedTime = time.substr(0, 10)
+      } else if (day === 2) {
+        joinedTime = "前天"
+      } else if (day === 1) {
+        joinedTime = "昨天"
+      } else if (day < 1) {
+        let minute: number = moment().minute() - moment(time).minute()
+        if (minute > 10) {
+          let hour: number = parseInt(time.substr(11, 2))
+          if (hour <= 12) {
+            joinedTime = "上午" + time.substr(11, 5)
+          } else {
+            let amHour = hour - 12
+            joinedTime = "下午" + amHour + time.substr(13, 3)
+          }
+        } else {
+          if (minute <= 10 && minute > 5) {
+            joinedTime = minute + "分钟前"
+          } else {
+            joinedTime = "刚刚"
+          }
+        }
+      }
+    }
+    return joinedTime
+  }
+  addOrDetail = (groupChatId: number, groupChatName: string) => {
+    let { currentPage } = this.state
+    if (currentPage === TAB.GROUP_CHAT) {
+      this.setState({
+        isAddGroupChat: true,
+        groupChatId,
+        groupChatName,
+      })
+    } else {
+      this.props.navigation.push(pathMap.EnteringGroupChat, {
+        id: groupChatId,
+        name: groupChatName,
+      })
+    }
+  }
+  //加入群聊
+  addGroup = () => {
+    let { groupChatId: id, groupChatName: name } = this.state
+    addGroupChat({ id })
+      .then(() => {
+        Toast.success("加入成功", 1, () => {
+          this.props.navigation.push(pathMap.EnteringGroupChat, { id, name })
+        })
+      })
+      .catch((err: any) => {
+        Toast.fail("加入失败, 错误信息: " + err.msg, 3)
+        console.log(err)
+      })
+  }
+  leave = () => {
+    this.setState({
+      isAddGroupChat: false,
+    })
+  }
 }

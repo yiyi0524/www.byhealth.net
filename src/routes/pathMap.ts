@@ -52,5 +52,11 @@ export default {
   UploadPrescription: "UploadPrescription",
   UploadPrescriptionList: "UploadPrescriptionList",
   UploadPrescriptionDetail: "UploadPrescriptionDetail",
-  Chat: "Chat",
+  GroupChat: "GroupChat",
+  EnteringGroupChat: "EnteringGroupChat",
+  GroupChatDetail: "GroupChatDetail",
+  ApplyList: "ApplyList",
+  AddArticle: "AddArticle",
+  ArticleList: "ArticleList",
+  ArticleDetail: "ArticleDetail",
 }

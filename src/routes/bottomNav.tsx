@@ -52,6 +52,12 @@ import PostInquiry from "@pages/address_book/PostInquiry"
 import UploadPrescriptionList from "@pages/index/UploadPrescriptionList"
 import UploadPrescriptionDetail from "@pages/index/UploadPrescriptionDetail"
 import GroupChat from "@pages/group_chat/Index"
+import EnteringGroupChat from "@pages/group_chat/EnteringGroupChat"
+import GroupChatDetail from "@pages/group_chat/Detail"
+import GroupChatApplyList from "@/pages/group_chat/ApplyList"
+import AddArticle from "@/pages/group_chat/AddArticle"
+import ArticleList from "@/pages/group_chat/ArticleList"
+import ArticleDetail from "@/pages/group_chat/ArticleDetail"
 
 import { Image, StyleSheet, View } from "react-native"
 import {
@@ -122,7 +128,7 @@ const TabNav = createBottomTabNavigator(
         headerTitleAllowFontScaling: false,
       }),
     },
-    [pathMap.Chat]: {
+    [pathMap.GroupChat]: {
       screen: GroupChat,
       headerMode: "none",
       navigationOptions: () => ({
@@ -401,6 +407,24 @@ const StacksOverTabs = createStackNavigator({
   },
   [pathMap.UploadPrescriptionDetail]: {
     screen: UploadPrescriptionDetail,
+  },
+  [pathMap.EnteringGroupChat]: {
+    screen: EnteringGroupChat,
+  },
+  [pathMap.GroupChatDetail]: {
+    screen: GroupChatDetail,
+  },
+  [pathMap.ApplyList]: {
+    screen: GroupChatApplyList,
+  },
+  [pathMap.AddArticle]: {
+    screen: AddArticle,
+  },
+  [pathMap.ArticleList]: {
+    screen: ArticleList,
+  },
+  [pathMap.ArticleDetail]: {
+    screen: ArticleDetail,
   },
 })
 export default StacksOverTabs

@@ -51,6 +51,13 @@ import uploadPrescription from "@/assets/styles/index/uploadPrescription"
 import uploadPrescriptionList from "@/assets/styles/index/uploadPrescriptionList"
 import uploadPrescriptionDetail from "@/assets/styles/index/uploadPrescriptionDetail"
 import chatIndex from "@/assets/styles/group_chat/index"
+import enteringGroupChat from "@/assets/styles/group_chat/enteringGroupChat"
+import groupChatDetail from "@/assets/styles/group_chat/detail"
+import groupChatApplyList from "@/assets/styles/group_chat/applyList"
+import addArticle from "@/assets/styles/group_chat/addArticle"
+import articleList from "@/assets/styles/group_chat/articleList"
+import articleDetail from "@/assets/styles/group_chat/articleDetail"
+
 export default {
   home,
   global,
@@ -118,6 +125,12 @@ export default {
   },
   groupChat: {
     index: chatIndex,
+    enter: enteringGroupChat,
+    detail: groupChatDetail,
+    applyList: groupChatApplyList,
+    addArticle,
+    articleList,
+    articleDetail,
   },
   admin: {},
 }

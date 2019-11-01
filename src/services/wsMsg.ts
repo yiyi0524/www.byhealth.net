@@ -1,5 +1,6 @@
 import { bget, GetListParam } from "./api"
-import { Msg } from "@/pages/advisory/Chat"
+// import { Msg } from "@/pages/advisory/Chat"
+import { Msg } from "@/pages/Ws"
 
 /**
  * 获取消息列表
