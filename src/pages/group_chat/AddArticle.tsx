@@ -57,6 +57,7 @@ export default class AddArticle extends Component<Props & DefaultProps, State> {
           <View style={style.item}>
             <InputItem
               clear
+              last
               style={style.input}
               value={title}
               onChange={title => {
@@ -69,7 +70,20 @@ export default class AddArticle extends Component<Props & DefaultProps, State> {
             </InputItem>
           </View>
           <View style={style.item}>
-            <TextareaItem style={style.textarea} rows={8} placeholder="填写病例说明" count={1000} />
+            <TextareaItem
+              value={content}
+              onChange={val => {
+                let content: string = val ? val : ""
+                this.setState({
+                  content,
+                })
+              }}
+              last
+              style={style.textarea}
+              rows={10}
+              placeholder="填写病例说明"
+              count={1000}
+            />
           </View>
           <View style={style.item}>
             <ImagePicker
