@@ -16,6 +16,11 @@ export const STATUS = {
   NOT_JOINED: 0x0,
   JOINED: 0x1,
 }
+//文章类型
+export const ArticleType = {
+  all: 0x0, //所有文章
+  personal: 0x1, //我的发布
+}
 
 //群聊
 export interface GroupChat {
@@ -33,6 +38,15 @@ export interface GroupChatMember {
   id: number
   name: string
   avatar: Picture
+}
+//文章
+export interface Article {
+  id: number
+  title: string
+  content: string
+  picList: Picture[]
+  viewCount: number
+  ctime: string
 }
 /**
  * 获取群聊列表
@@ -303,6 +317,219 @@ export function delGroupChatmember(data: { groupChatId: number; ids: number[] })
     url: "api/delGroupChatmember",
     data,
   })
+}
+/**
+ * 添加文章
+ */
+export function addArticle(data: { title: string; content: string; picList: Picture[] }) {
+  return bpost({
+    url: "api/addArticle",
+    data,
+  })
+}
+/**
+ * 编辑文章
+ */
+export function editArticle(data: {
+  id: number
+  title: string
+  content: string
+  picList: Picture[]
+}) {
+  return bpost({
+    url: "api/editArticle",
+    data,
+  })
+}
+/**
+ * 文章列表
+ * filter:{
+ * type:{
+ *   condition:eq,
+ *   val:ArticleType
+ * },
+ *  search:{
+ *    condition:eqString,
+ *    val:string
+ * },
+ * }
+ */
+export function listArticle(data: GetListParam) {
+  console.log(data)
+  return {
+    data: {
+      list: [
+        {
+          id: 1,
+          title: "广东省中西医结合学会肾病委...",
+          content: "牙齿矫正方案汇总，牙齿矫正一直是医学界的一大难题...",
+          picList: [
+            {
+              id: 1,
+              title: "",
+              url: "/uploads/20190528/14151cac19744c03114114ed6c9b3cea.jpg",
+            },
+            {
+              id: 1,
+              title: "",
+              url: "/uploads/20190528/14151cac19744c03114114ed6c9b3cea.jpg",
+            },
+            {
+              id: 1,
+              title: "",
+              url: "/uploads/20190528/14151cac19744c03114114ed6c9b3cea.jpg",
+            },
+          ],
+          viewCount: 103,
+          ctime: "2019-10-10 10:00:00",
+        },
+        {
+          id: 2,
+          title: "广东省中西医结合学会肾病委...",
+          content: "牙齿矫正方案汇总，牙齿矫正一直是医学界的一大难题...",
+          picList: [],
+          viewCount: 103,
+          ctime: "2019-10-10 10:00:00",
+        },
+        {
+          id: 3,
+          title: "广东省中西医结合学会肾病委...",
+          content: "牙齿矫正方案汇总，牙齿矫正一直是医学界的一大难题...",
+          picList: [],
+          viewCount: 103,
+          ctime: "2019-10-10 10:00:00",
+        },
+        {
+          id: 4,
+          title: "广东省中西医结合学会肾病委...",
+          content: "牙齿矫正方案汇总，牙齿矫正一直是医学界的一大难题...",
+          picList: [],
+          viewCount: 103,
+          ctime: "2019-10-10 10:00:00",
+        },
+        {
+          id: 5,
+          title: "广东省中西医结合学会肾病委...",
+          content: "牙齿矫正方案汇总，牙齿矫正一直是医学界的一大难题...",
+          picList: [],
+          viewCount: 103,
+          ctime: "2019-10-10 10:00:00",
+        },
+        {
+          id: 6,
+          title: "广东省中西医结合学会肾病委...",
+          content: "牙齿矫正方案汇总，牙齿矫正一直是医学界的一大难题...",
+          picList: [],
+          viewCount: 103,
+          ctime: "2019-10-10 10:00:00",
+        },
+        {
+          id: 7,
+          title: "广东省中西医结合学会肾病委7...",
+          content: "牙齿矫正方案汇总，牙齿矫正一直是医学界的一大难题...",
+          picList: [],
+          viewCount: 103,
+          ctime: "2019-10-10 10:00:00",
+        },
+        {
+          id: 8,
+          title: "广东省中西医结合学会肾病委...",
+          content: "牙齿矫正方案汇总，牙齿矫正一直是医学界的一大难题...",
+          picList: [],
+          viewCount: 103,
+          ctime: "2019-10-10 10:00:00",
+        },
+        {
+          id: 9,
+          title: "广东省中西医结合学会肾病委...",
+          content: "牙齿矫正方案汇总，牙齿矫正一直是医学界的一大难题...",
+          picList: [],
+          viewCount: 103,
+          ctime: "2019-10-10 10:00:00",
+        },
+        {
+          id: 10,
+          title: "广东省中西医结合学会肾病委10...",
+          content: "牙齿矫正方案汇总，牙齿矫正一直是医学界的一大难题...",
+          picList: [],
+          viewCount: 103,
+          ctime: "2019-10-10 10:00:00",
+        },
+        {
+          id: 11,
+          title: "广东省中西医结合学会肾病委11...",
+          content: "牙齿矫正方案汇总，牙齿矫正一直是医学界的一大难题...",
+          picList: [],
+          viewCount: 103,
+          ctime: "2019-10-10 10:00:00",
+        },
+      ] as Article[],
+    },
+    count: 15,
+  }
+  // return bpost<{ data: { list: Article[] },count:number }>({
+  //   url: "api/listArticle",
+  //   data,
+  // })
+}
+/**
+ * 获取文章详情
+ */
+export function getArticle(data: { id: number }) {
+  console.log(data)
+  return {
+    data: {
+      detail: {
+        id: 1,
+        title: "广东省中西医结合学会肾病委...",
+        content:
+          "牙齿矫正方案汇总，牙齿矫正一直是医学界的一大难题牙齿矫正方案汇总，牙齿矫正一直是医学界的一大难题牙齿矫正方案汇总，牙齿矫正一直是医学界的一大难题牙齿矫正方案汇总，牙齿矫正一直是医学界的一大难题牙齿矫正方案汇总，牙齿矫正一直是医学界的一大难题牙齿矫正方案汇总，牙齿矫正一直是医学界的一大难题牙齿矫正方案汇总，牙齿矫正一直是医学界的一大难题牙齿矫正方案汇总，牙齿矫正一直是医学界的一大难题牙齿矫正方案汇总，牙齿矫正一直是医学界的一大难题牙齿矫正方案汇总，牙齿矫正一直是医学界的一大难题牙齿矫正方案汇总，牙齿矫正一直是医学界的一大难题牙齿矫正方案汇总，牙齿矫正一直是医学界的一大难题牙齿矫正方案汇总，牙齿矫正一直是医学界的一大难题牙齿矫正方案汇总，牙齿矫正一直是医学界的一大难题牙齿矫正方案汇总，牙齿矫正一直是医学界的一大难题牙齿矫正方案汇总，牙齿矫正一直是医学界的一大难题牙齿矫正方案汇总，牙齿矫正一直是医学界的一大难题牙齿矫正方案汇总，牙齿矫正一直是医学界的一大难题牙齿矫正方案汇总，牙齿矫正一直是医学界的一大难题牙齿矫正方案汇总，牙齿矫正一直是医学界的一大难题牙齿矫正方案汇总，牙齿矫正一直是医学界的一大难题牙齿矫正方案汇总，牙齿矫正一直是医学界的一大难题...",
+        picList: [
+          {
+            id: 1,
+            title: "",
+            url: "/uploads/20190528/14151cac19744c03114114ed6c9b3cea.jpg",
+          },
+          {
+            id: 1,
+            title: "",
+            url: "/uploads/20190528/14151cac19744c03114114ed6c9b3cea.jpg",
+          },
+          {
+            id: 1,
+            title: "",
+            url: "/uploads/20190528/14151cac19744c03114114ed6c9b3cea.jpg",
+          },
+        ],
+        viewCount: 103,
+        ctime: "2019-10-10 10:00:00",
+      } as Article,
+    },
+  }
+  // return bpost<{ data: { detail: Article } }>({
+  //   url: "api/getArticle",
+  //   data,
+  // })
+}
+/**
+ * 文章阅读量+1
+ */
+export function articleViewCount(data: { id: number }) {
+  return bpost({
+    url: "api/articleViewCount",
+    data,
+  })
+}
+/**
+ * 检查是否为自己的文章
+ */
+export function checkIsPersonalArticle(data: { id: number }) {
+  console.log(data)
+  return { data: { isPersonalArticle: true } }
+  // return bpost<{ data: { isPersonalArticle:boolean } }>({
+  //   url: "api/checkIsPersonalArticle",
+  //   data,
+  // })
 }
 export default {
   listGroupChat,

@@ -56,7 +56,7 @@ export default {
   EnteringGroupChat: "EnteringGroupChat",
   GroupChatDetail: "GroupChatDetail",
   ApplyList: "ApplyList",
-  AddArticle: "AddArticle",
+  AddOrEditArticle: "AddOrEditArticle",
   ArticleList: "ArticleList",
   ArticleDetail: "ArticleDetail",
 }

@@ -55,9 +55,9 @@ import GroupChat from "@pages/group_chat/Index"
 import EnteringGroupChat from "@pages/group_chat/EnteringGroupChat"
 import GroupChatDetail from "@pages/group_chat/Detail"
 import GroupChatApplyList from "@/pages/group_chat/ApplyList"
-import AddArticle from "@/pages/group_chat/AddArticle"
 import ArticleList from "@/pages/group_chat/ArticleList"
 import ArticleDetail from "@/pages/group_chat/ArticleDetail"
+import AddOrEditArticle from "@/pages/group_chat/AddOrEditArticle"
 
 import { Image, StyleSheet, View } from "react-native"
 import {
@@ -417,14 +417,14 @@ const StacksOverTabs = createStackNavigator({
   [pathMap.ApplyList]: {
     screen: GroupChatApplyList,
   },
-  [pathMap.AddArticle]: {
-    screen: AddArticle,
-  },
   [pathMap.ArticleList]: {
     screen: ArticleList,
   },
   [pathMap.ArticleDetail]: {
     screen: ArticleDetail,
+  },
+  [pathMap.AddOrEditArticle]: {
+    screen: AddOrEditArticle,
   },
 })
 export default StacksOverTabs

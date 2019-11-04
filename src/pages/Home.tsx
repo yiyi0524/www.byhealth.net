@@ -582,12 +582,6 @@ export default class Home extends Component<
               )
             })}
           </View>
-          <TouchableOpacity
-            onPress={() => {
-              this.props.navigation.push(pathMap.AddArticle)
-            }}>
-            <Text style={{ height: 60, borderWidth: 1 }}>群聊</Text>
-          </TouchableOpacity>
         </ScrollView>
       </>
     )

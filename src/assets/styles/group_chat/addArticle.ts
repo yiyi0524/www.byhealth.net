@@ -1,4 +1,3 @@
-import { windowWidth } from "@/services/api"
 import { StyleSheet } from "react-native"
 export default StyleSheet.create({
   main: {
@@ -8,6 +7,10 @@ export default StyleSheet.create({
   },
   content: {
     flex: 0.9,
+    padding: 15,
+  },
+  list: {
+    paddingBottom: 30,
   },
   footer: {
     flex: 0.1,
@@ -18,9 +21,10 @@ export default StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    padding: 15,
+    padding: 8,
     paddingLeft: 35,
     paddingRight: 35,
+    backgroundColor: "#fff",
   },
   btnContent: {
     height: 44,
@@ -34,6 +38,15 @@ export default StyleSheet.create({
     fontSize: 14,
   },
   item: {},
-  input: {},
-  textarea: {},
+  input: {
+    fontSize: 13,
+    color: "#666",
+  },
+  textarea: {
+    marginBottom: 15,
+    fontSize: 13,
+    color: "#666",
+    borderWidth: 1,
+    borderColor: "#eee",
+  },
 })

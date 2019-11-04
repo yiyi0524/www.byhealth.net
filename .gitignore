@@ -70,3 +70,4 @@ __tests__
 juiceNote
 yarn.lock
 *.update
+dev
