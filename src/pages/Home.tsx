@@ -93,6 +93,16 @@ export default class Home extends Component<
     this.state = this.getInitState()
     this.shortcutList = [
       {
+        icon: gImg.home.prescribing,
+        title: "立即开方",
+        link: pathMap.Prescribing,
+      },
+      {
+        icon: gImg.home.prescriptionTpl,
+        title: "处方模板",
+        link: pathMap.PrescriptionTpl,
+      },
+      {
         icon: gImg.home.invite,
         title: "邀请患者",
         link: pathMap.InvitePatients,
@@ -101,11 +111,6 @@ export default class Home extends Component<
         icon: gImg.home.sittingInformation,
         title: "坐诊信息",
         link: pathMap.SittingHospital,
-      },
-      {
-        icon: gImg.home.prescriptionTpl,
-        title: "处方模板",
-        link: pathMap.PrescriptionTpl,
       },
       {
         icon: gImg.home.uploadPrescription,

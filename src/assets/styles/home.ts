@@ -130,12 +130,14 @@ export default StyleSheet.create({
   /**分类 */
   categoryList: {
     padding: 15,
+    paddingBottom: 0,
     borderBottomWidth: 1 / PixelRatio.get(),
     borderBottomColor: sColor.colorDdd,
   },
   categoryItem: {
     width: (windowWidth - 30) / 4,
     alignItems: "center",
+    marginBottom: 15,
   },
   categoryItemPicFa: {
     width: 35,

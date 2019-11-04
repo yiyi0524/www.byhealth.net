@@ -51,12 +51,13 @@ import uploadPrescription from "@/assets/styles/index/uploadPrescription"
 import uploadPrescriptionList from "@/assets/styles/index/uploadPrescriptionList"
 import uploadPrescriptionDetail from "@/assets/styles/index/uploadPrescriptionDetail"
 import chatIndex from "@/assets/styles/group_chat/index"
-import enteringGroupChat from "@/assets/styles/group_chat/enteringGroupChat"
+import chat from "@/assets/styles/group_chat/chat"
 import groupChatDetail from "@/assets/styles/group_chat/detail"
 import groupChatApplyList from "@/assets/styles/group_chat/applyList"
 import addArticle from "@/assets/styles/group_chat/addArticle"
 import articleList from "@/assets/styles/group_chat/articleList"
 import articleDetail from "@/assets/styles/group_chat/articleDetail"
+import prescribing from "@/assets/styles/index/prescribing"
 
 export default {
   home,
@@ -79,6 +80,7 @@ export default {
     EditPrescriptionTpl,
     Help,
     uploadPrescription,
+    prescribing,
   },
   user: {
     login,
@@ -125,7 +127,7 @@ export default {
   },
   groupChat: {
     index: chatIndex,
-    enter: enteringGroupChat,
+    chat,
     detail: groupChatDetail,
     applyList: groupChatApplyList,
     addArticle,

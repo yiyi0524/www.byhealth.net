@@ -32,6 +32,7 @@ export default {
     uploadPrescription: require("@img/home/shangchuan.png"),
     sittingInformation: require("@img/home/xinxi.png"),
     prescriptionTpl: require("@img/home/moban.png"),
+    prescribing: require("@img/home/prescribing.png"),
     select: require("@img/home/xuanze.png"),
     invite: require("@img/home/yaoqing.png"),
     banner_0: require("@img/home/banner_0.jpg"),

@@ -67,7 +67,7 @@ export default StyleSheet.create({
     paddingLeft: 15,
   },
   searchInputPar: {
-    width: 180,
+    flex: 1,
     overflow: "hidden",
   },
   searchInput: {
@@ -93,7 +93,7 @@ export default StyleSheet.create({
   avatar: {
     width: 50,
     height: 50,
-    resizeMode: "contain",
+    resizeMode: "cover",
   },
   info: {
     flex: 1,

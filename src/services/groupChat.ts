@@ -71,7 +71,7 @@ export function listGroupChat(data: GetListParam) {
           pic: {
             id: 1,
             title: "",
-            url: gImg.common.defaultAvatar,
+            url: "/uploads/20190528/14151cac19744c03114114ed6c9b3cea.jpg",
           },
           title: "广东省中西医结合学会感染病学术交流群",
           desc: "本聊天室用于中医学术交流，学术论文查看",
@@ -84,7 +84,7 @@ export function listGroupChat(data: GetListParam) {
           pic: {
             id: 1,
             title: "",
-            url: gImg.common.defaultAvatar,
+            url: "/uploads/20190528/14151cac19744c03114114ed6c9b3cea.jpg",
           },
           title: "广东省中西医结合学会感染病",
           desc: "本聊天室用于中医学术交流，学术论文查看",
@@ -97,7 +97,7 @@ export function listGroupChat(data: GetListParam) {
           pic: {
             id: 1,
             title: "",
-            url: gImg.common.defaultAvatar,
+            url: "/uploads/20190528/14151cac19744c03114114ed6c9b3cea.jpg",
           },
           title: "广东省中西医结合学会感染病",
           desc: "本聊天室用于中医学术交流，学术论文查看",
@@ -110,7 +110,7 @@ export function listGroupChat(data: GetListParam) {
           pic: {
             id: 1,
             title: "",
-            url: gImg.common.defaultAvatar,
+            url: "/uploads/20190528/14151cac19744c03114114ed6c9b3cea.jpg",
           },
           title: "广东省中西医结合学会感染病",
           desc: "本聊天室用于中医学术交流，学术论文查看",
@@ -123,7 +123,7 @@ export function listGroupChat(data: GetListParam) {
           pic: {
             id: 1,
             title: "",
-            url: gImg.common.defaultAvatar,
+            url: "/uploads/20190528/14151cac19744c03114114ed6c9b3cea.jpg",
           },
           title: "广东省中西医结合学会感染病",
           desc: "本聊天室用于中医学术交流，学术论文查看",
@@ -136,7 +136,7 @@ export function listGroupChat(data: GetListParam) {
           pic: {
             id: 1,
             title: "",
-            url: gImg.common.defaultAvatar,
+            url: "/uploads/20190528/14151cac19744c03114114ed6c9b3cea.jpg",
           },
           title: "广东省中西医结合学会感染病",
           desc: "本聊天室用于中医学术交流，学术论文查看",
@@ -149,7 +149,7 @@ export function listGroupChat(data: GetListParam) {
           pic: {
             id: 1,
             title: "",
-            url: gImg.common.defaultAvatar,
+            url: "/uploads/20190528/14151cac19744c03114114ed6c9b3cea.jpg",
           },
           title: "广东省中西医结合学会感染病",
           desc: "本聊天室用于中医学术交流，学术论文查看",

@@ -11,6 +11,7 @@ import Empty from "@/components/Empty"
 import moment from "moment"
 import { NavigationScreenProp } from "react-navigation"
 import pathMap from "@/routes/pathMap"
+import { getPicFullUrl } from "@/utils/utils"
 const style = gSass.groupChat.index
 
 interface Props {
@@ -42,7 +43,7 @@ export default class Index extends Component<Props & DefaultProps, State> {
       hasLoad: false,
       refreshing: false,
       isAddGroupChat: false,
-      currentPage: TAB.GROUP_CHAT,
+      currentPage: TAB.MY_GROUP_CHAT,
       groupChatId: 0,
       groupChatName: "",
       page: -1,
@@ -202,8 +203,12 @@ export default class Index extends Component<Props & DefaultProps, State> {
                   key={k}
                   onPress={() => this.addOrDetail(v.id, v.title)}>
                   <View style={style.avatarPar}>
-                    {/* <Image style={style.avatar} source={v.pic.url?{uri:getPicFullUrl(v.pic.url)}:gImg.common.defaultAvatar}></Image> */}
-                    <Image style={style.avatar} source={gImg.common.defaultAvatar}></Image>
+                    <Image
+                      style={style.avatar}
+                      source={
+                        v.pic.url ? { uri: getPicFullUrl(v.pic.url) } : gImg.common.defaultAvatar
+                      }></Image>
+                    {/* <Image style={style.avatar} source={gImg.common.defaultAvatar}></Image> */}
                   </View>
                   <View style={style.info}>
                     <View style={[style.title, global.flex, global.jBetween]}>
@@ -301,8 +306,8 @@ export default class Index extends Component<Props & DefaultProps, State> {
       })
     } else {
       this.props.navigation.push(pathMap.EnteringGroupChat, {
-        id: groupChatId,
-        name: groupChatName,
+        groupChatId: groupChatId,
+        groupChatName: groupChatName,
       })
     }
   }

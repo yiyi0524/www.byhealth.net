@@ -59,4 +59,5 @@ export default {
   AddOrEditArticle: "AddOrEditArticle",
   ArticleList: "ArticleList",
   ArticleDetail: "ArticleDetail",
+  Prescribing: "Prescribing",
 }

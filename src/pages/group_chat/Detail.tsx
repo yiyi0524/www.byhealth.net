@@ -19,8 +19,8 @@ import { Assign } from "utility-types"
 const style = gSass.groupChat.detail
 
 interface NavParams {
-  id: number
-  name: string
+  groupChatId: number
+  groupChatName: string
   navigatePress: () => void
   mode: "delete" | "done"
 }
@@ -48,7 +48,7 @@ export default class Detail extends Component<Props & DefaultProps, State> {
   }) => {
     let title = ""
     if (navigation.state.params) {
-      title = navigation.state.params.name
+      title = navigation.state.params.groupChatName
     }
     return {
       title,
@@ -90,8 +90,8 @@ export default class Detail extends Component<Props & DefaultProps, State> {
     let groupChatId = 0,
       groupChatName = ""
     if (props.navigation.state.params) {
-      groupChatId = props.navigation.state.params.id
-      groupChatName = props.navigation.state.params.name
+      groupChatId = props.navigation.state.params!.groupChatId
+      groupChatName = props.navigation.state.params!.groupChatName
     }
     return {
       isAdmin: false,
@@ -211,25 +211,30 @@ export default class Detail extends Component<Props & DefaultProps, State> {
             {memberList.length > 0
               ? memberList.map((member, k) => {
                   return (
-                    <View style={[style.item, global.flex, global.aCenter]} key={k}>
-                      {isAdmin && isSelectMember ? (
-                        <TouchableOpacity
-                          onPress={() => {
-                            let { memberList, delMemberIds } = this.state
-                            memberList[k].active = !memberList[k].active
-                            if (memberList[k].active) {
-                              delMemberIds.push(member.id)
-                              delMemberIds.filter((val, idx, self) => {
-                                return self.indexOf(val) === idx
-                              })
-                            } else {
-                              delMemberIds = delMemberIds.filter(v => v !== member.id)
-                            }
-                            this.setState({
-                              memberList,
-                              delMemberIds,
+                    <TouchableOpacity
+                      activeOpacity={isSelectMember ? 0.3 : 1}
+                      onPress={() => {
+                        let { memberList, delMemberIds, isSelectMember } = this.state
+                        if (isSelectMember) {
+                          memberList[k].active = !memberList[k].active
+                          if (memberList[k].active) {
+                            delMemberIds.push(member.id)
+                            delMemberIds.filter((val, idx, self) => {
+                              return self.indexOf(val) === idx
                             })
-                          }}>
+                          } else {
+                            delMemberIds = delMemberIds.filter(v => v !== member.id)
+                          }
+                          this.setState({
+                            memberList,
+                            delMemberIds,
+                          })
+                        }
+                      }}
+                      style={[style.item, global.flex, global.aCenter]}
+                      key={k}>
+                      {isAdmin && isSelectMember ? (
+                        <View>
                           {member.active ? (
                             <View style={[style.selectActive]}>
                               <Text style={style.selectTitle}>√</Text>
@@ -237,7 +242,7 @@ export default class Detail extends Component<Props & DefaultProps, State> {
                           ) : (
                             <View style={[style.select]}></View>
                           )}
-                        </TouchableOpacity>
+                        </View>
                       ) : null}
 
                       <View style={style.avatarPar}>
@@ -257,7 +262,7 @@ export default class Detail extends Component<Props & DefaultProps, State> {
                           <Text style={style.administrators}>管理员</Text>
                         </View>
                       ) : null}
-                    </View>
+                    </TouchableOpacity>
                   )
                 })
               : null}
