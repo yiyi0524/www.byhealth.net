@@ -30,6 +30,8 @@ import { connect } from "react-redux"
 import { Dispatch } from "redux"
 import { Picture } from "./advisory/Chat"
 import Buff from "@utils/Buff"
+import SendPrescribing from "@/components/SendPrescribing"
+import SendPrescribingSuccessTips from "@/components/SendPrescribingSuccessTips"
 const style = gStyle.home
 const globalStyle = gStyle.global
 interface Props {
@@ -587,6 +589,8 @@ export default class Home extends Component<
               )
             })}
           </View>
+          <SendPrescribingSuccessTips />
+          <SendPrescribing />
         </ScrollView>
       </>
     )

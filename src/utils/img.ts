@@ -25,7 +25,8 @@ export default {
     rightSound: require("@img/common/rightSound.png"),
     leftSoundPlaying: require("@img/common/leftSoundPlaying.gif"),
     rightSoundPlaying: require("@img/common/rightSoundPlaying.gif"),
-    doctorAvatarDemo: require("@img/common/doctorAvatarDemo.jpg"),
+    weChat: require("@img/common/we-chat.png"),
+    qr: require("@img/common/qr.png"),
   },
   home: {
     prescriptionTemplate: require("@img/home/moban.png"),
@@ -41,6 +42,9 @@ export default {
     banner_3: require("@img/home/banner_3.jpg"),
     empty: require("@img/home/empty.png"),
     prescriptionExample: require("@img/home/prescription-example.png"),
+    prescribingPhone: require("@img/home/prescribing-phone.png"),
+    prescribingWeChat: require("@img/home/prescribing-wechat.png"),
+    prescribingPhotograph: require("@img/home/prescribing-photograph.png"),
   },
   advisory: {
     pillPurchase: require("@img/advisory/pill_purchase.png"),
