@@ -8,6 +8,7 @@ import { connect } from "react-redux"
 import { Dispatch } from "redux"
 import { AppState as RnAppState, AppStateStatus } from "react-native"
 import { isLogin, updateAppStateStatus } from "@/services/api"
+import CodePush from "react-native-code-push"
 
 const mapStateToProps = (state: AppState) => {
   return {
@@ -27,6 +28,13 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
 
 const stackNavigator = createStackNavigator(routeConfig[0], routeConfig[1])
 const AppNavigator = createAppContainer(stackNavigator)
+
+const codePushOptions = {
+  checkFrequency: CodePush.CheckFrequency.ON_APP_RESUME,
+  installMode: CodePush.InstallMode.ON_NEXT_RESUME,
+}
+// 在组件根节点的地方设置热更新。
+@CodePush(codePushOptions)
 // @ts-ignore
 @connect(
   mapStateToProps,

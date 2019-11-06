@@ -12,12 +12,17 @@
     "android": "react-native run-android",
     "clean": "cd android && ./gradlew clean",
     "resetCache": "yarn start --resetCache",
-    "adb": "adb shell input keyevent 82"
+    "adb": "adb shell input keyevent 82",
+    "hotUpdate": "appcenter codepush release-react -a buffge/bo2-yi1-jian4-kang1 --entry-file index.tsx",
+    "hotUpdateProd": "appcenter codepush release-react -d Production -a buffge/bo2-yi1-jian4-kang1 --entry-file index.tsx"
   },
   "dependencies": {
     "@ant-design/react-native": "^3.1.15",
     "@types/lodash": "^4.14.142",
     "@types/react-native-permissions": "^1.1.1",
+    "appcenter": "^2.5.0",
+    "appcenter-analytics": "^2.5.0",
+    "appcenter-crashes": "^2.5.0",
     "classnames": "^2.2.6",
     "hermes-engine": "0.1.1",
     "idcard": "^4.1.0",
@@ -28,6 +33,7 @@
     "react": "16.8.1",
     "react-native": "^0.61.3",
     "react-native-audio": "^4.3.0",
+    "react-native-code-push": "^5.7.0",
     "react-native-device-info": "^2.3.2",
     "react-native-gesture-handler": "^1.4.1",
     "react-native-htmlview": "^0.15.0",
