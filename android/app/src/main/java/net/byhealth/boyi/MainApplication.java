@@ -4,23 +4,24 @@ import android.app.Application;
 import android.content.Context;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
-import android.content.Context;
 import android.graphics.Color;
 import android.os.Build;
 import android.util.Log;
+
 import com.alibaba.sdk.android.man.MANService;
 import com.alibaba.sdk.android.man.MANServiceProvider;
 import com.alibaba.sdk.android.push.CloudPushService;
 import com.alibaba.sdk.android.push.CommonCallback;
 import com.alibaba.sdk.android.push.noonesdk.PushServiceFactory;
+
 import java.lang.reflect.InvocationTargetException;
+
 import com.facebook.react.PackageList;
-import com.facebook.hermes.reactexecutor.HermesExecutorFactory;
-import com.facebook.react.bridge.JavaScriptExecutorFactory;
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.soloader.SoLoader;
+import com.microsoft.codepush.react.CodePush;
 
 import java.util.List;
 
@@ -31,15 +32,19 @@ public class MainApplication extends Application implements ReactApplication {
     private final String TAG = "net.byhealth.boyi";
     private final ReactNativeHost mReactNativeHost = new ReactNativeHost(this) {
         @Override
+        protected String getJSBundleFile() {
+            return CodePush.getJSBundleFile();
+        }
+
+        @Override
         public boolean getUseDeveloperSupport() {
             return BuildConfig.DEBUG;
         }
 
         @Override
         protected List<ReactPackage> getPackages() {
-            @SuppressWarnings("UnnecessaryLocalVariable")
             List<ReactPackage> packages = new PackageList(this).getPackages();
-            // Packages that cannot be autolinked yet can be added manually here, for
+            // Packages that cannot be autoLinked yet can be added manually here, for
             // example:
             packages.add(new BuffPackage());
             return packages;
@@ -79,8 +84,8 @@ public class MainApplication extends Application implements ReactApplication {
             mChannel.setLightColor(Color.RED);
             // 设置通知出现时的震动（如果 android 设备支持的话）
             mChannel.enableVibration(true);
-            mChannel.setVibrationPattern(new long[] { 100, 200, 300, 400, 500, 400, 300, 200, 400 });
-            // 最后在notificationmanager中创建该通知渠道
+            mChannel.setVibrationPattern(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400});
+            // 最后在notificationManager中创建该通知渠道
             mNotificationManager.createNotificationChannel(mChannel);
         }
         initPushService(this);
@@ -89,7 +94,7 @@ public class MainApplication extends Application implements ReactApplication {
     /**
      * Loads Flipper in React Native templates.
      *
-     * @param context
+     * @param context Context
      */
     private static void initializeFlipper(Context context) {
         if (BuildConfig.DEBUG) {
@@ -115,7 +120,7 @@ public class MainApplication extends Application implements ReactApplication {
     /**
      * 初始化云推送通道
      *
-     * @param applicationContext
+     * @param applicationContext Context
      */
     private void initPushService(final Context applicationContext) {
         PushServiceFactory.init(applicationContext);
@@ -135,33 +140,5 @@ public class MainApplication extends Application implements ReactApplication {
                 // errorMessage:" + errorMessage);
             }
         });
-    }
-
-    private void initManService() {
-        /**
-         * 初始化Mobile Analytics服务
-         */
-        // 获取MAN服务
-        MANService manService = MANServiceProvider.getService();
-        // 打开调试日志
-        manService.getMANAnalytics().turnOnDebug();
-        manService.getMANAnalytics().setAppVersion("3.0");
-        // MAN初始化方法之一，通过插件接入后直接在下发json中获取appKey和appSecret初始化
-        manService.getMANAnalytics().init(this, getApplicationContext());
-        // MAN另一初始化方法，手动指定appKey和appSecret
-        // String appKey = "******";
-        // String appSecret = "******";
-        // manService.getMANAnalytics().init(this, getApplicationContext(), appKey,
-        // appSecret);
-        // 若需要关闭 SDK 的自动异常捕获功能可进行如下操作,详见文档5.4
-        // manService.getMANAnalytics().turnOffCrashReporter();
-        // 通过此接口关闭页面自动打点功能，详见文档4.2
-        manService.getMANAnalytics().turnOffAutoPageTrack();
-        // 设置渠道（用以标记该app的分发渠道名称），如果不关心可以不设置即不调用该接口，渠道设置将影响控制台【渠道分析】栏目的报表展现。如果文档3.3章节更能满足您渠道配置的需求，就不要调用此方法，按照3.3进行配置即可
-        manService.getMANAnalytics().setChannel("buff测试渠道");
-        // 若AndroidManifest.xml 中的 android:versionName 不能满足需求，可在此指定；
-        // 若既没有设置AndroidManifest.xml 中的
-        // android:versionName，也没有调用setAppVersion，appVersion则为null
-        // manService.getMANAnalytics().setAppVersion("2.0");
     }
 }
