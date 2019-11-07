@@ -1,6 +1,6 @@
 import { bget, GetListParam } from "./api"
 import { Picture } from "@/pages/advisory/Chat"
-import { Drug as PopularDrug } from "@page/advisory/SquareRoot"
+import { Drug as PopularDrug } from "@pages/advisory/SquareRoot"
 export const TYPE = {
   chinese: 0x0,
   western: 0x1,
