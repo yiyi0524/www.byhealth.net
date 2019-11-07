@@ -4,7 +4,7 @@ import { PrescriptionDrugCategory } from "@/pages/advisory/SquareRoot"
 export interface CurrSetPrescription {
   // 辨病
   discrimination: string
-  // 辩证
+  // 辨证
   syndromeDifferentiation: string
   // 服务费
   serviceMoney: string

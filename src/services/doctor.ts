@@ -310,7 +310,7 @@ export interface squareRoot {
     monthAge: number
   }
   discrimination: string //辨病
-  syndromeDifferentiation: string //辩证
+  syndromeDifferentiation: string //辨证
   advice: string //医嘱
   drugList: DrugInfo[]
   cost: {
@@ -342,7 +342,7 @@ export interface prescriptionDetail {
     monthAge: number
   }
   discrimination: string //辨病
-  syndromeDifferentiation: string //辩证
+  syndromeDifferentiation: string //辨证
   advice: string //医嘱
   drugList: DrugInfo[]
   cost: {

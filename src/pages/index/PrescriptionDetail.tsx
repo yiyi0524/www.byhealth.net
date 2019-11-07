@@ -51,7 +51,7 @@ interface prescriptionDetail {
     monthAge: number
   }
   discrimination: string //辨病
-  syndromeDifferentiation: string //辩证
+  syndromeDifferentiation: string //辨证
   advice: string //医嘱
   drugList: Drug[]
   cost: {
@@ -123,7 +123,7 @@ export default class SquareRoot extends Component<
           monthAge: 0,
         },
         discrimination: "", //辨病
-        syndromeDifferentiation: "", //辩证
+        syndromeDifferentiation: "", //辨证
         advice: "", //医嘱
         drugList: [],
         cost: {

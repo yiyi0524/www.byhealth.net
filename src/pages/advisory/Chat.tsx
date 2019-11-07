@@ -32,11 +32,13 @@ import {
   RefreshControl,
   Text,
   View,
+  Dimensions,
 } from "react-native"
 import { AudioRecorder, AudioUtils } from "react-native-audio"
 import { TouchableOpacity } from "react-native-gesture-handler"
 import RnImagePicker from "react-native-image-picker"
 import ImageViewer from "react-native-image-zoom-viewer"
+import ImageZoom from "react-native-image-pan-zoom"
 import Permissions from "react-native-permissions"
 import { NavigationScreenProp, ScrollView } from "react-navigation"
 import { connect } from "react-redux"
@@ -99,7 +101,7 @@ export interface TreatmentPlan {
     yearAge: number
     monthAge: number
     discrimination: string //辨病
-    syndromeDifferentiation: string //辩证
+    syndromeDifferentiation: string //辨证
   }
   orderId: number
   ctime: string
@@ -149,6 +151,7 @@ interface State {
   isRecord: boolean
   // 录音时长
   recordTime: number
+  imageHeight: number //查看图片 图片的高
   // 聊天模式
   chatMode: ChatMode
   // 是否刚刚在后台
@@ -257,7 +260,7 @@ export default class Chat extends Component<
   bottomNavList: bottomNavItem[] = [
     {
       icon: gImg.advisory.dialecticalPrescriptions,
-      title: "辩证开方",
+      title: "辨证开方",
       link: pathMap.SquareRoot,
     },
     {
@@ -309,6 +312,7 @@ export default class Chat extends Component<
     return {
       isStopRecord: false,
       currAudioMsgId: 0,
+      imageHeight: 0,
       isPalyAudio: false,
       hasMicAuth: false,
       isRecord: false,
@@ -596,6 +600,20 @@ export default class Chat extends Component<
       console.error(err)
       return
     }
+  }
+  handleOnLayout = () => {
+    Image.getSize(
+      getPicFullUrl(this.state.imagesViewer[0].url),
+      (width, height) => {
+        let ratio = width / height
+        this.setState({
+          imageHeight: Dimensions.get("window").width / ratio,
+        })
+      },
+      err => {
+        console.log(err)
+      },
+    )
   }
   render() {
     if (!this.state.hasLoad) {
@@ -1026,6 +1044,7 @@ export default class Chat extends Component<
                         url: BASE_URL + "/static/media/collapsed_logo.db8ef9b3.png",
                       },
                     ],
+                    imageHeight: 0,
                     isShowPic: false,
                   })
                 }}
@@ -1033,13 +1052,27 @@ export default class Chat extends Component<
                 name="close"
               />
             </View>
-            <ImageViewer
-              saveToLocalByLongPress={false}
-              imageUrls={this.state.imagesViewer}
-              index={this.state.imageIdx}
-              maxOverflow={0}
-              onCancel={() => {}}
-            />
+            {this.state.imageHeight === 0 ? (
+              <Image
+                style={{ opacity: 0 }}
+                onLayout={this.handleOnLayout}
+                source={{ uri: getPicFullUrl(this.state.imagesViewer[0].url) }}
+              />
+            ) : (
+              <ImageZoom
+                cropWidth={windowWidth}
+                cropHeight={windowHeight}
+                imageWidth={windowWidth}
+                imageHeight={this.state.imageHeight}>
+                <Image
+                  style={{
+                    width: windowWidth,
+                    height: this.state.imageHeight,
+                  }}
+                  source={{ uri: getPicFullUrl(this.state.imagesViewer[0].url) }}
+                />
+              </ImageZoom>
+            )}
           </View>
         </View>
       </KeyboardAvoidingView>

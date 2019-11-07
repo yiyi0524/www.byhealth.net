@@ -239,7 +239,7 @@ export default StyleSheet.create({
     color: sColor.color666,
   },
   doseInputFather: {
-    width: 55,
+    width: 100,
     borderBottomWidth: 1 / PixelRatio.get(),
     borderBottomColor: sColor.colorDdd,
   },

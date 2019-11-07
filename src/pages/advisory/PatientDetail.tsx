@@ -67,7 +67,7 @@ export interface MedicalRecord {
     //开方
     id: number
     discrimination: string //诊断,辨病
-    syndromeDifferentiation: string //辩证
+    syndromeDifferentiation: string //辨证
     drugList: Drug[] //治疗的药品列表
     time: string
   }

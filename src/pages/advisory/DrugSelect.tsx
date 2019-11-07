@@ -235,6 +235,7 @@ export default class DrugSelect extends Component<Props, State> {
       console.log(err)
     }
   }
+
   render() {
     if (!this.state.hasLoad) {
       return (
@@ -247,6 +248,7 @@ export default class DrugSelect extends Component<Props, State> {
     }
     const isInSession = this.props.navigation.state.params!.isInSession
     const drugCategoryId = this.props.navigation.state.params!.activeId
+    let { searchInputFocus } = this.state
     return (
       <KeyboardAvoidingView
         enabled={Platform.OS !== "android"}
@@ -254,7 +256,7 @@ export default class DrugSelect extends Component<Props, State> {
         style={{ flex: 1 }}
         keyboardVerticalOffset={70}>
         <ScrollView
-          keyboardShouldPersistTaps="always"
+          // keyboardShouldPersistTaps="always"
           style={style.main}
           refreshControl={
             <RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh} />
@@ -449,7 +451,6 @@ export default class DrugSelect extends Component<Props, State> {
             </View>
             <List>
               <InputItem
-                clear
                 style={style.input}
                 placeholder="请输入药材名称"
                 value={this.state.search}

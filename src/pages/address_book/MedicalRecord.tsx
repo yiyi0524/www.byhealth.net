@@ -110,7 +110,7 @@ export default class InquirySheet extends Component<
           monthAge: 0,
         },
         discrimination: "", //辨病
-        syndromeDifferentiation: "", //辩证
+        syndromeDifferentiation: "", //辨证
         drugList: [],
         time: "",
         cost: {

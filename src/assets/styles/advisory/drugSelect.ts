@@ -123,6 +123,15 @@ export default StyleSheet.create({
     fontSize: 14,
     color: sColor.color666,
   },
+  searchIcon: {
+    color: "#999",
+    fontSize: 14,
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 100,
+    padding: 5,
+    textAlign: "center",
+  },
   drugList: {
     backgroundColor: sColor.white,
   },

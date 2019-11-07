@@ -27,6 +27,7 @@ export default {
     rightSoundPlaying: require("@img/common/rightSoundPlaying.gif"),
     weChat: require("@img/common/we-chat.png"),
     qr: require("@img/common/qr.png"),
+    doctorAvatarDemo: require("@img/common/doctorAvatarDemo.jpg"),
   },
   home: {
     prescriptionTemplate: require("@img/home/moban.png"),

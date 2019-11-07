@@ -99,7 +99,7 @@ export interface TreatmentPlan {
     yearAge: number
     monthAge: number
     discrimination: string //辨病
-    syndromeDifferentiation: string //辩证
+    syndromeDifferentiation: string //辨证
   }
   orderId: number
   ctime: string
@@ -258,7 +258,7 @@ export default class EnteringGroupChat extends Component<
   bottomNavList: bottomNavItem[] = [
     {
       icon: gImg.advisory.dialecticalPrescriptions,
-      title: "辩证开方",
+      title: "辨证开方",
       link: pathMap.SquareRoot,
     },
     {

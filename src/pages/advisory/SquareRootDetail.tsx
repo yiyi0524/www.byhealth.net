@@ -102,7 +102,7 @@ export default class SquareRoot extends Component<
           monthAge: 0,
         },
         discrimination: "", //辨病
-        syndromeDifferentiation: "", //辩证
+        syndromeDifferentiation: "", //辨证
         advice: "", //医嘱
         drugList: [],
         cost: {

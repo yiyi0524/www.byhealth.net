@@ -745,7 +745,7 @@ export default class RealNameAuth extends Component<
                   style={[style.input, global.fontStyle, global.fontSize14]}
                   value={this.state.idCardNo}
                   placeholder="身份证号码"
-                  type="number"
+                  type="text"
                   onChange={idCardNo => {
                     this.setState({ idCardNo })
                   }}

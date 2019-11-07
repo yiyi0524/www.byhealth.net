@@ -103,7 +103,7 @@ export interface TreatmentPlan {
     yearAge: number
     monthAge: number
     discrimination: string //辨病
-    syndromeDifferentiation: string //辩证
+    syndromeDifferentiation: string //辨证
   }
   orderId: number
   ctime: string

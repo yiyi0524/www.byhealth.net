@@ -234,7 +234,7 @@ export default class DiagnosisSettings extends Component<
               <Text style={[style.explainDetail, global.fontSize14]}>
                 您可以通过图文、语音、电话与患者交流, 首次回复需在24小时内( 22:00 -
                 8:30与免打扰时段不计入 ), 默认单次交流时间为首次回复后24小时,
-                辩证开方后经患者同意可随时结束对话。您可自定义收费价格。
+                辨证开方后经患者同意可随时结束对话。您可自定义收费价格。
               </Text>
               <Text style={[style.explainDetail, global.fontSize14]}>
                 互联网诊疗仅适用常见病、慢性病复诊, 且您必须掌握患者病历,

@@ -455,13 +455,17 @@ export default class Register extends Component<
                 </Text>
               </AgreeItem>
               <View
-                style={{
-                  flex: 1,
-                  alignItems: "flex-start",
-                  marginLeft: 30,
-                  marginTop: 5,
-                  marginBottom: 5,
-                }}>
+                style={[
+                  global.flex,
+                  global.aCenter,
+                  {
+                    flex: 1,
+                    alignItems: "flex-start",
+                    marginLeft: 30,
+                    marginTop: 5,
+                    marginBottom: 5,
+                  },
+                ]}>
                 <TouchableOpacity
                   style={{
                     marginTop: 5,

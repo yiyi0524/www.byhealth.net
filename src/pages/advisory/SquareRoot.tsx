@@ -80,7 +80,7 @@ interface State {
   }
   // 辨病
   discrimination: string
-  // 辩证
+  // 辨证
   syndromeDifferentiation: string
   // 实体医院病历id列表
   medicalRecordPicList: Picture[]
@@ -501,7 +501,7 @@ export default class SquareRoot extends Component<
           style={{ flex: 1 }}
           keyboardVerticalOffset={70}>
           <ScrollView
-            keyboardShouldPersistTaps="always"
+            // keyboardShouldPersistTaps="always"
             style={style.main}
             refreshControl={
               <RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh} />
@@ -555,7 +555,7 @@ export default class SquareRoot extends Component<
                 </View>
               </View>
               <View style={[style.diagnosisItem, global.flex, global.alignItemsCenter]}>
-                <Text style={[style.diagnosisItemTitle, global.fontSize14]}>辩证</Text>
+                <Text style={[style.diagnosisItemTitle, global.fontSize14]}>辨证</Text>
                 <View style={style.diagnosisItemInput}>
                   <TextareaItem
                     style={style.input}
@@ -867,17 +867,19 @@ export default class SquareRoot extends Component<
                   })
                 }}>
                 <View style={[style.editDrug, global.flex, global.alignItemsCenter]}>
-                  <Icon
-                    style={[
-                      style.editDrugIcon,
-                      global.fontSize16,
-                      isSaveToTpl ? style.important : style.saveTpl,
-                    ]}
-                    name="check-square"
-                  />
-                  <Text style={[isSaveToTpl ? style.important : style.saveTpl, global.fontSize14]}>
-                    同时保存为模板
-                  </Text>
+                  {isSaveToTpl ? (
+                    <Icon
+                      style={[style.editDrugIcon, global.fontSize16, style.important]}
+                      name="check-square"
+                    />
+                  ) : (
+                    <Icon
+                      style={[style.editDrugIcon, global.fontSize16, style.saveTpl]}
+                      name="border"
+                    />
+                  )}
+
+                  <Text style={[style.important, global.fontSize14]}>同时保存为模板</Text>
                 </View>
               </TouchableOpacity>
               <View
@@ -889,7 +891,6 @@ export default class SquareRoot extends Component<
                 <Text style={[style.tplTitle, global.fontSize14]}>模板名称</Text>
                 <View style={style.name}>
                   <InputItem
-                    clear
                     style={[global.fontSize14, style.input]}
                     placeholder="请输入模板名称"
                     value={tplName}
@@ -1084,12 +1085,12 @@ export default class SquareRoot extends Component<
       tplName,
       // drugServiceMoney,
     } = this.state
-    if (discrimination === "") {
-      return Toast.info("请输入辩病", 3)
-    }
-    if (syndromeDifferentiation === "") {
-      return Toast.info("请输入辨证", 3)
-    }
+    // if (discrimination === "") {
+    //   return Toast.info("请输入辨病", 3)
+    // }
+    // if (syndromeDifferentiation === "") {
+    //   return Toast.info("请输入辨证", 3)
+    // }
     if (prescriptionDrugCategoryList.length === 0) {
       return Toast.info("请选择药材", 3)
     }

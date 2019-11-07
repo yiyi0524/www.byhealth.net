@@ -119,7 +119,7 @@ export interface medicalRecord {
     monthAge: number
   }
   discrimination: string //辨病
-  syndromeDifferentiation: string //辩证
+  syndromeDifferentiation: string //辨证
   drugList: Drug[]
   cost: {
     drugCost: number

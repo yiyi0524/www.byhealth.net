@@ -141,7 +141,6 @@ export default class Home extends Component<
           description: "未开启在线复诊",
           link: pathMap.DiagnosisSettings,
         },
-        // 二期
         {
           name: "服务设置",
           description: "",
