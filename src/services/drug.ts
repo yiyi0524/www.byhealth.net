@@ -1,5 +1,6 @@
-import { bget } from "./api"
+import { bget, GetListParam } from "./api"
 import { Picture } from "@/pages/advisory/Chat"
+import { Drug as PopularDrug } from "@page/advisory/SquareRoot"
 export const TYPE = {
   chinese: 0x0,
   western: 0x1,
@@ -14,7 +15,7 @@ export const ORAL_CHINESE_DRUG_ID = 1
 export const EXTERN_CHINESE_DRUG_ID = 84
 // 外用中药id
 export const TOPICAL_CHINESE_DRUG_ID = 2
-// 中成药id
+// 内服中药id
 export const CHINESE_PATIENT_DRUG_CATEGORY_ID = 0x3
 export interface Drug {
   id: number
@@ -24,7 +25,7 @@ export interface Drug {
   }
   //药品名称
   name: string
-  // 是否为中成药
+  // 是否为内服中药
   isChinesePatentDrug: boolean
   // 西药还是中药
   type: number
@@ -55,6 +56,160 @@ export async function getDetail(query: { id: number }) {
     url: "/user/drug/detail",
     query,
   })
+}
+/**
+ * todo 常用药列表
+ *   filter: {
+        category: {
+          condition: TYPE.eq,
+          val: this.props.activeId,
+        },
+      },
+ */
+export async function listPopularDrug(query: GetListParam) {
+  console.log(query)
+  return {
+    data: {
+      list: [
+        {
+          id: 1,
+          name: "白附子",
+          unit: "g",
+          price: 150,
+          standard: "",
+          manufacturer: "",
+          signature: "",
+          ctime: "",
+          category_id: 2,
+        },
+        {
+          id: 2,
+          name: "香干子",
+          unit: "g",
+          price: 150,
+          standard: "",
+          manufacturer: "",
+          signature: "",
+          ctime: "",
+          category_id: 2,
+        },
+        {
+          id: 3,
+          name: "绿萝",
+          unit: "g",
+          price: 150,
+          standard: "",
+          manufacturer: "",
+          signature: "",
+          ctime: "",
+          category_id: 2,
+        },
+        {
+          id: 4,
+          name: "枸杞",
+          unit: "g",
+          price: 150,
+          standard: "",
+          manufacturer: "",
+          signature: "",
+          ctime: "",
+          category_id: 2,
+        },
+        {
+          id: 5,
+          name: "何首乌",
+          unit: "g",
+          price: 150,
+          standard: "",
+          manufacturer: "",
+          signature: "",
+          ctime: "",
+          category_id: 2,
+        },
+        {
+          id: 6,
+          name: "枸杞",
+          unit: "g",
+          price: 150,
+          standard: "",
+          manufacturer: "",
+          signature: "",
+          ctime: "",
+          category_id: 2,
+        },
+        {
+          id: 7,
+          name: "枸杞",
+          unit: "g",
+          price: 150,
+          standard: "",
+          manufacturer: "",
+          signature: "",
+          ctime: "",
+          category_id: 2,
+        },
+        {
+          id: 8,
+          name: "枸杞",
+          unit: "g",
+          price: 150,
+          standard: "",
+          manufacturer: "",
+          signature: "",
+          ctime: "",
+          category_id: 2,
+        },
+        {
+          id: 9,
+          name: "枸杞",
+          unit: "g",
+          price: 150,
+          standard: "",
+          manufacturer: "",
+          signature: "",
+          ctime: "",
+          category_id: 2,
+        },
+        {
+          id: 10,
+          name: "枸杞",
+          unit: "g",
+          price: 150,
+          standard: "",
+          manufacturer: "",
+          signature: "",
+          ctime: "",
+          category_id: 2,
+        },
+        {
+          id: 11,
+          name: "枸杞",
+          unit: "g",
+          price: 150,
+          standard: "",
+          manufacturer: "",
+          signature: "",
+          ctime: "",
+          category_id: 2,
+        },
+        {
+          id: 12,
+          name: "枸杞",
+          unit: "g",
+          price: 150,
+          standard: "",
+          manufacturer: "",
+          signature: "",
+          ctime: "",
+          category_id: 2,
+        },
+      ] as PopularDrug[],
+    },
+  }
+  // return bget<{ data:{list:PopularDrug[]}  }>({
+  //   url: "/user/drug/listPopularDrug",
+  //   query,
+  // })
 }
 
 export default {

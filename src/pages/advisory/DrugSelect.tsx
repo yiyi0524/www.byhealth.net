@@ -21,6 +21,7 @@ import {
 } from "react-native"
 import { NavigationScreenProp } from "react-navigation"
 import { Drug, PrescriptionDrugCategory } from "./SquareRoot"
+import { listPopularDrug } from "@/services/drug"
 const style = gStyle.advisory.DrugSelect
 export interface CategoryItem {
   id: number
@@ -49,6 +50,8 @@ interface State {
   prescriptionDrugCategoryList: PrescriptionDrugCategory[]
   // 与搜索匹配的药品列表
   matchDrugList: Drug[]
+  //常用药
+  popularDrugList: Drug[]
   search: string
 }
 // interface Params {
@@ -132,7 +135,7 @@ export default class DrugSelect extends Component<Props, State> {
             for (let drugCategory of prescriptionDrugCategoryList) {
               for (let drug of drugCategory.drugList) {
                 if (drug.count <= 0) {
-                  return Toast.fail(`请填写${drug.detail.name}药品的数量`)
+                  return Toast.fail(`请填写${drug.detail.name}药品的数量`, 2)
                 }
               }
             }
@@ -172,6 +175,7 @@ export default class DrugSelect extends Component<Props, State> {
       search: "",
       prescriptionDrugCategoryList,
       matchDrugList: [],
+      popularDrugList: [],
     }
   }
   async componentDidMount() {
@@ -181,7 +185,21 @@ export default class DrugSelect extends Component<Props, State> {
     })
   }
   init = async () => {
+    let activeId = this.props.navigation.getParam("activeId")
+    let {
+      data: { list: popularDrugList },
+    } = await listPopularDrug({
+      page: 1,
+      limit: 30,
+      filter: {
+        category: {
+          condition: TYPE.eq,
+          val: activeId,
+        },
+      },
+    })
     this.setState({
+      popularDrugList,
       hasLoad: true,
     })
   }
@@ -456,6 +474,67 @@ export default class DrugSelect extends Component<Props, State> {
                 onChange={this.search}
               />
             </List>
+            <View style={this.state.search === "" ? style.popularDrug : global.hidden}>
+              <View
+                style={[style.popularDrugList, global.flex, global.alignItemsCenter, global.wrap]}>
+                {this.state.popularDrugList.map((drug, k) => {
+                  return (
+                    <TouchableOpacity
+                      style={style.popularDrugItem}
+                      key={k}
+                      onPress={() => {
+                        let { prescriptionDrugCategoryList } = this.state
+                        let currCategoryId = this.props.navigation.state.params!.activeId
+                        try {
+                          let hasCategory = false
+                          for (let category of prescriptionDrugCategoryList) {
+                            if (category.id === currCategoryId) {
+                              hasCategory = true
+                              for (let drugInfo of category.drugList) {
+                                if (drugInfo.id === drug.id) {
+                                  drugInfo.count++
+                                  throw new Error("当前药品已存在,数量加1,中断")
+                                }
+                              }
+                            }
+                          }
+                          if (!hasCategory) {
+                            prescriptionDrugCategoryList.push({
+                              id: currCategoryId,
+                              name: this.getCategoryName(currCategoryId),
+                              drugList: [
+                                {
+                                  id: drug.id,
+                                  count: 0,
+                                  detail: drug,
+                                },
+                              ],
+                            })
+                          } else {
+                            for (let category of prescriptionDrugCategoryList) {
+                              if (category.id === currCategoryId) {
+                                category.drugList.push({
+                                  id: drug.id,
+                                  count: 0,
+                                  detail: drug,
+                                })
+                              }
+                            }
+                          }
+                        } catch (e) {}
+                        this.setState({
+                          prescriptionDrugCategoryList,
+                          matchDrugList: [],
+                          search: "",
+                          currDrugId: drug.id,
+                        })
+                      }}>
+                      <Text style={style.drugItemTitle}>{drug.name}</Text>
+                    </TouchableOpacity>
+                  )
+                })}
+              </View>
+            </View>
             <View style={this.state.search !== "" ? style.drugList : global.hidden}>
               {/* 当前匹配的药品列表 */}
               {this.state.matchDrugList.map((drug, k) => {

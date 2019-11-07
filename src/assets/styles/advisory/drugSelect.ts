@@ -58,7 +58,7 @@ export default StyleSheet.create({
   },
   list: {
     backgroundColor: sColor.white,
-    minHeight: windowHeight - 200,
+    minHeight: windowHeight - 150,
     paddingBottom: 15,
   },
   theme: {
@@ -176,5 +176,21 @@ export default StyleSheet.create({
     textAlign: "center",
     borderBottomWidth: 1 / PixelRatio.get(),
     borderBottomColor: sColor.colorDdd,
+  },
+  popularDrug: {
+    padding: 15,
+  },
+  popularDrugList: {},
+  popularDrugItem: {
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 5,
+    marginBottom: 10,
+    marginRight: 10,
+  },
+  drugItemTitle: {
+    padding: 6,
+    paddingLeft: 16,
+    paddingRight: 16,
   },
 })
