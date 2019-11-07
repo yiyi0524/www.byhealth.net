@@ -1,7 +1,7 @@
 import * as userAction from "@/redux/actions/user"
 import { AppState } from "@/redux/stores/store"
 import pathMap from "@/routes/pathMap"
-import api, { getThumbUrl } from "@/services/api"
+import api, { getThumbUrl, NOT_LIMIT } from "@/services/api"
 import doctor, { GENDER, GENDER_ZH } from "@/services/doctor"
 import hospital from "@/services/hospital"
 import { getPicFullUrl, getPicCdnUrl } from "@/utils/utils"
@@ -193,22 +193,27 @@ export default class PatientDetail extends Component<
   init = async () => {
     let { uid } = this.state
     try {
-      let { data: patientInfo } = await patientApi.getPatientInfo({
+      let getPatientInfoTask = patientApi.getPatientInfo({
         uid,
       })
-      let {
-        data: { list: medicalRecordList },
-      } = await patientApi.listMedicalRecord({
+      let listMedicalRecordTask = patientApi.listMedicalRecord({
         page: -1,
         limit: -1,
         filter: { patientUid: uid },
       })
+      let getDrugListTask = hospital.getDrugList({ page: NOT_LIMIT, limit: NOT_LIMIT })
+      let getRegionTask = api.getRegion()
+      let { data: patientInfo } = await getPatientInfoTask
+
+      let {
+        data: { list: medicalRecordList },
+      } = await listMedicalRecordTask
       let {
         data: { region },
-      } = await api.getRegion()
+      } = await getRegionTask
       let {
         data: { list: drugList },
-      } = await hospital.getDrugList({ page: -1, limit: -1 })
+      } = await getDrugListTask
       this.setState({
         hasLoad: true,
         patientInfo,
@@ -216,7 +221,6 @@ export default class PatientDetail extends Component<
         region,
         drugList,
       })
-      console.log(medicalRecordList)
     } catch (err) {
       console.log(err)
     }

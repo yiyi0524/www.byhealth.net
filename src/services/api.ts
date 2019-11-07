@@ -8,6 +8,7 @@ import DeviceInfo from "react-native-device-info"
 export const JsonReturnCode = {
   SUCCESS: 0x0,
 }
+export const NOT_LIMIT = -1
 export const windowWidth = Dimensions.get("window").width
 export const windowHeight = Dimensions.get("window").height
 export const TYPE = {

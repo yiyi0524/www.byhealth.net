@@ -67,7 +67,7 @@ export interface MedicalRecord {
     //开方
     id: number
     discrimination: string //诊断,辨病
-    syndromeDifferentiation: string //辨证
+    syndromeDifferentiation: string //辩证
     drugList: Drug[] //治疗的药品列表
     time: string
   }
@@ -200,28 +200,32 @@ export default class PatientDetail extends Component<
   init = async () => {
     let { uid } = this.state
     try {
-      let { data: patientInfo } = await patientApi.getPatientInfo({
+      let getPatientInfoTask = patientApi.getPatientInfo({
         uid,
       })
+      let { data: patientInfo } = await getPatientInfoTask
       let { consultationId } = this.state
-      let {
-        data: { detail: inquirySheet },
-      } = await patientApi.inquirySheet({
+      let inquirysheetTask = patientApi.inquirySheet({
         consultationId,
       })
-      let {
-        data: { list: medicalRecordList },
-      } = await patientApi.listMedicalRecord({
+      let listMedicalRecordTask = patientApi.listMedicalRecord({
         page: -1,
         limit: -1,
         filter: { patientUid: uid },
       })
+      let getDrugListTask = hospital.getDrugList({ page: -1, limit: -1 })
+      let {
+        data: { detail: inquirySheet },
+      } = await inquirysheetTask
+      let {
+        data: { list: medicalRecordList },
+      } = await listMedicalRecordTask
       let {
         data: { region },
       } = await api.getRegion()
       let {
         data: { list: drugList },
-      } = await hospital.getDrugList({ page: -1, limit: -1 })
+      } = await getDrugListTask
       this.setState({
         hasLoad: true,
         patientInfo,
