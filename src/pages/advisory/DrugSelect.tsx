@@ -248,7 +248,6 @@ export default class DrugSelect extends Component<Props, State> {
     }
     const isInSession = this.props.navigation.state.params!.isInSession
     const drugCategoryId = this.props.navigation.state.params!.activeId
-    let { searchInputFocus } = this.state
     return (
       <KeyboardAvoidingView
         enabled={Platform.OS !== "android"}

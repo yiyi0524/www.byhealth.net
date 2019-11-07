@@ -16,7 +16,7 @@ export function userLogin(userInfo: UserInfo) {
     preload: userInfo,
   }
 }
-export function saveCurrSetPrescription(preload: CurrSetPrescription) {
+export function saveCurrSetPrescription(preload: [number, CurrSetPrescription | null]) {
   return {
     type: SAVE_CURR_SET_PRESCRIPTION,
     preload,

@@ -18,7 +18,7 @@ export interface UserState {
   name: string
   uid: number
   avatar: Picture
-  currSetPrescription: CurrSetPrescription | null
+  currSetPrescription: Record<number, CurrSetPrescription | null>
 }
 // const initCurrSetPrescription = {
 //   advice: "",
@@ -36,24 +36,27 @@ const initState: UserState = {
     title: "",
     url: "",
   },
-  currSetPrescription: null,
+  currSetPrescription: {},
 }
 export interface Action<T> {
   type: string
   preload: T
 }
-function saveCurrSetPrescription(state = initState, action: Action<CurrSetPrescription>) {
+function saveCurrSetPrescription(
+  state = initState,
+  action: Action<[number, CurrSetPrescription | null]>,
+) {
   if (action.type === userAction.SAVE_CURR_SET_PRESCRIPTION) {
     let newState = Object.assign({}, state)
-    newState.currSetPrescription = Object.assign({}, action.preload)
+    newState.currSetPrescription[action.preload[0]] = action.preload[1]
     return newState
   }
   return state
 }
-function delCurrSetPrescription(state = initState, action: Action<CurrSetPrescription>) {
+function delCurrSetPrescription(state = initState, action: Action<number>) {
   if (action.type === userAction.DEL_CURR_SET_PRESCRIPTION) {
     let newState = Object.assign({}, state)
-    newState.currSetPrescription = null
+    delete newState.currSetPrescription[action.preload]
     return newState
   }
   return state

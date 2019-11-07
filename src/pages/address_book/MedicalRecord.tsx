@@ -15,7 +15,11 @@ import { TouchableOpacity } from "react-native-gesture-handler"
 import { NavigationScreenProp } from "react-navigation"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
-import { ORAL_CHINESE_DRUG_ID, EXTERN_CHINESE_DRUG_ID } from "@/services/drug"
+import {
+  ORAL_CHINESE_DRUG_ID,
+  EXTERN_CHINESE_DRUG_ID,
+  TOPICAL_CHINESE_DRUG_ID,
+} from "@/services/drug"
 const style = gStyle.addressBook.MedicalRecord
 const global = gStyle.global
 

@@ -145,7 +145,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
     login: (preload: userAction.UserInfo) => {
       dispatch(userAction.userLogin(preload))
     },
-    saveCurrSetPrescription: (preload: CurrSetPrescription) => {
+    saveCurrSetPrescription: (preload: [number, CurrSetPrescription | null]) => {
       dispatch(userAction.saveCurrSetPrescription(preload))
     },
     delCurrSetPrescription: () => {
@@ -199,7 +199,7 @@ export default class SquareRoot extends Component<
                   onPress: () => {
                     let getState: () => State = navigation.getParam("getState")
                     let saveCurrSetPrescription: (
-                      preload: CurrSetPrescription,
+                      preload: [number, CurrSetPrescription],
                     ) => void = navigation.getParam("saveCurrSetPrescription")
                     let state = getState()
                     const {
@@ -209,13 +209,17 @@ export default class SquareRoot extends Component<
                       serviceMoney,
                       syndromeDifferentiation,
                     } = state
-                    saveCurrSetPrescription({
-                      advice,
-                      discrimination,
-                      prescriptionDrugCategoryList,
-                      serviceMoney,
-                      syndromeDifferentiation,
-                    })
+                    let preload: [number, CurrSetPrescription] = [
+                      state.patientInfo.uid,
+                      {
+                        advice,
+                        discrimination,
+                        prescriptionDrugCategoryList,
+                        serviceMoney,
+                        syndromeDifferentiation,
+                      },
+                    ]
+                    saveCurrSetPrescription(preload)
                     navigation.goBack()
                   },
                 },
@@ -271,8 +275,9 @@ export default class SquareRoot extends Component<
       prescriptionDrugCategoryList: [],
     }
   }
-  componentDidMount() {
+  async componentDidMount() {
     const { currSetPrescription } = this.props
+    await this.init()
     this.props.navigation.setParams({
       getState: () => this.state,
       saveCurrSetPrescription: this.props.saveCurrSetPrescription,
@@ -290,7 +295,6 @@ export default class SquareRoot extends Component<
       "hardwareBackPress",
       this.onHardwareBackPress,
     )
-    this.init()
     if (currSetPrescription) {
       console.log("正在初始化redux处方信息")
       this.initSavedPrescriptionInfo()
@@ -316,13 +320,19 @@ export default class SquareRoot extends Component<
       serviceMoney,
       syndromeDifferentiation,
     } = this.state
-    this.props.saveCurrSetPrescription({
-      advice,
-      discrimination,
-      prescriptionDrugCategoryList,
-      serviceMoney,
-      syndromeDifferentiation,
-    })
+    let {
+      patientInfo: { uid },
+    } = this.state
+    let preload: any = {
+      [uid]: {
+        advice,
+        discrimination,
+        prescriptionDrugCategoryList,
+        serviceMoney,
+        syndromeDifferentiation,
+      },
+    }
+    this.props.saveCurrSetPrescription(preload)
   }
   initLastPrescriptionInfo = async () => {
     let patientUid = this.props.navigation.getParam("patientUid")
@@ -330,7 +340,6 @@ export default class SquareRoot extends Component<
       const {
         data: { detail: prescriptionDrugCategoryList },
       } = await getLastPrescriptionInfo({ patientUid })
-      console.log("last Prescription", prescriptionDrugCategoryList)
       if (prescriptionDrugCategoryList) {
         this.setState({
           prescriptionDrugCategoryList,
@@ -342,14 +351,17 @@ export default class SquareRoot extends Component<
   }
   initSavedPrescriptionInfo = () => {
     const { currSetPrescription } = this.props
-    if (currSetPrescription) {
+    let {
+      patientInfo: { uid },
+    } = this.state
+    if (uid in currSetPrescription && currSetPrescription[uid] !== null) {
       const {
         advice,
         discrimination,
         prescriptionDrugCategoryList,
         serviceMoney,
         syndromeDifferentiation,
-      } = currSetPrescription
+      } = currSetPrescription[uid] as CurrSetPrescription
       this.setState({
         advice,
         discrimination,
@@ -878,7 +890,6 @@ export default class SquareRoot extends Component<
                       name="border"
                     />
                   )}
-
                   <Text style={[style.important, global.fontSize14]}>同时保存为模板</Text>
                 </View>
               </TouchableOpacity>

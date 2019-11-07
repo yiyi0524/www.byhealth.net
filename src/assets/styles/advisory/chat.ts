@@ -334,6 +334,7 @@ export default StyleSheet.create({
     width: 40,
     height: 40,
     lineHeight: 40,
+    borderRadius: 100,
   },
   showImg: {
     width: windowWidth - 30,
