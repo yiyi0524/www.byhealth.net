@@ -9,7 +9,7 @@ import { Dispatch } from "redux"
 import { AppState as RnAppState, AppStateStatus } from "react-native"
 import { isLogin, updateAppStateStatus } from "@/services/api"
 import CodePush from "react-native-code-push"
-
+import SplashScreen from "react-native-splash-screen"
 const mapStateToProps = (state: AppState) => {
   return {
     isLogin: state.user.isLogin,
@@ -52,6 +52,7 @@ export default class App extends Component<any> {
     return route.routeName
   }
   componentDidMount() {
+    SplashScreen.hide()
     RnAppState.addEventListener("change", this.onAppStateChange)
   }
   componentWillUnmount() {
