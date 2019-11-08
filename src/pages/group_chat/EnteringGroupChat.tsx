@@ -1666,14 +1666,7 @@ export default class EnteringGroupChat extends Component<
     }
   }
   selectBottomNav = (v: bottomNavItem) => {
-    if (v.title === "收起") {
-      this.setState({
-        isShowBottomNav: false,
-        isShowBottomPicSelect: false,
-      })
-      v.title = "更多功能"
-      v.icon = gImg.advisory.show
-    } else if (v.title === "发布") {
+    if (v.title === "发布") {
       this.props.navigation.push(v.link, {
         patientUid: this.state.patientUid,
       })

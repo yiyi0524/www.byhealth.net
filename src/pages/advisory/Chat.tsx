@@ -37,13 +37,13 @@ import {
 import { AudioRecorder, AudioUtils } from "react-native-audio"
 import { TouchableOpacity } from "react-native-gesture-handler"
 import RnImagePicker from "react-native-image-picker"
-import ImageViewer from "react-native-image-zoom-viewer"
 import ImageZoom from "react-native-image-pan-zoom"
 import Permissions from "react-native-permissions"
 import { NavigationScreenProp, ScrollView } from "react-navigation"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
 import { Overwrite } from "utility-types"
+import { Article } from "@/services/groupChat"
 const style = gStyle.advisory.advisoryChat
 const audioPath = AudioUtils.DocumentDirectoryPath + "/tempAudio.aac"
 export type ChatMode = "text" | "audio"
@@ -62,6 +62,7 @@ export enum MsgType {
   treatmentPlan, //治疗方案
   pong,
   audio,
+  article,
 }
 export interface bottomNavItem {
   title: string
@@ -106,6 +107,10 @@ export interface TreatmentPlan {
   orderId: number
   ctime: string
 }
+/**
+ * 文章
+ */
+type ArticlePlan = Article
 /**
  * 当消息为问诊单时 附加信息类型
  */
@@ -278,26 +283,26 @@ export default class Chat extends Component<
       title: "更多功能",
       link: "",
     },
-    // {
-    //   icon: gImg.advisory.inquirySheet,
-    //   title: "补填问诊单",
-    //   link: "",
-    // },
     {
       icon: gImg.advisory.picture,
       title: "图片",
       link: "",
     },
-    // {
-    //   icon: gImg.advisory.givingquestions,
-    //   title: "赠送提问",
-    //   link: "",
-    // },
-    // {
-    //   icon: gImg.advisory.sittingInformation,
-    //   title: "坐诊信息",
-    //   link: "",
-    // },
+    {
+      icon: gImg.groupChat.release,
+      title: "发布",
+      link: pathMap.AddOrEditArticle,
+    },
+    {
+      icon: gImg.groupChat.article,
+      title: "文章",
+      link: pathMap.ArticleList,
+    },
+    {
+      icon: gImg.groupChat.smile,
+      title: "表情",
+      link: "",
+    },
   ]
   myScroll: ScrollView | null = null
   msgInput: TextareaItem | null = null
@@ -677,6 +682,9 @@ export default class Chat extends Component<
                       break
                     case MsgType.audio:
                       formatMsg = this.audioFormat(v)
+                      break
+                    case MsgType.article:
+                      formatMsg = this.articleFormat(v)
                       break
                     default:
                       break
@@ -1323,6 +1331,45 @@ export default class Chat extends Component<
     )
     return msg
   }
+  //文章
+  articleFormat = (serverMsg: Exclude<Overwrite<Msg, { extraData: ArticlePlan }>, "dom">) => {
+    let msg: Overwrite<Msg, { extraData: ArticlePlan }> = serverMsg
+    msg.dom = (
+      <View style={style.treatmentPlan}>
+        <Text style={[style.sendTime, global.fontStyle, global.fontSize12]}>{msg.sendTime}</Text>
+        <View style={style.treatmentPlanCenter}>
+          <View style={[style.treatmentPlanHeader, global.flex, global.alignItemsCenter]}>
+            <Image
+              style={style.treatmentPlanHeaderImg}
+              source={
+                msg.extraData.picList.length > 0
+                  ? { uri: getPicFullUrl(msg.extraData.picList[0].url) }
+                  : gImg.common.defaultPic
+              }
+            />
+            <View style={style.treatmentPlanHeaderTitle}>
+              <Text style={[style.treatmentPlanHeaderTheme, global.fontSize18]} numberOfLines={1}>
+                {msg.extraData.title}
+              </Text>
+              <Text style={[style.treatmentPlanHeaderTime, global.fontSize14]}>
+                {msg.extraData.ctime}
+              </Text>
+            </View>
+          </View>
+          <TouchableOpacity
+            onPress={() => {
+              this.props.navigation.push(pathMap.ArticleDetail, {
+                id: msg.extraData.id,
+              })
+            }}>
+            <Text style={[style.treatmentPlanBtn, global.fontSize14]}>点此查看论文</Text>
+          </TouchableOpacity>
+          <Image style={style.treatmentPlanFlag} source={gImg.common.flag} />
+        </View>
+      </View>
+    )
+    return msg
+  }
   // 治疗方案
   treatmentPlanFormat = (
     serverMsg: Exclude<Overwrite<Msg, { extraData: TreatmentPlan }>, "dom">,
@@ -1640,32 +1687,43 @@ export default class Chat extends Component<
     }
   }
   selectBottomNav = (v: bottomNavItem) => {
-    if (v.title === "更多功能") {
-      this.setState({
-        isShowBottomNav: true,
-      })
-      v.title = "收起"
-      v.icon = gImg.advisory.retract
-    } else if (v.title === "收起") {
-      this.setState({
-        isShowBottomNav: false,
-        isShowBottomPicSelect: false,
-      })
-      v.title = "更多功能"
-      v.icon = gImg.advisory.show
-    } else if (v.title === "图片") {
-      this.setState({
-        isShowBottomPicSelect: !this.state.isShowBottomPicSelect,
-      })
-    } else if (v.title === "结束对话") {
-      this.closeInquiry()
-    } else if (v.title === "快捷回复") {
-      this.quickReply()
-    } else {
-      console.log("正在进入开方页")
-      this.props.navigation.push(v.link, {
-        patientUid: this.state.patientUid,
-      })
+    switch (v.title) {
+      case "更多功能":
+        this.setState({
+          isShowBottomNav: true,
+        })
+        v.title = "收起"
+        v.icon = gImg.advisory.retract
+        break
+      case "收起":
+        this.setState({
+          isShowBottomNav: false,
+          isShowBottomPicSelect: false,
+        })
+        v.title = "更多功能"
+        v.icon = gImg.advisory.show
+        break
+      case "结束对话":
+        this.closeInquiry()
+        break
+      case "快捷服务":
+        this.quickReply()
+        break
+      case "辨证开方":
+        this.props.navigation.push(v.link, {
+          patientUid: this.state.patientUid,
+        })
+        break
+      case "图片":
+        this.setState({
+          isShowBottomPicSelect: !this.state.isShowBottomPicSelect,
+        })
+        break
+      case "表情":
+        Toast.info("正在努力开发中, 敬请期待...", 2)
+        break
+      default:
+        this.props.navigation.push(v.link)
     }
   }
   sendMsg = () => {
