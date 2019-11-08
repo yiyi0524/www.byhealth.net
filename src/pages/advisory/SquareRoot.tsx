@@ -48,6 +48,7 @@ interface Props {
   navigation: NavigationScreenProp<State>
 }
 interface State {
+  mode: "wx" | "phone" | "common"
   // 是否为选择药房模式
   isSelectPharmacy: boolean
   // 是否为选择药品模式
@@ -55,6 +56,7 @@ interface State {
   //是否保存为模板
   isSaveToTpl: boolean
   tplName: string
+  phone: string
   drugServiceMoney: string
   hasLoad: boolean
   refreshing: boolean
@@ -239,13 +241,16 @@ export default class SquareRoot extends Component<
     this.state = this.getInitState()
   }
   getInitState = (): State => {
+    let mode = this.props.navigation.getParam("mode") || "common"
     return {
+      mode,
       hasLoad: false,
       refreshing: false,
       isSelectPharmacy: false,
       isSelectDrug: false,
       //是否保存为模板
       isSaveToTpl: false,
+      phone: "",
       tplName: "",
       drugServiceMoney: "",
       //剂量
@@ -276,7 +281,7 @@ export default class SquareRoot extends Component<
     }
   }
   async componentDidMount() {
-    const { currSetPrescription } = this.props
+    const { mode } = this.state
     await this.init()
     this.props.navigation.setParams({
       getState: () => this.state,
@@ -291,24 +296,20 @@ export default class SquareRoot extends Component<
         })
       },
     )
-    this.hardwareBackPressListener = BackHandler.addEventListener(
-      "hardwareBackPress",
-      this.onHardwareBackPress,
-    )
-    if (currSetPrescription) {
-      console.log("正在初始化redux处方信息")
-      this.initSavedPrescriptionInfo()
-    } else {
-      console.log("正在初始化上次处方信息")
-      this.initLastPrescriptionInfo()
+    if (mode === "common") {
+      this.hardwareBackPressListener = BackHandler.addEventListener(
+        "hardwareBackPress",
+        this.onHardwareBackPress,
+      )
     }
   }
   componentWillUnmount() {
+    const { mode } = this.state
     //移除监听
     if (this.listener) {
       this.listener.remove()
     }
-    if (this.hardwareBackPressListener) {
+    if (mode === "common" && this.hardwareBackPressListener) {
       this.hardwareBackPressListener.remove()
     }
   }
@@ -373,18 +374,31 @@ export default class SquareRoot extends Component<
   }
   getDrugList = () => {}
   init = async () => {
+    let { patientInfo, mode } = this.state
+    let {
+      data: { list: categoryList },
+    } = await hospital.getDrugCategoryList({
+      page: -1,
+      limit: -1,
+      filter: {},
+    })
+    let pharmacy = this.state.pharmacy
+    pharmacy.categoryList = categoryList
+    this.setState({
+      pharmacy,
+    })
+    if (mode === "phone") {
+      let phone = this.props.navigation.getParam("phone")
+      this.setState({
+        phone,
+      })
+    }
+    if (mode !== "common") {
+      return
+    }
+
     let patientUid = this.props.navigation.getParam("patientUid")
     try {
-      let {
-        data: { list: categoryList },
-      } = await hospital.getDrugCategoryList({
-        page: -1,
-        limit: -1,
-        filter: {},
-      })
-      let pharmacy = this.state.pharmacy
-      pharmacy.categoryList = categoryList
-      let { patientInfo } = this.state
       let {
         data: { yearAge, monthAge, name, gender, hospitalMedicalRecordPicList },
       } = await getPatientInfo({ uid: patientUid })
@@ -408,11 +422,17 @@ export default class SquareRoot extends Component<
       }
       this.setState({
         hasLoad: true,
-        pharmacy,
         patientInfo,
         percentageOfCommission: percentageOfCommission ? percentageOfCommission : 0,
         medicalRecordPicList: hospitalMedicalRecordPicList,
       })
+      if (patientUid in this.props.currSetPrescription) {
+        console.log("正在初始化redux处方信息")
+        this.initSavedPrescriptionInfo()
+      } else {
+        console.log("正在初始化上次处方信息")
+        this.initLastPrescriptionInfo()
+      }
     } catch (err) {
       console.log("发生了错误, ", err)
     }
