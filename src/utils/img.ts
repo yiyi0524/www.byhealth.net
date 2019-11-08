@@ -73,4 +73,10 @@ export default {
     phone: require("@img/address_book/phone.png"),
   },
   personalCenter: {},
+  groupChat: {
+    release: require("@img/group_chat/release.png"),
+    article: require("@img/group_chat/article.png"),
+    picture: require("@img/group_chat/picture.png"),
+    smile: require("@img/group_chat/smile.png"),
+  },
 }

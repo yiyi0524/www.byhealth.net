@@ -8,6 +8,7 @@ import {
   View,
   KeyboardAvoidingView,
   Platform,
+  DeviceEventEmitter,
 } from "react-native"
 import { Picture } from "../advisory/Chat"
 import Permissions from "react-native-permissions"
@@ -18,6 +19,7 @@ import { BASE_URL } from "@/config/api"
 import { addArticle, getArticle, editArticle } from "@/services/groupChat"
 import { NavigationScreenProp } from "react-navigation"
 import { getPicFullUrl } from "@/utils/utils"
+import pathMap from "@/routes/pathMap"
 const style = gSass.groupChat.addArticle
 interface Props {
   navigation: NavigationScreenProp<State>
@@ -268,13 +270,19 @@ export default class AddArticle extends Component<Props & DefaultProps, State> {
       }
       if (type === "add") {
         addArticle(data)
-          .then(() => {
+          .then(json => {
             Toast.success("发布成功", 1, () => {
-              this.setState({
-                title: "",
-                content: "",
-                picList: [],
-              })
+              this.setState(
+                {
+                  title: "",
+                  content: "",
+                  picList: [],
+                },
+                () => {
+                  console.log("文章id为:" + json.data.id)
+                  // this.props.navigation.goBack()
+                },
+              )
             })
           })
           .catch(err => {

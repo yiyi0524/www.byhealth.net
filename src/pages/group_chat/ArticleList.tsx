@@ -79,7 +79,8 @@ export default class ArticleList extends Component<Props & DefaultProps, State> 
         style={style.item}
         key={item.id + val.index}
         onPress={() => {
-          this.props.navigation.push(pathMap.ArticleDetail, { id: item.id })
+          console.log("文章id为" + item.id)
+          // this.props.navigation.push(pathMap.ArticleDetail, { id: item.id })
         }}>
         <View style={[style.titlePar, global.flex, global.aCenter]}>
           <Text style={style.title} numberOfLines={1}>

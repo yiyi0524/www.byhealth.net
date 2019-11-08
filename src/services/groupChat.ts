@@ -1,7 +1,6 @@
-import { GetListParam, bpost } from "./api"
 import { Picture } from "@/pages/advisory/Chat"
-import gImg from "@utils/img"
 import { Assign } from "utility-types"
+import { bpost, GetListParam } from "./api"
 
 export const TAB = {
   GROUP_CHAT: 0x0,
@@ -322,7 +321,7 @@ export function delGroupChatmember(data: { groupChatId: number; ids: number[] })
  * 添加文章
  */
 export function addArticle(data: { title: string; content: string; picList: Picture[] }) {
-  return bpost({
+  return bpost<{ id: number }>({
     url: "api/addArticle",
     data,
   })

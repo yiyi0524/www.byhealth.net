@@ -368,11 +368,20 @@ export default class DrugSelect extends Component<Props, State> {
                             global.alignItemsCenter,
                             global.justifyContentSpaceBetween,
                           ]}>
-                          <Text
-                            style={[style.itemCenterTitle, global.fontSize14]}
-                            numberOfLines={1}>
-                            {drugInfo.detail.name}
-                          </Text>
+                          <TouchableOpacity
+                            style={style.itemCenterTitlePar}
+                            onPress={() => {
+                              this.props.navigation.push(pathMap.DrugDetail, {
+                                id: drugInfo.detail.id,
+                                name: drugInfo.detail.name,
+                              })
+                            }}>
+                            <Text
+                              style={[style.itemCenterTitle, global.fontSize14]}
+                              numberOfLines={1}>
+                              {drugInfo.detail.name}
+                            </Text>
+                          </TouchableOpacity>
                           <View
                             style={[
                               style.setCount,

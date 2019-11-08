@@ -5,10 +5,10 @@ import * as wsAction from "@/redux/actions/ws"
 import { AppState } from "@/redux/stores/store"
 import pathMap from "@/routes/pathMap"
 import api, { getRegion, getThumbUrl, uploadAudio, uploadImg, windowHeight } from "@/services/api"
-import { clearPatientUnreadMsgCount, closeInquiry, GENDER_ZH } from "@/services/doctor"
+import { clearPatientUnreadMsgCount, GENDER_ZH } from "@/services/doctor"
 import gImg from "@/utils/img"
-import { getPicCdnUrl, getPicFullUrl, windowWidth, getFileCdnUrl } from "@/utils/utils"
-import { Icon, ImagePicker, Modal, Portal, TextareaItem, Toast } from "@ant-design/react-native"
+import { getFileCdnUrl, getPicCdnUrl, getPicFullUrl, windowWidth } from "@/utils/utils"
+import { Icon, ImagePicker, Portal, TextareaItem, Toast } from "@ant-design/react-native"
 import userApi from "@api/user"
 import wsMsgApi from "@api/wsMsg"
 import imgPickerOpt from "@config/imgPickerOpt"
@@ -17,11 +17,10 @@ import sColor from "@styles/color"
 import Buff from "@utils/Buff"
 import gStyle from "@utils/style"
 import React, { Component } from "react"
-import Sound from "react-native-sound"
 import {
   AppState as RnAppState,
   AppStateStatus,
-  DeviceEventEmitter,
+  Dimensions,
   EmitterSubscription,
   Image,
   ImageSourcePropType,
@@ -32,16 +31,19 @@ import {
   RefreshControl,
   Text,
   View,
+  DeviceEventEmitter,
 } from "react-native"
 import { AudioRecorder, AudioUtils } from "react-native-audio"
 import { TouchableOpacity } from "react-native-gesture-handler"
+import ImageZoom from "react-native-image-pan-zoom"
 import RnImagePicker from "react-native-image-picker"
-import ImageViewer from "react-native-image-zoom-viewer"
 import Permissions from "react-native-permissions"
+import Sound from "react-native-sound"
 import { NavigationScreenProp, ScrollView } from "react-navigation"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
 import { Overwrite } from "utility-types"
+import { Article } from "@/services/groupChat"
 const style = gStyle.groupChat.chat
 const audioPath = AudioUtils.DocumentDirectoryPath + "/tempAudio.aac"
 export type ChatMode = "text" | "audio"
@@ -60,6 +62,7 @@ export enum MsgType {
   treatmentPlan, //治疗方案
   pong,
   audio,
+  article,
 }
 export interface bottomNavItem {
   title: string
@@ -105,6 +108,10 @@ export interface TreatmentPlan {
   ctime: string
 }
 /**
+ * 文章
+ */
+type ArticlePlan = Article
+/**
  * 当消息为问诊单时 附加信息类型
  */
 export interface MsgInquirySheetData {
@@ -143,6 +150,7 @@ interface State {
   groupChatId: number //群聊id
   // 当前播放的音频的id
   currAudioMsgId: number
+  imageHeight: number //查看图片, 图片的高
   isPalyAudio: boolean
   // 是否有录音权限
   hasMicAuth: boolean
@@ -257,45 +265,25 @@ export default class EnteringGroupChat extends Component<
   }
   bottomNavList: bottomNavItem[] = [
     {
-      icon: gImg.advisory.dialecticalPrescriptions,
-      title: "辨证开方",
-      link: pathMap.SquareRoot,
+      icon: gImg.groupChat.release,
+      title: "发布",
+      link: pathMap.AddOrEditArticle,
     },
     {
-      icon: gImg.advisory.quickReply,
-      title: "快捷回复",
+      icon: gImg.groupChat.article,
+      title: "文章",
+      link: pathMap.ArticleList,
+    },
+    {
+      icon: gImg.groupChat.smile,
+      title: "表情",
       link: "",
     },
     {
-      icon: gImg.advisory.closingConversation,
-      title: "结束对话",
-      link: "",
-    },
-    {
-      icon: gImg.advisory.show,
-      title: "更多功能",
-      link: "",
-    },
-    // {
-    //   icon: gImg.advisory.inquirySheet,
-    //   title: "补填问诊单",
-    //   link: "",
-    // },
-    {
-      icon: gImg.advisory.picture,
+      icon: gImg.groupChat.picture,
       title: "图片",
       link: "",
     },
-    // {
-    //   icon: gImg.advisory.givingquestions,
-    //   title: "赠送提问",
-    //   link: "",
-    // },
-    // {
-    //   icon: gImg.advisory.sittingInformation,
-    //   title: "坐诊信息",
-    //   link: "",
-    // },
   ]
   myScroll: ScrollView | null = null
   msgInput: TextareaItem | null = null
@@ -312,6 +300,7 @@ export default class EnteringGroupChat extends Component<
       groupChatId,
       isStopRecord: false,
       currAudioMsgId: 0,
+      imageHeight: 0,
       isPalyAudio: false,
       hasMicAuth: false,
       isRecord: false,
@@ -358,12 +347,6 @@ export default class EnteringGroupChat extends Component<
     }
   }
   componentDidMount() {
-    // this.listener = DeviceEventEmitter.addListener(pathMap.SquareRoot + "Reload", quickReplyMsg => {
-
-    //   this.setState({
-    //     sendMsg: quickReplyMsg,
-    //   })
-    // })
     this.init()
     this.requestReadExteralStorage()
     setTimeout(() => this.myScroll && this.myScroll.scrollToEnd(), 100)
@@ -393,6 +376,7 @@ export default class EnteringGroupChat extends Component<
       }
     }
   }
+
   finishRecording = (didSucceed: boolean, filePath: string, fileSize: number) => {
     console.log(didSucceed)
     console.log(
@@ -662,6 +646,9 @@ export default class EnteringGroupChat extends Component<
                       break
                     case MsgType.audio:
                       formatMsg = this.audioFormat(v)
+                      break
+                    case MsgType.article:
+                      formatMsg = this.articleFormat(v)
                       break
                     default:
                       break
@@ -1029,6 +1016,7 @@ export default class EnteringGroupChat extends Component<
                         url: BASE_URL + "/static/media/collapsed_logo.db8ef9b3.png",
                       },
                     ],
+                    imageHeight: 0,
                     isShowPic: false,
                   })
                 }}
@@ -1036,16 +1024,45 @@ export default class EnteringGroupChat extends Component<
                 name="close"
               />
             </View>
-            <ImageViewer
-              saveToLocalByLongPress={false}
-              imageUrls={this.state.imagesViewer}
-              index={this.state.imageIdx}
-              maxOverflow={0}
-              onCancel={() => {}}
-            />
+            {this.state.imageHeight === 0 ? (
+              <Image
+                style={{ opacity: 0 }}
+                onLayout={this.handleOnLayout}
+                source={{ uri: getPicFullUrl(this.state.imagesViewer[0].url) }}
+              />
+            ) : (
+              <ImageZoom
+                cropWidth={windowWidth}
+                cropHeight={windowHeight}
+                imageWidth={windowWidth}
+                imageHeight={this.state.imageHeight}>
+                <Image
+                  style={{
+                    width: windowWidth,
+                    height: this.state.imageHeight,
+                  }}
+                  source={{ uri: getPicFullUrl(this.state.imagesViewer[0].url) }}
+                />
+              </ImageZoom>
+            )}
           </View>
         </View>
       </KeyboardAvoidingView>
+    )
+  }
+  //获取查看图片的高度
+  handleOnLayout = () => {
+    Image.getSize(
+      getPicFullUrl(this.state.imagesViewer[0].url),
+      (width, height) => {
+        let ratio = width / height
+        this.setState({
+          imageHeight: Dimensions.get("window").width / ratio,
+        })
+      },
+      err => {
+        console.log(err)
+      },
     )
   }
   changeMode = () => {
@@ -1289,6 +1306,45 @@ export default class EnteringGroupChat extends Component<
             </View>
           </View>
         )}
+      </View>
+    )
+    return msg
+  }
+  //文章
+  articleFormat = (serverMsg: Exclude<Overwrite<Msg, { extraData: ArticlePlan }>, "dom">) => {
+    let msg: Overwrite<Msg, { extraData: ArticlePlan }> = serverMsg
+    msg.dom = (
+      <View style={style.treatmentPlan}>
+        <Text style={[style.sendTime, global.fontStyle, global.fontSize12]}>{msg.sendTime}</Text>
+        <View style={style.treatmentPlanCenter}>
+          <View style={[style.treatmentPlanHeader, global.flex, global.alignItemsCenter]}>
+            <Image
+              style={style.treatmentPlanHeaderImg}
+              source={
+                msg.extraData.picList.length > 0
+                  ? { uri: getPicFullUrl(msg.extraData.picList[0].url) }
+                  : gImg.common.defaultPic
+              }
+            />
+            <View style={style.treatmentPlanHeaderTitle}>
+              <Text style={[style.treatmentPlanHeaderTheme, global.fontSize18]} numberOfLines={1}>
+                {msg.extraData.title}
+              </Text>
+              <Text style={[style.treatmentPlanHeaderTime, global.fontSize14]}>
+                {msg.extraData.ctime}
+              </Text>
+            </View>
+          </View>
+          <TouchableOpacity
+            onPress={() => {
+              this.props.navigation.push(pathMap.ArticleDetail, {
+                id: msg.extraData.id,
+              })
+            }}>
+            <Text style={[style.treatmentPlanBtn, global.fontSize14]}>点此查看论文</Text>
+          </TouchableOpacity>
+          <Image style={style.treatmentPlanFlag} source={gImg.common.flag} />
+        </View>
       </View>
     )
     return msg
@@ -1610,31 +1666,26 @@ export default class EnteringGroupChat extends Component<
     }
   }
   selectBottomNav = (v: bottomNavItem) => {
-    if (v.title === "更多功能") {
-      this.setState({
-        isShowBottomNav: true,
-      })
-      v.title = "收起"
-      v.icon = gImg.advisory.retract
-    } else if (v.title === "收起") {
+    if (v.title === "收起") {
       this.setState({
         isShowBottomNav: false,
         isShowBottomPicSelect: false,
       })
       v.title = "更多功能"
       v.icon = gImg.advisory.show
-    } else if (v.title === "图片") {
-      this.setState({
-        isShowBottomPicSelect: !this.state.isShowBottomPicSelect,
-      })
-    } else if (v.title === "结束对话") {
-      this.closeInquiry()
-    } else if (v.title === "快捷回复") {
-      this.quickReply()
-    } else {
-      console.log("正在进入开方页")
+    } else if (v.title === "发布") {
       this.props.navigation.push(v.link, {
         patientUid: this.state.patientUid,
+      })
+    } else if (v.title === "文章") {
+      this.props.navigation.push(v.link, {
+        patientUid: this.state.patientUid,
+      })
+    } else if (v.title === "表情") {
+      return Toast.info("正在努力开发中, 敬请期待...", 2)
+    } else {
+      this.setState({
+        isShowBottomPicSelect: !this.state.isShowBottomPicSelect,
       })
     }
   }
@@ -1741,37 +1792,5 @@ export default class EnteringGroupChat extends Component<
         console.warn(err)
       }
     }
-  }
-  /**
-   * 关闭问诊
-   */
-  closeInquiry = () => {
-    const { patientUid } = this.state
-    Modal.alert("结束会话", "确认结束会话将无法聊天, 是否结束会话?", [
-      {
-        text: "取消",
-        onPress: () => console.log("cancel"),
-        style: "cancel",
-      },
-      {
-        text: "确认",
-        onPress: () => {
-          closeInquiry({ patientUid })
-            .then(() => {
-              DeviceEventEmitter.emit(pathMap.AdvisoryIndex + "Reload")
-              this.props.navigation.navigate(pathMap.Home)
-            })
-            .catch(err => {
-              Toast.fail("关闭失败,错误信息: " + err.msg)
-            })
-        },
-      },
-    ])
-  }
-  /**
-   * 快捷回复
-   */
-  quickReply = () => {
-    this.props.navigation.push(pathMap.QuickReply)
   }
 }
