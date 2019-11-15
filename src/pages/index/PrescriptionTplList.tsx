@@ -22,6 +22,7 @@ import { NavigationScreenProp } from "react-navigation"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
 import Empty from "@/components/Empty"
+import { SwipeActionProps } from "@ant-design/react-native/lib/swipe-action"
 const style = gStyle.index.PrescriptionTplList
 const global = gStyle.global
 interface Props {
@@ -192,13 +193,20 @@ export default class PrescriptionTplList extends Component<
                 drugStr += v.detail.name + "、"
               }
               drugStr = drugStr.substr(0, drugStr.lastIndexOf("、"))
-              return (
-                <SwipeAction
-                  key={k}
-                  autoClose
-                  disabled={prescription.isSystemTpl}
-                  style={{ backgroundColor: "transparent", marginTop: 8 }}
-                  right={[
+              let rightOpt: SwipeActionProps["right"] = prescription.isSystemTpl
+                ? [
+                    {
+                      text: "开方",
+                      onPress: () => {
+                        this.props.navigation.push(pathMap.SquareRoot, {
+                          mode: "wx",
+                          prescription: prescription,
+                        })
+                      },
+                      style: { backgroundColor: "blue", color: "white" },
+                    },
+                  ]
+                : [
                     {
                       text: "开方",
                       onPress: () => {
@@ -226,7 +234,14 @@ export default class PrescriptionTplList extends Component<
                       onPress: () => this.deletePrescriptionTpl(prescription.id),
                       style: { backgroundColor: "red", color: "white" },
                     },
-                  ]}
+                  ]
+              return (
+                <SwipeAction
+                  key={k}
+                  autoClose
+                  // disabled={prescription.isSystemTpl}
+                  style={{ backgroundColor: "transparent", marginTop: 8 }}
+                  right={rightOpt}
                   onOpen={() => {}}
                   onClose={() => {}}>
                   <View style={style.prescriptionItem}>

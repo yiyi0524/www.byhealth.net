@@ -19,6 +19,7 @@ interface NavParams {
   groupName: string
   navigatePress: () => void
   mode: "delete" | "done"
+  isAdmin: boolean
 }
 
 interface Props {
@@ -54,6 +55,8 @@ export default class Detail extends Component<Props & DefaultProps, State> {
     if (navigation.state.params) {
       title = navigation.state.params.groupName
     }
+    const isAdmin = navigation.getParam("isAdmin") || false
+    console.log("isAdmin ", isAdmin)
     return {
       title,
       headerStyle: {
@@ -70,7 +73,7 @@ export default class Detail extends Component<Props & DefaultProps, State> {
         fontSize: 14,
         textAlign: "center",
       },
-      headerRight: (
+      headerRight: !isAdmin ? (
         <TouchableOpacity
           onPress={() => {
             let oriMode = navigation.getParam("mode")
@@ -83,7 +86,7 @@ export default class Detail extends Component<Props & DefaultProps, State> {
             {navigation.state.params && navigation.state.params!.mode === "done" ? "选择" : "删除"}
           </Text>
         </TouchableOpacity>
-      ),
+      ) : null,
     }
   }
   constructor(props: any) {
@@ -165,10 +168,11 @@ export default class Detail extends Component<Props & DefaultProps, State> {
             v.active = false
             return v
           })
-          isAdmin = !!v.userList.find(v => v.uid === uid)
+          isAdmin = !!v.userList.find(v => v.uid === uid && v.isAdmin)
           applyMemberList = v.applyList
         }
       }
+      this.props.navigation.setParams({ isAdmin })
       this.setState({
         isAdmin,
         memberList,

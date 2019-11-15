@@ -134,6 +134,7 @@ export default class Prescribing extends Component<Props & DefaultProps, State> 
             }}>
             <Image style={style.img} source={gImg.home.prescribingPhotograph}></Image>
             <Text style={style.title}>模板开方</Text>
+            <Text style={style.desc}>选择模板立即开方发送给微信患者</Text>
             <Icon style={style.icon} name="right"></Icon>
           </TouchableOpacity>
         </View>
