@@ -1,5 +1,5 @@
 import global from "@/assets/styles/global"
-import { GroupChatMember, listGroupChatApplyMember } from "@/services/groupChat"
+import { GroupChatMember, listGroupChatMember, rejectJoin, agreeJoin } from "@/services/groupChat"
 import { TYPE } from "@/utils/constant"
 import { getPicFullUrl } from "@/utils/utils"
 import gImg from "@utils/img"
@@ -7,6 +7,7 @@ import gSass from "@utils/style"
 import React, { Component } from "react"
 import { Image, ScrollView, Text, TouchableOpacity, View } from "react-native"
 import { NavigationScreenProp } from "react-navigation"
+import { Toast } from "@ant-design/react-native"
 const style = gSass.groupChat.applyList
 interface Props {
   navigation: NavigationScreenProp<State>
@@ -14,7 +15,7 @@ interface Props {
 interface State {
   groupChatId: number
   groupChatName: string
-  list: GroupChatMember[]
+  list: Omit<GroupChatMember, "isAdmin">[]
 }
 type DefaultProps = {}
 
@@ -71,13 +72,13 @@ export default class ApplyList extends Component<Props & DefaultProps, State> {
   init = async () => {
     try {
       let { groupChatId } = this.state
-      let listMode = listGroupChatApplyMember({
+      let listMode = listGroupChatMember({
         page: -1,
         limit: -1,
         filter: { condition: TYPE.eq, val: groupChatId },
       })
       let {
-        data: { list },
+        data: { applyList: list },
       } = await listMode
       this.setState({
         list,
@@ -129,9 +130,19 @@ export default class ApplyList extends Component<Props & DefaultProps, State> {
     )
   }
   reject = (id: number) => {
-    console.log("拒绝id" + id)
+    let { groupChatId: groupId } = this.state
+    rejectJoin({ id, groupId })
+      .then(this.init)
+      .catch(err => {
+        Toast.fail("操作失败, 错误信息: " + err.msg, 3)
+      })
   }
   agree = (id: number) => {
-    console.log("同意id" + id)
+    let { groupChatId: groupId } = this.state
+    agreeJoin({ id, groupId })
+      .then(this.init)
+      .catch(err => {
+        Toast.fail("操作失败, 错误信息: " + err.msg, 3)
+      })
   }
 }

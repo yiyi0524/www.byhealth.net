@@ -1,12 +1,12 @@
 import global from "@/assets/styles/global"
+import pathMap from "@/routes/pathMap"
 import { Article, ArticleType, listArticle } from "@/services/groupChat"
-import { Icon, InputItem } from "@ant-design/react-native"
+import { TYPE } from "@/utils/constant"
+import { Icon, InputItem, Modal } from "@ant-design/react-native"
 import gSass from "@utils/style"
 import React, { Component } from "react"
 import { FlatList, Text, TouchableOpacity, View } from "react-native"
-import { TYPE } from "@/utils/constant"
 import { NavigationScreenProp } from "react-navigation"
-import pathMap from "@/routes/pathMap"
 const style = gSass.groupChat.articleList
 interface Props {
   navigation: NavigationScreenProp<State>
@@ -54,8 +54,8 @@ export default class ArticleList extends Component<Props & DefaultProps, State> 
   }
   getInitState = (): State => {
     return {
-      page: 1,
-      limit: 10,
+      page: -1,
+      limit: -1,
       count: 0,
       type: ArticleType.all,
       search: "",
@@ -72,6 +72,9 @@ export default class ArticleList extends Component<Props & DefaultProps, State> 
       list: [],
     }
   }
+  sendArticle = (id: number) => {
+    console.log("发送文章id" + id)
+  }
   renderItem = (val: any) => {
     let item = val.item
     return (
@@ -79,8 +82,18 @@ export default class ArticleList extends Component<Props & DefaultProps, State> 
         style={style.item}
         key={item.id + val.index}
         onPress={() => {
-          console.log("文章id为" + item.id)
-          // this.props.navigation.push(pathMap.ArticleDetail, { id: item.id })
+          Modal.operation([
+            {
+              text: "发送",
+              onPress: () => this.sendArticle(item.id),
+            },
+            {
+              text: "查看",
+              onPress: () => {
+                this.props.navigation.push(pathMap.ArticleDetail, { id: item.id })
+              },
+            },
+          ])
         }}>
         <View style={[style.titlePar, global.flex, global.aCenter]}>
           <Text style={style.title} numberOfLines={1}>
@@ -99,7 +112,11 @@ export default class ArticleList extends Component<Props & DefaultProps, State> 
     this.init()
   }
   init = async () => {
-    this.listArticle(1)
+    try {
+      this.listArticle(-1)
+    } catch (err) {
+      console.log(err)
+    }
   }
   changeType = (type: number) => {
     let { filter } = this.state
@@ -112,7 +129,7 @@ export default class ArticleList extends Component<Props & DefaultProps, State> 
         type,
         filter,
       },
-      () => this.listArticle(1),
+      () => this.listArticle(-1),
     )
   }
   listArticle = async (page: number) => {
@@ -120,7 +137,6 @@ export default class ArticleList extends Component<Props & DefaultProps, State> 
       let { limit, filter, list } = this.state
       let {
         data: { list: newList },
-        count,
       } = await listArticle({ page, limit, filter })
       if (page > 1) {
         list.push(...newList)
@@ -130,20 +146,9 @@ export default class ArticleList extends Component<Props & DefaultProps, State> 
       this.setState({
         list,
         page,
-        count,
       })
     } catch (err) {
       console.log(err)
-    }
-  }
-  loadMore = () => {
-    let { page, limit, count } = this.state
-    if (count > page * limit) {
-      page = page + 1
-      this.listArticle(page)
-      this.setState({
-        page,
-      })
     }
   }
   ListHeaderComponent = () => {
@@ -198,8 +203,7 @@ export default class ArticleList extends Component<Props & DefaultProps, State> 
     )
   }
   render() {
-    let { list, count, page, limit } = this.state
-    let isLoadMore = count > page * limit
+    let { list } = this.state
     return (
       <View style={style.main}>
         <FlatList
@@ -210,16 +214,7 @@ export default class ArticleList extends Component<Props & DefaultProps, State> 
           renderItem={this.renderItem}
           ListHeaderComponent={this.ListHeaderComponent}
           onEndReachedThreshold={0.1}
-          onEndReached={() => {
-            this.loadMore()
-          }}
-          ListFooterComponent={() => {
-            if (isLoadMore) {
-              return <Text style={style.loading}>加载中...</Text>
-            } else {
-              return <Text style={style.loading}>已无更多</Text>
-            }
-          }}
+          onEndReached={() => {}}
         />
       </View>
     )

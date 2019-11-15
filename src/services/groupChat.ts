@@ -1,6 +1,6 @@
 import { Picture } from "@/pages/advisory/Chat"
 import { Assign } from "utility-types"
-import { bpost, GetListParam, bget } from "./api"
+import { bget, bpost, GetListParam } from "./api"
 
 export const TAB = {
   GROUP_CHAT: 0x0,
@@ -81,7 +81,7 @@ export function joinGroupChat(data: { id: number }) {
   })
 }
 /**
- * 获取某群聊列表  排序:管理员在前
+ * todo 获取成员列表
  *  filter{
  *  groupId:{
  *    condition:eq,
@@ -95,9 +95,9 @@ export function listGroupChatMember(data: GetListParam) {
     data: {
       list: [
         {
-          id: 1,
+          id: 403,
           isAdmin: true,
-          name: "阿萨德",
+          name: "阿萨德1",
           avatar: {
             id: 1,
             title: "",
@@ -107,7 +107,7 @@ export function listGroupChatMember(data: GetListParam) {
         {
           id: 2,
           isAdmin: true,
-          name: "阿萨德",
+          name: "阿萨德2",
           avatar: {
             id: 1,
             title: "",
@@ -117,7 +117,7 @@ export function listGroupChatMember(data: GetListParam) {
         {
           id: 3,
           isAdmin: false,
-          name: "阿萨德",
+          name: "阿萨德3",
           avatar: {
             id: 1,
             title: "",
@@ -127,7 +127,7 @@ export function listGroupChatMember(data: GetListParam) {
         {
           id: 4,
           isAdmin: false,
-          name: "阿萨德",
+          name: "阿萨德4",
           avatar: {
             id: 1,
             title: "",
@@ -135,32 +135,10 @@ export function listGroupChatMember(data: GetListParam) {
           },
         },
       ] as Assign<GroupChatMember, { active: boolean }>[],
-    },
-  }
-  // return bpost<{data:{list:Assign<GroupChatMember, { active: boolean }>[]}}>({
-  //   url:"api/listGroupChatMember",
-  //   data
-  // })
-}
-/**
- * 获取某群聊申请人列表
- * todo 删除
- *  filter{
- *  groupId:{
- *    condition:eq,
- *    val:id
- *  }
- * }
- */
-export function listGroupChatApplyMember(data: GetListParam) {
-  console.log(data)
-  return {
-    data: {
-      list: [
+      applyList: [
         {
           id: 1,
-          isAdmin: false,
-          name: "阿萨德",
+          name: "阿萨德1",
           avatar: {
             id: 1,
             title: "",
@@ -169,56 +147,24 @@ export function listGroupChatApplyMember(data: GetListParam) {
         },
         {
           id: 2,
-          isAdmin: false,
-          name: "阿萨德",
+          name: "阿萨德2",
           avatar: {
             id: 1,
             title: "",
             url: "/uploads/20190528/14151cac19744c03114114ed6c9b3cea.jpg",
           },
         },
-        {
-          id: 3,
-          isAdmin: false,
-          name: "阿萨德",
-          avatar: {
-            id: 1,
-            title: "",
-            url: "/uploads/20190528/14151cac19744c03114114ed6c9b3cea.jpg",
-          },
-        },
-        {
-          id: 4,
-          isAdmin: false,
-          name: "阿萨德",
-          avatar: {
-            id: 1,
-            title: "",
-            url: "/uploads/20190528/14151cac19744c03114114ed6c9b3cea.jpg",
-          },
-        },
-      ] as GroupChatMember[],
+      ],
     },
   }
-  // return bpost<{data:{list:GroupChatMember[]}}>({
-  //   url:"api/listGroupChatApplyMember",
+  // return bpost<{data:{list:Assign<GroupChatMember, { active: boolean }>[]}}>({
+  //   url:"api/listGroupChatMember",
   //   data
   // })
 }
+
 /**
- * 检查自己是否是某群的管理员
- * todo 删除
- */
-export function checkGroupChatAdministrators(data: { groupId: number }) {
-  console.log(data)
-  return { data: { isAdmin: true } }
-  // return bpost<{data:{isAdmin:boolean}}>({
-  //   url: "api/checkGroupChatAdministrators",
-  //   data,
-  // })
-}
-/**
- * 删除某群的成员
+ * todo 删除某群的成员
  */
 export function delGroupChatmember(data: { groupId: number; ids: number[] }) {
   return bpost({
@@ -227,7 +173,7 @@ export function delGroupChatmember(data: { groupId: number; ids: number[] }) {
   })
 }
 /**
- * 添加文章
+ * todo 添加文章
  */
 export function addArticle(data: { title: string; content: string; picList: Picture[] }) {
   return bpost<{ id: number }>({
@@ -236,7 +182,7 @@ export function addArticle(data: { title: string; content: string; picList: Pict
   })
 }
 /**
- * 编辑文章
+ *todo  编辑文章
  */
 export function editArticle(data: {
   id: number
@@ -250,11 +196,11 @@ export function editArticle(data: {
   })
 }
 /**
- * 文章列表
+ *
  * filter:{
  * type:{
  *   condition:eq,
- *   val:ArticleType
+ *   val:ArticleType  //全部  个人
  * },
  *  search:{
  *    condition:eqString,
@@ -263,125 +209,13 @@ export function editArticle(data: {
  * }
  */
 export function listArticle(data: GetListParam) {
-  console.log(data)
-  return {
-    data: {
-      list: [
-        {
-          id: 1,
-          title: "广东省中西医结合学会肾病委...",
-          content: "牙齿矫正方案汇总，牙齿矫正一直是医学界的一大难题...",
-          picList: [
-            {
-              id: 1,
-              title: "",
-              url: "/uploads/20190528/14151cac19744c03114114ed6c9b3cea.jpg",
-            },
-            {
-              id: 1,
-              title: "",
-              url: "/uploads/20190528/14151cac19744c03114114ed6c9b3cea.jpg",
-            },
-            {
-              id: 1,
-              title: "",
-              url: "/uploads/20190528/14151cac19744c03114114ed6c9b3cea.jpg",
-            },
-          ],
-          viewCount: 103,
-          ctime: "2019-10-10 10:00:00",
-        },
-        {
-          id: 2,
-          title: "广东省中西医结合学会肾病委...",
-          content: "牙齿矫正方案汇总，牙齿矫正一直是医学界的一大难题...",
-          picList: [],
-          viewCount: 103,
-          ctime: "2019-10-10 10:00:00",
-        },
-        {
-          id: 3,
-          title: "广东省中西医结合学会肾病委...",
-          content: "牙齿矫正方案汇总，牙齿矫正一直是医学界的一大难题...",
-          picList: [],
-          viewCount: 103,
-          ctime: "2019-10-10 10:00:00",
-        },
-        {
-          id: 4,
-          title: "广东省中西医结合学会肾病委...",
-          content: "牙齿矫正方案汇总，牙齿矫正一直是医学界的一大难题...",
-          picList: [],
-          viewCount: 103,
-          ctime: "2019-10-10 10:00:00",
-        },
-        {
-          id: 5,
-          title: "广东省中西医结合学会肾病委...",
-          content: "牙齿矫正方案汇总，牙齿矫正一直是医学界的一大难题...",
-          picList: [],
-          viewCount: 103,
-          ctime: "2019-10-10 10:00:00",
-        },
-        {
-          id: 6,
-          title: "广东省中西医结合学会肾病委...",
-          content: "牙齿矫正方案汇总，牙齿矫正一直是医学界的一大难题...",
-          picList: [],
-          viewCount: 103,
-          ctime: "2019-10-10 10:00:00",
-        },
-        {
-          id: 7,
-          title: "广东省中西医结合学会肾病委7...",
-          content: "牙齿矫正方案汇总，牙齿矫正一直是医学界的一大难题...",
-          picList: [],
-          viewCount: 103,
-          ctime: "2019-10-10 10:00:00",
-        },
-        {
-          id: 8,
-          title: "广东省中西医结合学会肾病委...",
-          content: "牙齿矫正方案汇总，牙齿矫正一直是医学界的一大难题...",
-          picList: [],
-          viewCount: 103,
-          ctime: "2019-10-10 10:00:00",
-        },
-        {
-          id: 9,
-          title: "广东省中西医结合学会肾病委...",
-          content: "牙齿矫正方案汇总，牙齿矫正一直是医学界的一大难题...",
-          picList: [],
-          viewCount: 103,
-          ctime: "2019-10-10 10:00:00",
-        },
-        {
-          id: 10,
-          title: "广东省中西医结合学会肾病委10...",
-          content: "牙齿矫正方案汇总，牙齿矫正一直是医学界的一大难题...",
-          picList: [],
-          viewCount: 103,
-          ctime: "2019-10-10 10:00:00",
-        },
-        {
-          id: 11,
-          title: "广东省中西医结合学会肾病委11...",
-          content: "牙齿矫正方案汇总，牙齿矫正一直是医学界的一大难题...",
-          picList: [],
-          viewCount: 103,
-          ctime: "2019-10-10 10:00:00",
-        },
-      ] as Article[],
-    },
-    count: 15,
-  }
-  // return bpost<{ data: { list: Article[] },count:number }>({
-  //   url: "api/listArticle",
-  //   data,
-  // })
+  return bpost<{ data: { list: Article[] } }>({
+    url: "chatGroup/listArticle",
+    data,
+  })
 }
 /**
- * 获取文章详情
+ * todo 获取文章详情
  */
 export function getArticle(data: { id: number }) {
   console.log(data)
@@ -390,6 +224,11 @@ export function getArticle(data: { id: number }) {
       detail: {
         id: 1,
         title: "广东省中西医结合学会肾病委...",
+        author: {
+          uid: 403,
+          name: "",
+          phone: "",
+        },
         content:
           "牙齿矫正方案汇总，牙齿矫正一直是医学界的一大难题牙齿矫正方案汇总，牙齿矫正一直是医学界的一大难题牙齿矫正方案汇总，牙齿矫正一直是医学界的一大难题牙齿矫正方案汇总，牙齿矫正一直是医学界的一大难题牙齿矫正方案汇总，牙齿矫正一直是医学界的一大难题牙齿矫正方案汇总，牙齿矫正一直是医学界的一大难题牙齿矫正方案汇总，牙齿矫正一直是医学界的一大难题牙齿矫正方案汇总，牙齿矫正一直是医学界的一大难题牙齿矫正方案汇总，牙齿矫正一直是医学界的一大难题牙齿矫正方案汇总，牙齿矫正一直是医学界的一大难题牙齿矫正方案汇总，牙齿矫正一直是医学界的一大难题牙齿矫正方案汇总，牙齿矫正一直是医学界的一大难题牙齿矫正方案汇总，牙齿矫正一直是医学界的一大难题牙齿矫正方案汇总，牙齿矫正一直是医学界的一大难题牙齿矫正方案汇总，牙齿矫正一直是医学界的一大难题牙齿矫正方案汇总，牙齿矫正一直是医学界的一大难题牙齿矫正方案汇总，牙齿矫正一直是医学界的一大难题牙齿矫正方案汇总，牙齿矫正一直是医学界的一大难题牙齿矫正方案汇总，牙齿矫正一直是医学界的一大难题牙齿矫正方案汇总，牙齿矫正一直是医学界的一大难题牙齿矫正方案汇总，牙齿矫正一直是医学界的一大难题牙齿矫正方案汇总，牙齿矫正一直是医学界的一大难题...",
         picList: [
@@ -420,16 +259,22 @@ export function getArticle(data: { id: number }) {
   // })
 }
 /**
- * 检查是否为自己的文章
- * todo 删除
+ * todo 拒绝申请
  */
-export function checkIsPersonalArticle(data: { id: number }) {
-  console.log(data)
-  return { data: { isPersonalArticle: true } }
-  // return bpost<{ data: { isPersonalArticle:boolean } }>({
-  //   url: "api/checkIsPersonalArticle",
-  //   data,
-  // })
+export function rejectJoin(data: { id: number; groupId: number }) {
+  return bpost({
+    url: "api/rejectJoin",
+    data,
+  })
+}
+/**
+ * todo 拒绝申请
+ */
+export function agreeJoin(data: { id: number; groupId: number }) {
+  return bpost({
+    url: "api/agreeJoin",
+    data,
+  })
 }
 export default {
   listGroupChat,

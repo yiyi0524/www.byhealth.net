@@ -1,25 +1,23 @@
-import { ImagePicker, InputItem, TextareaItem, Toast, Portal } from "@ant-design/react-native"
+import { BASE_URL } from "@/config/api"
+import { uploadImg } from "@/services/api"
+import { addArticle, editArticle, getArticle } from "@/services/groupChat"
+import { getPicFullUrl } from "@/utils/utils"
+import { ImagePicker, InputItem, Portal, TextareaItem, Toast } from "@ant-design/react-native"
+import imgPickerOpt from "@config/imgPickerOpt"
 import gSass from "@utils/style"
 import React, { Component } from "react"
 import {
+  KeyboardAvoidingView,
+  Platform,
   ScrollView,
   Text,
   TouchableOpacity,
   View,
-  KeyboardAvoidingView,
-  Platform,
-  DeviceEventEmitter,
 } from "react-native"
-import { Picture } from "../advisory/Chat"
-import Permissions from "react-native-permissions"
 import RnImagePicker from "react-native-image-picker"
-import { uploadImg } from "@/services/api"
-import imgPickerOpt from "@config/imgPickerOpt"
-import { BASE_URL } from "@/config/api"
-import { addArticle, getArticle, editArticle } from "@/services/groupChat"
+import Permissions from "react-native-permissions"
 import { NavigationScreenProp } from "react-navigation"
-import { getPicFullUrl } from "@/utils/utils"
-import pathMap from "@/routes/pathMap"
+import { Picture } from "../advisory/Chat"
 const style = gSass.groupChat.addArticle
 interface Props {
   navigation: NavigationScreenProp<State>
@@ -132,7 +130,7 @@ export default class AddArticle extends Component<Props & DefaultProps, State> {
                       title,
                     })
                   }}
-                  placeholder="4-23字">
+                  placeholder="请输入">
                   标题:
                 </InputItem>
               </View>
@@ -148,10 +146,11 @@ export default class AddArticle extends Component<Props & DefaultProps, State> {
                   last
                   style={style.textarea}
                   rows={12}
-                  placeholder="填写病例说明"
+                  placeholder="请输入文章内容"
                 />
               </View>
               <View style={style.item}>
+                <Text style={style.title}>图片展示</Text>
                 <ImagePicker files={picList} onAddImageClick={this.addImage} />
               </View>
             </View>
@@ -292,7 +291,7 @@ export default class AddArticle extends Component<Props & DefaultProps, State> {
       } else {
         editArticle(data)
           .then(() => {
-            Toast.success("发布成功", 1, () => {
+            Toast.success("编辑成功", 1, () => {
               this.setState({
                 title: "",
                 content: "",

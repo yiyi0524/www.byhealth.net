@@ -20,7 +20,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   img: {
-    width: 120,
+    width: 80,
     resizeMode: "contain",
   },
 })

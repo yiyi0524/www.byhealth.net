@@ -1,11 +1,7 @@
 import global from "@/assets/styles/global"
-import {
-  GroupChatMember,
-  listGroupChatApplyMember,
-  listGroupChatMember,
-  checkGroupChatAdministrators,
-  delGroupChatmember,
-} from "@/services/groupChat"
+import { AppState } from "@/redux/stores/store"
+import pathMap from "@/routes/pathMap"
+import { delGroupChatmember, GroupChatMember, listGroupChatMember } from "@/services/groupChat"
 import { TYPE } from "@/utils/constant"
 import { getPicFullUrl } from "@/utils/utils"
 import { Icon, Toast } from "@ant-design/react-native"
@@ -14,7 +10,7 @@ import gSass from "@utils/style"
 import React, { Component } from "react"
 import { Image, Text, TouchableOpacity, View } from "react-native"
 import { NavigationScreenProp, ScrollView } from "react-navigation"
-import pathMap from "@/routes/pathMap"
+import { connect } from "react-redux"
 import { Assign } from "utility-types"
 const style = gSass.groupChat.detail
 
@@ -34,11 +30,19 @@ interface State {
   groupId: number //群聊id
   groupName: string //群聊名称
   delMemberIds: number[] //删除列表
-  applyMemberList: GroupChatMember[]
+  applyMemberList: Omit<GroupChatMember, "isAdmin">[]
   memberList: Assign<GroupChatMember, { active: boolean }>[]
 }
-type DefaultProps = {}
-
+type DefaultProps = {} & ReturnType<typeof mapStateToProps>
+const mapStateToProps = (state: AppState) => {
+  return {
+    isLogin: state.user.isLogin,
+    name: state.user.name,
+    uid: state.user.uid,
+  }
+}
+//@ts-ignore
+@connect(mapStateToProps)
 export default class Detail extends Component<Props & DefaultProps, State> {
   static defaultProps: DefaultProps
   static navigationOptions = ({
@@ -111,12 +115,15 @@ export default class Detail extends Component<Props & DefaultProps, State> {
     })
   }
   editMsg = () => {
-    let isSelectMember = !this.state.isSelectMember
-    this.setState({
-      isSelectMember,
-    })
-    if (!isSelectMember) {
-      this.delMember()
+    let { isAdmin } = this.state
+    if (isAdmin) {
+      let isSelectMember = !this.state.isSelectMember
+      this.setState({
+        isSelectMember,
+      })
+      if (!isSelectMember) {
+        this.delMember()
+      }
     }
   }
   //删除成员
@@ -139,7 +146,6 @@ export default class Detail extends Component<Props & DefaultProps, State> {
   init = async () => {
     try {
       let { groupId } = this.state
-      let checkAdminMode = checkGroupChatAdministrators({ groupId })
       let memberListMode = listGroupChatMember({
         page: -1,
         limit: -1,
@@ -148,26 +154,17 @@ export default class Detail extends Component<Props & DefaultProps, State> {
           val: groupId,
         },
       })
-      let applyMemberListMode = listGroupChatApplyMember({
-        page: -1,
-        limit: -1,
-        filter: {
-          condition: TYPE.eq,
-          val: groupId,
-        },
-      })
       let {
-        data: { isAdmin },
-      } = await checkAdminMode
-      let {
-        data: { list: memberList },
+        data: { list: memberList, applyList: applyMemberList },
       } = await memberListMode
+      let isAdmin = false
+      let { uid } = this.props
       for (let v of memberList) {
         v.active = false
+        if (v.id === uid) {
+          isAdmin = v.isAdmin
+        }
       }
-      let {
-        data: { list: applyMemberList },
-      } = await applyMemberListMode
       this.setState({
         isAdmin,
         memberList,

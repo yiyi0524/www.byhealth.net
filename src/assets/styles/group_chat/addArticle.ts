@@ -42,6 +42,11 @@ export default StyleSheet.create({
     fontSize: 13,
     color: "#666",
   },
+  title: {
+    fontSize: 14,
+    color: "#333",
+    marginBottom: 8,
+  },
   textarea: {
     marginBottom: 15,
     fontSize: 13,

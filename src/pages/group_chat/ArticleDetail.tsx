@@ -1,12 +1,14 @@
-import React, { Component } from "react"
-import { ScrollView, TouchableOpacity, View, Image, Text } from "react-native"
-import gSass from "@utils/style"
-import { Carousel, Toast } from "@ant-design/react-native"
-import { Article, getArticle, articleViewCount, checkIsPersonalArticle } from "@/services/groupChat"
-import { NavigationScreenProp } from "react-navigation"
-import { getPicFullUrl } from "@/utils/utils"
 import global from "@/assets/styles/global"
+import { AppState } from "@/redux/stores/store"
 import pathMap from "@/routes/pathMap"
+import { Article, getArticle } from "@/services/groupChat"
+import { getPicFullUrl } from "@/utils/utils"
+import { Carousel, Toast } from "@ant-design/react-native"
+import gSass from "@utils/style"
+import React, { Component } from "react"
+import { Image, ScrollView, Text, TouchableOpacity, View } from "react-native"
+import { NavigationScreenProp } from "react-navigation"
+import { connect } from "react-redux"
 const style = gSass.groupChat.articleDetail
 
 interface NavParams {
@@ -22,8 +24,16 @@ interface State {
   step: number
   detail: Article
 }
-type DefaultProps = {}
-
+type DefaultProps = {} & ReturnType<typeof mapStateToProps>
+const mapStateToProps = (state: AppState) => {
+  return {
+    isLogin: state.user.isLogin,
+    name: state.user.name,
+    uid: state.user.uid,
+  }
+}
+//@ts-ignore
+@connect(mapStateToProps)
 export default class ArticleDetail extends Component<Props & DefaultProps, State> {
   static defaultProps: DefaultProps
   static navigationOptions = ({
@@ -80,6 +90,11 @@ export default class ArticleDetail extends Component<Props & DefaultProps, State
       detail: {
         id: 0,
         title: "",
+        author: {
+          uid: 0,
+          name: "",
+          phone: "",
+        },
         content: "",
         picList: [],
         viewCount: 0,
@@ -94,19 +109,17 @@ export default class ArticleDetail extends Component<Props & DefaultProps, State
     try {
       let { id } = this.state
       let detailTask = getArticle({ id })
-      let checkIsPersonalArticleTask = checkIsPersonalArticle({ id })
+
       let {
         data: { detail },
       } = await detailTask
-      let {
-        data: { isPersonalArticle },
-      } = await checkIsPersonalArticleTask
+      const { uid } = this.props
       this.setState({
         detail,
-        isPersonalArticle,
       })
+      let isPersonalArticle = uid === detail.author.uid
       this.props.navigation.setParams({
-        isPersonalArticle: isPersonalArticle,
+        isPersonalArticle,
       })
     } catch (err) {
       console.log(err)
