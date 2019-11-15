@@ -19,8 +19,8 @@ import { Assign } from "utility-types"
 const style = gSass.groupChat.detail
 
 interface NavParams {
-  groupChatId: number
-  groupChatName: string
+  groupId: number
+  groupName: string
   navigatePress: () => void
   mode: "delete" | "done"
 }
@@ -31,8 +31,8 @@ interface Props {
 interface State {
   isAdmin: boolean
   isSelectMember: boolean
-  groupChatId: number //群聊id
-  groupChatName: string //群聊名称
+  groupId: number //群聊id
+  groupName: string //群聊名称
   delMemberIds: number[] //删除列表
   applyMemberList: GroupChatMember[]
   memberList: Assign<GroupChatMember, { active: boolean }>[]
@@ -48,7 +48,7 @@ export default class Detail extends Component<Props & DefaultProps, State> {
   }) => {
     let title = ""
     if (navigation.state.params) {
-      title = navigation.state.params.groupChatName
+      title = navigation.state.params.groupName
     }
     return {
       title,
@@ -87,16 +87,16 @@ export default class Detail extends Component<Props & DefaultProps, State> {
     this.state = this.getInitState(props)
   }
   getInitState = (props: Props): State => {
-    let groupChatId = 0,
-      groupChatName = ""
+    let groupId = 0,
+      groupName = ""
     if (props.navigation.state.params) {
-      groupChatId = props.navigation.state.params!.groupChatId
-      groupChatName = props.navigation.state.params!.groupChatName
+      groupId = props.navigation.state.params!.groupId
+      groupName = props.navigation.state.params!.groupName
     }
     return {
       isAdmin: false,
-      groupChatId,
-      groupChatName,
+      groupId,
+      groupName,
       isSelectMember: false,
       delMemberIds: [],
       applyMemberList: [],
@@ -121,12 +121,12 @@ export default class Detail extends Component<Props & DefaultProps, State> {
   }
   //删除成员
   delMember = () => {
-    let { delMemberIds, groupChatId } = this.state
+    let { delMemberIds, groupId } = this.state
     delMemberIds = delMemberIds.filter((val, idx, self) => {
       return self.indexOf(val) === idx
     })
     if (delMemberIds.length > 0) {
-      delGroupChatmember({ groupChatId, ids: delMemberIds })
+      delGroupChatmember({ groupId, ids: delMemberIds })
         .then(() => {
           Toast.success("删除成功", 1, this.init)
         })
@@ -138,14 +138,14 @@ export default class Detail extends Component<Props & DefaultProps, State> {
   }
   init = async () => {
     try {
-      let { groupChatId } = this.state
-      let checkAdminMode = checkGroupChatAdministrators({ groupChatId })
+      let { groupId } = this.state
+      let checkAdminMode = checkGroupChatAdministrators({ groupId })
       let memberListMode = listGroupChatMember({
         page: -1,
         limit: -1,
         filter: {
           condition: TYPE.eq,
-          val: groupChatId,
+          val: groupId,
         },
       })
       let applyMemberListMode = listGroupChatApplyMember({
@@ -153,7 +153,7 @@ export default class Detail extends Component<Props & DefaultProps, State> {
         limit: -1,
         filter: {
           condition: TYPE.eq,
-          val: groupChatId,
+          val: groupId,
         },
       })
       let {
@@ -272,7 +272,7 @@ export default class Detail extends Component<Props & DefaultProps, State> {
     )
   }
   applyJoinMember = () => {
-    let { groupChatId, groupChatName } = this.state
-    this.props.navigation.push(pathMap.ApplyList, { id: groupChatId, name: groupChatName })
+    let { groupId, groupName } = this.state
+    this.props.navigation.push(pathMap.ApplyList, { id: groupId, name: groupName })
   }
 }

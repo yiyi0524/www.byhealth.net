@@ -8,6 +8,10 @@ export interface MsgListPreload {
   uid: number
   msgList: Msg[]
 }
+export interface GroupMsgListPreload {
+  groupId: number
+  msgList: Msg[]
+}
 export interface WsFnPreload {
   wsGet: WsState["wsGet"]
   wsPost: WsState["wsPost"]
@@ -24,6 +28,7 @@ export const CHANGE_STATUS = "改变websocket状态"
 export const ADD_MSG = "新增消息"
 export const ADD_GROUP_MSG = "新增群聊消息"
 export const ADD_MSG_LIST = "新增消息列表"
+export const ADD_GROUP_MSG_LIST = "新增群聊消息列表"
 export const SET_WS_FN = "设置ws 函数"
 export const SET_USER_UNREAD_MSG_COUNT = "改变与指定用户的未读消息数量"
 export const CHANGE_SCREEN = "设置当前screen"
@@ -66,6 +71,12 @@ export function addGroupMsg(preload: GroupMsgPreload) {
 export function addList(preload: MsgListPreload) {
   return {
     type: ADD_MSG_LIST,
+    preload,
+  }
+}
+export function addGroupList(preload: GroupMsgListPreload) {
+  return {
+    type: ADD_GROUP_MSG_LIST,
     preload,
   }
 }

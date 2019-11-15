@@ -210,6 +210,9 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
     addMsgList: (preload: wsAction.MsgListPreload) => {
       dispatch(wsAction.addList(preload))
     },
+    addGroupMsgList: (preload: wsAction.GroupMsgListPreload) => {
+      dispatch(wsAction.addGroupList(preload))
+    },
     addMsg: (preload: wsAction.MsgPreload) => {
       dispatch(wsAction.addMsg(preload))
     },
@@ -229,8 +232,11 @@ export default class Chat extends Component<
 > {
   static navigationOptions = ({ navigation }: { navigation: NavigationScreenProp<State> }) => {
     let title = ""
+    let groupId = navigation.getParam("groupId") || 0
+    let groupName = navigation.getParam("groupName")
+
     if (navigation.state.params) {
-      title = navigation.state.params.patientName
+      title = navigation.state.params.patientName || groupName
     }
     return {
       title,
@@ -249,17 +255,28 @@ export default class Chat extends Component<
         fontSize: 14,
         textAlign: "center",
       },
-      headerRight: (
-        <TouchableOpacity
-          onPress={() => {
-            navigation.push(pathMap.AdvisoryMedicalRecord, {
-              patientUid: navigation.getParam("patientUid"),
-              consultationId: navigation.getParam("consultationId"),
-            })
-          }}>
-          <Text style={[style.headerRight, global.fontSize14, global.fontStyle]}>病历</Text>
-        </TouchableOpacity>
-      ),
+      headerRight:
+        groupId > 0 ? (
+          <TouchableOpacity
+            onPress={() => {
+              navigation.push(pathMap.GroupChatDetail, {
+                groupId,
+                groupName,
+              })
+            }}>
+            <Icon style={[style.headerRight, global.fontSize18]} name="menu"></Icon>
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity
+            onPress={() => {
+              navigation.push(pathMap.AdvisoryMedicalRecord, {
+                patientUid: navigation.getParam("patientUid"),
+                consultationId: navigation.getParam("consultationId"),
+              })
+            }}>
+            <Text style={[style.headerRight, global.fontSize14, global.fontStyle]}>病历</Text>
+          </TouchableOpacity>
+        ),
     }
   }
   bottomNavList: bottomNavItem[] = [
@@ -506,7 +523,25 @@ export default class Chat extends Component<
       return this.initChatGroup()
     }
   }
-  initChatGroup = async () => {}
+  initChatGroup = async () => {
+    let { groupId } = this.state
+
+    if (groupId in this.props.ws.groupMsg) {
+      if (this.props.ws.groupMsg[groupId].length === 0) {
+        this.getMoreMsgList()
+        this.setState({
+          shouldScrollToEnd: true,
+        })
+      } else {
+        this.updateMsgList()
+      }
+    } else {
+      this.getMoreMsgList()
+      this.setState({
+        shouldScrollToEnd: true,
+      })
+    }
+  }
   initCommon = async () => {
     this.setState({
       hasLoad: false,
@@ -696,7 +731,6 @@ export default class Chat extends Component<
     } else {
       msgList = this.props.ws.groupMsg[this.state.groupId] || []
     }
-    console.log(msgList)
     return (
       <KeyboardAvoidingView
         enabled={Platform.OS !== "android"}
@@ -1179,22 +1213,37 @@ export default class Chat extends Component<
   getMsgList = async (
     page: number,
     limit: number,
-    filter = { patientUid: this.state.patientUid },
+    filter: any = { patientUid: this.state.patientUid },
   ) => {
     try {
+      let { patientUid, mode, groupId } = this.state
+      if (mode === "chatGroup" && "patientUid" in filter) {
+        delete filter["patientUid"]
+        filter["groupId"] = groupId
+      }
       let {
         data: { list: msgList },
         count,
       } = await wsMsgApi.getMsgList({ page, limit, filter })
-      let { patientUid } = this.state
-      this.props.addMsgList({
-        uid: patientUid,
-        msgList,
-      })
-      this.setState({
-        hasMoreRecord:
-          this.props.ws.chatMsg[patientUid] && count > this.props.ws.chatMsg[patientUid].length,
-      })
+      if (mode === "chatGroup") {
+        this.props.addGroupMsgList({
+          groupId,
+          msgList,
+        })
+        this.setState({
+          hasMoreRecord:
+            this.props.ws.groupMsg[groupId] && count > this.props.ws.groupMsg[groupId].length,
+        })
+      } else {
+        this.props.addMsgList({
+          uid: patientUid,
+          msgList,
+        })
+        this.setState({
+          hasMoreRecord:
+            this.props.ws.chatMsg[patientUid] && count > this.props.ws.chatMsg[patientUid].length,
+        })
+      }
     } catch (err) {
       console.log(err)
     }
@@ -1711,7 +1760,30 @@ export default class Chat extends Component<
       })
     }
   }
-  getMoreGroupMsgList = async () => {}
+  getMoreGroupMsgList = async () => {
+    this.setState({ refreshing: true })
+    const {
+      ws: { groupMsg },
+    } = this.props
+    let { groupId } = this.state
+    let page = 1,
+      limit = 8
+    if (groupId in groupMsg) {
+      let msgCount = groupMsg[groupId].length
+      limit = 8 - (msgCount % 8)
+      page = Math.ceil(msgCount / 8)
+      if (msgCount % 8 === 0) {
+        page++
+      }
+    }
+    try {
+      await this.getMsgList(page, limit)
+      this.setState({ refreshing: false })
+    } catch (err) {
+      this.setState({ refreshing: false })
+      Toast.fail("刷新失败,错误信息: " + err.msg)
+    }
+  }
   getMoreMsgList = async () => {
     const { mode } = this.state
     if (mode === "common") {
@@ -1730,13 +1802,18 @@ export default class Chat extends Component<
       limit = 8
     if (patientUid in chatMsg) {
       let msgCount = chatMsg[patientUid].length
-      for (let i = 10; i > 0; i--) {
-        if (msgCount % i === 0) {
-          limit = i
-          page = msgCount / limit + 1
-          break
-        }
+      limit = 8 - (msgCount % 8)
+      page = Math.ceil(msgCount / 8)
+      if (msgCount % 8 === 0) {
+        page++
       }
+      // for (let i = 10; i > 0; i--) {
+      // if (msgCount % i === 0) {
+      // limit = i
+      // page = msgCount / limit + 1
+      // break
+      // }
+      // }
     }
     try {
       await this.getMsgList(page, limit)
@@ -1746,6 +1823,7 @@ export default class Chat extends Component<
       Toast.fail("刷新失败,错误信息: " + err.msg)
     }
   }
+  // 更新消息 从后台变为前台时要更新所有信息
   updateMsgList = async () => {
     this.setState({ refreshing: true })
     const {

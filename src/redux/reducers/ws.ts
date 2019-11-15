@@ -133,7 +133,25 @@ function addGroupMsg(state = initState, action: Action<wsAction.GroupMsgPreload>
   }
   return state
 }
-
+/**
+ * 前部插入消息列表,此记录插入与同一个用户聊天记录
+ */
+function addGroupMsgList(state = initState, action: Action<wsAction.GroupMsgListPreload>) {
+  if (action.type === wsAction.ADD_GROUP_MSG_LIST) {
+    let newState = Object.assign({}, state, { groupMsg: { ...state.groupMsg } })
+    const { msgList, groupId } = action.preload
+    if (msgList.length === 0) {
+      return state
+    }
+    if (groupId in state.groupMsg) {
+      newState.groupMsg[groupId].unshift(...action.preload.msgList.reverse())
+    } else {
+      newState.groupMsg[groupId] = action.preload.msgList.reverse()
+    }
+    return newState
+  }
+  return state
+}
 /**
  * 设置与某用户的未读消息数量
  */
@@ -180,6 +198,8 @@ export default function reducer(state = initState, action: Action<any>) {
       return addGroupMsg(state, action)
     case wsAction.ADD_MSG_LIST:
       return addMsgList(state, action)
+    case wsAction.ADD_GROUP_MSG_LIST:
+      return addGroupMsgList(state, action)
     case wsAction.SET_WS_FN:
       return setWsFn(state, action)
     case wsAction.SET_USER_UNREAD_MSG_COUNT:

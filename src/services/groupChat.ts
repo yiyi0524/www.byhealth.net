@@ -78,7 +78,7 @@ export function joinGroupChat(data: { id: number }) {
 /**
  * 获取某群聊列表  排序:管理员在前
  *  filter{
- *  groupChatId:{
+ *  groupId:{
  *    condition:eq,
  *    val:id
  *  }
@@ -140,7 +140,7 @@ export function listGroupChatMember(data: GetListParam) {
 /**
  * 获取某群聊申请人列表
  *  filter{
- *  groupChatId:{
+ *  groupId:{
  *    condition:eq,
  *    val:id
  *  }
@@ -202,7 +202,7 @@ export function listGroupChatApplyMember(data: GetListParam) {
 /**
  * 检查自己是否是某群的管理员
  */
-export function checkGroupChatAdministrators(data: { groupChatId: number }) {
+export function checkGroupChatAdministrators(data: { groupId: number }) {
   console.log(data)
   return { data: { isAdmin: true } }
   // return bpost<{data:{isAdmin:boolean}}>({
@@ -213,7 +213,7 @@ export function checkGroupChatAdministrators(data: { groupChatId: number }) {
 /**
  * 删除某群的成员
  */
-export function delGroupChatmember(data: { groupChatId: number; ids: number[] }) {
+export function delGroupChatmember(data: { groupId: number; ids: number[] }) {
   return bpost({
     url: "api/delGroupChatmember",
     data,
