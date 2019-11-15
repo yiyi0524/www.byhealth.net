@@ -1,15 +1,19 @@
-import React, { Component } from "react"
-import { View, StyleSheet, TouchableOpacity, Image, Text, Alert } from "react-native"
-import gImg from "@utils/img"
 import global from "@/assets/styles/global"
+import { getDoctorAvatarUrl, getWxPrescriptionGuideUrl } from "@/services/doctor"
+import { Modal, Toast } from "@ant-design/react-native"
+import gImg from "@utils/img"
+import React, { Component } from "react"
+import { Alert, Image, StyleSheet, Text, TouchableOpacity, View } from "react-native"
+import QRCode from "react-native-qrcode-svg"
 import * as WeChat from "react-native-wechat"
-import { getWxPrescriptionGuideUrl, getDoctorAvatarUrl } from "@/services/doctor"
-import { Toast } from "@ant-design/react-native"
 interface Props {
   doctorName: string
   prescriptionId: number
 }
-interface State {}
+interface State {
+  isShowQr: boolean
+  showQrImg: string
+}
 type DefaultProps = {}
 
 export default class SendPrescribing extends Component<Props & DefaultProps, State> {
@@ -19,7 +23,10 @@ export default class SendPrescribing extends Component<Props & DefaultProps, Sta
     this.state = this.getInitState()
   }
   getInitState = (): State => {
-    return {}
+    return {
+      isShowQr: false,
+      showQrImg: "",
+    }
   }
   render() {
     return (
@@ -65,22 +72,63 @@ export default class SendPrescribing extends Component<Props & DefaultProps, Sta
               <Text style={style.selectTitle}>发送到患者微信</Text>
             </View>
           </TouchableOpacity>
-          {/* <TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              getWxPrescriptionGuideUrl({ id: this.props.prescriptionId })
+                .then(json => {
+                  console.log(json.data.url)
+                  this.setState({
+                    isShowQr: true,
+                    showQrImg: json.data.url,
+                  })
+                })
+                .catch(err => {
+                  console.log(err)
+                  Toast.info("获取二维码失败, 请重试", 3)
+                })
+            }}>
             <View style={style.selectTypeItem}>
               <Image style={style.selectImg} source={gImg.common.qr}></Image>
-              <Text style={style.selectTitle}>患者扫码支付</Text>
+              <Text style={style.selectTitle}>患者微信扫码支付</Text>
             </View>
-          </TouchableOpacity> */}
+          </TouchableOpacity>
         </View>
+        <Modal
+          title=""
+          transparent
+          onClose={() => {
+            this.setState({
+              isShowQr: false,
+            })
+          }}
+          maskClosable
+          visible={this.state.isShowQr}
+          closable>
+          <View style={style.showQr}>
+            <QRCode value={this.state.showQrImg} logoSize={200} logoBackgroundColor="#252525" />
+            <Text style={style.desc}>患者请用微信扫码支付处方</Text>
+          </View>
+        </Modal>
       </View>
     )
   }
 }
 const style = StyleSheet.create({
+  showQr: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    height: 200,
+  },
   selectTypeList: {
     flex: 1,
     position: "relative",
     padding: 20,
+  },
+  desc: {
+    fontSize: 14,
+    color: "#666",
+    marginTop: 16,
   },
   selectTypeTitle: {
     fontSize: 15,
