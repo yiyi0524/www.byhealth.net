@@ -256,6 +256,7 @@ class Ws extends React.Component<
   receiveGroupMsg = (
     frame: ReceiveFrame<Exclude<Overwrite<Msg, MsgOptionalDataToRequired>, "dom">>,
   ) => {
+    console.log(frame)
     let groupId = frame.data.receiveGroup!.id
     console.log("正在添加群聊消息")
     this.props.addGroupMsg({ groupId, msg: frame.data })

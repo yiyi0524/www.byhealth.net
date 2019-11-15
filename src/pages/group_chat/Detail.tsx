@@ -56,7 +56,6 @@ export default class Detail extends Component<Props & DefaultProps, State> {
       title = navigation.state.params.groupName
     }
     const isAdmin = navigation.getParam("isAdmin") || false
-    console.log("isAdmin ", isAdmin)
     return {
       title,
       headerStyle: {
@@ -73,7 +72,7 @@ export default class Detail extends Component<Props & DefaultProps, State> {
         fontSize: 14,
         textAlign: "center",
       },
-      headerRight: !isAdmin ? (
+      headerRight: isAdmin ? (
         <TouchableOpacity
           onPress={() => {
             let oriMode = navigation.getParam("mode")
@@ -86,7 +85,9 @@ export default class Detail extends Component<Props & DefaultProps, State> {
             {navigation.state.params && navigation.state.params!.mode === "done" ? "选择" : "删除"}
           </Text>
         </TouchableOpacity>
-      ) : null,
+      ) : (
+        <Text />
+      ),
     }
   }
   constructor(props: any) {

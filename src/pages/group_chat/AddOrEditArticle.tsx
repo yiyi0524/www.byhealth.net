@@ -18,6 +18,7 @@ import RnImagePicker from "react-native-image-picker"
 import Permissions from "react-native-permissions"
 import { NavigationScreenProp } from "react-navigation"
 import { Picture } from "../advisory/Chat"
+import articleDetail from "@/assets/styles/group_chat/articleDetail"
 const style = gSass.groupChat.addArticle
 interface Props {
   navigation: NavigationScreenProp<State>
@@ -71,8 +72,8 @@ export default class AddArticle extends Component<Props & DefaultProps, State> {
     let id = 0,
       type = "add"
     if (props.navigation.state.params) {
-      id = props.navigation.state.params.id
-      type = props.navigation.state.params.type
+      id = props.navigation.state.params.id || 0
+      type = props.navigation.state.params.type || "add"
     }
     return {
       id,
@@ -274,18 +275,13 @@ export default class AddArticle extends Component<Props & DefaultProps, State> {
       if (type === "add") {
         addArticle(data)
           .then(json => {
-            Toast.success("发布成功", 1, () => {
-              this.setState(
-                {
-                  title: "",
-                  content: "",
-                  picList: [],
-                },
-                () => {
-                  console.log("文章id为:" + json.data.id)
-                  // this.props.navigation.goBack()
-                },
-              )
+            Toast.success("发布成功", 1, async () => {
+              let {
+                data: { detail: article },
+              } = await getArticle({ id: json.data.id })
+              let sendArticle = this.props.navigation.getParam("sendArticle")
+              sendArticle(article)
+              this.props.navigation.goBack()
             })
           })
           .catch(err => {

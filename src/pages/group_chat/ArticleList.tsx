@@ -73,7 +73,10 @@ export default class ArticleList extends Component<Props & DefaultProps, State> 
     }
   }
   sendArticle = (id: number) => {
-    console.log("发送文章id" + id)
+    let article = this.state.list.find(v => v.id === id)
+    let sendArticle = this.props.navigation.getParam("sendArticle")
+    sendArticle(article)
+    this.props.navigation.goBack()
   }
   renderItem = (val: any) => {
     let item = val.item

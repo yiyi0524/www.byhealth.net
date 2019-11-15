@@ -1480,7 +1480,7 @@ export default class Chat extends Component<
               style={style.treatmentPlanHeaderImg}
               source={
                 msg.extraData.picList.length > 0
-                  ? { uri: getPicFullUrl(msg.extraData.picList[0].url) }
+                  ? { uri: getPicCdnUrl(msg.extraData.picList[0].url) }
                   : gImg.common.defaultPic
               }
             />
@@ -1921,6 +1921,12 @@ export default class Chat extends Component<
       case "快捷服务":
         this.quickReply()
         break
+      case "文章":
+      case "发布":
+        this.props.navigation.push(v.link, {
+          sendArticle: this.sendArticle,
+        })
+        break
       case "辨证开方":
         this.props.navigation.push(v.link, {
           patientUid: this.state.patientUid,
@@ -1932,12 +1938,21 @@ export default class Chat extends Component<
         })
         break
       case "表情":
-        // todo 不能写这种东西
+        // todo wait
         // Toast.info("正在努力开发中, 敬请期待...", 2)
         break
       default:
         this.props.navigation.push(v.link)
     }
+  }
+  sendArticle = (article: Article) => {
+    const { groupId } = this.state
+    let postData: any = {
+      article,
+      groupId,
+      type: MsgType.article,
+    }
+    this.props.ws.wsPost({ url: "/ws/sendMsg", data: postData })
   }
   sendMsg = () => {
     this.setState({
@@ -1956,7 +1971,6 @@ export default class Chat extends Component<
     } else {
       postData["groupId"] = groupId
     }
-    console.log("postData", postData)
     this.props.ws.wsPost({ url: "/ws/sendMsg", data: postData })
     this.setState({
       sendMsg: "",

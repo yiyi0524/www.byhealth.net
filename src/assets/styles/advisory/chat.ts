@@ -359,6 +359,7 @@ export default StyleSheet.create({
   },
   treatmentPlanHeaderImg: {
     width: 60,
+    height: 60,
     resizeMode: "contain",
     marginRight: 15,
   },
