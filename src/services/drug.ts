@@ -58,7 +58,6 @@ export async function getDetail(query: { id: number }) {
   })
 }
 /**
- * todo 常用药列表
  *   filter: {
         category: {
           condition: TYPE.eq,
@@ -67,149 +66,10 @@ export async function getDetail(query: { id: number }) {
       },
  */
 export async function listPopularDrug(query: GetListParam) {
-  console.log(query)
-  return {
-    data: {
-      list: [
-        {
-          id: 1,
-          name: "白附子",
-          unit: "g",
-          price: 150,
-          standard: "",
-          manufacturer: "",
-          signature: "",
-          ctime: "",
-          category_id: 2,
-        },
-        {
-          id: 2,
-          name: "香干子",
-          unit: "g",
-          price: 150,
-          standard: "",
-          manufacturer: "",
-          signature: "",
-          ctime: "",
-          category_id: 2,
-        },
-        {
-          id: 3,
-          name: "绿萝",
-          unit: "g",
-          price: 150,
-          standard: "",
-          manufacturer: "",
-          signature: "",
-          ctime: "",
-          category_id: 2,
-        },
-        {
-          id: 4,
-          name: "枸杞",
-          unit: "g",
-          price: 150,
-          standard: "",
-          manufacturer: "",
-          signature: "",
-          ctime: "",
-          category_id: 2,
-        },
-        {
-          id: 5,
-          name: "何首乌",
-          unit: "g",
-          price: 150,
-          standard: "",
-          manufacturer: "",
-          signature: "",
-          ctime: "",
-          category_id: 2,
-        },
-        {
-          id: 6,
-          name: "枸杞",
-          unit: "g",
-          price: 150,
-          standard: "",
-          manufacturer: "",
-          signature: "",
-          ctime: "",
-          category_id: 2,
-        },
-        {
-          id: 7,
-          name: "枸杞",
-          unit: "g",
-          price: 150,
-          standard: "",
-          manufacturer: "",
-          signature: "",
-          ctime: "",
-          category_id: 2,
-        },
-        {
-          id: 8,
-          name: "枸杞",
-          unit: "g",
-          price: 150,
-          standard: "",
-          manufacturer: "",
-          signature: "",
-          ctime: "",
-          category_id: 2,
-        },
-        {
-          id: 9,
-          name: "枸杞",
-          unit: "g",
-          price: 150,
-          standard: "",
-          manufacturer: "",
-          signature: "",
-          ctime: "",
-          category_id: 2,
-        },
-        {
-          id: 10,
-          name: "枸杞",
-          unit: "g",
-          price: 150,
-          standard: "",
-          manufacturer: "",
-          signature: "",
-          ctime: "",
-          category_id: 2,
-        },
-        {
-          id: 11,
-          name: "枸杞",
-          unit: "g",
-          price: 150,
-          standard: "",
-          manufacturer: "",
-          signature: "",
-          ctime: "",
-          category_id: 2,
-        },
-        {
-          id: 12,
-          name: "枸杞",
-          unit: "g",
-          price: 150,
-          standard: "",
-          manufacturer: "",
-          signature: "",
-          ctime: "",
-          category_id: 2,
-        },
-      ] as PopularDrug[],
-    },
-  }
-  // return bget<{ data:{list:PopularDrug[]}  }>({
-  //   url: "/user/drug/listPopularDrug",
-  //   query,
-  // })
+  return bget<{ list: PopularDrug[] }>({
+    url: "hospital/listPopularDrug",
+    query,
+  })
 }
 
 export default {

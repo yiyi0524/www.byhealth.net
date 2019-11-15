@@ -1,6 +1,6 @@
 import { Picture } from "@/pages/advisory/Chat"
 import { Assign } from "utility-types"
-import { bpost, GetListParam } from "./api"
+import { bpost, GetListParam, bget } from "./api"
 
 export const TAB = {
   GROUP_CHAT: 0x0,
@@ -12,8 +12,8 @@ export const TAB_ZH = {
 }
 export const STATUS = {
   //是否加入 0 :未加入 1:加入
-  NOT_JOINED: 0x0,
-  JOINED: 0x1,
+  notJoined: "notJoined",
+  joined: "joined",
 }
 //文章类型
 export const ArticleType = {
@@ -25,11 +25,11 @@ export const ArticleType = {
 export interface GroupChat {
   id: number
   pic: Picture
-  title: string
-  desc: string
-  status: number
-  joinedTime?: string //加入群时间
-  msgCount?: number //消息条数
+  name: string
+  userList: { id: number; uid: number; nick: string; phone: string; isAdmin: boolean }[]
+  applyList: { id: number; uid: number; nick: string; phone: string }[]
+  description: string //群简介
+  ctime: string
 }
 //群聊成员
 export interface GroupChatMember {
@@ -52,7 +52,7 @@ export interface Article {
  *   filter = {
           status: {
             condition: TYPE.eq,
-            val: STATUS.NOT_JOINED, 0 :未加入 1:加入
+            val: STATUS.notJoined, 0 :未加入 1:加入
           },
           search: {
             condition: TYPE.eqString,
@@ -60,116 +60,18 @@ export interface Article {
           },
         }
  */
-export function listGroupChat(data: GetListParam) {
-  console.log(data)
-  return {
-    data: {
-      list: [
-        {
-          id: 1,
-          pic: {
-            id: 1,
-            title: "",
-            url: "/uploads/20190528/14151cac19744c03114114ed6c9b3cea.jpg",
-          },
-          title: "广东省中西医结合学会感染病学术交流群",
-          desc: "本聊天室用于中医学术交流，学术论文查看",
-          status: 0,
-          msgCount: 3,
-          joinedTime: "2019-10-31 17:23:00",
-        },
-        {
-          id: 2,
-          pic: {
-            id: 1,
-            title: "",
-            url: "/uploads/20190528/14151cac19744c03114114ed6c9b3cea.jpg",
-          },
-          title: "广东省中西医结合学会感染病",
-          desc: "本聊天室用于中医学术交流，学术论文查看",
-          status: 0,
-          msgCount: 6,
-          joinedTime: "2019-10-31 17:15:00",
-        },
-        {
-          id: 3,
-          pic: {
-            id: 1,
-            title: "",
-            url: "/uploads/20190528/14151cac19744c03114114ed6c9b3cea.jpg",
-          },
-          title: "广东省中西医结合学会感染病",
-          desc: "本聊天室用于中医学术交流，学术论文查看",
-          status: 0,
-          msgCount: 9,
-          joinedTime: "2019-10-31 14:00:00",
-        },
-        {
-          id: 4,
-          pic: {
-            id: 1,
-            title: "",
-            url: "/uploads/20190528/14151cac19744c03114114ed6c9b3cea.jpg",
-          },
-          title: "广东省中西医结合学会感染病",
-          desc: "本聊天室用于中医学术交流，学术论文查看",
-          status: 0,
-          msgCount: 11,
-          joinedTime: "2019-10-30 10:00:00",
-        },
-        {
-          id: 5,
-          pic: {
-            id: 1,
-            title: "",
-            url: "/uploads/20190528/14151cac19744c03114114ed6c9b3cea.jpg",
-          },
-          title: "广东省中西医结合学会感染病",
-          desc: "本聊天室用于中医学术交流，学术论文查看",
-          status: 0,
-          msgCount: 0,
-          joinedTime: "2019-10-29 10:00:00",
-        },
-        {
-          id: 6,
-          pic: {
-            id: 1,
-            title: "",
-            url: "/uploads/20190528/14151cac19744c03114114ed6c9b3cea.jpg",
-          },
-          title: "广东省中西医结合学会感染病",
-          desc: "本聊天室用于中医学术交流，学术论文查看",
-          status: 0,
-          msgCount: 99,
-          joinedTime: "2019-10-28 10:00:00",
-        },
-        {
-          id: 7,
-          pic: {
-            id: 1,
-            title: "",
-            url: "/uploads/20190528/14151cac19744c03114114ed6c9b3cea.jpg",
-          },
-          title: "广东省中西医结合学会感染病",
-          desc: "本聊天室用于中医学术交流，学术论文查看",
-          status: 0,
-          msgCount: 0,
-          joinedTime: "2019-10-10 10:00:00",
-        },
-      ] as GroupChat[],
-    },
-  }
-  // return bpost<{ list: GroupChat[] }>({
-  //   url: "api/listGroupChat",
-  //   data,
-  // })
+export function listGroupChat(query: GetListParam) {
+  return bget<{ list: GroupChat[] }>({
+    url: "chatGroup/list",
+    query,
+  })
 }
 /**
  * 加入群聊
  */
-export function addGroupChat(data: { id: number }) {
+export function joinGroupChat(data: { id: number }) {
   return bpost({
-    url: "pai/addGroupChat",
+    url: "chatGroup/applyJoin",
     data,
   })
 }
@@ -509,15 +411,6 @@ export function getArticle(data: { id: number }) {
   //   url: "api/getArticle",
   //   data,
   // })
-}
-/**
- * 文章阅读量+1
- */
-export function articleViewCount(data: { id: number }) {
-  return bpost({
-    url: "api/articleViewCount",
-    data,
-  })
 }
 /**
  * 检查是否为自己的文章

@@ -332,11 +332,13 @@ export async function getSquareRoot({ prescriptionId }: { prescriptionId: number
   })
 }
 export interface prescriptionDetail {
+  type: "common" | "phone" | "wx"
   doctor: {
     name: string
   }
   patient: {
     name: string
+    phone: string
     gender: number
     yearAge: number
     monthAge: number
@@ -377,8 +379,10 @@ export async function getPrescriptionDetail({ prescriptionId }: { prescriptionId
 //   drug_list: DbSaveDrugInfo[]
 // }
 export interface AddPrescriptionParam {
+  mode?: "common" | "phone" | "wx"
+  phone?: string
   tplName?: string
-  patientUid: number
+  patientUid?: number
   discrimination: string
   serviceMoney?: number
   drugServiceMoney?: number
@@ -785,6 +789,23 @@ export function uploadPrescriptionDetail(query: { id: number }) {
 export function listScanUser() {
   return bget<{ list: ScanUser[] }>({
     url: "api/listScanUser",
+  })
+}
+/**
+ * 获取微信转发url
+ */
+export function getWxPrescriptionGuideUrl(query: { id: number }) {
+  return bget<{ url: string }>({
+    url: "getWxPrescriptionGuideUrl",
+    query,
+  })
+}
+/**
+ * 获取医师头像
+ */
+export function getDoctorAvatarUrl() {
+  return bget<{ url: string }>({
+    url: "getDoctorAvatarUrl",
   })
 }
 export default {

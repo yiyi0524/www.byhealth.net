@@ -146,6 +146,9 @@ export interface PatientsThemselves {
   }
 }
 interface State {
+  groupId: number
+  groupName: string
+  mode: "chatGroup" | "common"
   isStopRecord: boolean
   // 当前播放的音频的id
   currAudioMsgId: number
@@ -219,10 +222,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
   }
 }
 // @ts-ignore
-@connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)
+@connect(mapStateToProps, mapDispatchToProps)
 export default class Chat extends Component<
   Props & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
   State
@@ -313,8 +313,20 @@ export default class Chat extends Component<
     this.state = this.getInitState()
   }
   getInitState = (): State => {
-    let patientUid = this.props.navigation.getParam("patientUid")
+    let mode = this.props.navigation.getParam("mode") || "common"
+    let patientUid = 0
+    let groupId = 0
+    let groupName = ""
+    if (mode === "common") {
+      patientUid = this.props.navigation.getParam("patientUid")
+    } else {
+      groupId = this.props.navigation.getParam("groupId")
+      groupName = this.props.navigation.getParam("groupName")
+    }
     return {
+      groupId,
+      groupName,
+      mode,
       isStopRecord: false,
       currAudioMsgId: 0,
       imageHeight: 0,

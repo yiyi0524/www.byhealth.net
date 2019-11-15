@@ -14,7 +14,6 @@ public class AliPushMessageReceiver extends MessageReceiver {
 
     @Override
     public void onNotification(Context context, String title, String summary, Map<String, String> extraMap) {
-        // TODO 处理推送通知
         Log.e("MyMessageReceiver",
                 "Receive notification, title: " + title + ", summary: " + summary + ", extraMap: " + extraMap);
     }
@@ -39,7 +38,7 @@ public class AliPushMessageReceiver extends MessageReceiver {
 
     @Override
     protected void onNotificationReceivedInApp(Context context, String title, String summary,
-                                               Map<String, String> extraMap, int openType, String openActivity, String openUrl) {
+            Map<String, String> extraMap, int openType, String openActivity, String openUrl) {
         Log.e("MyMessageReceiver",
                 "onNotificationReceivedInApp, title: " + title + ", summary: " + summary + ", extraMap:" + extraMap
                         + ", openType:" + openType + ", openActivity:" + openActivity + ", openUrl:" + openUrl);

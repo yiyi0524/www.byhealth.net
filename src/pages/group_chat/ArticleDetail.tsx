@@ -95,9 +95,6 @@ export default class ArticleDetail extends Component<Props & DefaultProps, State
       let { id } = this.state
       let detailTask = getArticle({ id })
       let checkIsPersonalArticleTask = checkIsPersonalArticle({ id })
-      //todo 文章阅读+1
-      // let articleViewCountTask = articleViewCount({ id })
-      // await articleViewCountTask
       let {
         data: { detail },
       } = await detailTask

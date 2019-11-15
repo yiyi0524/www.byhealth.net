@@ -237,7 +237,6 @@ export function modifyPwd({ oriPwd, pwd, rePwd }: { oriPwd: string; pwd: string;
   return bpost({ url: "/api/modifyPwd", data: { oriPwd, pwd, rePwd } })
 }
 /**
- * TODO
  * 发送修改密码手机验证码
  */
 export function getmodifyPwdWithPhoneCode({ phone }: { phone: string }) {

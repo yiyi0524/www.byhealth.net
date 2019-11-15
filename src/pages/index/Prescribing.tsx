@@ -7,6 +7,8 @@ import gSass from "@utils/style"
 import React, { Component } from "react"
 import { Image, PixelRatio, ScrollView, Text, TouchableOpacity, View } from "react-native"
 import { NavigationScreenProps } from "react-navigation"
+import { AppState } from "@/redux/stores/store"
+import { connect } from "react-redux"
 const style = gSass.index.prescribing
 
 interface Props {}
@@ -18,8 +20,15 @@ interface State {
   search: string
   patientList: []
 }
-type DefaultProps = {} & NavigationScreenProps
-
+type DefaultProps = {} & NavigationScreenProps & ReturnType<typeof mapStateToProps>
+const mapStateToProps = (state: AppState) => {
+  return {
+    name: state.user.name,
+    uid: state.user.uid,
+  }
+}
+//@ts-ignore
+@connect(mapStateToProps)
 export default class Prescribing extends Component<Props & DefaultProps, State> {
   static defaultProps: DefaultProps
   static navigationOptions = () => ({
@@ -77,7 +86,7 @@ export default class Prescribing extends Component<Props & DefaultProps, State> 
               Modal.prompt(
                 "手机号开方",
                 "",
-                phone => {
+                (phone: string) => {
                   if (!/1\d{10}/.test(phone)) {
                     return Toast.fail("手机号格式不正确")
                   }

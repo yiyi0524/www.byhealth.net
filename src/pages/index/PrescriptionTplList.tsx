@@ -21,7 +21,6 @@ import { ScrollView, TouchableOpacity } from "react-native-gesture-handler"
 import { NavigationScreenProp } from "react-navigation"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
-import { PrescriptionDrugInfo } from "../advisory/SquareRoot"
 import Empty from "@/components/Empty"
 const style = gStyle.index.PrescriptionTplList
 const global = gStyle.global
@@ -49,10 +48,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
     },
   }
 }
-@connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)
+@connect(mapStateToProps, mapDispatchToProps)
 export default class PrescriptionTplList extends Component<
   Props & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
   State
@@ -203,6 +199,16 @@ export default class PrescriptionTplList extends Component<
                   disabled={prescription.isSystemTpl}
                   style={{ backgroundColor: "transparent", marginTop: 8 }}
                   right={[
+                    {
+                      text: "开方",
+                      onPress: () => {
+                        this.props.navigation.push(pathMap.SquareRoot, {
+                          mode: "wx",
+                          prescription: prescription,
+                        })
+                      },
+                      style: { backgroundColor: "blue", color: "white" },
+                    },
                     {
                       text: "编辑",
                       onPress: () => {

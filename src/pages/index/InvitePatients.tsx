@@ -46,10 +46,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
   }
 }
 // @ts-ignore
-@connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)
+@connect(mapStateToProps, mapDispatchToProps)
 export default class InvitePatients extends Component<
   Props & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
   State
@@ -106,7 +103,6 @@ export default class InvitePatients extends Component<
     })
   }
   /**
-   * TODO 保存名片
    * 样式:     姓名
    *          职称
    *         二维码

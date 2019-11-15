@@ -11,8 +11,8 @@ import sColor from "@styles/color"
 import gImg from "@utils/img"
 import gStyle from "@utils/style"
 import React, { Component } from "react"
-import { Image, PixelRatio, RefreshControl, Text, View } from "react-native"
-import { NavigationScreenProp, ScrollView } from "react-navigation"
+import { Image, PixelRatio, RefreshControl, Text, View, ScrollView } from "react-native"
+import { NavigationScreenProp } from "react-navigation"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
 import {
@@ -20,6 +20,8 @@ import {
   TOPICAL_CHINESE_DRUG_ID,
   EXTERN_CHINESE_DRUG_ID,
 } from "@/services/drug"
+import SendPrescribingSuccessTips from "@/components/SendPrescribingSuccessTips"
+import SendPrescribing from "@/components/SendPrescribing"
 const style = gStyle.index.PrescriptionDetail
 const mapStateToProps = (state: AppState) => {
   return {
@@ -46,6 +48,7 @@ interface prescriptionDetail {
   }
   patient: {
     name: string
+    phone: string
     gender: number
     yearAge: number
     monthAge: number
@@ -67,6 +70,7 @@ interface Props {
 }
 
 interface State {
+  mode: "wx" | "phone" | "common"
   hasLoad: boolean
   refreshing: boolean
   prescriptionId: number
@@ -74,10 +78,7 @@ interface State {
   drugCategoryList: drugCategory[]
   drugList: DrugInfo[]
 }
-@connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)
+@connect(mapStateToProps, mapDispatchToProps)
 export default class SquareRoot extends Component<
   Props & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
   State
@@ -109,7 +110,8 @@ export default class SquareRoot extends Component<
   }
   getInitState = (): State => {
     return {
-      hasLoad: false,
+      mode: this.props.navigation.getParam("mode") || "common",
+      hasLoad: true,
       refreshing: false,
       prescriptionId: this.props.navigation.getParam("prescriptionId"),
       detail: {
@@ -118,6 +120,7 @@ export default class SquareRoot extends Component<
         },
         patient: {
           name: "",
+          phone: "",
           gender: 0,
           yearAge: 0,
           monthAge: 0,
@@ -144,24 +147,31 @@ export default class SquareRoot extends Component<
 
   getDrugList = () => {}
   init = async () => {
-    let {
-      data: { detail },
-    } = await doctor.getPrescriptionDetail({ prescriptionId: this.state.prescriptionId })
-    console.log(detail)
-    let {
-      data: { list: drugCategoryList },
-    } = await hospital.getDrugCategoryList({ page: -1, limit: -1 })
-    let {
-      data: { list: drugList },
-    } = await hospital.getDrugList({ page: -1, limit: -1 })
+    this.setState({
+      hasLoad: false,
+    })
     try {
+      let {
+        data: { detail },
+      } = await doctor.getPrescriptionDetail({ prescriptionId: this.state.prescriptionId })
+      console.log(detail)
+      let {
+        data: { list: drugCategoryList },
+      } = await hospital.getDrugCategoryList({ page: -1, limit: -1 })
+      let {
+        data: { list: drugList },
+      } = await hospital.getDrugList({ page: -1, limit: -1 })
       this.setState({
         hasLoad: true,
         detail,
+        mode: detail.type,
         drugCategoryList,
         drugList,
       })
     } catch (err) {
+      this.setState({
+        hasLoad: true,
+      })
       console.log(err)
     }
   }
@@ -185,7 +195,7 @@ export default class SquareRoot extends Component<
         </View>
       )
     }
-    let { detail } = this.state,
+    let { detail, mode } = this.state,
       status = detail.status
     return (
       <>
@@ -256,6 +266,11 @@ export default class SquareRoot extends Component<
             </View>
             <View style={[style.diagnosisItem, global.flex, global.alignItemsCenter]}>
               <Text style={[style.diagnosisItemTitle, global.fontSize14]}>[ 患者信息 ]</Text>
+              {detail.patient.phone !== "" && (
+                <Text style={[style.diagnosisItemLineTitle, global.fontSize14]}>
+                  手机号: {detail.patient.phone}
+                </Text>
+              )}
               <Text style={[style.diagnosisItemLineTitle, global.fontSize14]}>
                 {detail.patient.name}
               </Text>
@@ -275,6 +290,13 @@ export default class SquareRoot extends Component<
               </Text>
             </View>
           </View>
+          {mode === "phone" && <SendPrescribingSuccessTips />}
+          {mode === "wx" && (
+            <SendPrescribing
+              doctorName={this.state.detail.doctor.name || ""}
+              prescriptionId={this.state.prescriptionId}
+            />
+          )}
           {/* 开方 */}
           <View style={style.diagnosis}>
             <View

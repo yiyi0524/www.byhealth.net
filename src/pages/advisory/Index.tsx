@@ -71,10 +71,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
   }
 }
 // @ts-ignore
-@connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)
+@connect(mapStateToProps, mapDispatchToProps)
 export default class Index extends Component<
   Props & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
   State
@@ -149,7 +146,6 @@ export default class Index extends Component<
     }
   }
   bgUpdate = async () => {
-    console.log("正在更新")
     try {
       let isLogin = await api.isLogin()
       if (!isLogin) {

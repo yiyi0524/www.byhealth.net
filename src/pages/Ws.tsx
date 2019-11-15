@@ -26,6 +26,11 @@ export interface Msg<T = any> {
     avatar: Picture
     name: string
   }
+  receiveGroup?: {
+    id: number
+    avatar: Picture
+    name: string
+  }
   type: MsgType
   msg?: string
   extraData?: T
@@ -62,6 +67,8 @@ export interface ReceiveFrame<T> {
 export enum EVT {
   pong,
   receiveMsg,
+  closeInquiry,
+  receiveGroupMsg,
 }
 /**
  * 当消息为问诊单时 附加信息类型
@@ -369,7 +376,4 @@ class Ws extends React.Component<
     return this.props.children
   }
 }
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(Ws)
+export default connect(mapStateToProps, mapDispatchToProps)(Ws)

@@ -21,6 +21,8 @@ import sColor from "@styles/color"
 import gImg from "@utils/img"
 import gStyle from "@utils/style"
 import React, { Component } from "react"
+import { PrescriptionTpl } from "@/services/doctor"
+
 import {
   Alert,
   DeviceEventEmitter,
@@ -156,10 +158,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
   }
 }
 // @ts-ignore
-@connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)
+@connect(mapStateToProps, mapDispatchToProps)
 export default class SquareRoot extends Component<
   Props & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
   State
@@ -187,6 +186,11 @@ export default class SquareRoot extends Component<
         <View>
           <TouchableOpacity
             onPress={() => {
+              let getState: () => State = navigation.getParam("getState")
+              let state = getState()
+              if (state.mode !== "common") {
+                return navigation.goBack()
+              }
               Alert.alert("", "是否保存开方内容", [
                 {
                   text: "否",
@@ -199,11 +203,9 @@ export default class SquareRoot extends Component<
                 {
                   text: "保存并返回",
                   onPress: () => {
-                    let getState: () => State = navigation.getParam("getState")
                     let saveCurrSetPrescription: (
                       preload: [number, CurrSetPrescription],
                     ) => void = navigation.getParam("saveCurrSetPrescription")
-                    let state = getState()
                     const {
                       advice,
                       discrimination,
@@ -242,9 +244,29 @@ export default class SquareRoot extends Component<
   }
   getInitState = (): State => {
     let mode = this.props.navigation.getParam("mode") || "common"
+    let prescription: PrescriptionTpl | null =
+      this.props.navigation.getParam("prescription") || null
+    let prescriptionDrugCategoryList: PrescriptionDrugCategory[] = []
+    if (mode === "wx" && prescription) {
+      let prescriptionCategory: PrescriptionDrugCategory = {
+        id: prescription.categoryId,
+        drugList: prescription.drugList,
+        name: prescription.name,
+      }
+      if (
+        prescription.categoryId === ORAL_CHINESE_DRUG_ID ||
+        prescription.categoryId === EXTERN_CHINESE_DRUG_ID ||
+        prescription.categoryId === TOPICAL_CHINESE_DRUG_ID
+      ) {
+        prescriptionCategory.doseCount = prescription.doseCount
+        prescriptionCategory.dailyDose = prescription.dailyDose
+        prescriptionCategory.everyDoseUseCount = prescription.everyDoseUseCount
+      }
+      prescriptionDrugCategoryList.push(prescriptionCategory)
+    }
     return {
       mode,
-      hasLoad: false,
+      hasLoad: true,
       refreshing: false,
       isSelectPharmacy: false,
       isSelectDrug: false,
@@ -261,7 +283,7 @@ export default class SquareRoot extends Component<
       oneDoseUseCount: "",
       drugMoney: 0,
       serviceMoney: "",
-      percentageOfCommission: 0,
+      percentageOfCommission: 30,
       pharmacy: {
         activeId: 0,
         categoryList: [],
@@ -277,7 +299,7 @@ export default class SquareRoot extends Component<
       syndromeDifferentiation: "",
       medicalRecordPicList: [],
       advice: "",
-      prescriptionDrugCategoryList: [],
+      prescriptionDrugCategoryList,
     }
   }
   async componentDidMount() {
@@ -320,7 +342,11 @@ export default class SquareRoot extends Component<
       prescriptionDrugCategoryList,
       serviceMoney,
       syndromeDifferentiation,
+      mode,
     } = this.state
+    if (mode !== "common") {
+      return
+    }
     let {
       patientInfo: { uid },
     } = this.state
@@ -399,6 +425,9 @@ export default class SquareRoot extends Component<
 
     let patientUid = this.props.navigation.getParam("patientUid")
     try {
+      this.setState({
+        hasLoad: false,
+      })
       let {
         data: { yearAge, monthAge, name, gender, hospitalMedicalRecordPicList },
       } = await getPatientInfo({ uid: patientUid })
@@ -496,6 +525,8 @@ export default class SquareRoot extends Component<
       isSaveToTpl,
       tplName,
       drugServiceMoney,
+      mode,
+      phone,
     } = this.state
     let drugMoney = 0
     for (let prescriptionDrugCategory of prescriptionDrugCategoryList) {
@@ -525,6 +556,14 @@ export default class SquareRoot extends Component<
           ? parseFloat(calcServiceMoney)
           : parseFloat(this.state.serviceMoney),
       totalMoney = (drugMoney + actuallyServiceMoney).toFixed(2)
+    let patientName: string = ""
+    if (mode === "common") {
+      patientName = patientInfo.name
+    } else if (mode === "wx") {
+      patientName = "微信用户"
+    } else if (mode === "phone") {
+      patientName = "手机用户"
+    }
     return (
       <>
         <KeyboardAvoidingView
@@ -559,15 +598,18 @@ export default class SquareRoot extends Component<
               </View>
               <View style={[style.diagnosisItem, global.flex, global.alignItemsCenter]}>
                 <Text style={[style.diagnosisItemTitle, global.fontSize14]}>患者信息</Text>
-                <Text style={[style.diagnosisItemLineTitle, global.fontSize14]}>
-                  {patientInfo.name}
-                </Text>
+                <Text style={[style.diagnosisItemLineTitle, global.fontSize14]}>{patientName}</Text>
                 <Text style={[style.diagnosisItemLineTitle, global.fontSize14]}>
                   {GENDER_ZH[patientInfo.gender]}
                 </Text>
                 <Text style={[style.diagnosisItemLineTitle, global.fontSize14]}>
                   {patientInfo.yearAge} 岁
                 </Text>
+                {mode === "phone" && (
+                  <Text style={[style.diagnosisItemLineTitle, global.fontSize14]}>
+                    手机: {phone}
+                  </Text>
+                )}
               </View>
               <View style={[style.diagnosisItem, global.flex, global.alignItemsCenter]}>
                 <Text style={[style.diagnosisItemTitle, global.fontSize14]}>辨病</Text>
@@ -1105,6 +1147,8 @@ export default class SquareRoot extends Component<
    */
   sendPrescriptionToUser = () => {
     const {
+      mode,
+      phone,
       advice,
       discrimination,
       syndromeDifferentiation,
@@ -1152,11 +1196,15 @@ export default class SquareRoot extends Component<
       }
     }
     let args: AddPrescriptionParam = {
+      mode,
       advice,
       discrimination,
       patientUid,
       syndromeDifferentiation,
       drugCategoryList: prescriptionDrugCategoryList,
+    }
+    if (mode === "phone") {
+      args.phone = phone
     }
     if (serviceMoney !== "") {
       args.serviceMoney = parseFloat(serviceMoney) * 100
@@ -1169,6 +1217,13 @@ export default class SquareRoot extends Component<
     }
     addPrescription(args)
       .then(json => {
+        if (mode === "phone" || mode === "wx") {
+          this.props.navigation.navigate(pathMap.PrescriptionDetail, {
+            prescriptionId: json.data.id,
+            mode,
+          })
+          return
+        }
         let prescriptionId = json.data.id
         this.props.ws.wsPost({
           url: "ws/sendPrescription",

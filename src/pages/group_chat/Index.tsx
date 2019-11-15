@@ -5,13 +5,16 @@ import React, { Component } from "react"
 import { Image, ScrollView, Text, View, RefreshControl } from "react-native"
 import { Toast, InputItem, Icon, Modal } from "@ant-design/react-native"
 import { TouchableOpacity } from "react-native-gesture-handler"
-import { TAB, TAB_ZH, listGroupChat, STATUS, GroupChat, addGroupChat } from "@/services/groupChat"
+import { TAB, TAB_ZH, listGroupChat, STATUS, GroupChat, joinGroupChat } from "@/services/groupChat"
 import { TYPE } from "@/utils/constant"
 import Empty from "@/components/Empty"
 import moment from "moment"
 import { NavigationScreenProp } from "react-navigation"
 import pathMap from "@/routes/pathMap"
 import { getPicFullUrl } from "@/utils/utils"
+import { connect } from "react-redux"
+import { AppState } from "@/redux/stores/store"
+import { Picture } from "../advisory/Chat"
 const style = gSass.groupChat.index
 
 interface Props {
@@ -20,18 +23,28 @@ interface Props {
 interface State {
   hasLoad: boolean
   refreshing: boolean
-  isAddGroupChat: boolean
+  isJoinGroupChat: boolean
   groupChatId: number
   page: number
   limit: number
   groupChatName: string
+  groupChatDesc: string
+  groupChatPic: Picture
   filter: Record<string, any>
   currentPage: number
   search: string
   list: GroupChat[]
 }
-type DefaultProps = {}
-
+type DefaultProps = {} & ReturnType<typeof mapStateToProps>
+const mapStateToProps = (state: AppState) => {
+  return {
+    isLogin: state.user.isLogin,
+    name: state.user.name,
+    uid: state.user.uid,
+  }
+}
+//@ts-ignore
+@connect(mapStateToProps)
 export default class Index extends Component<Props & DefaultProps, State> {
   static defaultProps: DefaultProps
   constructor(props: any) {
@@ -42,10 +55,16 @@ export default class Index extends Component<Props & DefaultProps, State> {
     return {
       hasLoad: false,
       refreshing: false,
-      isAddGroupChat: false,
+      isJoinGroupChat: false,
       currentPage: TAB.MY_GROUP_CHAT,
       groupChatId: 0,
       groupChatName: "",
+      groupChatDesc: "",
+      groupChatPic: {
+        id: 0,
+        url: "",
+        title: "",
+      },
       page: -1,
       limit: -1,
       filter: {},
@@ -73,10 +92,10 @@ export default class Index extends Component<Props & DefaultProps, State> {
         filter = {
           status: {
             condition: TYPE.eq,
-            val: STATUS.NOT_JOINED,
+            val: STATUS.notJoined,
           },
           search: {
-            condition: TYPE.eqString,
+            condition: TYPE.like,
             val: search,
           },
         }
@@ -84,7 +103,7 @@ export default class Index extends Component<Props & DefaultProps, State> {
         filter = {
           status: {
             condition: TYPE.eq,
-            val: STATUS.JOINED,
+            val: STATUS.joined,
           },
           search: {
             condition: TYPE.eqString,
@@ -92,10 +111,11 @@ export default class Index extends Component<Props & DefaultProps, State> {
           },
         }
       }
-      let listGroupChatMode = listGroupChat({ page, limit, filter })
+      let listGroupChatTask = listGroupChat({ page, limit, filter })
       let {
         data: { list },
-      } = await listGroupChatMode
+      } = await listGroupChatTask
+      console.log("群聊列表", list)
       this.setState({
         list,
       })
@@ -164,7 +184,7 @@ export default class Index extends Component<Props & DefaultProps, State> {
     )
   }
   groupChat = () => {
-    let { search, list, currentPage, isAddGroupChat } = this.state
+    let { search, list, currentPage, isJoinGroupChat } = this.state
     return (
       <View style={style.group}>
         <View
@@ -195,39 +215,53 @@ export default class Index extends Component<Props & DefaultProps, State> {
         </View>
         <View style={style.list}>
           {list.length > 0 ? (
-            list.map((v, k) => {
-              let joinedTime = v.joinedTime ? this.getTime(v.joinedTime) : ""
+            list.map((group, k) => {
+              let ctime = group.ctime ? this.getTime(group.ctime) : ""
+              let isJoined = group.userList.filter(user => user.uid === this.props.uid).length > 0
+              let isApplyJoined =
+                !isJoined && group.applyList.filter(user => user.uid === this.props.uid).length > 0
               return (
                 <TouchableOpacity
                   style={[style.item, global.flex, global.aCenter]}
                   key={k}
-                  onPress={() => this.addOrDetail(v.id, v.title)}>
+                  onPress={() => {
+                    if (isApplyJoined) {
+                      return
+                    }
+                    this.joinOrDetail(group.id, group.name, group.description, group.pic, isJoined)
+                  }}>
                   <View style={style.avatarPar}>
                     <Image
                       style={style.avatar}
                       source={
-                        v.pic.url ? { uri: getPicFullUrl(v.pic.url) } : gImg.common.defaultAvatar
+                        group.pic.url
+                          ? { uri: getPicFullUrl(group.pic.url) }
+                          : gImg.common.defaultAvatar
                       }></Image>
                     {/* <Image style={style.avatar} source={gImg.common.defaultAvatar}></Image> */}
                   </View>
                   <View style={style.info}>
                     <View style={[style.title, global.flex, global.jBetween]}>
                       <Text style={style.name} numberOfLines={1}>
-                        {v.title}
+                        {group.name}
                       </Text>
                       {currentPage === TAB.GROUP_CHAT ? (
-                        <Text style={style.add}>立即加入</Text>
+                        <View>
+                          {!isJoined && !isApplyJoined && <Text style={style.add}>立即加入</Text>}
+                          {isApplyJoined && <Text style={style.add}>申请中</Text>}
+                          {isJoined && <Text style={style.add}>已加入</Text>}
+                        </View>
                       ) : (
-                        <Text style={style.addTime}>{joinedTime}</Text>
+                        <Text style={style.addTime}>{ctime}</Text>
                       )}
                     </View>
                     <View style={[style.descPar, global.flex, global.aCenter]}>
                       <Text style={style.desc} numberOfLines={1}>
-                        {v.desc}
+                        {group.description}
                       </Text>
-                      {currentPage === TAB.MY_GROUP_CHAT && v.msgCount && v.msgCount !== 0 ? (
+                      {/* {currentPage === TAB.MY_GROUP_CHAT && v.msgCount && v.msgCount !== 0 ? (
                         <Text style={[style.tags]}>{v.msgCount > 10 ? "..." : v.msgCount}</Text>
-                      ) : null}
+                      ) : null} */}
                     </View>
                   </View>
                 </TouchableOpacity>
@@ -237,27 +271,35 @@ export default class Index extends Component<Props & DefaultProps, State> {
             <Empty />
           )}
         </View>
-        <Modal style={style.modal} visible={isAddGroupChat} footer={[]} maskClosable>
+        <Modal
+          style={style.modal}
+          visible={isJoinGroupChat}
+          footer={[]}
+          maskClosable
+          onClose={() => {
+            this.setState({ isJoinGroupChat: false })
+          }}>
           <View style={style.picPar}>
-            <Image style={style.pic} source={gImg.common.defaultAvatar}></Image>
+            <Image
+              style={style.pic}
+              source={{ uri: getPicFullUrl(this.state.groupChatPic.url) }}></Image>
           </View>
           <View style={style.groupTitlePar}>
             <Text style={style.groupTitle} numberOfLines={1}>
-              广东省中西医结合学会肾病委员会
+              {this.state.groupChatName}
             </Text>
           </View>
           <View style={style.groupDescPar}>
             <Text style={style.groupDesc} numberOfLines={3}>
-              本聊天室用于中医学术交流，学术论文查看于 中医学术交流，学术论文查看于中医学术交流
-              学术论文查看
+              {this.state.groupChatDesc}
             </Text>
           </View>
-          <TouchableOpacity onPress={this.addGroup}>
+          <TouchableOpacity onPress={this.joinGroup}>
             <Text style={style.btn}>立即加入</Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={this.leave}>
+          {/* <TouchableOpacity onPress={this.leave}>
             <Text style={[style.btn, style.leave]}>马上离开</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </Modal>
       </View>
     )
@@ -265,60 +307,67 @@ export default class Index extends Component<Props & DefaultProps, State> {
   //获取时间
   getTime = (time: string) => {
     let { currentPage } = this.state
-    let joinedTime = "",
+    let ctime = "",
       currentTime = moment().dayOfYear()
     if (currentPage === TAB.MY_GROUP_CHAT && time) {
       let day: number = currentTime - moment(time).dayOfYear()
       if (day > 2) {
-        joinedTime = time.substr(0, 10)
+        ctime = time.substr(0, 10)
       } else if (day === 2) {
-        joinedTime = "前天"
+        ctime = "前天"
       } else if (day === 1) {
-        joinedTime = "昨天"
+        ctime = "昨天"
       } else if (day < 1) {
         let minute: number = moment().minute() - moment(time).minute()
         if (minute > 10) {
           let hour: number = parseInt(time.substr(11, 2))
           if (hour <= 12) {
-            joinedTime = "上午" + time.substr(11, 5)
+            ctime = "上午" + time.substr(11, 5)
           } else {
             let amHour = hour - 12
-            joinedTime = "下午" + amHour + time.substr(13, 3)
+            ctime = "下午" + amHour + time.substr(13, 3)
           }
         } else {
           if (minute <= 10 && minute > 5) {
-            joinedTime = minute + "分钟前"
+            ctime = minute + "分钟前"
           } else {
-            joinedTime = "刚刚"
+            ctime = "刚刚"
           }
         }
       }
     }
-    return joinedTime
+    return ctime
   }
-  addOrDetail = (groupChatId: number, groupChatName: string) => {
+  joinOrDetail = (
+    groupChatId: number,
+    groupChatName: string,
+    groupChatDesc: string,
+    groupChatPic: Picture,
+    isJoined: boolean,
+  ) => {
     let { currentPage } = this.state
-    if (currentPage === TAB.GROUP_CHAT) {
+    if (currentPage === TAB.GROUP_CHAT && !isJoined) {
       this.setState({
-        isAddGroupChat: true,
+        isJoinGroupChat: true,
         groupChatId,
         groupChatName,
+        groupChatDesc,
+        groupChatPic,
       })
     } else {
-      this.props.navigation.push(pathMap.EnteringGroupChat, {
+      this.props.navigation.push(pathMap.AdvisoryChat, {
+        mode: "chatGroup",
         groupChatId: groupChatId,
         groupChatName: groupChatName,
       })
     }
   }
   //加入群聊
-  addGroup = () => {
-    let { groupChatId: id, groupChatName: name } = this.state
-    addGroupChat({ id })
+  joinGroup = () => {
+    let { groupChatId: id } = this.state
+    joinGroupChat({ id })
       .then(() => {
-        Toast.success("加入成功", 1, () => {
-          this.props.navigation.push(pathMap.EnteringGroupChat, { id, name })
-        })
+        Toast.success("加入成功", 1, this.onRefresh)
       })
       .catch((err: any) => {
         Toast.fail("加入失败, 错误信息: " + err.msg, 3)
@@ -327,7 +376,7 @@ export default class Index extends Component<Props & DefaultProps, State> {
   }
   leave = () => {
     this.setState({
-      isAddGroupChat: false,
+      isJoinGroupChat: false,
     })
   }
 }

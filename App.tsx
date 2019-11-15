@@ -10,6 +10,10 @@ import { AppState as RnAppState, AppStateStatus } from "react-native"
 import { isLogin, updateAppStateStatus } from "@/services/api"
 import CodePush from "react-native-code-push"
 import SplashScreen from "react-native-splash-screen"
+import { wxAppId } from "@/config/api"
+import * as WeChat from "react-native-wechat"
+
+WeChat.registerApp(wxAppId)
 const mapStateToProps = (state: AppState) => {
   return {
     isLogin: state.user.isLogin,
@@ -36,10 +40,7 @@ const codePushOptions = {
 // 在组件根节点的地方设置热更新。
 @CodePush(codePushOptions)
 // @ts-ignore
-@connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)
+@connect(mapStateToProps, mapDispatchToProps)
 export default class App extends Component<any> {
   getActiveRouteName = (navigationState: any): any => {
     if (!navigationState) {
