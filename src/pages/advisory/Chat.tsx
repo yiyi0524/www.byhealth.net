@@ -441,11 +441,11 @@ export default class Chat extends Component<
         //   title: "更多功能",
         //   link: "",
         // },
-        // {
-        //   icon: gImg.groupChat.release,
-        //   title: "发布",
-        //   link: pathMap.AddOrEditArticle,
-        // },
+        {
+          icon: gImg.groupChat.release,
+          title: "发布",
+          link: pathMap.AddOrEditArticle,
+        },
         // {
         //   icon: gImg.groupChat.smile,
         //   title: "表情",

@@ -41,6 +41,11 @@ export interface GroupChatMember {
 //文章
 export interface Article {
   id: number
+  author: {
+    uid: number
+    name: string
+    phone: string
+  }
   title: string
   content: string
   picList: Picture[]
@@ -139,6 +144,7 @@ export function listGroupChatMember(data: GetListParam) {
 }
 /**
  * 获取某群聊申请人列表
+ * todo 删除
  *  filter{
  *  groupId:{
  *    condition:eq,
@@ -201,6 +207,7 @@ export function listGroupChatApplyMember(data: GetListParam) {
 }
 /**
  * 检查自己是否是某群的管理员
+ * todo 删除
  */
 export function checkGroupChatAdministrators(data: { groupId: number }) {
   console.log(data)
@@ -414,6 +421,7 @@ export function getArticle(data: { id: number }) {
 }
 /**
  * 检查是否为自己的文章
+ * todo 删除
  */
 export function checkIsPersonalArticle(data: { id: number }) {
   console.log(data)
