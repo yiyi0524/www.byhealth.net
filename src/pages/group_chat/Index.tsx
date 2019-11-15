@@ -357,8 +357,8 @@ export default class Index extends Component<Props & DefaultProps, State> {
     } else {
       this.props.navigation.push(pathMap.AdvisoryChat, {
         mode: "chatGroup",
-        groupChatId: groupChatId,
-        groupChatName: groupChatName,
+        groupId: groupChatId,
+        groupName: groupChatName,
       })
     }
   }

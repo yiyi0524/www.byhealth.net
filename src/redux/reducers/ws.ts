@@ -10,6 +10,7 @@ export interface WsState {
   // 未读消息数量统计
   unReadMsgCountRecord: Record<Uid, UnReadMsgCount>
   chatMsg: Record<number, Msg[]>
+  groupMsg: Record<number, Msg[]>
   wsGet: (data: { url: string; query?: Object }) => boolean
   wsPost: (data: { url: string; data?: Object }) => boolean
 }
@@ -20,6 +21,7 @@ export const initState: WsState = {
   status: WebSocket.CLOSED,
   unReadMsgCountRecord: {},
   chatMsg: {},
+  groupMsg: {},
   wsGet: ({ url, query = {} }) => {
     console.log(query)
     if (url !== "/ws/ping") {
@@ -108,6 +110,30 @@ function addMsgList(state = initState, action: Action<{ uid: number; msgList: Ms
   }
   return state
 }
+
+/**
+ * 添加一条群组消息
+ */
+function addGroupMsg(state = initState, action: Action<wsAction.GroupMsgPreload>) {
+  if (action.type === wsAction.ADD_GROUP_MSG) {
+    let { groupId } = action.preload
+    let groupMsg: Record<number, Msg[]> = Object.assign({}, state.groupMsg)
+    if (groupId in state.groupMsg) {
+      groupMsg[groupId] = [...state.groupMsg[groupId]]
+    }
+    let newState = Object.assign({}, state, {
+      groupMsg,
+    })
+    if (groupId in state.groupMsg) {
+      newState.groupMsg[groupId].push(action.preload.msg)
+    } else {
+      newState.groupMsg[groupId] = [action.preload.msg]
+    }
+    return newState
+  }
+  return state
+}
+
 /**
  * 设置与某用户的未读消息数量
  */
@@ -150,6 +176,8 @@ export default function reducer(state = initState, action: Action<any>) {
       return changeStatus(state, action)
     case wsAction.ADD_MSG:
       return addMsg(state, action)
+    case wsAction.ADD_GROUP_MSG:
+      return addGroupMsg(state, action)
     case wsAction.ADD_MSG_LIST:
       return addMsgList(state, action)
     case wsAction.SET_WS_FN:

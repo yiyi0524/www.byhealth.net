@@ -16,8 +16,13 @@ export interface MsgPreload {
   uid: number
   msg: Msg
 }
+export interface GroupMsgPreload {
+  groupId: number
+  msg: Msg
+}
 export const CHANGE_STATUS = "改变websocket状态"
 export const ADD_MSG = "新增消息"
+export const ADD_GROUP_MSG = "新增群聊消息"
 export const ADD_MSG_LIST = "新增消息列表"
 export const SET_WS_FN = "设置ws 函数"
 export const SET_USER_UNREAD_MSG_COUNT = "改变与指定用户的未读消息数量"
@@ -49,6 +54,12 @@ export function changeStatus({ status }: { status: number }) {
 export function addMsg(preload: MsgPreload) {
   return {
     type: ADD_MSG,
+    preload,
+  }
+}
+export function addGroupMsg(preload: GroupMsgPreload) {
+  return {
+    type: ADD_GROUP_MSG,
     preload,
   }
 }

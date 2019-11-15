@@ -68,7 +68,6 @@ export enum EVT {
   pong,
   receiveMsg,
   closeInquiry,
-  receiveGroupMsg,
 }
 /**
  * 当消息为问诊单时 附加信息类型
@@ -132,6 +131,9 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
     },
     addMsg: (preload: wsAction.MsgPreload) => {
       dispatch(wsAction.addMsg(preload))
+    },
+    addGroupMsg: (preload: wsAction.GroupMsgPreload) => {
+      dispatch(wsAction.addGroupMsg(preload))
     },
     setWsFn: (preload: wsAction.WsFnPreload) => {
       dispatch(wsAction.setWsFn(preload))
@@ -236,6 +238,9 @@ class Ws extends React.Component<
   }
   receiveMsg = (frame: ReceiveFrame<Exclude<Overwrite<Msg, MsgOptionalDataToRequired>, "dom">>) => {
     let { currChatUid, currScreen, unReadMsgCountRecord } = this.props.ws
+    if (frame.data.receiveGroup) {
+      return this.receiveGroupMsg(frame)
+    }
     let patientUid =
       this.props.uid === frame.data.sendUser.uid
         ? frame.data.receiveUser.uid
@@ -247,6 +252,13 @@ class Ws extends React.Component<
       let patientUnreadMsgCount = unReadMsgCountRecord[patientUid] || 0
       this.props.setUserUnReadMsgCount({ uid: patientUid, count: patientUnreadMsgCount + 1 })
     }
+  }
+  receiveGroupMsg = (
+    frame: ReceiveFrame<Exclude<Overwrite<Msg, MsgOptionalDataToRequired>, "dom">>,
+  ) => {
+    let groupId = frame.data.receiveGroup!.id
+    console.log("正在添加群聊消息")
+    this.props.addGroupMsg({ groupId, msg: frame.data })
   }
   initClient = async () => {
     console.log("正在初始化ws客户端")

@@ -264,43 +264,13 @@ export default class Chat extends Component<
   }
   bottomNavList: bottomNavItem[] = [
     {
-      icon: gImg.advisory.dialecticalPrescriptions,
-      title: "辨证开方",
-      link: pathMap.SquareRoot,
-    },
-    {
-      icon: gImg.advisory.quickReply,
-      title: "快捷回复",
-      link: "",
-    },
-    {
-      icon: gImg.advisory.closingConversation,
-      title: "结束对话",
-      link: "",
-    },
-    {
-      icon: gImg.advisory.show,
-      title: "更多功能",
-      link: "",
-    },
-    {
       icon: gImg.advisory.picture,
       title: "图片",
       link: "",
     },
     {
-      icon: gImg.groupChat.release,
-      title: "发布",
-      link: pathMap.AddOrEditArticle,
-    },
-    {
-      icon: gImg.groupChat.article,
-      title: "文章",
-      link: pathMap.ArticleList,
-    },
-    {
-      icon: gImg.groupChat.smile,
-      title: "表情",
+      icon: gImg.advisory.show,
+      title: "更多功能",
       link: "",
     },
   ]
@@ -337,7 +307,7 @@ export default class Chat extends Component<
       chatMode: "text",
       lastIsInBackground: false,
       shouldScrollToEnd: true,
-      hasLoad: false,
+      hasLoad: true,
       refreshing: false,
       isShowBottomNav: false,
       isShowBottomPicSelect: false,
@@ -376,13 +346,8 @@ export default class Chat extends Component<
     }
   }
   componentDidMount() {
-    // this.listener = DeviceEventEmitter.addListener(pathMap.SquareRoot + "Reload", quickReplyMsg => {
-
-    //   this.setState({
-    //     sendMsg: quickReplyMsg,
-    //   })
-    // })
     this.init()
+    this.bottomNavList = this.generateBottomNavList()
     this.requestReadExteralStorage()
     setTimeout(() => this.myScroll && this.myScroll.scrollToEnd(), 100)
     RnAppState.addEventListener("change", this.onAppStateChange)
@@ -410,6 +375,68 @@ export default class Chat extends Component<
         this.finishRecording(data.status === "OK", data.audioFileURL, 0)
       }
     }
+  }
+  generateBottomNavList = (): bottomNavItem[] => {
+    const { mode } = this.state
+    let list: bottomNavItem[] = []
+    if (mode === "common") {
+      list = [
+        {
+          icon: gImg.advisory.dialecticalPrescriptions,
+          title: "辨证开方",
+          link: pathMap.SquareRoot,
+        },
+        {
+          icon: gImg.advisory.quickReply,
+          title: "快捷回复",
+          link: "",
+        },
+        {
+          icon: gImg.advisory.closingConversation,
+          title: "结束对话",
+          link: "",
+        },
+        {
+          icon: gImg.advisory.show,
+          title: "更多功能",
+          link: "",
+        },
+        {
+          icon: gImg.advisory.picture,
+          title: "图片",
+          link: "",
+        },
+      ]
+    } else {
+      list = [
+        {
+          icon: gImg.advisory.picture,
+          title: "图片",
+          link: "",
+        },
+        {
+          icon: gImg.groupChat.article,
+          title: "文章",
+          link: pathMap.ArticleList,
+        },
+        // {
+        //   icon: gImg.advisory.show,
+        //   title: "更多功能",
+        //   link: "",
+        // },
+        // {
+        //   icon: gImg.groupChat.release,
+        //   title: "发布",
+        //   link: pathMap.AddOrEditArticle,
+        // },
+        // {
+        //   icon: gImg.groupChat.smile,
+        //   title: "表情",
+        //   link: "",
+        // },
+      ]
+    }
+    return list
   }
   finishRecording = (didSucceed: boolean, filePath: string, fileSize: number) => {
     console.log(didSucceed)
@@ -443,7 +470,10 @@ export default class Chat extends Component<
         this.setState({
           lastIsInBackground: false,
         })
-        let { patientUid } = this.state
+        let { patientUid, mode } = this.state
+        if (mode === "chatGroup") {
+          return
+        }
         //当医生进入聊天页面则清除未读消息数量
         clearPatientUnreadMsgCount({ patientUid })
         Buff.clearNotifications()
@@ -470,6 +500,17 @@ export default class Chat extends Component<
     }
   }
   init = async () => {
+    if (this.state.mode === "common") {
+      return this.initCommon()
+    } else {
+      return this.initChatGroup()
+    }
+  }
+  initChatGroup = async () => {}
+  initCommon = async () => {
+    this.setState({
+      hasLoad: false,
+    })
     userApi
       .getPersonalInfo()
       .then(json => {
@@ -572,7 +613,7 @@ export default class Chat extends Component<
       .catch(() => this.setState({ hasMicAuth: false }))
   }
   onRecordPressOut = async () => {
-    const { isRecord, patientUid } = this.state
+    const { isRecord, patientUid, mode, groupId } = this.state
     console.log(isRecord, "pressOut")
     if (!isRecord) {
       return
@@ -600,16 +641,22 @@ export default class Chat extends Component<
           const {
             data: { fileId, url },
           } = json
+
+          let postData: any = {
+            file: {
+              url,
+              fileId,
+            },
+            type: MsgType.audio,
+          }
+          if (mode === "common") {
+            postData["patientUid"] = patientUid
+          } else {
+            postData["groupId"] = groupId
+          }
           this.props.ws.wsPost({
             url: "/ws/sendMsg",
-            data: {
-              file: {
-                url,
-                fileId,
-              },
-              type: MsgType.audio,
-              patientUid,
-            },
+            data: postData,
           })
         })
         .catch(err => console.log(err))
@@ -642,7 +689,14 @@ export default class Chat extends Component<
         </View>
       )
     }
-    const { chatMode, isRecord, recordTime } = this.state
+    const { chatMode, isRecord, recordTime, mode } = this.state
+    let msgList: Msg[] = []
+    if (mode === "common" && Array.isArray(this.props.ws.chatMsg[this.state.patientUid])) {
+      msgList = this.props.ws.chatMsg[this.state.patientUid]
+    } else {
+      msgList = this.props.ws.groupMsg[this.state.groupId] || []
+    }
+    console.log(msgList)
     return (
       <KeyboardAvoidingView
         enabled={Platform.OS !== "android"}
@@ -673,38 +727,37 @@ export default class Chat extends Component<
                 ]}>
                 下拉查看更多聊天记录
               </Text>
-              {Array.isArray(this.props.ws.chatMsg[this.state.patientUid]) &&
-                this.props.ws.chatMsg[this.state.patientUid].map((v: any, k) => {
-                  let formatMsg: Msg | null = null
-                  switch (v.type) {
-                    case MsgType.txt:
-                      formatMsg = this.txtFormat(v)
-                      break
-                    case MsgType.picture:
-                      formatMsg = this.pictureFormat(v)
-                      break
-                    case MsgType.inquirySheet:
-                      formatMsg = this.inquirySheetFormat(v)
-                      break
-                    case MsgType.patientsThemselves:
-                      formatMsg = this.patientsThemselvesFormat(v)
-                      break
-                    case MsgType.treatmentPlan:
-                      formatMsg = this.treatmentPlanFormat(v)
-                      break
-                    case MsgType.audio:
-                      formatMsg = this.audioFormat(v)
-                      break
-                    case MsgType.article:
-                      formatMsg = this.articleFormat(v)
-                      break
-                    default:
-                      break
-                  }
-                  if (formatMsg) {
-                    return <View key={k}>{formatMsg.dom}</View>
-                  }
-                })}
+              {msgList.map((v: any, k) => {
+                let formatMsg: Msg | null = null
+                switch (v.type) {
+                  case MsgType.txt:
+                    formatMsg = this.txtFormat(v)
+                    break
+                  case MsgType.picture:
+                    formatMsg = this.pictureFormat(v)
+                    break
+                  case MsgType.inquirySheet:
+                    formatMsg = this.inquirySheetFormat(v)
+                    break
+                  case MsgType.patientsThemselves:
+                    formatMsg = this.patientsThemselvesFormat(v)
+                    break
+                  case MsgType.treatmentPlan:
+                    formatMsg = this.treatmentPlanFormat(v)
+                    break
+                  case MsgType.audio:
+                    formatMsg = this.audioFormat(v)
+                    break
+                  case MsgType.article:
+                    formatMsg = this.articleFormat(v)
+                    break
+                  default:
+                    break
+                }
+                if (formatMsg) {
+                  return <View key={k}>{formatMsg.dom}</View>
+                }
+              })}
             </View>
           </ScrollView>
           <View style={style.bottom}>
@@ -848,18 +901,23 @@ export default class Chat extends Component<
                                                   isShowBottomNav: false,
                                                   isShowBottomPicSelect: false,
                                                 })
-                                                const { patientUid } = this.state
+                                                const { patientUid, groupId, mode } = this.state
                                                 const { url, picId } = json.data
+                                                let postData: any = {
+                                                  pic: {
+                                                    url,
+                                                    picId,
+                                                  },
+                                                  type: MsgType.picture,
+                                                }
+                                                if (mode === "chatGroup") {
+                                                  postData["groupId"] = groupId
+                                                } else {
+                                                  postData["patientUid"] = patientUid
+                                                }
                                                 this.props.ws.wsPost({
                                                   url: "/ws/sendMsg",
-                                                  data: {
-                                                    pic: {
-                                                      url,
-                                                      picId,
-                                                    },
-                                                    type: MsgType.picture,
-                                                    patientUid,
-                                                  },
+                                                  data: postData,
                                                 })
                                               })
                                               .catch(e => {
@@ -903,18 +961,23 @@ export default class Chat extends Component<
                                             isShowBottomNav: false,
                                             isShowBottomPicSelect: false,
                                           })
-                                          const { patientUid } = this.state
+                                          const { patientUid, groupId, mode } = this.state
                                           const { url, picId } = json.data
+                                          let postData: any = {
+                                            pic: {
+                                              url,
+                                              picId,
+                                            },
+                                            type: MsgType.picture,
+                                          }
+                                          if (mode === "chatGroup") {
+                                            postData["groupId"] = groupId
+                                          } else {
+                                            postData["patientUid"] = patientUid
+                                          }
                                           this.props.ws.wsPost({
                                             url: "/ws/sendMsg",
-                                            data: {
-                                              pic: {
-                                                url,
-                                                picId,
-                                              },
-                                              type: MsgType.picture,
-                                              patientUid,
-                                            },
+                                            data: postData,
                                           })
                                         })
                                         .catch(e => {
@@ -970,18 +1033,23 @@ export default class Chat extends Component<
                                           isShowBottomNav: false,
                                           isShowBottomPicSelect: false,
                                         })
-                                        const { patientUid } = this.state
+                                        const { patientUid, groupId, mode } = this.state
                                         const { url, picId } = json.data
+                                        let postData: any = {
+                                          pic: {
+                                            url,
+                                            picId,
+                                          },
+                                          type: MsgType.picture,
+                                        }
+                                        if (mode === "chatGroup") {
+                                          postData["groupId"] = groupId
+                                        } else {
+                                          postData["patientUid"] = patientUid
+                                        }
                                         this.props.ws.wsPost({
                                           url: "/ws/sendMsg",
-                                          data: {
-                                            pic: {
-                                              url,
-                                              picId,
-                                            },
-                                            type: MsgType.picture,
-                                            patientUid,
-                                          },
+                                          data: postData,
                                         })
                                       })
                                       .catch(e => {
@@ -1016,18 +1084,23 @@ export default class Chat extends Component<
                                       isShowBottomNav: false,
                                       isShowBottomPicSelect: false,
                                     })
-                                    const { patientUid } = this.state
+                                    const { patientUid, groupId, mode } = this.state
                                     const { url, picId } = json.data
+                                    let postData: any = {
+                                      pic: {
+                                        url,
+                                        picId,
+                                      },
+                                      type: MsgType.picture,
+                                    }
+                                    if (mode === "chatGroup") {
+                                      postData["groupId"] = groupId
+                                    } else {
+                                      postData["patientUid"] = patientUid
+                                    }
                                     this.props.ws.wsPost({
                                       url: "/ws/sendMsg",
-                                      data: {
-                                        pic: {
-                                          url,
-                                          picId,
-                                        },
-                                        type: MsgType.picture,
-                                        patientUid,
-                                      },
+                                      data: postData,
                                     })
                                   })
                                   .catch(e => {
@@ -1181,7 +1254,7 @@ export default class Chat extends Component<
   }
   pictureFormat = (serverMsg: Exclude<Overwrite<Msg, { pic: Picture }>, "dom">) => {
     let msg: Overwrite<Msg, { pic: Picture }> = serverMsg
-    let isSelfMsg = msg.sendUser.uid === this.state.info.id
+    let isSelfMsg = msg.sendUser.uid === this.props.uid
     msg.dom = (
       <View>
         {/* 左边图片 */}
@@ -1253,7 +1326,7 @@ export default class Chat extends Component<
   audioFormat = (serverMsg: Exclude<Overwrite<Msg, { file: File }>, "dom">) => {
     const { isPalyAudio, currAudioMsgId } = this.state
     let msg: Overwrite<Msg, { file: File }> = serverMsg
-    let isSelfMsg = msg.sendUser.uid === this.state.info.id
+    let isSelfMsg = msg.sendUser.uid === this.props.uid
     msg.dom = (
       <View>
         {isSelfMsg ? (
@@ -1638,7 +1711,16 @@ export default class Chat extends Component<
       })
     }
   }
+  getMoreGroupMsgList = async () => {}
   getMoreMsgList = async () => {
+    const { mode } = this.state
+    if (mode === "common") {
+      return this.getMoreCommonMsgList()
+    } else {
+      return this.getMoreGroupMsgList()
+    }
+  }
+  getMoreCommonMsgList = async () => {
     this.setState({ refreshing: true })
     const {
       ws: { chatMsg },
@@ -1732,7 +1814,8 @@ export default class Chat extends Component<
         })
         break
       case "表情":
-        Toast.info("正在努力开发中, 敬请期待...", 2)
+        // todo 不能写这种东西
+        // Toast.info("正在努力开发中, 敬请期待...", 2)
         break
       default:
         this.props.navigation.push(v.link)
@@ -1746,21 +1829,27 @@ export default class Chat extends Component<
     if (this.state.sendMsg === "") {
       return
     }
-    const { patientUid } = this.state
-    if (
-      this.props.ws.wsPost({ url: "/ws/sendMsg", data: { msg: this.state.sendMsg, patientUid } })
-    ) {
-      this.setState({
-        sendMsg: "",
-      })
-      if (this.myScroll && this.state.shouldScrollToEnd) {
-        this.myScroll.scrollToEnd()
-        this.setState({
-          shouldScrollToEnd: false,
-        })
-      }
-      this.msgInput && this.msgInput.textAreaRef && this.msgInput.textAreaRef.blur()
+    const { patientUid, groupId, mode } = this.state
+    let postData: any = {
+      msg: this.state.sendMsg,
     }
+    if (mode === "common") {
+      postData["patientUid"] = patientUid
+    } else {
+      postData["groupId"] = groupId
+    }
+    console.log("postData", postData)
+    this.props.ws.wsPost({ url: "/ws/sendMsg", data: postData })
+    this.setState({
+      sendMsg: "",
+    })
+    if (this.myScroll && this.state.shouldScrollToEnd) {
+      this.myScroll.scrollToEnd()
+      this.setState({
+        shouldScrollToEnd: false,
+      })
+    }
+    this.msgInput && this.msgInput.textAreaRef && this.msgInput.textAreaRef.blur()
   }
   openShowPic = (url: string) => {
     this.setState({
@@ -1791,18 +1880,23 @@ export default class Chat extends Component<
               this.setState({
                 isShowBottomPicSelect: false,
               })
-              const { patientUid } = this.state
+              const { patientUid, groupId, mode } = this.state
               const { url, picId } = json.data
+              let postData: any = {
+                pic: {
+                  url,
+                  picId,
+                },
+                type: MsgType.picture,
+              }
+              if (mode === "common") {
+                postData["patientUid"] = patientUid
+              } else {
+                postData["groupId"] = groupId
+              }
               this.props.ws.wsPost({
                 url: "/ws/sendMsg",
-                data: {
-                  pic: {
-                    url,
-                    picId,
-                  },
-                  type: MsgType.picture,
-                  patientUid,
-                },
+                data: postData,
               })
             } else {
               Portal.remove(key)
