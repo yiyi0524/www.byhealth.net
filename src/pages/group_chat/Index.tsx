@@ -367,10 +367,10 @@ export default class Index extends Component<Props & DefaultProps, State> {
     let { groupChatId: id } = this.state
     joinGroupChat({ id })
       .then(() => {
-        Toast.success("加入成功", 1, this.onRefresh)
+        Toast.success("申请成功", 1, this.onRefresh)
       })
       .catch((err: any) => {
-        Toast.fail("加入失败, 错误信息: " + err.msg, 3)
+        Toast.fail("申请失败, 错误信息: " + err.msg, 3)
         console.log(err)
       })
   }

@@ -127,6 +127,15 @@ export default class Prescribing extends Component<Props & DefaultProps, State> 
             <Text style={style.desc}>拍方后药房会联系患者添加微信</Text>
             <Icon style={style.icon} name="right"></Icon>
           </TouchableOpacity>
+          <TouchableOpacity
+            style={[style.item, global.flex, global.aCenter]}
+            onPress={() => {
+              this.props.navigation.navigate(pathMap.PrescriptionTplList)
+            }}>
+            <Image style={style.img} source={gImg.home.prescribingPhotograph}></Image>
+            <Text style={style.title}>模板开方</Text>
+            <Icon style={style.icon} name="right"></Icon>
+          </TouchableOpacity>
         </View>
         <View style={style.tips}>
           <Text style={style.tipsTitle}>

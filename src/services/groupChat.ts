@@ -26,17 +26,19 @@ export interface GroupChat {
   id: number
   pic: Picture
   name: string
-  userList: { id: number; uid: number; nick: string; phone: string; isAdmin: boolean }[]
-  applyList: { id: number; uid: number; nick: string; phone: string }[]
+  userList: GroupChatMember[]
+  applyList: Omit<GroupChatMember, "isAdmin">[]
   description: string //群简介
   ctime: string
 }
 //群聊成员
 export interface GroupChatMember {
-  isAdmin: boolean
   id: number
-  name: string
+  uid: number
+  isAdmin: boolean
+  nick: string
   avatar: Picture
+  phone: string
 }
 //文章
 export interface Article {
@@ -80,96 +82,17 @@ export function joinGroupChat(data: { id: number }) {
     data,
   })
 }
-/**
- * todo 获取成员列表
- *  filter{
- *  groupId:{
- *    condition:eq,
- *    val:id
- *  }
- * }
- */
-export function listGroupChatMember(data: GetListParam) {
-  console.log(data)
-  return {
-    data: {
-      list: [
-        {
-          id: 403,
-          isAdmin: true,
-          name: "阿萨德1",
-          avatar: {
-            id: 1,
-            title: "",
-            url: "/uploads/20190528/14151cac19744c03114114ed6c9b3cea.jpg",
-          },
-        },
-        {
-          id: 2,
-          isAdmin: true,
-          name: "阿萨德2",
-          avatar: {
-            id: 1,
-            title: "",
-            url: "/uploads/20190528/14151cac19744c03114114ed6c9b3cea.jpg",
-          },
-        },
-        {
-          id: 3,
-          isAdmin: false,
-          name: "阿萨德3",
-          avatar: {
-            id: 1,
-            title: "",
-            url: "/uploads/20190528/14151cac19744c03114114ed6c9b3cea.jpg",
-          },
-        },
-        {
-          id: 4,
-          isAdmin: false,
-          name: "阿萨德4",
-          avatar: {
-            id: 1,
-            title: "",
-            url: "/uploads/20190528/14151cac19744c03114114ed6c9b3cea.jpg",
-          },
-        },
-      ] as Assign<GroupChatMember, { active: boolean }>[],
-      applyList: [
-        {
-          id: 1,
-          name: "阿萨德1",
-          avatar: {
-            id: 1,
-            title: "",
-            url: "/uploads/20190528/14151cac19744c03114114ed6c9b3cea.jpg",
-          },
-        },
-        {
-          id: 2,
-          name: "阿萨德2",
-          avatar: {
-            id: 1,
-            title: "",
-            url: "/uploads/20190528/14151cac19744c03114114ed6c9b3cea.jpg",
-          },
-        },
-      ],
-    },
-  }
-  // return bpost<{data:{list:Assign<GroupChatMember, { active: boolean }>[]}}>({
-  //   url:"api/listGroupChatMember",
-  //   data
-  // })
-}
 
 /**
- * todo 删除某群的成员
+ *  删除某群的成员
  */
 export function delGroupChatmember(data: { groupId: number; ids: number[] }) {
   return bpost({
-    url: "api/delGroupChatmember",
-    data,
+    url: "chatGroup/delMember",
+    data: {
+      id: data.groupId,
+      doctorIds: data.ids,
+    },
   })
 }
 /**
@@ -224,11 +147,11 @@ export function getArticle(query: { id: number }) {
   })
 }
 /**
- * todo 拒绝申请
+ *  拒绝申请
  */
 export function rejectJoin(data: { id: number; groupId: number }) {
   return bpost({
-    url: "api/rejectJoin",
+    url: "chatGroup/denyJoin",
     data: {
       id: data.groupId,
       doctorIds: [data.id],
@@ -236,12 +159,15 @@ export function rejectJoin(data: { id: number; groupId: number }) {
   })
 }
 /**
- * todo 拒绝申请
+ *  同意申请
  */
 export function agreeJoin(data: { id: number; groupId: number }) {
   return bpost({
-    url: "api/agreeJoin",
-    data,
+    url: "chatGroup/allowJoin",
+    data: {
+      id: data.groupId,
+      doctorIds: [data.id],
+    },
   })
 }
 export default {

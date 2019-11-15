@@ -1,7 +1,7 @@
 import global from "@/assets/styles/global"
 import { AppState } from "@/redux/stores/store"
 import pathMap from "@/routes/pathMap"
-import { delGroupChatmember, GroupChatMember, listGroupChatMember } from "@/services/groupChat"
+import { delGroupChatmember, GroupChatMember, listGroupChat } from "@/services/groupChat"
 import { TYPE } from "@/utils/constant"
 import { getPicFullUrl } from "@/utils/utils"
 import { Icon, Toast } from "@ant-design/react-native"
@@ -145,8 +145,8 @@ export default class Detail extends Component<Props & DefaultProps, State> {
   }
   init = async () => {
     try {
-      let { groupId } = this.state
-      let memberListMode = listGroupChatMember({
+      let { groupId, memberList, applyMemberList } = this.state
+      let memberListMode = listGroupChat({
         page: -1,
         limit: -1,
         filter: {
@@ -155,14 +155,18 @@ export default class Detail extends Component<Props & DefaultProps, State> {
         },
       })
       let {
-        data: { list: memberList, applyList: applyMemberList },
+        data: { list },
       } = await memberListMode
       let isAdmin = false
       let { uid } = this.props
-      for (let v of memberList) {
-        v.active = false
-        if (v.id === uid) {
-          isAdmin = v.isAdmin
+      for (let v of list) {
+        if (v.id === groupId) {
+          memberList = v.userList.map((v: any) => {
+            v.active = false
+            return v
+          })
+          isAdmin = !!v.userList.find(v => v.uid === uid)
+          applyMemberList = v.applyList
         }
       }
       this.setState({
@@ -213,12 +217,14 @@ export default class Detail extends Component<Props & DefaultProps, State> {
                       onPress={() => {
                         let { memberList, delMemberIds, isSelectMember } = this.state
                         if (isSelectMember) {
-                          memberList[k].active = !memberList[k].active
-                          if (memberList[k].active) {
-                            delMemberIds.push(member.id)
-                            delMemberIds.filter((val, idx, self) => {
-                              return self.indexOf(val) === idx
-                            })
+                          if (!member.isAdmin) {
+                            memberList[k].active = !memberList[k].active
+                            if (memberList[k].active) {
+                              delMemberIds.push(member.id)
+                              delMemberIds.filter((val, idx, self) => {
+                                return self.indexOf(val) === idx
+                              })
+                            }
                           } else {
                             delMemberIds = delMemberIds.filter(v => v !== member.id)
                           }
@@ -252,7 +258,7 @@ export default class Detail extends Component<Props & DefaultProps, State> {
                           }></Image>
                       </View>
                       <Text style={style.name} numberOfLines={1}>
-                        {member.name}
+                        {member.nick}
                       </Text>
                       {member.isAdmin ? (
                         <View style={style.administratorsPar}>

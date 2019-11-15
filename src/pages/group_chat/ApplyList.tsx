@@ -1,13 +1,12 @@
 import global from "@/assets/styles/global"
-import { GroupChatMember, listGroupChatMember, rejectJoin, agreeJoin } from "@/services/groupChat"
-import { TYPE } from "@/utils/constant"
+import { agreeJoin, GroupChat, listGroupChat, rejectJoin } from "@/services/groupChat"
 import { getPicFullUrl } from "@/utils/utils"
+import { Toast } from "@ant-design/react-native"
 import gImg from "@utils/img"
 import gSass from "@utils/style"
 import React, { Component } from "react"
 import { Image, ScrollView, Text, TouchableOpacity, View } from "react-native"
 import { NavigationScreenProp } from "react-navigation"
-import { Toast } from "@ant-design/react-native"
 const style = gSass.groupChat.applyList
 interface Props {
   navigation: NavigationScreenProp<State>
@@ -15,7 +14,7 @@ interface Props {
 interface State {
   groupChatId: number
   groupChatName: string
-  list: Omit<GroupChatMember, "isAdmin">[]
+  list: GroupChat["applyList"]
 }
 type DefaultProps = {}
 
@@ -71,15 +70,20 @@ export default class ApplyList extends Component<Props & DefaultProps, State> {
   }
   init = async () => {
     try {
-      let { groupChatId } = this.state
-      let listMode = listGroupChatMember({
+      let { groupChatId, list } = this.state
+      let memberListMode = listGroupChat({
         page: -1,
         limit: -1,
-        filter: { condition: TYPE.eq, val: groupChatId },
+        filter: {},
       })
       let {
-        data: { applyList: list },
-      } = await listMode
+        data: { list: groupList },
+      } = await memberListMode
+      for (let v of groupList) {
+        if (v.id === groupChatId) {
+          list = v.applyList
+        }
+      }
       this.setState({
         list,
       })
@@ -88,7 +92,7 @@ export default class ApplyList extends Component<Props & DefaultProps, State> {
     }
   }
   render() {
-    let { list, groupChatName } = this.state
+    let { list } = this.state
     return (
       <ScrollView style={style.main}>
         <View style={style.list}>
@@ -107,11 +111,11 @@ export default class ApplyList extends Component<Props & DefaultProps, State> {
                   </View>
                   <View style={style.right}>
                     <Text style={style.name} numberOfLines={1}>
-                      {v.name}
+                      {v.nick}
                     </Text>
-                    <Text style={style.desc} numberOfLines={1}>
+                    {/* <Text style={style.desc} numberOfLines={1}>
                       希望能加入{groupChatName}。
-                    </Text>
+                    </Text> */}
                   </View>
                 </View>
                 <View style={[style.btnPar, global.flex, global.aCenter, global.jBetween]}>
@@ -119,7 +123,7 @@ export default class ApplyList extends Component<Props & DefaultProps, State> {
                     <Text style={[style.btn, style.reject]}>拒绝</Text>
                   </TouchableOpacity>
                   <TouchableOpacity onPress={() => this.agree(v.id)}>
-                    <Text style={[style.btn, style.agree]}>拒绝</Text>
+                    <Text style={[style.btn, style.agree]}>同意</Text>
                   </TouchableOpacity>
                 </View>
               </View>
@@ -132,7 +136,9 @@ export default class ApplyList extends Component<Props & DefaultProps, State> {
   reject = (id: number) => {
     let { groupChatId: groupId } = this.state
     rejectJoin({ id, groupId })
-      .then(this.init)
+      .then(() => {
+        Toast.success("操作成功", 1, this.init)
+      })
       .catch(err => {
         Toast.fail("操作失败, 错误信息: " + err.msg, 3)
       })
@@ -140,7 +146,9 @@ export default class ApplyList extends Component<Props & DefaultProps, State> {
   agree = (id: number) => {
     let { groupChatId: groupId } = this.state
     agreeJoin({ id, groupId })
-      .then(this.init)
+      .then(() => {
+        Toast.success("操作成功", 1, this.init)
+      })
       .catch(err => {
         Toast.fail("操作失败, 错误信息: " + err.msg, 3)
       })
