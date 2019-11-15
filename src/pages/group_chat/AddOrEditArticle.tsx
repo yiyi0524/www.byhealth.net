@@ -109,7 +109,7 @@ export default class AddArticle extends Component<Props & DefaultProps, State> {
     }
   }
   render() {
-    let { title, content, picList } = this.state
+    let { title, content, picList, type } = this.state
     return (
       <KeyboardAvoidingView
         enabled={Platform.OS !== "android"}
@@ -159,7 +159,7 @@ export default class AddArticle extends Component<Props & DefaultProps, State> {
             <View style={style.btnPar}>
               <TouchableOpacity onPress={this.submit}>
                 <View style={style.btnContent}>
-                  <Text style={style.btn}>发布</Text>
+                  <Text style={style.btn}>{type === "add" ? "发布" : "更新"}</Text>
                 </View>
               </TouchableOpacity>
             </View>
@@ -261,11 +261,15 @@ export default class AddArticle extends Component<Props & DefaultProps, State> {
       if (content === "") {
         return Toast.info("请填内容", 1)
       }
+      let picIdList: number[] = []
+      for (let v of picList) {
+        picIdList.push(v.id)
+      }
       let data = {
         id,
         title,
         content,
-        picList,
+        picIdList,
       }
       if (type === "add") {
         addArticle(data)
@@ -291,13 +295,7 @@ export default class AddArticle extends Component<Props & DefaultProps, State> {
       } else {
         editArticle(data)
           .then(() => {
-            Toast.success("编辑成功", 1, () => {
-              this.setState({
-                title: "",
-                content: "",
-                picList: [],
-              })
-            })
+            Toast.success("编辑成功", 1)
           })
           .catch(err => {
             console.log(err)

@@ -109,7 +109,6 @@ export default class ArticleDetail extends Component<Props & DefaultProps, State
     try {
       let { id } = this.state
       let detailTask = getArticle({ id })
-
       let {
         data: { detail },
       } = await detailTask

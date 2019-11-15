@@ -216,6 +216,9 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
     addMsg: (preload: wsAction.MsgPreload) => {
       dispatch(wsAction.addMsg(preload))
     },
+    addGroupMsg: (preload: wsAction.GroupMsgPreload) => {
+      dispatch(wsAction.addGroupMsg(preload))
+    },
     setUserUnReadMsgCount: (preload: { uid: number; count: number }) => {
       dispatch(wsAction.setUserUnReadMsgCount(preload))
     },
@@ -1825,11 +1828,14 @@ export default class Chat extends Component<
   }
   // 更新消息 从后台变为前台时要更新所有信息
   updateMsgList = async () => {
+    let { patientUid, mode } = this.state
+    if (mode === "chatGroup") {
+      return this.updateGroupMsgList()
+    }
     this.setState({ refreshing: true })
     const {
       ws: { chatMsg },
     } = this.props
-    let { patientUid } = this.state
     if (chatMsg[patientUid].length === 0) {
       return
     }
@@ -1851,6 +1857,40 @@ export default class Chat extends Component<
       }
       this.setState({
         hasMoreRecord: chatMsg[patientUid] && count > chatMsg[patientUid].length,
+        refreshing: false,
+      })
+    } catch (err) {
+      this.setState({ refreshing: false })
+      Toast.fail("刷新失败,错误信息: " + err.msg)
+    }
+  }
+  updateGroupMsgList = async () => {
+    this.setState({ refreshing: true })
+    const {
+      ws: { groupMsg },
+    } = this.props
+    let { groupId } = this.state
+    if (groupMsg[groupId].length === 0) {
+      return
+    }
+    const currUserLastMsgId = groupMsg[groupId][groupMsg[groupId].length - 1].id
+    try {
+      let {
+        data: { list: msgList },
+        count,
+      } = await wsMsgApi.getMsgList({
+        page: -1,
+        limit: -1,
+        filter: {
+          groupId,
+          currUserLastMsgId,
+        },
+      })
+      for (let msg of msgList) {
+        this.props.addGroupMsg({ msg, groupId })
+      }
+      this.setState({
+        hasMoreRecord: groupMsg[groupId] && count > groupMsg[groupId].length,
         refreshing: false,
       })
     } catch (err) {

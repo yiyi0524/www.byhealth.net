@@ -173,25 +173,25 @@ export function delGroupChatmember(data: { groupId: number; ids: number[] }) {
   })
 }
 /**
- * todo 添加文章
+ *  添加文章
  */
-export function addArticle(data: { title: string; content: string; picList: Picture[] }) {
+export function addArticle(data: { title: string; content: string; picIdList: number[] }) {
   return bpost<{ id: number }>({
-    url: "api/addArticle",
+    url: "chatGroup/addArticle",
     data,
   })
 }
 /**
- *todo  编辑文章
+ *  编辑文章
  */
 export function editArticle(data: {
   id: number
   title: string
   content: string
-  picList: Picture[]
+  picIdList: number[]
 }) {
   return bpost({
-    url: "api/editArticle",
+    url: "chatGroup/editArticle",
     data,
   })
 }
@@ -208,55 +208,20 @@ export function editArticle(data: {
  * },
  * }
  */
-export function listArticle(data: GetListParam) {
-  return bpost<{ data: { list: Article[] } }>({
+export function listArticle(query: GetListParam) {
+  return bget<{ list: Article[] }>({
     url: "chatGroup/listArticle",
-    data,
+    query,
   })
 }
 /**
- * todo 获取文章详情
+ * 获取文章详情
  */
-export function getArticle(data: { id: number }) {
-  console.log(data)
-  return {
-    data: {
-      detail: {
-        id: 1,
-        title: "广东省中西医结合学会肾病委...",
-        author: {
-          uid: 403,
-          name: "",
-          phone: "",
-        },
-        content:
-          "牙齿矫正方案汇总，牙齿矫正一直是医学界的一大难题牙齿矫正方案汇总，牙齿矫正一直是医学界的一大难题牙齿矫正方案汇总，牙齿矫正一直是医学界的一大难题牙齿矫正方案汇总，牙齿矫正一直是医学界的一大难题牙齿矫正方案汇总，牙齿矫正一直是医学界的一大难题牙齿矫正方案汇总，牙齿矫正一直是医学界的一大难题牙齿矫正方案汇总，牙齿矫正一直是医学界的一大难题牙齿矫正方案汇总，牙齿矫正一直是医学界的一大难题牙齿矫正方案汇总，牙齿矫正一直是医学界的一大难题牙齿矫正方案汇总，牙齿矫正一直是医学界的一大难题牙齿矫正方案汇总，牙齿矫正一直是医学界的一大难题牙齿矫正方案汇总，牙齿矫正一直是医学界的一大难题牙齿矫正方案汇总，牙齿矫正一直是医学界的一大难题牙齿矫正方案汇总，牙齿矫正一直是医学界的一大难题牙齿矫正方案汇总，牙齿矫正一直是医学界的一大难题牙齿矫正方案汇总，牙齿矫正一直是医学界的一大难题牙齿矫正方案汇总，牙齿矫正一直是医学界的一大难题牙齿矫正方案汇总，牙齿矫正一直是医学界的一大难题牙齿矫正方案汇总，牙齿矫正一直是医学界的一大难题牙齿矫正方案汇总，牙齿矫正一直是医学界的一大难题牙齿矫正方案汇总，牙齿矫正一直是医学界的一大难题牙齿矫正方案汇总，牙齿矫正一直是医学界的一大难题...",
-        picList: [
-          {
-            id: 1,
-            title: "",
-            url: "/uploads/20190528/14151cac19744c03114114ed6c9b3cea.jpg",
-          },
-          {
-            id: 1,
-            title: "",
-            url: "/uploads/20190528/14151cac19744c03114114ed6c9b3cea.jpg",
-          },
-          {
-            id: 1,
-            title: "",
-            url: "/uploads/20190528/14151cac19744c03114114ed6c9b3cea.jpg",
-          },
-        ],
-        viewCount: 103,
-        ctime: "2019-10-10 10:00:00",
-      } as Article,
-    },
-  }
-  // return bpost<{ data: { detail: Article } }>({
-  //   url: "api/getArticle",
-  //   data,
-  // })
+export function getArticle(query: { id: number }) {
+  return bget<{ detail: Article }>({
+    url: "chatGroup/detailArticle",
+    query,
+  })
 }
 /**
  * todo 拒绝申请
@@ -264,7 +229,10 @@ export function getArticle(data: { id: number }) {
 export function rejectJoin(data: { id: number; groupId: number }) {
   return bpost({
     url: "api/rejectJoin",
-    data,
+    data: {
+      id: data.groupId,
+      doctorIds: [data.id],
+    },
   })
 }
 /**
