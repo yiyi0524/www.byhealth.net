@@ -1,15 +1,22 @@
 import global from "@/assets/styles/global"
 import { BASE_URL } from "@/config/api"
 import * as userAction from "@/redux/actions/user"
+import { CurrSetPrescription } from "@/redux/reducers/user"
 import { AppState } from "@/redux/stores/store"
 import api, { windowWidth } from "@/services/api"
-import { addPrescription, AddPrescriptionParam, GENDER, GENDER_ZH } from "@/services/doctor"
+import {
+  addPrescription,
+  AddPrescriptionParam,
+  GENDER,
+  GENDER_ZH,
+  PrescriptionTpl,
+} from "@/services/doctor"
 import {
   EXTERN_CHINESE_DRUG_ID,
   ORAL_CHINESE_DRUG_ID,
   TOPICAL_CHINESE_DRUG_ID,
 } from "@/services/drug"
-import { getPatientInfo, getLastPrescriptionInfo } from "@/services/patient"
+import { getLastPrescriptionInfo, getPatientInfo } from "@/services/patient"
 import { getPersonalInfo } from "@/services/user"
 import { getPicCdnUrl } from "@/utils/utils"
 import { Icon, ImagePicker, InputItem, TextareaItem, Toast } from "@ant-design/react-native"
@@ -20,30 +27,28 @@ import pathMap from "@routes/pathMap"
 import sColor from "@styles/color"
 import gImg from "@utils/img"
 import gStyle from "@utils/style"
+import _ from "lodash"
 import React, { Component } from "react"
-import { PrescriptionTpl } from "@/services/doctor"
-
 import {
   Alert,
+  BackHandler,
   DeviceEventEmitter,
   EmitterSubscription,
   Image,
   KeyboardAvoidingView,
+  NativeEventSubscription,
   PixelRatio,
   Platform,
   RefreshControl,
   Text,
   TouchableOpacity,
   View,
-  BackHandler,
-  NativeEventSubscription,
 } from "react-native"
 import { NavigationScreenProp, ScrollView } from "react-navigation"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
 import { MsgType, Picture } from "./Chat"
-import { CurrSetPrescription } from "@/redux/reducers/user"
-import _ from "lodash"
+
 const style = gStyle.advisory.SquareRoot
 
 interface Props {
@@ -1154,7 +1159,7 @@ export default class SquareRoot extends Component<
       syndromeDifferentiation,
       serviceMoney,
       drugServiceMoney,
-      patientInfo: { uid: patientUid },
+      patientInfo: { uid: patientUid, name: patientName },
       prescriptionDrugCategoryList,
       isSaveToTpl,
       tplName,
@@ -1234,7 +1239,11 @@ export default class SquareRoot extends Component<
           },
         })
         this.props.delCurrSetPrescription()
-        this.props.navigation.goBack()
+        // this.props.navigation.goBack()
+        this.props.navigation.navigate(pathMap.AdvisoryChat, {
+          patientUid,
+          patientName,
+        })
       })
       .catch(err => {
         console.log(err)
