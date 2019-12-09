@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Workspace
+   version = "1.0">
+   <FileRef
+      location = "group:boyi615.xcodeproj">
+   </FileRef>
+   <Group
+      location = "group:Pods/../Resources"
+      name = "Resources">
+      <FileRef
+         location = "group:Resources/../../node_modules/@ant-design/icons-react-native/fonts/antoutline.ttf">
+      </FileRef>
+      <FileRef
+         location = "group:Resources/../../node_modules/@ant-design/icons-react-native/fonts/antfill.ttf">
+      </FileRef>
+   </Group>
+   <FileRef
+      location = "group:Pods/Pods.xcodeproj">
+   </FileRef>
+</Workspace>

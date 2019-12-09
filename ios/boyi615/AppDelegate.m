@@ -6,29 +6,30 @@
  */
 
 #import "AppDelegate.h"
+#import <CodePush/CodePush.h>
 
 #import <React/RCTBundleURLProvider.h>
 #import <React/RCTRootView.h>
 #import <CloudPushSDK/CloudPushSDK.h>
+//#import <AppCenterReactNative.h>
+//#import <AppCenterReactNativeAnalytics.h>
+//#import <AppCenterReactNativeCrashes.h>
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-  NSURL *jsCodeLocation;
-  jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index" fallbackResource:nil];
-  
-  RCTRootView *rootView = [[RCTRootView alloc] initWithBundleURL:jsCodeLocation
-                                                      moduleName:@"博一健康"
-                                               initialProperties:nil
-                                                   launchOptions:launchOptions];
-  
-  rootView.backgroundColor = [[UIColor alloc] initWithRed:1.0f green:1.0f blue:1.0f alpha:1];
+ RCTBridge *bridge = [[RCTBridge alloc] initWithDelegate: self launchOptions:launchOptions];
+ RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:bridge
+                                                  moduleName:@"博一健康"
+                                           initialProperties:nil];
+
+ rootView.backgroundColor = [[UIColor alloc] initWithRed:1.0f green:1.0f blue:1.0f alpha:1];
+
   self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
   UIViewController *rootViewController = [UIViewController new];
   rootViewController.view = rootView;
   self.window.rootViewController = rootViewController;
   [self.window makeKeyAndVisible];
-  
   // APNs注册，获取deviceToken并上报
   [self registerAPNS:application];
   // 初始化SDK
@@ -41,7 +42,19 @@
   // 点击通知将App从关闭状态启动时，将通知打开回执上报
   // [CloudPushSDK handleLaunching:launchOptions];(Deprecated from v1.8.1)
   [CloudPushSDK sendNotificationAck:launchOptions];
+  // [AppCenterReactNative register];
+  //  [AppCenterReactNativeAnalytics registerWithInitiallyEnabled:true];
+//[AppCenterReactNativeCrashes registerWithAutomaticProcessing];
   return YES;
+}
+
+- (NSURL *)sourceURLForBridge:(RCTBridge *)bridge
+{
+#if DEBUG
+  return [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index" fallbackResource:nil];
+#else
+  return [CodePush bundleURL];
+#endif
 }
 
 - (void)initCloudPush {

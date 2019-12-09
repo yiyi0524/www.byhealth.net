@@ -2,13 +2,16 @@ platform :ios, '9.0'
 require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
 source 'https://github.com/aliyun/aliyun-specs.git'
 target '博一健康' do
-  # Pods for 博一健康
+  # buff
   pod 'AlicloudPush', '~> 1.9.8'
-    # Pods for RnDiffApp
-    pod 'FBLazyVector', :path => "../node_modules/react-native/Libraries/FBLazyVector"
-    pod 'FBReactNativeSpec', :path => "../node_modules/react-native/Libraries/FBReactNativeSpec"
-    pod 'RCTRequired', :path => "../node_modules/react-native/Libraries/RCTRequired"
-    pod 'RCTTypeSafety', :path => "../node_modules/react-native/Libraries/TypeSafety"
+  pod 'SSZipArchive', :git => 'https://github.com/ZipArchive/ZipArchive',:tag => 'v2.1.5'
+  pod 'JWT', :git => 'https://github.com/yourkarma/JWT', :tag => '3.0.0-beta.12'
+  pod 'Base64', :git =>'https://github.com/ekscrypto/Base64', :tag => '1.1.2''
+  # Pods for 博一健康
+  pod 'FBLazyVector', :path => "../node_modules/react-native/Libraries/FBLazyVector"
+  pod 'FBReactNativeSpec', :path => "../node_modules/react-native/Libraries/FBReactNativeSpec"
+  pod 'RCTRequired', :path => "../node_modules/react-native/Libraries/RCTRequired"
+  pod 'RCTTypeSafety', :path => "../node_modules/react-native/Libraries/TypeSafety"
   pod 'React', :path => '../node_modules/react-native/'
   pod 'React-Core', :path => '../node_modules/react-native/'
   pod 'React-CoreModules', :path => '../node_modules/react-native/React/CoreModules'
@@ -31,9 +34,12 @@ target '博一健康' do
   pod 'ReactCommon/jscallinvoker', :path => "../node_modules/react-native/ReactCommon"
   pod 'ReactCommon/turbomodule/core', :path => "../node_modules/react-native/ReactCommon"
   pod 'Yoga', :path => '../node_modules/react-native/ReactCommon/yoga'
-  pod 'boost-for-react-native', :podspec => 'https://raw.githubusercontent.com/react-native-community/boost-for-react-native/master/boost-for-react-native.podspec'
+
   pod 'DoubleConversion', :podspec => '../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec'
   pod 'glog', :podspec => '../node_modules/react-native/third-party-podspecs/glog.podspec'
   pod 'Folly', :podspec => '../node_modules/react-native/third-party-podspecs/Folly.podspec'
+
+  
+
   use_native_modules!
 end
