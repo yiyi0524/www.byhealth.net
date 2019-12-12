@@ -3,7 +3,7 @@ import * as userAction from "@/redux/actions/user"
 import { AppState } from "@/redux/stores/store"
 import pathMap from "@/routes/pathMap"
 import doctor from "@/services/doctor"
-import { Toast } from "@ant-design/react-native"
+import { Toast, SwipeAction } from "@ant-design/react-native"
 import sColor from "@styles/color"
 import gImg from "@utils/img"
 import gStyle from "@utils/style"
@@ -53,10 +53,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
     },
   }
 }
-@connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)
+@connect(mapStateToProps, mapDispatchToProps)
 export default class PrescriptionTplList extends Component<
   Props & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
   State
@@ -196,7 +193,21 @@ export default class PrescriptionTplList extends Component<
               }
               drugStr = drugStr.substr(0, drugStr.lastIndexOf("、"))
               return (
-                <TouchableOpacity key={k} onPress={() => this.selectPrescriptionTpl(prescription)}>
+                <SwipeAction
+                  key={k}
+                  autoClose
+                  style={{ backgroundColor: "transparent", marginTop: 8 }}
+                  right={[
+                    {
+                      text: "开方",
+                      onPress: () => {
+                        this.selectPrescriptionTpl(prescription)
+                      },
+                      style: { backgroundColor: "blue", color: "white" },
+                    },
+                  ]}
+                  onOpen={() => {}}
+                  onClose={() => {}}>
                   <View style={style.prescriptionItem}>
                     <View
                       style={[
@@ -216,7 +227,7 @@ export default class PrescriptionTplList extends Component<
                       {drugStr}
                     </Text>
                   </View>
-                </TouchableOpacity>
+                </SwipeAction>
               )
             })}
           </View>

@@ -145,7 +145,6 @@ export default class SquareRoot extends Component<
     this.init()
   }
 
-  getDrugList = () => {}
   init = async () => {
     this.setState({
       hasLoad: false,
@@ -154,7 +153,7 @@ export default class SquareRoot extends Component<
       let {
         data: { detail },
       } = await doctor.getPrescriptionDetail({ prescriptionId: this.state.prescriptionId })
-      console.log(detail)
+      // console.log(detail)
       let {
         data: { list: drugCategoryList },
       } = await hospital.getDrugCategoryList({ page: -1, limit: -1 })
@@ -496,6 +495,18 @@ export default class SquareRoot extends Component<
               <Text style={[style.title, global.fontSize14]}> 明细 </Text>
               <View style={style.titleSpot} />
             </View>
+            {/* <View
+              style={[
+                detail.status === PRESCRIPTION_STATUS.completePay
+                  ? style.diagnosisItem
+                  : global.hidden,
+                global.flex,
+                global.alignItemsCenter,
+                global.justifyContentSpaceBetween,
+              ]}>
+              <Text style={[style.diagnosisItemTitle, global.fontSize14]}>物流单号</Text>
+              <Text style={[style.diagnosisItemTitle, global.fontSize14]}>{detail.outTradeNo}</Text>
+            </View> */}
             <View
               style={[
                 style.diagnosisItem,

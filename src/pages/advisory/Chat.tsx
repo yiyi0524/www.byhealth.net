@@ -50,6 +50,79 @@ export type ChatMode = "text" | "audio"
 interface Props {
   navigation: NavigationScreenProp<State>
 }
+const emoji: string[] = [
+  "😀",
+  "😁",
+  "😂",
+  "😃",
+  "😄",
+  "😅",
+  "😆",
+  "😉",
+  "😊",
+  "😋",
+  "😎",
+  "😍",
+  "😘",
+  "😗",
+  "😙",
+  "😚",
+  "😇",
+  "😐",
+  "😑",
+  "😶",
+  "😏",
+  "😣",
+  "😥",
+  "😮",
+  "😯",
+  "😪",
+  "😫",
+  "😴",
+  "😌",
+  "😛",
+  "😜",
+  "😝",
+  "😒",
+  "😓",
+  "😔",
+  "😕",
+  "😲",
+  "😷",
+  "😖",
+  "😞",
+  "😟",
+  "😤",
+  "😢",
+  "😭",
+  "😦",
+  "😧",
+  "😨",
+  "😬",
+  "😰",
+  "😱",
+  "😳",
+  "😵",
+  "😡",
+  "😠",
+  "💪",
+  "👈",
+  "👉",
+  "☝",
+  "👆",
+  "👇",
+  "✋",
+  "👌",
+  "👍",
+  "👎",
+  "✊",
+  "👊",
+  "👋",
+  "👏",
+  "👐",
+  "🌹",
+  "💖",
+]
 
 /**
  * 枚举类型
@@ -149,6 +222,7 @@ interface State {
   groupId: number
   groupName: string
   mode: "chatGroup" | "common"
+  isShowEmoji: boolean //是否显示表情
   isStopRecord: boolean
   // 当前播放的音频的id
   currAudioMsgId: number
@@ -317,6 +391,7 @@ export default class Chat extends Component<
       groupId,
       groupName,
       mode,
+      isShowEmoji: false,
       isStopRecord: false,
       currAudioMsgId: 0,
       imageHeight: 0,
@@ -439,21 +514,16 @@ export default class Chat extends Component<
           title: "文章",
           link: pathMap.ArticleList,
         },
-        // {
-        //   icon: gImg.advisory.show,
-        //   title: "更多功能",
-        //   link: "",
-        // },
         {
           icon: gImg.groupChat.release,
           title: "发布",
           link: pathMap.AddOrEditArticle,
         },
-        // {
-        //   icon: gImg.groupChat.smile,
-        //   title: "表情",
-        //   link: "",
-        // },
+        {
+          icon: gImg.groupChat.smile,
+          title: "表情",
+          link: "",
+        },
       ]
     }
     return list
@@ -727,7 +797,7 @@ export default class Chat extends Component<
         </View>
       )
     }
-    const { chatMode, isRecord, recordTime, mode } = this.state
+    const { chatMode, isRecord, recordTime, mode, isShowEmoji } = this.state
     let msgList: Msg[] = []
     if (mode === "common" && Array.isArray(this.props.ws.chatMsg[this.state.patientUid])) {
       msgList = this.props.ws.chatMsg[this.state.patientUid]
@@ -1205,12 +1275,40 @@ export default class Chat extends Component<
             )}
           </View>
         </View>
+        {/* 表情 */}
+        <View style={isShowEmoji ? style.emoji : global.hidden}>
+          <View style={style.emojiPar}>
+            <ScrollView style={style.emojiScroll}>
+              <View style={[style.emojiList, global.flex, global.wrap]}>
+                {emoji.map(v => {
+                  return (
+                    <View style={style.emojiItem} key={v}>
+                      <TouchableOpacity
+                        onPress={() => {
+                          this.chooseEmoji(v)
+                        }}>
+                        <Text style={style.emojiIcon}>{v}</Text>
+                      </TouchableOpacity>
+                    </View>
+                  )
+                })}
+              </View>
+            </ScrollView>
+            <View style={isShowEmoji ? style.triangle : global.hidden}></View>
+          </View>
+        </View>
       </KeyboardAvoidingView>
     )
   }
   changeMode = () => {
     this.setState({
       chatMode: this.state.chatMode === "audio" ? "text" : "audio",
+    })
+  }
+  chooseEmoji = (emoji: string) => {
+    this.setState({
+      sendMsg: emoji,
+      isShowEmoji: false,
     })
   }
   getMsgList = async (
@@ -1938,8 +2036,9 @@ export default class Chat extends Component<
         })
         break
       case "表情":
-        // todo wait
-        // Toast.info("正在努力开发中, 敬请期待...", 2)
+        this.setState({
+          isShowEmoji: !this.state.isShowEmoji,
+        })
         break
       default:
         this.props.navigation.push(v.link)

@@ -66,7 +66,7 @@ export default class ArticleDetail extends Component<Props & DefaultProps, State
                 id: navigation.state.params!.id,
               })
             } else {
-              Toast.info("你不是此文章的作者", 1)
+              Toast.info("你不是此文章的作者或文章不存在", 3)
             }
           }}>
           <Text style={style.rightTitle}>编辑</Text>
@@ -126,6 +126,9 @@ export default class ArticleDetail extends Component<Props & DefaultProps, State
   }
   render() {
     let { detail, step } = this.state
+    if (detail.id === 0) {
+      return <Text style={style.tips}>此文章已被移除或不存在</Text>
+    }
     return (
       <ScrollView style={style.main}>
         <Carousel

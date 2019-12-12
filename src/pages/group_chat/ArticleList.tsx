@@ -1,12 +1,14 @@
 import global from "@/assets/styles/global"
 import pathMap from "@/routes/pathMap"
-import { Article, ArticleType, listArticle } from "@/services/groupChat"
+import { Article, ArticleType, listArticle, delArticle } from "@/services/groupChat"
 import { TYPE } from "@/utils/constant"
-import { Icon, InputItem, Modal } from "@ant-design/react-native"
+import { Icon, InputItem, Modal, Toast } from "@ant-design/react-native"
 import gSass from "@utils/style"
 import React, { Component } from "react"
 import { FlatList, Text, TouchableOpacity, View } from "react-native"
 import { NavigationScreenProp } from "react-navigation"
+import { connect } from "react-redux"
+import { AppState } from "@/redux/stores/store"
 const style = gSass.groupChat.articleList
 interface Props {
   navigation: NavigationScreenProp<State>
@@ -20,8 +22,17 @@ interface State {
   filter: Record<string, any>
   list: Article[]
 }
-type DefaultProps = {}
+type DefaultProps = {} & ReturnType<typeof mapStateToProps>
 
+const mapStateToProps = (state: AppState) => {
+  return {
+    isLogin: state.user.isLogin,
+    name: state.user.name,
+    uid: state.user.uid,
+  }
+}
+//@ts-ignore
+@connect(mapStateToProps)
 export default class ArticleList extends Component<Props & DefaultProps, State> {
   static defaultProps: DefaultProps
   static navigationOptions = () => {
@@ -60,10 +71,6 @@ export default class ArticleList extends Component<Props & DefaultProps, State> 
       type: ArticleType.all,
       search: "",
       filter: {
-        type: {
-          condition: TYPE.eq,
-          val: ArticleType.all,
-        },
         search: {
           condition: TYPE.eqString,
           val: "",
@@ -77,6 +84,16 @@ export default class ArticleList extends Component<Props & DefaultProps, State> 
     let sendArticle = this.props.navigation.getParam("sendArticle")
     sendArticle(article)
     this.props.navigation.goBack()
+  }
+  delArticle = (id: number) => {
+    delArticle({ id })
+      .then(() => {
+        Toast.success("删除成功", 1, this.init)
+      })
+      .catch(err => {
+        Toast.success("删除失败, 错误信息: " + err.msg, 3)
+        console.log(err)
+      })
   }
   renderItem = (val: any) => {
     let item = val.item
@@ -95,6 +112,10 @@ export default class ArticleList extends Component<Props & DefaultProps, State> 
               onPress: () => {
                 this.props.navigation.push(pathMap.ArticleDetail, { id: item.id })
               },
+            },
+            {
+              text: "删除",
+              onPress: () => this.delArticle(item.id),
             },
           ])
         }}>
@@ -123,9 +144,13 @@ export default class ArticleList extends Component<Props & DefaultProps, State> 
   }
   changeType = (type: number) => {
     let { filter } = this.state
-    filter.type = {
-      condition: TYPE.eq,
-      val: type,
+    if (type === ArticleType.personal) {
+      filter.doctorId = {
+        condition: TYPE.eq,
+        val: this.props.uid,
+      }
+    } else {
+      delete filter.doctorId
     }
     this.setState(
       {

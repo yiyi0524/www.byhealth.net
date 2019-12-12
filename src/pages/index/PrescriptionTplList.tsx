@@ -55,7 +55,7 @@ export default class PrescriptionTplList extends Component<
   State
 > {
   static navigationOptions = ({ navigation }: { navigation: NavigationScreenProp<State> }) => {
-    let title = ""
+    let title = "处方模板"
     if (navigation.state.params) {
       title = navigation.state.params.title + "模板"
     }

@@ -234,7 +234,7 @@ export default class SquareRoot extends Component<
                 },
               ])
             }}>
-            <Text style={{ marginLeft: 10 }}>返回</Text>
+            <Icon name="arrow-left" style={{ fontSize: 22, color: "#000", paddingLeft: 15 }}></Icon>
           </TouchableOpacity>
         </View>
       ),
@@ -610,10 +610,11 @@ export default class SquareRoot extends Component<
                 <Text style={[style.diagnosisItemLineTitle, global.fontSize14]}>
                   {patientInfo.yearAge} 岁
                 </Text>
+              </View>
+              <View style={[style.diagnosisItem, global.flex, global.alignItemsCenter]}>
+                <Text style={[style.diagnosisItemTitle, global.fontSize14]}>手机:</Text>
                 {mode === "phone" && (
-                  <Text style={[style.diagnosisItemLineTitle, global.fontSize14]}>
-                    手机: {phone}
-                  </Text>
+                  <Text style={[style.diagnosisItemInput, global.fontSize14]}>{phone}</Text>
                 )}
               </View>
               <View style={[style.diagnosisItem, global.flex, global.alignItemsCenter]}>

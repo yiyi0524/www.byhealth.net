@@ -209,7 +209,8 @@ export default StyleSheet.create({
   },
   chooseDrugItem: {
     marginBottom: 8,
-    marginRight: 15,
+    marginRight: "2%",
+    minWidth: "46%",
   },
   chooseDrugTitle: {
     color: sColor.color666,

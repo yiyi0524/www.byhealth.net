@@ -89,6 +89,8 @@ export default StyleSheet.create({
     borderRadius: 100,
     overflow: "hidden",
     marginRight: 15,
+    borderWidth: 1,
+    borderColor: "#ddd",
   },
   avatar: {
     width: 50,

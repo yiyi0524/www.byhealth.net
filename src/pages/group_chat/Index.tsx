@@ -241,7 +241,7 @@ export default class Index extends Component<Props & DefaultProps, State> {
                     {/* <Image style={style.avatar} source={gImg.common.defaultAvatar}></Image> */}
                   </View>
                   <View style={style.info}>
-                    <View style={[style.title, global.flex, global.jBetween]}>
+                    <View style={[style.title, global.flex, global.jBetween, global.aCenter]}>
                       <Text style={style.name} numberOfLines={1}>
                         {group.name}
                       </Text>
@@ -255,14 +255,14 @@ export default class Index extends Component<Props & DefaultProps, State> {
                         <Text style={style.addTime}>{ctime}</Text>
                       )}
                     </View>
-                    <View style={[style.descPar, global.flex, global.aCenter]}>
+                    {/* <View style={[style.descPar, global.flex, global.aCenter]}>
                       <Text style={style.desc} numberOfLines={1}>
-                        {group.description}
+                        {group.description || "暂无描述"}
                       </Text>
-                      {/* {currentPage === TAB.MY_GROUP_CHAT && v.msgCount && v.msgCount !== 0 ? (
+                      {currentPage === TAB.MY_GROUP_CHAT && v.msgCount && v.msgCount !== 0 ? (
                         <Text style={[style.tags]}>{v.msgCount > 10 ? "..." : v.msgCount}</Text>
-                      ) : null} */}
-                    </View>
+                      ) : null} 
+                    </View>*/}
                   </View>
                 </TouchableOpacity>
               )

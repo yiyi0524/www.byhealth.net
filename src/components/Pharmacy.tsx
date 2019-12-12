@@ -72,6 +72,9 @@ export default class Pharmacy extends Component<Props, State> {
                   </TouchableOpacity>
                 )
               })}
+              <View style={styles.item}>
+                <Text style={[styles.title, global.fontSize14]}></Text>
+              </View>
             </View>
           </View>
         </ScrollView>
@@ -92,8 +95,7 @@ const styles = StyleSheet.create({
   },
   list: {
     backgroundColor: sColor.white,
-    height: windowHeight,
-    paddingBottom: 15,
+    paddingBottom: 10,
   },
   theme: {
     height: 50,

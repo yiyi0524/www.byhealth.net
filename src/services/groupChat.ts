@@ -170,6 +170,17 @@ export function agreeJoin(data: { id: number; groupId: number }) {
     },
   })
 }
+/**
+ *  删除文章
+ */
+export function delArticle(data: { id: number }) {
+  return bpost<{ detail: Article }>({
+    url: "chatGroup/delArticle",
+    data: {
+      idArr: [data.id],
+    },
+  })
+}
 export default {
   listGroupChat,
 }

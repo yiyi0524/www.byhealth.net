@@ -5,6 +5,10 @@ export default StyleSheet.create({
     flex: 1,
     position: "relative",
   },
+  tips: {
+    textAlign: "center",
+    paddingTop: 30,
+  },
   slider: {
     height: 210,
   },
