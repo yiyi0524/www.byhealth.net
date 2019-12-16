@@ -63,7 +63,20 @@ export async function getHospitalList({ page = -1, limit = -1, filter = {} }: Ge
     },
   })
 }
-
+/**
+ * 获取医院列表
+ */
+export async function getUserWxInfo(query: { openid: string }) {
+  return bget<{
+    uid: number
+    openid: string
+    nick: string
+    avatar: string // 头像url
+  }>({
+    url: "/api/getUserWxInfo",
+    query,
+  })
+}
 export default {
   getPersonalInfo,
   getHospitalList,

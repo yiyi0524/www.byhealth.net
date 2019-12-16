@@ -354,6 +354,7 @@ export interface prescriptionDetail {
   }
   time: string
   status: number
+  shippingNo: string
 }
 /**
  *  获取开方详情

@@ -9,7 +9,7 @@ import { clearPatientUnreadMsgCount, closeInquiry, GENDER_ZH } from "@/services/
 import gImg from "@/utils/img"
 import { getPicCdnUrl, getPicFullUrl, windowWidth, getFileCdnUrl } from "@/utils/utils"
 import { Icon, ImagePicker, Modal, Portal, TextareaItem, Toast } from "@ant-design/react-native"
-import userApi from "@api/user"
+import userApi, { getUserWxInfo } from "@api/user"
 import wsMsgApi from "@api/wsMsg"
 import imgPickerOpt from "@config/imgPickerOpt"
 import { Msg } from "@pages/Ws"
@@ -219,9 +219,10 @@ export interface PatientsThemselves {
   }
 }
 interface State {
+  openid: string
   groupId: number
   groupName: string
-  mode: "chatGroup" | "common"
+  mode: "chatGroup" | "common" | "scanUser"
   isShowEmoji: boolean //是否显示表情
   isStopRecord: boolean
   // 当前播放的音频的id
@@ -311,10 +312,12 @@ export default class Chat extends Component<
     let title = ""
     let groupId = navigation.getParam("groupId") || 0
     let groupName = navigation.getParam("groupName")
-
+    let isScanUserMode = false
     if (navigation.state.params) {
       title = navigation.state.params.patientName || groupName
+      isScanUserMode = navigation.state.params.mode === "scanUser"
     }
+
     return {
       title,
       headerStyle: {
@@ -332,28 +335,27 @@ export default class Chat extends Component<
         fontSize: 14,
         textAlign: "center",
       },
-      headerRight:
-        groupId > 0 ? (
-          <TouchableOpacity
-            onPress={() => {
-              navigation.push(pathMap.GroupChatDetail, {
-                groupId,
-                groupName,
-              })
-            }}>
-            <Icon style={[style.headerRight, global.fontSize18]} name="menu"></Icon>
-          </TouchableOpacity>
-        ) : (
-          <TouchableOpacity
-            onPress={() => {
-              navigation.push(pathMap.AdvisoryMedicalRecord, {
-                patientUid: navigation.getParam("patientUid"),
-                consultationId: navigation.getParam("consultationId"),
-              })
-            }}>
-            <Text style={[style.headerRight, global.fontSize14, global.fontStyle]}>病历</Text>
-          </TouchableOpacity>
-        ),
+      headerRight: isScanUserMode ? null : groupId > 0 ? (
+        <TouchableOpacity
+          onPress={() => {
+            navigation.push(pathMap.GroupChatDetail, {
+              groupId,
+              groupName,
+            })
+          }}>
+          <Icon style={[style.headerRight, global.fontSize18]} name="menu"></Icon>
+        </TouchableOpacity>
+      ) : (
+        <TouchableOpacity
+          onPress={() => {
+            navigation.push(pathMap.AdvisoryMedicalRecord, {
+              patientUid: navigation.getParam("patientUid"),
+              consultationId: navigation.getParam("consultationId"),
+            })
+          }}>
+          <Text style={[style.headerRight, global.fontSize14, global.fontStyle]}>病历</Text>
+        </TouchableOpacity>
+      ),
     }
   }
   bottomNavList: bottomNavItem[] = [
@@ -381,13 +383,17 @@ export default class Chat extends Component<
     let patientUid = 0
     let groupId = 0
     let groupName = ""
+    let openid = ""
     if (mode === "common") {
       patientUid = this.props.navigation.getParam("patientUid")
-    } else {
+    } else if (mode === "scanUser") {
+      openid = this.props.navigation.getParam("openid")
+    } else if (mode === "chatGroup") {
       groupId = this.props.navigation.getParam("groupId")
       groupName = this.props.navigation.getParam("groupName")
     }
     return {
+      openid,
       groupId,
       groupName,
       mode,
@@ -502,7 +508,7 @@ export default class Chat extends Component<
           link: "",
         },
       ]
-    } else {
+    } else if (mode === "chatGroup") {
       list = [
         {
           icon: gImg.advisory.picture,
@@ -522,6 +528,24 @@ export default class Chat extends Component<
         {
           icon: gImg.groupChat.smile,
           title: "表情",
+          link: "",
+        },
+      ]
+    } else if (mode === "scanUser") {
+      list = [
+        {
+          icon: gImg.advisory.dialecticalPrescriptions,
+          title: "开方",
+          link: "",
+        },
+        // {
+        //   icon: gImg.advisory.quickReply,
+        //   title: "快捷回复",
+        //   link: "",
+        // },
+        {
+          icon: gImg.advisory.picture,
+          title: "图片",
           link: "",
         },
       ]
@@ -590,10 +614,13 @@ export default class Chat extends Component<
     }
   }
   init = async () => {
-    if (this.state.mode === "common") {
+    const { mode } = this.state
+    if (mode === "common") {
       return this.initCommon()
-    } else {
+    } else if (mode === "chatGroup") {
       return this.initChatGroup()
+    } else if (mode === "scanUser") {
+      return this.initScanUser()
     }
   }
   initChatGroup = async () => {
@@ -650,6 +677,37 @@ export default class Chat extends Component<
 
     if (patientUid in this.props.ws.chatMsg) {
       if (this.props.ws.chatMsg[this.state.patientUid].length === 0) {
+        this.getMoreMsgList()
+        this.setState({
+          shouldScrollToEnd: true,
+        })
+      } else {
+        this.updateMsgList()
+      }
+    } else {
+      this.getMoreMsgList()
+      this.setState({
+        shouldScrollToEnd: true,
+      })
+    }
+  }
+  initScanUser = async () => {
+    let { openid } = this.state
+
+    const json = await getUserWxInfo({ openid })
+    let {
+      data: { uid },
+    } = json
+    await new Promise(s =>
+      this.setState(
+        {
+          patientUid: uid,
+        },
+        s,
+      ),
+    )
+    if (uid in this.props.ws.chatMsg) {
+      if (this.props.ws.chatMsg[uid].length === 0) {
         this.getMoreMsgList()
         this.setState({
           shouldScrollToEnd: true,
@@ -759,8 +817,11 @@ export default class Chat extends Component<
           }
           if (mode === "common") {
             postData["patientUid"] = patientUid
-          } else {
+          } else if (mode === "chatGroup") {
             postData["groupId"] = groupId
+          } else if (mode === "scanUser") {
+            postData["patientUid"] = patientUid
+            postData["isScanUser"] = true
           }
           this.props.ws.wsPost({
             url: "/ws/sendMsg",
@@ -799,9 +860,12 @@ export default class Chat extends Component<
     }
     const { chatMode, isRecord, recordTime, mode, isShowEmoji } = this.state
     let msgList: Msg[] = []
-    if (mode === "common" && Array.isArray(this.props.ws.chatMsg[this.state.patientUid])) {
+    if (
+      (mode === "common" || mode === "scanUser") &&
+      Array.isArray(this.props.ws.chatMsg[this.state.patientUid])
+    ) {
       msgList = this.props.ws.chatMsg[this.state.patientUid]
-    } else {
+    } else if (mode === "chatGroup") {
       msgList = this.props.ws.groupMsg[this.state.groupId] || []
     }
     return (
@@ -1019,8 +1083,11 @@ export default class Chat extends Component<
                                                 }
                                                 if (mode === "chatGroup") {
                                                   postData["groupId"] = groupId
-                                                } else {
+                                                } else if (mode === "common") {
                                                   postData["patientUid"] = patientUid
+                                                } else if (mode === "scanUser") {
+                                                  postData["patientUid"] = patientUid
+                                                  postData["isScanUser"] = true
                                                 }
                                                 this.props.ws.wsPost({
                                                   url: "/ws/sendMsg",
@@ -1079,8 +1146,11 @@ export default class Chat extends Component<
                                           }
                                           if (mode === "chatGroup") {
                                             postData["groupId"] = groupId
-                                          } else {
+                                          } else if (mode === "common") {
                                             postData["patientUid"] = patientUid
+                                          } else if (mode === "scanUser") {
+                                            postData["patientUid"] = patientUid
+                                            postData["isScanUser"] = true
                                           }
                                           this.props.ws.wsPost({
                                             url: "/ws/sendMsg",
@@ -1202,8 +1272,11 @@ export default class Chat extends Component<
                                     }
                                     if (mode === "chatGroup") {
                                       postData["groupId"] = groupId
-                                    } else {
+                                    } else if (mode === "common") {
                                       postData["patientUid"] = patientUid
+                                    } else if (mode === "scanUser") {
+                                      postData["patientUid"] = patientUid
+                                      postData["isScanUser"] = true
                                     }
                                     this.props.ws.wsPost({
                                       url: "/ws/sendMsg",
@@ -1322,10 +1395,14 @@ export default class Chat extends Component<
         delete filter["patientUid"]
         filter["groupId"] = groupId
       }
+      if (mode === "scanUser") {
+        filter["isScanUser"] = true
+      }
       let {
         data: { list: msgList },
         count,
       } = await wsMsgApi.getMsgList({ page, limit, filter })
+      console.log("msgList: ", msgList, filter)
       if (mode === "chatGroup") {
         this.props.addGroupMsgList({
           groupId,
@@ -1885,12 +1962,45 @@ export default class Chat extends Component<
       Toast.fail("刷新失败,错误信息: " + err.msg)
     }
   }
+  getMoreScanUserMsgList = async () => {
+    this.setState({ refreshing: true })
+    const {
+      ws: { chatMsg },
+    } = this.props
+    let { patientUid } = this.state
+    let page = 1,
+      limit = 8
+    if (patientUid in chatMsg) {
+      let msgCount = chatMsg[patientUid].length
+      limit = 8 - (msgCount % 8)
+      page = Math.ceil(msgCount / 8)
+      if (msgCount % 8 === 0) {
+        page++
+      }
+      // for (let i = 10; i > 0; i--) {
+      // if (msgCount % i === 0) {
+      // limit = i
+      // page = msgCount / limit + 1
+      // break
+      // }
+      // }
+    }
+    try {
+      await this.getMsgList(page, limit)
+      this.setState({ refreshing: false })
+    } catch (err) {
+      this.setState({ refreshing: false })
+      Toast.fail("刷新失败,错误信息: " + err.msg)
+    }
+  }
   getMoreMsgList = async () => {
     const { mode } = this.state
     if (mode === "common") {
       return this.getMoreCommonMsgList()
-    } else {
+    } else if (mode === "chatGroup") {
       return this.getMoreGroupMsgList()
+    } else if (mode === "scanUser") {
+      return this.getMoreScanUserMsgList()
     }
   }
   getMoreCommonMsgList = async () => {
@@ -1997,6 +2107,7 @@ export default class Chat extends Component<
     }
   }
   selectBottomNav = (v: bottomNavItem) => {
+    console.log("selectBottomNav: ", v)
     switch (v.title) {
       case "更多功能":
         this.setState({
@@ -2016,6 +2127,7 @@ export default class Chat extends Component<
       case "结束对话":
         this.closeInquiry()
         break
+      case "快捷回复":
       case "快捷服务":
         this.quickReply()
         break
@@ -2030,6 +2142,10 @@ export default class Chat extends Component<
           patientUid: this.state.patientUid,
         })
         break
+      case "开方":
+        this.props.navigation.push(pathMap.SquareRoot, {
+          mode: "wx",
+        })
       case "图片":
         this.setState({
           isShowBottomPicSelect: !this.state.isShowBottomPicSelect,
@@ -2067,8 +2183,11 @@ export default class Chat extends Component<
     }
     if (mode === "common") {
       postData["patientUid"] = patientUid
-    } else {
+    } else if (mode === "chatGroup") {
       postData["groupId"] = groupId
+    } else if (mode === "scanUser") {
+      postData["patientUid"] = patientUid
+      postData["isScanUser"] = true
     }
     this.props.ws.wsPost({ url: "/ws/sendMsg", data: postData })
     this.setState({
@@ -2122,8 +2241,11 @@ export default class Chat extends Component<
               }
               if (mode === "common") {
                 postData["patientUid"] = patientUid
-              } else {
+              } else if (mode === "chatGroup") {
                 postData["groupId"] = groupId
+              } else if (mode === "scanUser") {
+                postData["patientUid"] = patientUid
+                postData["isScanUser"] = true
               }
               this.props.ws.wsPost({
                 url: "/ws/sendMsg",

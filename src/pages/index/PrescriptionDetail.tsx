@@ -64,6 +64,7 @@ interface prescriptionDetail {
   }
   time: string
   status: number
+  shippingNo: string
 }
 interface Props {
   navigation: NavigationScreenProp<State>
@@ -136,6 +137,7 @@ export default class SquareRoot extends Component<
         },
         time: "",
         status: 0,
+        shippingNo: "",
       },
       drugCategoryList: [],
       drugList: [],
@@ -196,6 +198,7 @@ export default class SquareRoot extends Component<
     }
     let { detail, mode } = this.state,
       status = detail.status
+    console.log(detail)
     return (
       <>
         <ScrollView
@@ -495,7 +498,7 @@ export default class SquareRoot extends Component<
               <Text style={[style.title, global.fontSize14]}> 明细 </Text>
               <View style={style.titleSpot} />
             </View>
-            {/* <View
+            <View
               style={[
                 detail.status === PRESCRIPTION_STATUS.completePay
                   ? style.diagnosisItem
@@ -505,8 +508,8 @@ export default class SquareRoot extends Component<
                 global.justifyContentSpaceBetween,
               ]}>
               <Text style={[style.diagnosisItemTitle, global.fontSize14]}>物流单号</Text>
-              <Text style={[style.diagnosisItemTitle, global.fontSize14]}>{detail.outTradeNo}</Text>
-            </View> */}
+              <Text style={[style.diagnosisItemTitle, global.fontSize14]}>{detail.shippingNo}</Text>
+            </View>
             <View
               style={[
                 style.diagnosisItem,

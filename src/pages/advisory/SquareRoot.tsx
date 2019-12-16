@@ -309,12 +309,12 @@ export default class SquareRoot extends Component<
   }
   async componentDidMount() {
     const { mode } = this.state
-    await this.init()
     this.props.navigation.setParams({
       getState: () => this.state,
       saveCurrSetPrescription: this.props.saveCurrSetPrescription,
       delCurrSetPrescription: this.props.delCurrSetPrescription,
     })
+    await this.init()
     this.listener = DeviceEventEmitter.addListener(
       pathMap.SquareRoot + "Reload",
       (prescriptionDrugCategoryList: PrescriptionDrugCategory[]) => {

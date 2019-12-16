@@ -382,43 +382,54 @@ export default class Index extends Component<
                 .filter(user => !consultationOpenIdList.includes(user.openid))
                 .map(scanUser => {
                   return (
-                    <View
-                      style={[
-                        style.msgItem,
-                        globalStyle.flex,
-                        globalStyle.justifyContentSpaceBetween,
-                        globalStyle.alignItemsCenter,
-                      ]}
-                      key={scanUser.openid}>
-                      <View style={style.baseInformation}>
-                        <View style={style.avatarFormat}>
-                          <Image
-                            style={style.avatar}
-                            source={
-                              scanUser.avatar ? { uri: scanUser.avatar } : gImg.common.defaultAvatar
-                            }
-                          />
+                    <TouchableOpacity
+                      key={scanUser.openid}
+                      onPress={() => {
+                        this.chatWithWxScanUser(scanUser.openid, scanUser.nick)
+                      }}>
+                      <View
+                        style={[
+                          style.msgItem,
+                          globalStyle.flex,
+                          globalStyle.justifyContentSpaceBetween,
+                          globalStyle.alignItemsCenter,
+                        ]}>
+                        <View style={style.baseInformation}>
+                          <View style={style.avatarFormat}>
+                            <Image
+                              style={style.avatar}
+                              source={
+                                scanUser.avatar
+                                  ? { uri: scanUser.avatar }
+                                  : gImg.common.defaultAvatar
+                              }
+                            />
+                          </View>
+                        </View>
+                        <View style={style.msgCenter}>
+                          <View
+                            style={[
+                              globalStyle.flex,
+                              globalStyle.justifyContentSpaceBetween,
+                              globalStyle.alignItemsCenter,
+                            ]}>
+                            <Text
+                              style={[style.msgName, globalStyle.fontSize15, globalStyle.fontStyle]}
+                              numberOfLines={1}>
+                              {scanUser.nick}
+                            </Text>
+                            <Text
+                              style={[
+                                style.msgTime,
+                                globalStyle.fontSize13,
+                                globalStyle.fontStyle,
+                              ]}>
+                              扫码时间: {scanUser.scanTime}
+                            </Text>
+                          </View>
                         </View>
                       </View>
-                      <View style={style.msgCenter}>
-                        <View
-                          style={[
-                            globalStyle.flex,
-                            globalStyle.justifyContentSpaceBetween,
-                            globalStyle.alignItemsCenter,
-                          ]}>
-                          <Text
-                            style={[style.msgName, globalStyle.fontSize15, globalStyle.fontStyle]}
-                            numberOfLines={1}>
-                            {scanUser.nick}
-                          </Text>
-                          <Text
-                            style={[style.msgTime, globalStyle.fontSize13, globalStyle.fontStyle]}>
-                            扫码时间: {scanUser.scanTime}
-                          </Text>
-                        </View>
-                      </View>
-                    </View>
+                    </TouchableOpacity>
                   )
                 })}
             </View>
@@ -426,5 +437,12 @@ export default class Index extends Component<
         </ScrollView>
       </>
     )
+  }
+  chatWithWxScanUser = (openid: string, nick: string) => {
+    this.props.navigation.push(pathMap.AdvisoryChat, {
+      mode: "scanUser",
+      openid,
+      patientName: nick,
+    })
   }
 }
