@@ -6,8 +6,10 @@ import doctorBankCard, {
   CashOutApply,
   CASH_OUT_APPLY_STATUS_ZH,
   CASH_OUT_APPLY_STATUS,
+  Type,
+  CashOutData,
 } from "@/services/doctorBankCard"
-import { Icon, Toast, Modal } from "@ant-design/react-native"
+import { Icon, Toast, Modal, InputItem } from "@ant-design/react-native"
 import sColor from "@styles/color"
 import gImg from "@utils/img"
 import gStyle from "@utils/style"
@@ -31,6 +33,12 @@ interface Props {
   navigation: any
 }
 interface State {
+  isCashOutModalActive: boolean
+  aliAccount: string
+  aliName: string
+  wxAccount: string
+  money: string
+  cashType: Type
   hasLoad: boolean
   refreshing: boolean
   isShowAccount: boolean
@@ -64,10 +72,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
     },
   }
 }
-@connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)
+@connect(mapStateToProps, mapDispatchToProps)
 export default class Account extends Component<
   Props & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
   State
@@ -110,6 +115,12 @@ export default class Account extends Component<
   }
   getInitState = (): State => {
     return {
+      aliAccount: "",
+      aliName: "",
+      cashType: "bankCard",
+      isCashOutModalActive: false,
+      money: "",
+      wxAccount: "",
       hasLoad: false,
       refreshing: false,
       isShowAccount: true,
@@ -159,6 +170,30 @@ export default class Account extends Component<
         Toast.fail("刷新失败,错误信息: " + err.msg)
       })
   }
+  cashOut = (args: CashOutData) => {
+    const { balance } = this.state
+    if (args.money) {
+      if (args.money > balance) {
+        return Toast.fail("提现金额不能大于余额 ")
+      }
+      doctorBankCard
+        .cashOut(args)
+        .then(() => {
+          Toast.success("提交成功, 请等待审核", 1)
+          this.setState({
+            aliAccount: "",
+            aliName: "",
+            wxAccount: "",
+          })
+          this.init()
+        })
+        .catch(err => {
+          Toast.success("提交失败,错误原因: " + err.msg, 1)
+        })
+    } else {
+      Toast.info("请输入正确的金额", 2)
+    }
+  }
   render() {
     if (!this.state.hasLoad) {
       return (
@@ -169,7 +204,15 @@ export default class Account extends Component<
         </View>
       )
     }
-    let { bankList, records, balance } = this.state
+    let {
+      bankList,
+      records,
+      isCashOutModalActive,
+      aliAccount,
+      aliName,
+      cashType,
+      wxAccount,
+    } = this.state
     return (
       <>
         <ScrollView
@@ -205,30 +248,36 @@ export default class Account extends Component<
               <TouchableOpacity
                 style={style.headerCenterRightFa}
                 onPress={() => {
-                  Modal.prompt(
-                    "提现",
-                    "请输入提现金额(元)",
-                    val => {
-                      let money = parseFloat(val) * 100
-                      if (money) {
-                        if (money > balance) {
-                          return Toast.fail("提现金额不能大于余额 ")
-                        }
-                        doctorBankCard
-                          .cashOut({ money })
-                          .then(() => {
-                            Toast.success("提交成功, 请等待审核", 3)
-                            this.init()
-                          })
-                          .catch(err => {
-                            Toast.success("提交失败,错误原因: " + err.msg, 3)
-                          })
-                      } else {
-                        Toast.info("请输入正确的金额", 2)
-                      }
+                  const isCashOutModalActive = true
+                  Modal.operation([
+                    {
+                      text: "支付宝",
+                      onPress: () => {
+                        this.setState({
+                          cashType: "aliPay",
+                          isCashOutModalActive,
+                        })
+                      },
                     },
-                    "text",
-                  )
+                    {
+                      text: "微信",
+                      onPress: () => {
+                        this.setState({
+                          cashType: "wxPay",
+                          isCashOutModalActive,
+                        })
+                      },
+                    },
+                    {
+                      text: "提现到银行卡",
+                      onPress: () => {
+                        this.setState({
+                          cashType: "bankCard",
+                          isCashOutModalActive,
+                        })
+                      },
+                    },
+                  ])
                 }}>
                 <Text style={[style.headerCenterRight, global.fontSize14, global.fontStyle]}>
                   去提现
@@ -286,6 +335,14 @@ export default class Account extends Component<
           <View style={records.length > 0 ? style.record : global.hidden}>
             <Text style={style.recordTitle}>提现记录</Text>
             {records.map((v, k) => {
+              let name = ""
+              if (v.bankCard) {
+                name = v.bankCard.bankName
+              } else if (v.type === "aliPay") {
+                name = "支付宝"
+              } else if (v.type === "wxPay") {
+                name = "微信"
+              }
               return (
                 <View
                   key={k}
@@ -295,7 +352,7 @@ export default class Account extends Component<
                     global.alignItemsCenter,
                     global.justifyContentSpaceBetween,
                   ]}>
-                  <Text style={style.recordName}>{v.bankCard.bankName}</Text>
+                  <Text style={style.recordName}>{name}</Text>
                   <Text style={style.recordMoney}>{(v.money / 100).toFixed(2)}</Text>
                   <Text
                     style={
@@ -312,6 +369,107 @@ export default class Account extends Component<
               )
             })}
           </View>
+          <Modal
+            title="提现"
+            transparent
+            onClose={() => {
+              this.setState({
+                isCashOutModalActive: false,
+              })
+            }}
+            maskClosable
+            visible={isCashOutModalActive}
+            closable
+            footer={[
+              {
+                text: "取消",
+                onPress: () => {
+                  this.setState({
+                    isCashOutModalActive: false,
+                  })
+                },
+              },
+              {
+                text: "确定",
+                onPress: () => {
+                  let { aliAccount, aliName, wxAccount, cashType, money } = this.state
+                  let fmtMoney = parseFloat(money)
+                  if (fmtMoney) {
+                    if (fmtMoney <= 0) {
+                      return Toast.fail("输入金额不正确")
+                    }
+                    fmtMoney *= 100
+                    fmtMoney = parseInt(fmtMoney + "")
+                  } else {
+                    return Toast.fail("输入金额不正确")
+                  }
+                  this.cashOut({
+                    type: cashType,
+                    money: fmtMoney,
+                    aliAccount,
+                    aliName,
+                    wxAccount,
+                  })
+                },
+              },
+            ]}>
+            <View style={{ paddingVertical: 20 }}>
+              <InputItem
+                clear
+                value={this.state.money}
+                onChange={money => {
+                  this.setState({
+                    money,
+                  })
+                }}
+                style={[global.fontSize14, global.fontStyle]}
+                placeholder="请输入提现金额(元)">
+                金额
+              </InputItem>
+              {cashType === "aliPay" && (
+                <InputItem
+                  clear
+                  value={aliAccount}
+                  onChange={aliAccount => {
+                    this.setState({
+                      aliAccount,
+                    })
+                  }}
+                  style={[global.fontSize14, global.fontStyle]}
+                  placeholder="请输入支付宝账号">
+                  账号
+                </InputItem>
+              )}
+              {cashType === "aliPay" && (
+                <InputItem
+                  clear
+                  value={aliName}
+                  onChange={aliName => {
+                    this.setState({
+                      aliName,
+                    })
+                  }}
+                  style={[global.fontSize14, global.fontStyle]}
+                  placeholder="请输入支付宝真实姓名">
+                  姓名
+                </InputItem>
+              )}
+              {cashType === "wxPay" && (
+                <InputItem
+                  clear
+                  value={wxAccount}
+                  onChange={wxAccount => {
+                    this.setState({
+                      wxAccount,
+                    })
+                  }}
+                  style={[global.fontSize14, global.fontStyle]}
+                  placeholder="请输入微信账号">
+                  微信账号
+                </InputItem>
+              )}
+            </View>
+          </Modal>
         </ScrollView>
       </>
     )

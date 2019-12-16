@@ -1,5 +1,5 @@
 import { GetListParam, bget, bpost } from "./api"
-
+export type Type = "bankCard" | "aliPay" | "wxPay"
 /**
  * 医生银行卡模型
  */
@@ -24,7 +24,11 @@ export interface CashOutApply {
   uid: number
   doctorId: number
   money: number
-  bankCard: Omit<DoctorBankCard, "uid" | "doctorId">
+  type: Type
+  aliAccount: string
+  aliName: string
+  wxAccount: string
+  bankCard: Omit<DoctorBankCard, "uid" | "doctorId"> | null
   status: number
   ctime: string
 }
@@ -73,10 +77,17 @@ export function edit(data: Omit<DoctorBankCard, "uid" | "doctorId">) {
     data,
   })
 }
+export interface CashOutData {
+  type: Type
+  aliAccount?: string
+  aliName?: string
+  wxAccount?: string
+  money: number
+}
 /**
  * 提现
  */
-export function cashOut(data: { money: number }) {
+export function cashOut(data: CashOutData) {
   return bpost({
     url: "api/cashOut",
     data,
