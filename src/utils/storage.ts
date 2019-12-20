@@ -25,32 +25,18 @@ export default {
         .add(data.expire, "s")
         .format("YYYY-MM-DD HH:mm:ss")
     }
-    if (k === "session") {
-      console.log("storage session: ", data)
-    }
+
     return await AsyncStorage.setItem(k, JSON.stringify(data))
   },
   [getSingle]: async function(k: string) {
     let data, realData, now
     try {
-      if (k === "session") {
-        console.log("正在获取session数据")
-      }
       let json = await AsyncStorage.getItem(k)
       if (!json) {
-        if (k === "session") {
-          console.log("session不存在,返回null")
-        }
         return null
       }
       data = JSON.parse(json)
-      if (k === "session") {
-        console.log("session 存在", data)
-      }
     } catch (e) {
-      if (k === "session") {
-        console.log("session ex", e)
-      }
       return null
     }
     if (data === null) {
@@ -59,15 +45,10 @@ export default {
     realData = data.val
     now = new Date()
     if (data.expire !== ALL_TIME && now > new Date(data.expire)) {
-      if (k === "session") {
-        console.log("session 已过期")
-      }
       this.remove(k)
       return null
     }
-    if (k === "session") {
-      console.log("session realData", realData)
-    }
+
     return realData
   },
   [setMulti]: async function(arr: any) {
@@ -82,7 +63,7 @@ export default {
       if (data.expire !== ALL_TIME) {
         data.expire = moment()
           .add(data.expire, "s")
-          .format("YYYY-MM-DD HH-mm-ss")
+          .format("YYYY-MM-DD HH:mm:ss")
       }
       dataArr.push([k, JSON.stringify(data)])
     }
