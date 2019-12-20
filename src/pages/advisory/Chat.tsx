@@ -222,6 +222,7 @@ interface State {
   groupId: number
   groupName: string
   mode: "chatGroup" | "common" | "scanUser"
+  isInputBlur: boolean //输入框是否失去焦点
   isShowEmoji: boolean //是否显示表情
   isStopRecord: boolean
   // 当前播放的音频的id
@@ -397,6 +398,7 @@ export default class Chat extends Component<
       groupName,
       mode,
       isShowEmoji: false,
+      isInputBlur: false,
       isStopRecord: false,
       currAudioMsgId: 0,
       imageHeight: 0,
@@ -857,7 +859,7 @@ export default class Chat extends Component<
         </View>
       )
     }
-    const { chatMode, isRecord, recordTime, mode, isShowEmoji } = this.state
+    const { chatMode, isRecord, recordTime, mode, isShowEmoji, isInputBlur } = this.state
     let msgList: Msg[] = []
     if (
       (mode === "common" || mode === "scanUser") &&
@@ -973,13 +975,30 @@ export default class Chat extends Component<
                     <>
                       <View style={style.inputFa}>
                         <TextareaItem
-                          style={style.input}
+                          style={[
+                            style.input,
+                            isInputBlur
+                              ? {
+                                  height: 45,
+                                }
+                              : {},
+                          ]}
                           placeholder="请输入"
                           autoHeight
                           clear
                           last
                           ref={ref => (this.msgInput = ref)}
                           value={this.state.sendMsg}
+                          onBlur={() => {
+                            this.setState({
+                              isInputBlur: true,
+                            })
+                          }}
+                          onFocus={() => {
+                            this.setState({
+                              isInputBlur: false,
+                            })
+                          }}
                           onChange={val => {
                             val = val || ""
                             this.setState({
