@@ -14,7 +14,8 @@
     "resetCache": "yarn start --resetCache",
     "adb": "adb shell input keyevent 82",
     "hotUpdate": "appcenter codepush release-react -a buffge/bo2-yi1-jian4-kang1 --entry-file index.tsx",
-    "hotUpdateProd": "appcenter codepush release-react -d Production -a buffge/bo2-yi1-jian4-kang1 --entry-file index.tsx"
+    "hotUpdateProd": "appcenter codepush release-react -d Production -a buffge/bo2-yi1-jian4-kang1 --entry-file index.tsx",
+    "iosHotUpdateProd": "appcenter codepush release-react -d Production -a buffge/bo2-yi1-jian4-kang1-ios --entry-file index.tsx --plist-file ios/boyi615/Info.plist"
   },
   "dependencies": {
     "@ant-design/react-native": "^3.2.0",
