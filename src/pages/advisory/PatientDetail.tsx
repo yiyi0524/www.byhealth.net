@@ -117,10 +117,7 @@ export interface Region {
   children: Region[]
 }
 // @ts-ignore
-@connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)
+@connect(mapStateToProps, mapDispatchToProps)
 export default class PatientDetail extends Component<
   Props & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
   State
@@ -817,7 +814,7 @@ export default class PatientDetail extends Component<
                 this.setState({
                   showImg: [
                     {
-                      url: BASE_URL + "/static/media/collapsed_logo.db8ef9b3.png",
+                      url: getPicCdnUrl("/static/media/collapsed_logo.db8ef9b3.png"),
                     },
                   ],
                   isShowMode: false,

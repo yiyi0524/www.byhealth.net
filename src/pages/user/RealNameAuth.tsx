@@ -2,6 +2,7 @@ import global from "@/assets/styles/global"
 import * as userAction from "@/redux/actions/user"
 import { AppState } from "@/redux/stores/store"
 import pathMap from "@/routes/pathMap"
+import { CASH_OUT_APPLY_STATUS } from "@/services/doctorBankCard"
 import { getPicCdnUrl } from "@/utils/utils"
 import {
   Icon,
@@ -22,7 +23,6 @@ import doctorApi, {
   TECHNICAL_TITLE_ZH,
 } from "@api/doctor"
 import hospitalApi from "@api/hospital"
-import { BASE_URL } from "@config/api"
 import imgPickerOpt from "@config/imgPickerOpt"
 import sColor from "@styles/color"
 import gImg from "@utils/img"
@@ -43,7 +43,6 @@ import { NavigationScreenProp } from "react-navigation"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
 import { Picture } from "../advisory/Chat"
-import { CASH_OUT_APPLY_STATUS } from "@/services/doctorBankCard"
 const style = gStyle.user.realNameAuth
 interface Props {
   navigation: NavigationScreenProp<State>
@@ -127,10 +126,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
   }
 }
 // @ts-ignore
-@connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)
+@connect(mapStateToProps, mapDispatchToProps)
 export default class RealNameAuth extends Component<
   Props & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
   State
@@ -292,17 +288,17 @@ export default class RealNameAuth extends Component<
       } = await doctorApi.getWaitAuditDoctorDetail()
       let practisingCertificatePicList = detail.practisingCertificateList
       for (let v of practisingCertificatePicList) {
-        v.url = BASE_URL + v.url
+        v.url = getPicCdnUrl(v.url)
         v.picId = v.id
       }
       let qualificationCertificatePicList = detail.qualificationCertificateList
       for (let v of qualificationCertificatePicList) {
-        v.url = BASE_URL + v.url
+        v.url = getPicCdnUrl(v.url)
         v.picId = v.id
       }
       let technicalqualificationCertificatePicList = detail.technicalQualificationCertificateList
       for (let v of technicalqualificationCertificatePicList) {
-        v.url = BASE_URL + v.url
+        v.url = getPicCdnUrl(v.url)
         v.picId = v.id
       }
       let {
@@ -340,7 +336,7 @@ export default class RealNameAuth extends Component<
         avatar.push({
           id: detail.avatar.id,
           title: detail.avatar.title,
-          url: BASE_URL + detail.avatar.url,
+          url: getPicCdnUrl(detail.avatar.url),
         })
       }
       this.setState({

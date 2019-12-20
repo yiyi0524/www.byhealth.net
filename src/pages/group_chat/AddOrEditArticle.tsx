@@ -1,7 +1,6 @@
-import { BASE_URL } from "@/config/api"
 import { uploadImg } from "@/services/api"
 import { addArticle, editArticle, getArticle } from "@/services/groupChat"
-import { getPicFullUrl } from "@/utils/utils"
+import { getPicCdnUrl, getPicFullUrl } from "@/utils/utils"
 import { ImagePicker, InputItem, Portal, TextareaItem, Toast } from "@ant-design/react-native"
 import imgPickerOpt from "@config/imgPickerOpt"
 import gSass from "@utils/style"
@@ -18,7 +17,6 @@ import RnImagePicker from "react-native-image-picker"
 import Permissions from "react-native-permissions"
 import { NavigationScreenProp } from "react-navigation"
 import { Picture } from "../advisory/Chat"
-import articleDetail from "@/assets/styles/group_chat/articleDetail"
 const style = gSass.groupChat.addArticle
 interface Props {
   navigation: NavigationScreenProp<State>
@@ -152,7 +150,11 @@ export default class AddArticle extends Component<Props & DefaultProps, State> {
               </View>
               <View style={style.item}>
                 <Text style={style.title}>图片展示</Text>
-                <ImagePicker files={picList} onAddImageClick={this.addImage} />
+                <ImagePicker
+                  files={picList}
+                  onAddImageClick={this.addImage}
+                  onChange={this.onImageChange}
+                />
               </View>
             </View>
           </ScrollView>
@@ -169,6 +171,12 @@ export default class AddArticle extends Component<Props & DefaultProps, State> {
       </KeyboardAvoidingView>
     )
   }
+  onImageChange = (picList: any) => {
+    console.log(picList)
+    this.setState({
+      picList,
+    })
+  }
   //上传图片
   addImage = () => {
     try {
@@ -179,7 +187,7 @@ export default class AddArticle extends Component<Props & DefaultProps, State> {
               Permissions.request("camera").then(status => {
                 if (status === "authorized") {
                   console.log("获得摄像头权限")
-                  RnImagePicker.launchImageLibrary(imgPickerOpt, resp => {
+                  RnImagePicker.launchImageLibrary(imgPickerOpt, (resp: any) => {
                     const uploadingImgKey = Toast.loading("上传图片中", 0, () => {}, true)
                     if (resp.didCancel) {
                       Portal.remove(uploadingImgKey)
@@ -195,7 +203,7 @@ export default class AddArticle extends Component<Props & DefaultProps, State> {
                           picList.push({
                             id: json.data.picId,
                             title: json.data.name,
-                            url: BASE_URL + json.data.url,
+                            url: getPicCdnUrl(json.data.url),
                           })
                           this.setState({
                             picList,
@@ -216,7 +224,7 @@ export default class AddArticle extends Component<Props & DefaultProps, State> {
             }
           } else {
             console.log("获得摄像头权限已经获取")
-            RnImagePicker.launchImageLibrary(imgPickerOpt, resp => {
+            RnImagePicker.launchImageLibrary(imgPickerOpt, (resp: any) => {
               const uploadingImgKey = Toast.loading("上传图片中", 0, () => {}, true)
               if (resp.didCancel) {
                 Portal.remove(uploadingImgKey)
@@ -231,7 +239,7 @@ export default class AddArticle extends Component<Props & DefaultProps, State> {
                     picList.push({
                       id: json.data.picId,
                       title: json.data.name,
-                      url: BASE_URL + json.data.url,
+                      url: getPicCdnUrl(json.data.url),
                     })
                     this.setState({
                       picList,

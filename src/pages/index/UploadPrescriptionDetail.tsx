@@ -1,5 +1,4 @@
 import global from "@/assets/styles/global"
-import { BASE_URL } from "@/config/api"
 import { getPicFullUrl } from "@/utils/utils"
 import { Icon } from "@ant-design/react-native"
 import doctorApi, { UPLOAD_PRESCRIPTION_STATUS } from "@api/doctor"
@@ -201,7 +200,7 @@ export default class UploadPrescriptionDetail extends Component<Props & DefaultP
                 this.setState({
                   showImgUrl: [
                     {
-                      url: BASE_URL + "/static/media/collapsed_logo.db8ef9b3.png",
+                      url: getPicCdnUrl("/static/media/collapsed_logo.db8ef9b3.png"),
                     },
                   ],
                   isShowImg: false,

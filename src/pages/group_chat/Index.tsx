@@ -15,6 +15,7 @@ import { getPicFullUrl } from "@/utils/utils"
 import { connect } from "react-redux"
 import { AppState } from "@/redux/stores/store"
 import { Picture } from "../advisory/Chat"
+import { getPersonalInfo } from "@/services/user"
 const style = gSass.groupChat.index
 
 interface Props {
@@ -28,6 +29,7 @@ interface State {
   page: number
   limit: number
   groupChatName: string
+  hasRealNameAuth: boolean
   groupChatDesc: string
   groupChatPic: Picture
   filter: Record<string, any>
@@ -57,6 +59,7 @@ export default class Index extends Component<Props & DefaultProps, State> {
       refreshing: false,
       isJoinGroupChat: false,
       currentPage: TAB.MY_GROUP_CHAT,
+      hasRealNameAuth: false,
       groupChatId: 0,
       groupChatName: "",
       groupChatDesc: "",
@@ -77,9 +80,15 @@ export default class Index extends Component<Props & DefaultProps, State> {
   }
   init = async () => {
     try {
+      const {
+        data: {
+          doctorInfo: { hasRealNameAuth },
+        },
+      } = await getPersonalInfo()
       this.listGroupChat()
       this.setState({
         hasLoad: true,
+        hasRealNameAuth,
       })
     } catch (err) {
       console.log(err)
@@ -184,7 +193,7 @@ export default class Index extends Component<Props & DefaultProps, State> {
     )
   }
   groupChat = () => {
-    let { search, list, currentPage, isJoinGroupChat } = this.state
+    let { search, list, currentPage, isJoinGroupChat, hasRealNameAuth } = this.state
     return (
       <View style={style.group}>
         <View
@@ -226,6 +235,10 @@ export default class Index extends Component<Props & DefaultProps, State> {
                   key={k}
                   onPress={() => {
                     if (isApplyJoined) {
+                      return
+                    }
+                    if (!hasRealNameAuth) {
+                      Toast.fail("请先实名认证", 1)
                       return
                     }
                     this.joinOrDetail(group.id, group.name, group.description, group.pic, isJoined)
@@ -364,7 +377,11 @@ export default class Index extends Component<Props & DefaultProps, State> {
   }
   //加入群聊
   joinGroup = () => {
-    let { groupChatId: id } = this.state
+    let { groupChatId: id, hasRealNameAuth } = this.state
+    if (!hasRealNameAuth) {
+      Toast.fail("申请失败 请先实名认证", 1)
+      return
+    }
     joinGroupChat({ id })
       .then(() => {
         Toast.success("申请成功", 1, this.onRefresh)

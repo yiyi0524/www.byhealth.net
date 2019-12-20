@@ -17,6 +17,7 @@ import { connect } from "react-redux"
 import { Dispatch } from "redux"
 import { Overwrite } from "utility-types"
 import { Picture } from "../advisory/Chat"
+import { getPicCdnUrl } from "@/utils/utils"
 
 const style = gStyle.personalCenter.editInformation
 const global = gStyle.global
@@ -87,10 +88,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
   }
 }
 //@ts-ignore
-@connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)
+@connect(mapStateToProps, mapDispatchToProps)
 export default class Index extends Component<
   Props & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
   State
@@ -320,7 +318,7 @@ export default class Index extends Component<
                   style={style.headerInfoImg}
                   source={
                     this.state.info.avatar.url
-                      ? { uri: BASE_URL + this.state.info.avatar.url }
+                      ? { uri: getPicCdnUrl(this.state.info.avatar.url) }
                       : gImg.common.defaultAvatar
                   }
                 />

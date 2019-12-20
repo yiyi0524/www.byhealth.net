@@ -220,10 +220,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
   }
 }
 // @ts-ignore
-@connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)
+@connect(mapStateToProps, mapDispatchToProps)
 export default class EnteringGroupChat extends Component<
   Props & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
   State
@@ -1013,7 +1010,7 @@ export default class EnteringGroupChat extends Component<
                   this.setState({
                     imagesViewer: [
                       {
-                        url: BASE_URL + "/static/media/collapsed_logo.db8ef9b3.png",
+                        url: getPicCdnUrl("/static/media/collapsed_logo.db8ef9b3.png"),
                       },
                     ],
                     imageHeight: 0,

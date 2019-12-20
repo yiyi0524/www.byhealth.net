@@ -95,9 +95,13 @@ export async function isLogin() {
         .then(() => s(true))
         .catch(() => s(false))
     } catch (err) {
+      console.log("check isLogin err: ", err)
       s(false)
     }
   })
+  if (isLogin === false) {
+    console.log("not login: ", session)
+  }
   return isLogin
 }
 export interface AccountLoginParam {

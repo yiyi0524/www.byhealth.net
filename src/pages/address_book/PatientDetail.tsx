@@ -4,7 +4,7 @@ import pathMap from "@/routes/pathMap"
 import api, { getThumbUrl, NOT_LIMIT } from "@/services/api"
 import doctor, { GENDER, GENDER_ZH } from "@/services/doctor"
 import hospital from "@/services/hospital"
-import { getPicFullUrl, getPicCdnUrl } from "@/utils/utils"
+import { getPicCdnUrl, getPicFullUrl } from "@/utils/utils"
 import { Icon, Modal, Toast } from "@ant-design/react-native"
 import { IconNames } from "@ant-design/react-native/lib/icon"
 import patientApi, { Drug } from "@api/patient"
@@ -23,12 +23,11 @@ import {
   View,
 } from "react-native"
 import { TouchableOpacity } from "react-native-gesture-handler"
+import ImageViewer from "react-native-image-zoom-viewer"
 import { NavigationScreenProp } from "react-navigation"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
-import { Picture, imagesViewer } from "../advisory/Chat"
-import ImageViewer from "react-native-image-zoom-viewer"
-import { BASE_URL } from "@/config/api"
+import { imagesViewer, Picture } from "../advisory/Chat"
 const style = gStyle.addressBook.PatientDetail
 const global = gStyle.global
 /**
@@ -115,10 +114,7 @@ export interface Region {
   areaName: string
   children: Region[]
 }
-@connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)
+@connect(mapStateToProps, mapDispatchToProps)
 export default class PatientDetail extends Component<
   Props & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
   State
@@ -770,7 +766,7 @@ export default class PatientDetail extends Component<
                 this.setState({
                   showImg: [
                     {
-                      url: BASE_URL + "/static/media/collapsed_logo.db8ef9b3.png",
+                      url: getPicCdnUrl("/static/media/collapsed_logo.db8ef9b3.png"),
                     },
                   ],
                   isShowMode: false,

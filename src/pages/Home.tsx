@@ -4,7 +4,7 @@ import * as userAction from "@/redux/actions/user"
 import { AppState } from "@/redux/stores/store"
 import pathMap from "@/routes/pathMap"
 import { ALLOW_INQUIRY } from "@/services/doctor"
-import { isDebugMode } from "@/utils/utils"
+import { isDebugMode, getPicCdnUrl } from "@/utils/utils"
 import { Icon, Toast } from "@ant-design/react-native"
 import api, { checkUpdate, updateAliPushDeviceId } from "@api/api"
 import userApi from "@api/user"
@@ -383,7 +383,7 @@ export default class Home extends Component<
               <Image
                 source={
                   this.state.avatar.url !== ""
-                    ? { uri: BASE_URL + this.state.avatar.url }
+                    ? { uri: getPicCdnUrl(this.state.avatar.url) }
                     : gImg.common.defaultAvatar
                 }
                 style={style.headerAvatar}

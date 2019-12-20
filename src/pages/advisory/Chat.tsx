@@ -1,13 +1,13 @@
 import global from "@/assets/styles/global"
 import DashLine from "@/components/DashLine"
-import { BASE_URL } from "@/config/api"
 import * as wsAction from "@/redux/actions/ws"
 import { AppState } from "@/redux/stores/store"
 import pathMap from "@/routes/pathMap"
 import api, { getRegion, getThumbUrl, uploadAudio, uploadImg, windowHeight } from "@/services/api"
 import { clearPatientUnreadMsgCount, closeInquiry, GENDER_ZH } from "@/services/doctor"
+import { Article } from "@/services/groupChat"
 import gImg from "@/utils/img"
-import { getPicCdnUrl, getPicFullUrl, windowWidth, getFileCdnUrl } from "@/utils/utils"
+import { getFileCdnUrl, getPicCdnUrl, getPicFullUrl, windowWidth } from "@/utils/utils"
 import { Icon, ImagePicker, Modal, Portal, TextareaItem, Toast } from "@ant-design/react-native"
 import userApi, { getUserWxInfo } from "@api/user"
 import wsMsgApi from "@api/wsMsg"
@@ -17,11 +17,11 @@ import sColor from "@styles/color"
 import Buff from "@utils/Buff"
 import gStyle from "@utils/style"
 import React, { Component } from "react"
-import Sound from "react-native-sound"
 import {
   AppState as RnAppState,
   AppStateStatus,
   DeviceEventEmitter,
+  Dimensions,
   EmitterSubscription,
   Image,
   ImageSourcePropType,
@@ -32,18 +32,17 @@ import {
   RefreshControl,
   Text,
   View,
-  Dimensions,
 } from "react-native"
 import { AudioRecorder, AudioUtils } from "react-native-audio"
 import { TouchableOpacity } from "react-native-gesture-handler"
-import RnImagePicker from "react-native-image-picker"
 import ImageZoom from "react-native-image-pan-zoom"
+import RnImagePicker from "react-native-image-picker"
 import Permissions from "react-native-permissions"
+import Sound from "react-native-sound"
 import { NavigationScreenProp, ScrollView } from "react-navigation"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
 import { Overwrite } from "utility-types"
-import { Article } from "@/services/groupChat"
 const style = gStyle.advisory.advisoryChat
 const audioPath = AudioUtils.DocumentDirectoryPath + "/tempAudio.aac"
 export type ChatMode = "text" | "audio"
@@ -1049,57 +1048,60 @@ export default class Chat extends Component<
                                     Permissions.request("camera").then(status => {
                                       if (status === "authorized") {
                                         console.log("获得摄像头权限")
-                                        RnImagePicker.launchImageLibrary(imgPickerOpt, resp => {
-                                          const uploadingImgKey = Toast.loading(
-                                            "上传图片中",
-                                            0,
-                                            () => {},
-                                            true,
-                                          )
-                                          if (resp.didCancel) {
-                                            Portal.remove(uploadingImgKey)
-                                          } else if (resp.error) {
-                                            Portal.remove(uploadingImgKey)
-                                            return Toast.info(
-                                              "您禁止了拍摄照片和录制视频权限, 请到设置中心打开",
-                                              3,
+                                        RnImagePicker.launchImageLibrary(
+                                          imgPickerOpt,
+                                          (resp: any) => {
+                                            const uploadingImgKey = Toast.loading(
+                                              "上传图片中",
+                                              0,
+                                              () => {},
+                                              true,
                                             )
-                                          } else {
-                                            uploadImg({ url: resp.uri })
-                                              .then(json => {
-                                                Portal.remove(uploadingImgKey)
-                                                this.setState({
-                                                  isShowBottomNav: false,
-                                                  isShowBottomPicSelect: false,
+                                            if (resp.didCancel) {
+                                              Portal.remove(uploadingImgKey)
+                                            } else if (resp.error) {
+                                              Portal.remove(uploadingImgKey)
+                                              return Toast.info(
+                                                "您禁止了拍摄照片和录制视频权限, 请到设置中心打开",
+                                                3,
+                                              )
+                                            } else {
+                                              uploadImg({ url: resp.uri })
+                                                .then(json => {
+                                                  Portal.remove(uploadingImgKey)
+                                                  this.setState({
+                                                    isShowBottomNav: false,
+                                                    isShowBottomPicSelect: false,
+                                                  })
+                                                  const { patientUid, groupId, mode } = this.state
+                                                  const { url, picId } = json.data
+                                                  let postData: any = {
+                                                    pic: {
+                                                      url,
+                                                      picId,
+                                                    },
+                                                    type: MsgType.picture,
+                                                  }
+                                                  if (mode === "chatGroup") {
+                                                    postData["groupId"] = groupId
+                                                  } else if (mode === "common") {
+                                                    postData["patientUid"] = patientUid
+                                                  } else if (mode === "scanUser") {
+                                                    postData["patientUid"] = patientUid
+                                                    postData["isScanUser"] = true
+                                                  }
+                                                  this.props.ws.wsPost({
+                                                    url: "/ws/sendMsg",
+                                                    data: postData,
+                                                  })
                                                 })
-                                                const { patientUid, groupId, mode } = this.state
-                                                const { url, picId } = json.data
-                                                let postData: any = {
-                                                  pic: {
-                                                    url,
-                                                    picId,
-                                                  },
-                                                  type: MsgType.picture,
-                                                }
-                                                if (mode === "chatGroup") {
-                                                  postData["groupId"] = groupId
-                                                } else if (mode === "common") {
-                                                  postData["patientUid"] = patientUid
-                                                } else if (mode === "scanUser") {
-                                                  postData["patientUid"] = patientUid
-                                                  postData["isScanUser"] = true
-                                                }
-                                                this.props.ws.wsPost({
-                                                  url: "/ws/sendMsg",
-                                                  data: postData,
+                                                .catch(e => {
+                                                  Portal.remove(uploadingImgKey)
+                                                  Toast.fail("上传图片, 错误信息: " + e)
                                                 })
-                                              })
-                                              .catch(e => {
-                                                Portal.remove(uploadingImgKey)
-                                                Toast.fail("上传图片, 错误信息: " + e)
-                                              })
-                                          }
-                                        })
+                                            }
+                                          },
+                                        )
                                       } else {
                                         return Toast.info(
                                           "您禁止了拍摄照片和录制视频权限, 请到设置中心打开",
@@ -1112,7 +1114,7 @@ export default class Chat extends Component<
                                   }
                                 } else {
                                   console.log("获得摄像头权限已经获取")
-                                  RnImagePicker.launchImageLibrary(imgPickerOpt, resp => {
+                                  RnImagePicker.launchImageLibrary(imgPickerOpt, (resp: any) => {
                                     const uploadingImgKey = Toast.loading(
                                       "上传图片中",
                                       0,
@@ -1187,7 +1189,7 @@ export default class Chat extends Component<
                           if (res !== "authorized") {
                             Permissions.request("camera").then(status => {
                               if (status === "authorized") {
-                                RnImagePicker.launchCamera(imgPickerOpt, resp => {
+                                RnImagePicker.launchCamera(imgPickerOpt, (resp: any) => {
                                   const uploadingImgKey = Toast.loading(
                                     "上传图片中",
                                     0,
@@ -1243,7 +1245,7 @@ export default class Chat extends Component<
                               }
                             })
                           } else {
-                            RnImagePicker.launchCamera(imgPickerOpt, resp => {
+                            RnImagePicker.launchCamera(imgPickerOpt, (resp: any) => {
                               const uploadingImgKey = Toast.loading("上传图片中", 0, () => {}, true)
                               if (resp.didCancel) {
                                 Portal.remove(uploadingImgKey)
@@ -1314,7 +1316,7 @@ export default class Chat extends Component<
                   this.setState({
                     imagesViewer: [
                       {
-                        url: BASE_URL + "/static/media/collapsed_logo.db8ef9b3.png",
+                        url: getPicCdnUrl("/static/media/collapsed_logo.db8ef9b3.png"),
                       },
                     ],
                     imageHeight: 0,
@@ -1391,12 +1393,30 @@ export default class Chat extends Component<
   ) => {
     try {
       let { patientUid, mode, groupId } = this.state
+      const {
+        ws: { chatMsg, groupMsg },
+      } = this.props
       if (mode === "chatGroup" && "patientUid" in filter) {
         delete filter["patientUid"]
         filter["groupId"] = groupId
       }
       if (mode === "scanUser") {
         filter["isScanUser"] = true
+        let earliestUserLastMsgId = 0
+        if (patientUid in chatMsg) {
+          earliestUserLastMsgId = chatMsg[patientUid][0].id
+        }
+        if (earliestUserLastMsgId !== 0) {
+          filter["earliestUserLastMsgId"] = earliestUserLastMsgId
+        }
+      } else if (mode === "chatGroup") {
+        let earliestUserLastMsgId = 0
+        if (groupId in groupMsg) {
+          earliestUserLastMsgId = groupMsg[groupId][0].id
+        }
+        if (earliestUserLastMsgId !== 0) {
+          filter["earliestUserLastMsgId"] = earliestUserLastMsgId
+        }
       }
       let {
         data: { list: msgList },
@@ -1404,22 +1424,30 @@ export default class Chat extends Component<
       } = await wsMsgApi.getMsgList({ page, limit, filter })
       console.log("msgList: ", msgList, filter)
       if (mode === "chatGroup") {
+        let oriGroupMsgLen = 0
+        if (this.props.ws.groupMsg[groupId]) {
+          oriGroupMsgLen = this.props.ws.groupMsg[groupId].length
+        }
+        let currGroupMsgLen = oriGroupMsgLen + msgList.length
         this.props.addGroupMsgList({
           groupId,
           msgList,
         })
         this.setState({
-          hasMoreRecord:
-            this.props.ws.groupMsg[groupId] && count > this.props.ws.groupMsg[groupId].length,
+          hasMoreRecord: this.props.ws.groupMsg[groupId] && count > currGroupMsgLen,
         })
       } else {
+        let oriUserMsgLen = 0
+        if (this.props.ws.chatMsg[patientUid]) {
+          oriUserMsgLen = this.props.ws.chatMsg[patientUid].length
+        }
+        let currUserMsgLen = oriUserMsgLen + msgList.length
         this.props.addMsgList({
           uid: patientUid,
           msgList,
         })
         this.setState({
-          hasMoreRecord:
-            this.props.ws.chatMsg[patientUid] && count > this.props.ws.chatMsg[patientUid].length,
+          hasMoreRecord: this.props.ws.chatMsg[patientUid] && count > currUserMsgLen,
         })
       }
     } catch (err) {
@@ -1995,6 +2023,7 @@ export default class Chat extends Component<
   }
   getMoreMsgList = async () => {
     const { mode } = this.state
+
     if (mode === "common") {
       return this.getMoreCommonMsgList()
     } else if (mode === "chatGroup") {

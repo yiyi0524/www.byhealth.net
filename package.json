@@ -17,7 +17,7 @@
     "hotUpdateProd": "appcenter codepush release-react -d Production -a buffge/bo2-yi1-jian4-kang1 --entry-file index.tsx"
   },
   "dependencies": {
-    "@ant-design/react-native": "^3.1.15",
+    "@ant-design/react-native": "^3.2.0",
     "@types/lodash": "^4.14.142",
     "@types/react-native-permissions": "^1.1.1",
     "classnames": "^2.2.6",
@@ -35,7 +35,7 @@
     "react-native-gesture-handler": "^1.4.1",
     "react-native-htmlview": "^0.15.0",
     "react-native-image-pan-zoom": "^2.1.11",
-    "react-native-image-picker": "^1.0.2",
+    "react-native-image-picker": "^1.1.0",
     "react-native-image-zoom-viewer": "^2.2.26",
     "react-native-permissions": "^1.2.0",
     "react-native-qrcode": "https://github.com/buffge/react-native-qrcode#master",

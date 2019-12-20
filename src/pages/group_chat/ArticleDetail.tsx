@@ -60,13 +60,14 @@ export default class ArticleDetail extends Component<Props & DefaultProps, State
       headerRight: (
         <TouchableOpacity
           onPress={() => {
+            console.log("state: ", navigation.state)
             if (navigation.state.params!.isPersonalArticle) {
               navigation.push(pathMap.AddOrEditArticle, {
                 type: "edit",
                 id: navigation.state.params!.id,
               })
             } else {
-              Toast.info("你不是此文章的作者或文章不存在", 3)
+              Toast.info("您不是此文章的作者", 2)
             }
           }}>
           <Text style={style.rightTitle}>编辑</Text>
@@ -117,6 +118,7 @@ export default class ArticleDetail extends Component<Props & DefaultProps, State
         detail,
       })
       let isPersonalArticle = uid === detail.author.uid
+      console.log("1: ", detail, uid)
       this.props.navigation.setParams({
         isPersonalArticle,
       })
@@ -129,6 +131,7 @@ export default class ArticleDetail extends Component<Props & DefaultProps, State
     if (detail.id === 0) {
       return <Text style={style.tips}>此文章已被移除或不存在</Text>
     }
+    console.log(detail)
     return (
       <ScrollView style={style.main}>
         <Carousel
@@ -160,7 +163,9 @@ export default class ArticleDetail extends Component<Props & DefaultProps, State
           <Text style={style.content}>{detail.content}</Text>
           <View style={[style.time, global.flex, global.aCenter, global.jBetween]}>
             <Text style={style.viewCount}>阅读{detail.viewCount}</Text>
-            <Text style={style.viewCount}>发表于{detail.ctime.substr(0, 16)}</Text>
+            <Text style={style.viewCount}>
+              {detail.author.name} 发表于{detail.ctime.substr(0, 16)}
+            </Text>
           </View>
         </View>
       </ScrollView>
