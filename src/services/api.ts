@@ -82,15 +82,13 @@ export async function bpost<T = any>({ url, data = {}, headers = {} }: RequestPa
 export async function isLogin() {
   let session = await storage.get("session")
   if (!session) {
+    console.log("session 不存在 未登录")
     return false
   }
   let isLogin: boolean = await new Promise(s => {
     try {
       bpost({
         url: "/api/isLogin",
-        headers: {
-          session,
-        },
       })
         .then(() => s(true))
         .catch(() => s(false))
