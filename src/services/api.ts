@@ -90,8 +90,14 @@ export async function isLogin() {
       bpost({
         url: "/api/isLogin",
       })
-        .then(() => s(true))
-        .catch(() => s(false))
+        .then(() => {
+         console.log('s true')
+          s(true)
+        })
+        .catch(() =>{
+          console.log('s false')
+          s(false)
+        } )
     } catch (err) {
       console.log("check isLogin err: ", err)
       s(false)
