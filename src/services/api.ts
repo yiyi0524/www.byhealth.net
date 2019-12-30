@@ -91,13 +91,16 @@ export async function isLogin() {
         url: "/api/isLogin",
       })
         .then(() => {
-         console.log('s true')
+          console.log("s true")
           s(true)
         })
-        .catch(() =>{
-          console.log('s false')
-          s(false)
-        } )
+        .catch(err => {
+          if (err.msg.includes("Network request failed")) {
+            s(true)
+          } else {
+            s(false)
+          }
+        })
     } catch (err) {
       console.log("check isLogin err: ", err)
       s(false)
