@@ -95,7 +95,7 @@ export async function isLogin() {
           s(true)
         })
         .catch(err => {
-          if (err.msg.includes("Network request failed")) {
+          if (err.msg && err.msg.includes("Network request failed")) {
             s(true)
           } else {
             s(false)
