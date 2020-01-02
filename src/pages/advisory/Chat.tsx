@@ -1489,7 +1489,7 @@ export default class Chat extends Component<
                 style={style.itemImg}
                 source={
                   msg.sendUser.avatar.url
-                    ? { uri: getPicCdnUrl(msg.sendUser.avatar.url) }
+                    ? { uri: getPicCdnUrl(msg.sendUser.avatar.url, "avatar") }
                     : gImg.common.defaultAvatar
                 }
               />
@@ -1515,7 +1515,7 @@ export default class Chat extends Component<
                 style={style.itemImg}
                 source={
                   msg.sendUser.avatar.url
-                    ? { uri: getPicCdnUrl(msg.sendUser.avatar.url) }
+                    ? { uri: getPicCdnUrl(msg.sendUser.avatar.url, "avatar") }
                     : gImg.common.defaultAvatar
                 }
               />
@@ -1702,7 +1702,7 @@ export default class Chat extends Component<
               style={style.treatmentPlanHeaderImg}
               source={
                 msg.extraData.picList.length > 0
-                  ? { uri: getPicCdnUrl(msg.extraData.picList[0].url) }
+                  ? { uri: getPicCdnUrl(msg.extraData.picList[0].url, "avatar") }
                   : gImg.common.defaultPic
               }
             />

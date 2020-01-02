@@ -292,7 +292,7 @@ export default class Index extends Component<
                         style={style.avatar}
                         source={
                           consultation.avatar.url
-                            ? { uri: getPicCdnUrl(consultation.avatar.url) }
+                            ? { uri: getPicCdnUrl(consultation.avatar.url, "avatar") }
                             : gImg.common.defaultAvatar
                         }
                       />

@@ -1,5 +1,5 @@
 import global from "@/assets/styles/global"
-import { getPicFullUrl } from "@/utils/utils"
+import { getPicFullUrl, getPicCdnUrl } from "@/utils/utils"
 import { Icon } from "@ant-design/react-native"
 import doctorApi, { UPLOAD_PRESCRIPTION_STATUS } from "@api/doctor"
 import sColor from "@styles/color"

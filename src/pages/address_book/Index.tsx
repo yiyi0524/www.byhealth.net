@@ -66,10 +66,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
   }
 }
 //@ts-ignore
-@connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)
+@connect(mapStateToProps, mapDispatchToProps)
 export default class Index extends Component<
   Props & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
   State
@@ -263,7 +260,7 @@ export default class Index extends Component<
                         style={style.communicationItemPic}
                         source={
                           v.avatar.url !== ""
-                            ? { uri: getPicCdnUrl(v.avatar.url) }
+                            ? { uri: getPicCdnUrl(v.avatar.url, "avatar") }
                             : gImg.common.defaultAvatar
                         }
                       />

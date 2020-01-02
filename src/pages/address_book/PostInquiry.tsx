@@ -51,10 +51,7 @@ interface State {
   list: Msg[]
 }
 
-@connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)
+@connect(mapStateToProps, mapDispatchToProps)
 export default class PatientDetail extends Component<
   Props & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
   State
@@ -215,7 +212,7 @@ export default class PatientDetail extends Component<
                                 style={style.avatar}
                                 source={
                                   v.avatar
-                                    ? { uri: getPicCdnUrl(v.avatar) }
+                                    ? { uri: getPicCdnUrl(v.avatar, "avatar") }
                                     : gImg.common.defaultAvatar
                                 }
                               />
@@ -235,7 +232,7 @@ export default class PatientDetail extends Component<
                               style={style.avatar}
                               source={
                                 v.avatar
-                                  ? { uri: getPicCdnUrl(v.avatar) }
+                                  ? { uri: getPicCdnUrl(v.avatar, "avatar") }
                                   : gImg.common.defaultAvatar
                               }
                             />

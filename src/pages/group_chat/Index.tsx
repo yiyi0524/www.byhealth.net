@@ -1,21 +1,21 @@
 import global from "@/assets/styles/global"
+import Empty from "@/components/Empty"
+import { AppState } from "@/redux/stores/store"
+import pathMap from "@/routes/pathMap"
+import { GroupChat, joinGroupChat, listGroupChat, STATUS, TAB, TAB_ZH } from "@/services/groupChat"
+import { getPersonalInfo } from "@/services/user"
+import { TYPE } from "@/utils/constant"
+import { getPicCdnUrl } from "@/utils/utils"
+import { Icon, InputItem, Modal, Toast } from "@ant-design/react-native"
 import gImg from "@utils/img"
 import gSass from "@utils/style"
-import React, { Component } from "react"
-import { Image, ScrollView, Text, View, RefreshControl } from "react-native"
-import { Toast, InputItem, Icon, Modal } from "@ant-design/react-native"
-import { TouchableOpacity } from "react-native-gesture-handler"
-import { TAB, TAB_ZH, listGroupChat, STATUS, GroupChat, joinGroupChat } from "@/services/groupChat"
-import { TYPE } from "@/utils/constant"
-import Empty from "@/components/Empty"
 import moment from "moment"
+import React, { Component } from "react"
+import { Image, RefreshControl, ScrollView, Text, View } from "react-native"
+import { TouchableOpacity } from "react-native-gesture-handler"
 import { NavigationScreenProp } from "react-navigation"
-import pathMap from "@/routes/pathMap"
-import { getPicFullUrl } from "@/utils/utils"
 import { connect } from "react-redux"
-import { AppState } from "@/redux/stores/store"
 import { Picture } from "../advisory/Chat"
-import { getPersonalInfo } from "@/services/user"
 const style = gSass.groupChat.index
 
 interface Props {
@@ -248,7 +248,7 @@ export default class Index extends Component<Props & DefaultProps, State> {
                       style={style.avatar}
                       source={
                         group.pic.url
-                          ? { uri: getPicFullUrl(group.pic.url) }
+                          ? { uri: getPicCdnUrl(group.pic.url, "avatar") }
                           : gImg.common.defaultAvatar
                       }></Image>
                     {/* <Image style={style.avatar} source={gImg.common.defaultAvatar}></Image> */}
@@ -295,7 +295,7 @@ export default class Index extends Component<Props & DefaultProps, State> {
           <View style={style.picPar}>
             <Image
               style={style.pic}
-              source={{ uri: getPicFullUrl(this.state.groupChatPic.url) }}></Image>
+              source={{ uri: getPicCdnUrl(this.state.groupChatPic.url, "avatar") }}></Image>
           </View>
           <View style={style.groupTitlePar}>
             <Text style={style.groupTitle} numberOfLines={1}>

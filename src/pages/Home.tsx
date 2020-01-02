@@ -383,7 +383,7 @@ export default class Home extends Component<
               <Image
                 source={
                   this.state.avatar.url !== ""
-                    ? { uri: getPicCdnUrl(this.state.avatar.url) }
+                    ? { uri: getPicCdnUrl(this.state.avatar.url, "avatar") }
                     : gImg.common.defaultAvatar
                 }
                 style={style.headerAvatar}

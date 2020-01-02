@@ -1106,7 +1106,7 @@ export default class EnteringGroupChat extends Component<
                 style={style.itemImg}
                 source={
                   msg.sendUser.avatar.url
-                    ? { uri: getPicCdnUrl(msg.sendUser.avatar.url) }
+                    ? { uri: getPicCdnUrl(msg.sendUser.avatar.url, "avatar") }
                     : gImg.common.defaultAvatar
                 }
               />

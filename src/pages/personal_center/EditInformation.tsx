@@ -318,7 +318,7 @@ export default class Index extends Component<
                   style={style.headerInfoImg}
                   source={
                     this.state.info.avatar.url
-                      ? { uri: getPicCdnUrl(this.state.info.avatar.url) }
+                      ? { uri: getPicCdnUrl(this.state.info.avatar.url, "avatar") }
                       : gImg.common.defaultAvatar
                   }
                 />

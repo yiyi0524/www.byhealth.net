@@ -60,10 +60,7 @@ interface State {
   drugList: drugInfo[]
 }
 
-@connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)
+@connect(mapStateToProps, mapDispatchToProps)
 export default class InquirySheet extends Component<
   Props & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
   State
@@ -194,7 +191,7 @@ export default class InquirySheet extends Component<
                   style={style.avatar}
                   source={
                     detail.patient.avatar.url
-                      ? { uri: getPicCdnUrl(detail.patient.avatar.url) }
+                      ? { uri: getPicCdnUrl(detail.patient.avatar.url, "avatar") }
                       : gImg.common.defaultAvatar
                   }
                 />
