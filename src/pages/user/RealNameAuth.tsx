@@ -288,17 +288,17 @@ export default class RealNameAuth extends Component<
       } = await doctorApi.getWaitAuditDoctorDetail()
       let practisingCertificatePicList = detail.practisingCertificateList
       for (let v of practisingCertificatePicList) {
-        v.url = getPicCdnUrl(v.url)
+        v.url = getPicCdnUrl(v.url, "avatar")
         v.picId = v.id
       }
       let qualificationCertificatePicList = detail.qualificationCertificateList
       for (let v of qualificationCertificatePicList) {
-        v.url = getPicCdnUrl(v.url)
+        v.url = getPicCdnUrl(v.url, "avatar")
         v.picId = v.id
       }
       let technicalqualificationCertificatePicList = detail.technicalQualificationCertificateList
       for (let v of technicalqualificationCertificatePicList) {
-        v.url = getPicCdnUrl(v.url)
+        v.url = getPicCdnUrl(v.url, "avatar")
         v.picId = v.id
       }
       let {
@@ -336,7 +336,7 @@ export default class RealNameAuth extends Component<
         avatar.push({
           id: detail.avatar.id,
           title: detail.avatar.title,
-          url: getPicCdnUrl(detail.avatar.url),
+          url: getPicCdnUrl(detail.avatar.url, "avatar"),
         })
       }
       this.setState({
@@ -634,7 +634,7 @@ export default class RealNameAuth extends Component<
                             const { url, picId } = json.data
                             let avatar = [
                               {
-                                url: getPicCdnUrl(url),
+                                url: URL.createObjectURL(resp),
                                 picId,
                                 id: picId,
                                 title: "",
@@ -971,7 +971,7 @@ export default class RealNameAuth extends Component<
                             Portal.remove(uploadingImgKey)
                             const { url, picId } = json.data
                             let img = {
-                              url: getPicCdnUrl(url),
+                              url: URL.createObjectURL(resp),
                               picId,
                               id: picId,
                               title: "",
@@ -1029,7 +1029,7 @@ export default class RealNameAuth extends Component<
                             Portal.remove(uploadingImgKey)
                             const { url, picId } = json.data
                             let img = {
-                              url: getPicCdnUrl(url),
+                              url: URL.createObjectURL(resp),
                               picId,
                               id: picId,
                               title: "",
@@ -1080,7 +1080,7 @@ export default class RealNameAuth extends Component<
                             Portal.remove(uploadingImgKey)
                             const { url, picId } = json.data
                             let img = {
-                              url: getPicCdnUrl(url),
+                              url: URL.createObjectURL(resp),
                               picId,
                               id: picId,
                               title: "",

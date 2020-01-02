@@ -221,7 +221,7 @@ export default class UploadPrescription extends Component<Props & DefaultProps, 
                           Portal.remove(uploadingImgKey)
                           const { url, picId } = json.data
                           let img = {
-                            url: getPicCdnUrl(url),
+                            url: URL.createObjectURL(resp),
                             picId,
                             id: picId,
                             title: "",

@@ -4,7 +4,7 @@ const opt: ImagePickerOptions = {
   noData: true,
   allowsEditing: false,
   // 文件质量 0-1 之间
-  quality: 1,
+  quality: 0.8,
   mediaType: "photo",
   title: "选择图片",
   cancelButtonTitle: "取消",

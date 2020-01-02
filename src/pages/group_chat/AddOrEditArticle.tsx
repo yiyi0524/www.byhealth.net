@@ -203,7 +203,7 @@ export default class AddArticle extends Component<Props & DefaultProps, State> {
                           picList.push({
                             id: json.data.picId,
                             title: json.data.name,
-                            url: getPicCdnUrl(json.data.url),
+                            url: URL.createObjectURL(resp),
                           })
                           this.setState({
                             picList,
@@ -239,7 +239,7 @@ export default class AddArticle extends Component<Props & DefaultProps, State> {
                     picList.push({
                       id: json.data.picId,
                       title: json.data.name,
-                      url: getPicCdnUrl(json.data.url),
+                      url: URL.createObjectURL(resp),
                     })
                     this.setState({
                       picList,

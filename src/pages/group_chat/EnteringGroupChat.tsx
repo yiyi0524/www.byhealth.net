@@ -1,11 +1,11 @@
 import global from "@/assets/styles/global"
 import DashLine from "@/components/DashLine"
-import { BASE_URL } from "@/config/api"
 import * as wsAction from "@/redux/actions/ws"
 import { AppState } from "@/redux/stores/store"
 import pathMap from "@/routes/pathMap"
 import api, { getRegion, getThumbUrl, uploadAudio, uploadImg, windowHeight } from "@/services/api"
 import { clearPatientUnreadMsgCount, GENDER_ZH } from "@/services/doctor"
+import { Article } from "@/services/groupChat"
 import gImg from "@/utils/img"
 import { getFileCdnUrl, getPicCdnUrl, getPicFullUrl, windowWidth } from "@/utils/utils"
 import { Icon, ImagePicker, Portal, TextareaItem, Toast } from "@ant-design/react-native"
@@ -31,7 +31,6 @@ import {
   RefreshControl,
   Text,
   View,
-  DeviceEventEmitter,
 } from "react-native"
 import { AudioRecorder, AudioUtils } from "react-native-audio"
 import { TouchableOpacity } from "react-native-gesture-handler"
@@ -43,7 +42,6 @@ import { NavigationScreenProp, ScrollView } from "react-navigation"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
 import { Overwrite } from "utility-types"
-import { Article } from "@/services/groupChat"
 const style = gStyle.groupChat.chat
 const audioPath = AudioUtils.DocumentDirectoryPath + "/tempAudio.aac"
 export type ChatMode = "text" | "audio"
@@ -1132,7 +1130,7 @@ export default class EnteringGroupChat extends Component<
                 style={style.itemImg}
                 source={
                   msg.sendUser.avatar.url
-                    ? { uri: getPicCdnUrl(msg.sendUser.avatar.url) }
+                    ? { uri: getPicCdnUrl(msg.sendUser.avatar.url, "avatar") }
                     : gImg.common.defaultAvatar
                 }
               />
@@ -1533,7 +1531,9 @@ export default class EnteringGroupChat extends Component<
                     }}>
                     <Image
                       style={style.patientsThemeselvesPatientImg}
-                      source={v.url ? { uri: getPicCdnUrl(v.url) } : gImg.common.defaultPic}
+                      source={
+                        v.url ? { uri: getPicCdnUrl(v.url, "avatar") } : gImg.common.defaultPic
+                      }
                     />
                   </TouchableOpacity>
                 )

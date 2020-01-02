@@ -1916,7 +1916,9 @@ export default class Chat extends Component<
                     }}>
                     <Image
                       style={style.patientsThemeselvesPatientImg}
-                      source={v.url ? { uri: getPicCdnUrl(v.url) } : gImg.common.defaultPic}
+                      source={
+                        v.url ? { uri: getPicCdnUrl(v.url, "avatar") } : gImg.common.defaultPic
+                      }
                     />
                   </TouchableOpacity>
                 )

@@ -15,4 +15,3 @@ declare module "*.gif" {
   export default value
 }
 declare module "idcard"
-declare module "react-native-image-picker"

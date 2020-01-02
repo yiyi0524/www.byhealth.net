@@ -25,7 +25,9 @@ export function getPicCdnUrl(url: string, style: OssStyle | null = null): string
     styleQuery = "?x-oss-process=style/" + styleMapOssStyle[style]
   }
   // avatar
-  return url.indexOf("http") === 0 ? url + styleQuery : CDN_BASE_URL + url + styleQuery
+  return url.indexOf("http") === 0 || url.indexOf("blob:http") === 0
+    ? url + styleQuery
+    : CDN_BASE_URL + url + styleQuery
 }
 /**
  * 获取文件的cdn url

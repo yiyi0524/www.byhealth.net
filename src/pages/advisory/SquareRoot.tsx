@@ -1,28 +1,52 @@
-import global from "@/assets/styles/global";
-import * as userAction from "@/redux/actions/user";
-import { CurrSetPrescription } from "@/redux/reducers/user";
-import { AppState } from "@/redux/stores/store";
-import api, { windowWidth } from "@/services/api";
-import { addPrescription, AddPrescriptionParam, GENDER, GENDER_ZH, PrescriptionTpl } from "@/services/doctor";
-import { EXTERN_CHINESE_DRUG_ID, ORAL_CHINESE_DRUG_ID, TOPICAL_CHINESE_DRUG_ID } from "@/services/drug";
-import { getLastPrescriptionInfo, getPatientInfo } from "@/services/patient";
-import { getPersonalInfo } from "@/services/user";
-import { getPicCdnUrl } from "@/utils/utils";
-import { Icon, ImagePicker, InputItem, TextareaItem, Toast } from "@ant-design/react-native";
-import hospital from "@api/hospital";
-import DashLine from "@components/DashLine";
-import Pharmacy, { CategoryItem } from "@components/Pharmacy";
-import pathMap from "@routes/pathMap";
-import sColor from "@styles/color";
-import gImg from "@utils/img";
-import gStyle from "@utils/style";
-import _ from "lodash";
-import React, { Component } from "react";
-import { Alert, BackHandler, DeviceEventEmitter, EmitterSubscription, Image, KeyboardAvoidingView, NativeEventSubscription, PixelRatio, Platform, RefreshControl, Text, TouchableOpacity, View } from "react-native";
-import { NavigationScreenProp, ScrollView } from "react-navigation";
-import { connect } from "react-redux";
-import { Dispatch } from "redux";
-import { MsgType, Picture } from "./Chat";
+import global from "@/assets/styles/global"
+import * as userAction from "@/redux/actions/user"
+import { CurrSetPrescription } from "@/redux/reducers/user"
+import { AppState } from "@/redux/stores/store"
+import api, { windowWidth } from "@/services/api"
+import {
+  addPrescription,
+  AddPrescriptionParam,
+  GENDER,
+  GENDER_ZH,
+  PrescriptionTpl,
+} from "@/services/doctor"
+import {
+  EXTERN_CHINESE_DRUG_ID,
+  ORAL_CHINESE_DRUG_ID,
+  TOPICAL_CHINESE_DRUG_ID,
+} from "@/services/drug"
+import { getLastPrescriptionInfo, getPatientInfo } from "@/services/patient"
+import { getPersonalInfo } from "@/services/user"
+import { getPicCdnUrl } from "@/utils/utils"
+import { Icon, ImagePicker, InputItem, TextareaItem, Toast } from "@ant-design/react-native"
+import hospital from "@api/hospital"
+import DashLine from "@components/DashLine"
+import Pharmacy, { CategoryItem } from "@components/Pharmacy"
+import pathMap from "@routes/pathMap"
+import sColor from "@styles/color"
+import gImg from "@utils/img"
+import gStyle from "@utils/style"
+import _ from "lodash"
+import React, { Component } from "react"
+import {
+  Alert,
+  BackHandler,
+  DeviceEventEmitter,
+  EmitterSubscription,
+  Image,
+  KeyboardAvoidingView,
+  NativeEventSubscription,
+  PixelRatio,
+  Platform,
+  RefreshControl,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native"
+import { NavigationScreenProp, ScrollView } from "react-navigation"
+import { connect } from "react-redux"
+import { Dispatch } from "redux"
+import { MsgType, Picture } from "./Chat"
 
 const style = gStyle.advisory.SquareRoot
 
@@ -427,7 +451,10 @@ export default class SquareRoot extends Component<
         hospitalMedicalRecordPicList = []
       }
       for (let k in hospitalMedicalRecordPicList) {
-        hospitalMedicalRecordPicList[k].url = getPicCdnUrl(hospitalMedicalRecordPicList[k].url)
+        hospitalMedicalRecordPicList[k].url = getPicCdnUrl(
+          hospitalMedicalRecordPicList[k].url,
+          "avatar",
+        )
       }
       this.setState({
         hasLoad: true,
@@ -465,7 +492,9 @@ export default class SquareRoot extends Component<
           let medicalRecordPicList = this.state.medicalRecordPicList
           let picMode: Picture = { id: 0, title: "", url: "" }
           medicalRecordPicList.push(picMode)
-          medicalRecordPicList[medicalRecordPicList.length - 1].url = getPicCdnUrl(json.data.url)
+          medicalRecordPicList[medicalRecordPicList.length - 1].url = URL.createObjectURL(
+            medicalRecordPicList[medicalRecordPicList.length - 1],
+          )
           medicalRecordPicList[medicalRecordPicList.length - 1].id = json.data.picId
           this.setState({
             medicalRecordPicList,
