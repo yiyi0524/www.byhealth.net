@@ -1,6 +1,6 @@
 import { uploadImg } from "@/services/api"
 import { addArticle, editArticle, getArticle } from "@/services/groupChat"
-import { getPicCdnUrl, getPicFullUrl } from "@/utils/utils"
+import { getPicFullUrl } from "@/utils/utils"
 import { ImagePicker, InputItem, Portal, TextareaItem, Toast } from "@ant-design/react-native"
 import imgPickerOpt from "@config/imgPickerOpt"
 import gSass from "@utils/style"
@@ -203,7 +203,7 @@ export default class AddArticle extends Component<Props & DefaultProps, State> {
                           picList.push({
                             id: json.data.picId,
                             title: json.data.name,
-                            url: URL.createObjectURL(resp),
+                            url: resp.uri,
                           })
                           this.setState({
                             picList,
@@ -239,7 +239,7 @@ export default class AddArticle extends Component<Props & DefaultProps, State> {
                     picList.push({
                       id: json.data.picId,
                       title: json.data.name,
-                      url: URL.createObjectURL(resp),
+                      url: resp.uri,
                     })
                     this.setState({
                       picList,

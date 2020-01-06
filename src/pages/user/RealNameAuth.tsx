@@ -631,10 +631,10 @@ export default class RealNameAuth extends Component<
                           .then(json => {
                             Portal.remove(uploadingImgKey)
                             console.log(json)
-                            const { url, picId } = json.data
+                            const { picId } = json.data
                             let avatar = [
                               {
-                                url: URL.createObjectURL(resp),
+                                url: resp.uri,
                                 picId,
                                 id: picId,
                                 title: "",
@@ -969,9 +969,9 @@ export default class RealNameAuth extends Component<
                         uploadImg({ url: resp.uri })
                           .then(json => {
                             Portal.remove(uploadingImgKey)
-                            const { url, picId } = json.data
+                            const { picId } = json.data
                             let img = {
-                              url: URL.createObjectURL(resp),
+                              url: resp.uri,
                               picId,
                               id: picId,
                               title: "",
@@ -1027,9 +1027,9 @@ export default class RealNameAuth extends Component<
                         uploadImg({ url: resp.uri })
                           .then(json => {
                             Portal.remove(uploadingImgKey)
-                            const { url, picId } = json.data
+                            const { picId } = json.data
                             let img = {
-                              url: URL.createObjectURL(resp),
+                              url: resp.uri,
                               picId,
                               id: picId,
                               title: "",
@@ -1078,9 +1078,9 @@ export default class RealNameAuth extends Component<
                         uploadImg({ url: resp.uri })
                           .then(json => {
                             Portal.remove(uploadingImgKey)
-                            const { url, picId } = json.data
+                            const { picId } = json.data
                             let img = {
-                              url: URL.createObjectURL(resp),
+                              url: resp.uri,
                               picId,
                               id: picId,
                               title: "",
