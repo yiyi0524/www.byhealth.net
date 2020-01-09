@@ -61,6 +61,7 @@ export default class PrescriptionTplList extends Component<
       title = navigation.state.params.title + "模板"
       headerRight = (
         <TouchableOpacity
+          style={navigation.getParam("id") ? {} : { display: "none" }}
           onPress={() => {
             navigation.push(pathMap.AddPrescriptionTpl, {
               id: navigation.getParam("id"),

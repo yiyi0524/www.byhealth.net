@@ -67,15 +67,13 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
   }
 }
 // @ts-ignore
-@connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)
+@connect(mapStateToProps, mapDispatchToProps)
 export default class AddPrescriptionTpl extends Component<
   Props & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
   State
 > {
   static navigationOptions = ({ navigation }: { navigation: NavigationScreenProp<State> }) => {
+    console.log(navigation.state.params)
     let title = ""
     if (navigation.state.params) {
       title = navigation.state.params.title + "模板"
