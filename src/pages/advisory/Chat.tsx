@@ -16,6 +16,7 @@ import { Msg } from "@pages/Ws"
 import sColor from "@styles/color"
 import Buff from "@utils/Buff"
 import gStyle from "@utils/style"
+import Hyperlink from "react-native-hyperlink"
 import React, { Component } from "react"
 import {
   AppState as RnAppState,
@@ -1495,9 +1496,11 @@ export default class Chat extends Component<
               />
             </View>
             <View style={isSelfMsg ? global.hidden : style.leftItemIcon} />
-            <Text style={[style.leftItemTitle, global.fontStyle, global.fontSize14]}>
-              {msg.msg}
-            </Text>
+            <Hyperlink linkDefault linkStyle={{ color: "#2980b9" }}>
+              <Text style={[style.leftItemTitle, global.fontStyle, global.fontSize14]}>
+                {msg.msg}
+              </Text>
+            </Hyperlink>
           </View>
         </View>
         {/* 右边文字 */}
@@ -1506,9 +1509,11 @@ export default class Chat extends Component<
             {msg.sendTime.substr(0, 16)}
           </Text>
           <View style={[style.leftItem, global.flex, global.justifyContentEnd]}>
-            <Text style={[style.rightItemTitle, global.fontStyle, global.fontSize14]}>
-              {msg.msg}
-            </Text>
+            <Hyperlink linkDefault linkStyle={{ color: "#2980b9" }}>
+              <Text style={[style.rightItemTitle, global.fontStyle, global.fontSize14]}>
+                {msg.msg}
+              </Text>
+            </Hyperlink>
             <View style={isSelfMsg ? style.rightItemIcon : global.hidden} />
             <View style={style.itemPic}>
               <Image
