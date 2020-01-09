@@ -55,10 +55,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
   }
 }
 // @ts-ignore
-@connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)
+@connect(mapStateToProps, mapDispatchToProps)
 export default class Index extends Component<
   Props & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
   State
@@ -173,6 +170,7 @@ export default class Index extends Component<
       await storage.remove("session")
       navigation.navigate(pathMap.Login)
       DeviceEventEmitter.emit(pathMap.PersonalCenter + "Reload", null)
+      DeviceEventEmitter.emit("wsReload", null)
     } catch (err) {
       console.log(err)
       Toast.info("退出失败,错误信息: " + err.msg, 2)

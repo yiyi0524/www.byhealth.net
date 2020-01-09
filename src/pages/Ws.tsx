@@ -5,7 +5,7 @@ import storage from "@/utils/storage"
 import { Toast } from "@ant-design/react-native"
 import * as wsAction from "@redux/actions/ws"
 import React, { ReactChild } from "react"
-import { AppState as RnAppState } from "react-native"
+import { AppState as RnAppState, DeviceEventEmitter, EmitterSubscription } from "react-native"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
 import { Overwrite } from "utility-types"
@@ -154,6 +154,7 @@ class Ws extends React.Component<
   client?: WebSocket
   evtMapFn: Record<number, (frame: ReceiveFrame<any>) => any>
   cookie: Record<string, string> = {}
+  subscription?: EmitterSubscription
   constructor(props: any) {
     super(props)
     this.state = this.getInitState()
@@ -187,6 +188,10 @@ class Ws extends React.Component<
         }
       }
     })
+    this.subscription = DeviceEventEmitter.addListener("wsReload", () => {
+      this.client && this.client.close()
+    })
+
     this.props.setWsFn({
       wsGet: this.wsGet,
       wsPost: this.wsPost,
@@ -201,6 +206,9 @@ class Ws extends React.Component<
       // 我不知道这里为什么会要回调函数
       console.log(state)
     })
+    if (this.subscription) {
+      this.subscription.remove()
+    }
   }
   init = async () => {
     let session = await storage.get("session")
@@ -378,11 +386,15 @@ class Ws extends React.Component<
       }
       return false
     }
-    frame.arguments = frame.arguments || {}
-    frame.arguments.cookie = this.cookie
-    frame.arguments.post = frame.arguments.post || {}
+    ;(async () => {
+      let session = await storage.get("session")
+      frame.arguments = frame.arguments || {}
+      frame.arguments.cookie = this.cookie
+      this.cookie.PHPSESSID = session
+      frame.arguments.post = frame.arguments.post || {}
+      this.client && this.client.send(JSON.stringify(frame))
+    })()
 
-    this.client.send(JSON.stringify(frame))
     return true
   }
   render() {
