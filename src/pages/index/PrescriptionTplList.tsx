@@ -7,7 +7,7 @@ import { Toast, SwipeAction } from "@ant-design/react-native"
 import sColor from "@styles/color"
 import gImg from "@utils/img"
 import gStyle from "@utils/style"
-import React, { Component } from "react"
+import React, { Component, ReactChild } from "react"
 import {
   DeviceEventEmitter,
   EmitterSubscription,
@@ -56,8 +56,20 @@ export default class PrescriptionTplList extends Component<
 > {
   static navigationOptions = ({ navigation }: { navigation: NavigationScreenProp<State> }) => {
     let title = "处方模板"
+    let headerRight: ReactChild | null = null
     if (navigation.state.params) {
       title = navigation.state.params.title + "模板"
+      headerRight = (
+        <TouchableOpacity
+          onPress={() => {
+            navigation.push(pathMap.AddPrescriptionTpl, {
+              id: navigation.getParam("id"),
+              title: navigation.getParam("title"),
+            })
+          }}>
+          <Text style={[style.headerRight, global.fontSize14, global.fontStyle]}>新建</Text>
+        </TouchableOpacity>
+      )
     }
     return {
       title,
@@ -76,17 +88,7 @@ export default class PrescriptionTplList extends Component<
         fontSize: 14,
         textAlign: "center",
       },
-      headerRight: (
-        <TouchableOpacity
-          onPress={() => {
-            navigation.push(pathMap.AddPrescriptionTpl, {
-              id: navigation.getParam("id"),
-              title: navigation.getParam("title"),
-            })
-          }}>
-          <Text style={[style.headerRight, global.fontSize14, global.fontStyle]}>新建</Text>
-        </TouchableOpacity>
-      ),
+      headerRight,
     }
   }
   subscription?: EmitterSubscription
