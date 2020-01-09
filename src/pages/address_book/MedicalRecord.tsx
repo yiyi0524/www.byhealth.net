@@ -238,7 +238,7 @@ export default class InquirySheet extends Component<
                   return (
                     <View style={style.drugCategory} key={k}>
                       <Text style={[style.drugCategoryTitle, global.fontSize14]}>
-                        {categoryName}
+                        {categoryName} 共{v.list.length}味
                       </Text>
                       <View
                         style={[
@@ -288,7 +288,7 @@ export default class InquirySheet extends Component<
                   return (
                     <View style={style.drugCategory} key={k}>
                       <Text style={[style.drugCategoryTitle, global.fontSize14]}>
-                        {categoryName}
+                        {categoryName} 共{v.list.length}味
                       </Text>
                       <View style={[style.drugList, { marginLeft: 15 }]}>
                         {v.list.map((v1, k1) => {

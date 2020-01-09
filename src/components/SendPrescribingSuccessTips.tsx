@@ -1,10 +1,9 @@
-import React, { Component } from "react"
-import { View, StyleSheet, TouchableOpacity, Image, Text } from "react-native"
-import gImg from "@utils/img"
 import global from "@/assets/styles/global"
-import { Icon } from "@ant-design/react-native"
-import DashLine from "./DashLine"
 import { windowWidth } from "@/utils/utils"
+import { Icon } from "@ant-design/react-native"
+import React, { Component } from "react"
+import { StyleSheet, Text, View } from "react-native"
+import DashLine from "./DashLine"
 interface Props {}
 interface State {}
 type DefaultProps = {}

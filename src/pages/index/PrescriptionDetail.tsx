@@ -337,7 +337,7 @@ export default class SquareRoot extends Component<
                   return (
                     <View style={style.drugCategory} key={k}>
                       <Text style={[style.drugCategoryTitle, global.fontSize14]}>
-                        {categoryName}
+                        {categoryName} 共{v.list.length}味
                       </Text>
                       <View style={[global.flex, global.alignItemsCenter, global.flexWrap]}>
                         {v.list.map((v1, k1) => {
@@ -387,7 +387,7 @@ export default class SquareRoot extends Component<
                         <Text
                           style={[style.drugItemLeftTitle, global.fontSize16]}
                           numberOfLines={1}>
-                          {categoryName}
+                          {categoryName} 共{v.list.length}味
                         </Text>
                         <View style={style.drugListFa}>
                           {v.list.map((v, k) => {

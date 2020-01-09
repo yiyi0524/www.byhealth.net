@@ -53,10 +53,7 @@ interface State {
   drugCategoryList: drugCategory[]
   drugList: DrugInfo[]
 }
-@connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)
+@connect(mapStateToProps, mapDispatchToProps)
 export default class SquareRoot extends Component<
   Props & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
   State
@@ -250,7 +247,7 @@ export default class SquareRoot extends Component<
                         <Text
                           style={[style.drugItemLeftTitle, global.fontSize16, { marginBottom: 8 }]}
                           numberOfLines={1}>
-                          {categoryName}
+                          {categoryName} 共{v.list.length}味
                         </Text>
                         <View
                           style={[
@@ -320,7 +317,7 @@ export default class SquareRoot extends Component<
                         <Text
                           style={[style.drugItemLeftTitle, global.fontSize16]}
                           numberOfLines={1}>
-                          {categoryName}
+                          {categoryName} 共{v.list.length}味
                         </Text>
                         <View style={style.drugListFa}>
                           {v.list.map((v, k) => {
