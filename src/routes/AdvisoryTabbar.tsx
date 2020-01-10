@@ -40,13 +40,21 @@ export default class AdvisoryTabbar extends Component<Props & DefaultProps, Stat
   render() {
     let { focused } = this.props
     let { unReadMsgCountRecord } = this.props.ws
+    let countList = Object.values(unReadMsgCountRecord)
+    let hasUnreadMsg = false
+    for (let i = 0; i < countList.length; i++) {
+      if (countList[i] !== 0) {
+        hasUnreadMsg = true
+        break
+      }
+    }
     return (
       <View style={[style.iconFa, style.consultation]}>
         <Image
           style={style.icon}
           source={focused ? gImg.common.advisoryActive : gImg.common.advisory}
         />
-        {JSON.stringify(unReadMsgCountRecord) !== "{}" && <View style={style.countPar}></View>}
+        {hasUnreadMsg && <View style={style.countPar}></View>}
       </View>
     )
   }

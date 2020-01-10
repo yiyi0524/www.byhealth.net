@@ -40,12 +40,19 @@ export default class GroupChatTabbar extends Component<Props & DefaultProps, Sta
   render() {
     let { focused } = this.props
     let { unReadGroupMsgCountRecord } = this.props.ws
+    let countList = Object.values(unReadGroupMsgCountRecord)
+    let hasUnreadMsg = false
+    for (let i = 0; i < countList.length; i++) {
+      if (countList[i] !== 0) {
+        hasUnreadMsg = true
+        break
+      }
+    }
     return (
       <View style={[style.iconFa, style.consultation]}>
         <Image style={style.icon} source={focused ? gImg.common.chatActive : gImg.common.chat} />
-        {Object.keys(unReadGroupMsgCountRecord).length !== 0 && (
-          <View style={style.countPar}></View>
-        )}
+
+        {hasUnreadMsg && <View style={style.countPar}></View>}
       </View>
     )
   }
