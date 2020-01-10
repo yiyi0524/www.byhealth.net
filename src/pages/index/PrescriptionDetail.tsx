@@ -293,13 +293,12 @@ export default class SquareRoot extends Component<
             </View>
           </View>
           {mode === "phone" && <SendPrescribingSuccessTips />}
-          {mode === "wx" ||
-            (mode === "phone" && (
-              <SendPrescribing
-                doctorName={this.state.detail.doctor.name || ""}
-                prescriptionId={this.state.prescriptionId}
-              />
-            ))}
+          {mode === "wx" && (
+            <SendPrescribing
+              doctorName={this.state.detail.doctor.name || ""}
+              prescriptionId={this.state.prescriptionId}
+            />
+          )}
           {/* 开方 */}
           <View style={style.diagnosis}>
             <View
