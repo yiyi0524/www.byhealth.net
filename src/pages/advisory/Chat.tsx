@@ -298,6 +298,9 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
     setUserUnReadMsgCount: (preload: { uid: number; count: number }) => {
       dispatch(wsAction.setUserUnReadMsgCount(preload))
     },
+    setGroupUnReadMsgCount: (preload: { groupId: number; count: number }) => {
+      dispatch(wsAction.setGroupUnReadMsgCount(preload))
+    },
     setCurrChatUid: (patientUid: number) => {
       dispatch(wsAction.setCurrChatUid({ uid: patientUid }))
     },
@@ -452,6 +455,11 @@ export default class Chat extends Component<
     this.init()
     this.bottomNavList = this.generateBottomNavList()
     this.requestReadExteralStorage()
+    this.listener = DeviceEventEmitter.addListener(pathMap.SquareRoot + "Reload", quickReplyMsg => {
+      this.setState({
+        sendMsg: quickReplyMsg,
+      })
+    })
     setTimeout(() => this.myScroll && this.myScroll.scrollToEnd(), 100)
     RnAppState.addEventListener("change", this.onAppStateChange)
     Permissions.check("microphone").then(resp => {
@@ -586,8 +594,9 @@ export default class Chat extends Component<
         this.setState({
           lastIsInBackground: false,
         })
-        let { patientUid, mode } = this.state
+        let { patientUid, mode, groupId } = this.state
         if (mode === "chatGroup") {
+          this.props.setGroupUnReadMsgCount({ groupId, count: 0 })
           return
         }
         //当医生进入聊天页面则清除未读消息数量
@@ -595,7 +604,6 @@ export default class Chat extends Component<
         Buff.clearNotifications()
         this.props.setCurrChatUid(patientUid)
         this.props.setUserUnReadMsgCount({ uid: patientUid, count: 0 })
-
         if (patientUid in this.props.ws.chatMsg) {
           if (this.props.ws.chatMsg[this.state.patientUid].length === 0) {
             this.getMoreMsgList()
@@ -627,7 +635,7 @@ export default class Chat extends Component<
   }
   initChatGroup = async () => {
     let { groupId } = this.state
-
+    this.props.setGroupUnReadMsgCount({ groupId, count: 0 })
     if (groupId in this.props.ws.groupMsg) {
       if (this.props.ws.groupMsg[groupId].length === 0) {
         this.getMoreMsgList()
@@ -676,7 +684,6 @@ export default class Chat extends Component<
     Buff.clearNotifications()
     this.props.setCurrChatUid(patientUid)
     this.props.setUserUnReadMsgCount({ uid: patientUid, count: 0 })
-
     if (patientUid in this.props.ws.chatMsg) {
       if (this.props.ws.chatMsg[this.state.patientUid].length === 0) {
         this.getMoreMsgList()
@@ -1442,7 +1449,6 @@ export default class Chat extends Component<
         data: { list: msgList },
         count,
       } = await wsMsgApi.getMsgList({ page, limit, filter })
-      console.log("msgList: ", msgList, filter)
       if (mode === "chatGroup") {
         let oriGroupMsgLen = 0
         if (this.props.ws.groupMsg[groupId]) {

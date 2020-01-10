@@ -1,65 +1,64 @@
+import Calendar from "@/components/Calendar"
 import AdvisoryChat from "@/pages/advisory/Chat"
+import DrugDetail from "@/pages/advisory/DrugDetail"
 import DrugSelect from "@/pages/advisory/DrugSelect"
 import AdvisoryIndex from "@/pages/advisory/Index"
+import SelectPrescriptionTpl from "@/pages/advisory/PrescriptionTplList"
 import SquareRoot from "@/pages/advisory/SquareRoot"
+import AddOrEditArticle from "@/pages/group_chat/AddOrEditArticle"
+import GroupChatApplyList from "@/pages/group_chat/ApplyList"
+import ArticleDetail from "@/pages/group_chat/ArticleDetail"
+import ArticleList from "@/pages/group_chat/ArticleList"
+import AddPrescriptionTpl from "@/pages/index/AddPrescriptionTpl"
+import AddSittingHospital from "@/pages/index/AddSittingHospital"
 import DiagnosisSettings from "@/pages/index/DiagnosisSettings"
+import EditPrescriptionTpl from "@/pages/index/EditPrescriptionTpl"
+import EditSittingHospital from "@/pages/index/EditSittingHospital"
 import InvitePatients from "@/pages/index/InvitePatients"
+import Prescribing from "@/pages/index/Prescribing"
 import Prescription from "@/pages/index/Prescription"
+import PrescriptionTpl from "@/pages/index/PrescriptionTpl"
+import PrescriptionTplList from "@/pages/index/PrescriptionTplList"
+import SittingHospital from "@/pages/index/SittingHospital"
+import SittingHospitalList from "@/pages/index/SittingHospitalList"
 import About from "@/pages/personal_center/About"
 import Account from "@/pages/personal_center/Account"
+import AddBankCard from "@/pages/personal_center/AddBankCard"
 import ChangePwd from "@/pages/personal_center/ChangePwd"
 import CustomerService from "@/pages/personal_center/CustomerService"
+import EditBankCard from "@/pages/personal_center/EditBankCard"
 import EditInformation from "@/pages/personal_center/EditInformation"
 import PersonalCenter from "@/pages/personal_center/Index"
 import AddressBookAddGroup from "@pages/address_book/AddGroup"
 import AddressBookGroup from "@pages/address_book/Group"
 import AddressBookGroupDetail from "@pages/address_book/GroupDetail"
 import AddressBookIndex from "@pages/address_book/Index"
-import PatientDetail from "@pages/address_book/PatientDetail"
 import InquirySheet from "@pages/address_book/InquirySheet"
 import MedicalRecord from "@pages/address_book/MedicalRecord"
-import SquareRootDetail from "@pages/advisory/SquareRootDetail"
-import PrescriptionDetail from "@pages/index/PrescriptionDetail"
-import RegisterAgreement from "@pages/common/RegisterAgreement"
-import LawAgreement from "@pages/common/LawAgreement"
+import PatientDetail from "@pages/address_book/PatientDetail"
+import PostInquiry from "@pages/address_book/PostInquiry"
 import AdvisoryMedicalRecord from "@pages/advisory/PatientDetail"
+import QuickReply from "@pages/advisory/QuickReply"
+import SquareRootDetail from "@pages/advisory/SquareRootDetail"
+import LawAgreement from "@pages/common/LawAgreement"
+import RegisterAgreement from "@pages/common/RegisterAgreement"
+import GroupChatDetail from "@pages/group_chat/Detail"
+import EnteringGroupChat from "@pages/group_chat/EnteringGroupChat"
+import GroupChat from "@pages/group_chat/Index"
+import Home from "@pages/Home"
+import Help from "@pages/index/Help"
+import PrescriptionDetail from "@pages/index/PrescriptionDetail"
 import ServiceSettings from "@pages/index/ServiceSettings"
+import UploadPrescription from "@pages/index/UploadPrescription"
+import UploadPrescriptionDetail from "@pages/index/UploadPrescriptionDetail"
+import UploadPrescriptionList from "@pages/index/UploadPrescriptionList"
 import InvisiblePatients from "@pages/personal_center/InvisiblePatients"
 import InviteDoctors from "@pages/personal_center/InviteDoctors"
-import QuickReply from "@pages/advisory/QuickReply"
-import SittingHospital from "@/pages/index/SittingHospital"
-import SittingHospitalList from "@/pages/index/SittingHospitalList"
-import AddSittingHospital from "@/pages/index/AddSittingHospital"
-import EditSittingHospital from "@/pages/index/EditSittingHospital"
-import PrescriptionTpl from "@/pages/index/PrescriptionTpl"
-import PrescriptionTplList from "@/pages/index/PrescriptionTplList"
-import AddPrescriptionTpl from "@/pages/index/AddPrescriptionTpl"
-import EditPrescriptionTpl from "@/pages/index/EditPrescriptionTpl"
-import SelectPrescriptionTpl from "@/pages/advisory/PrescriptionTplList"
-import AddBankCard from "@/pages/personal_center/AddBankCard"
-import EditBankCard from "@/pages/personal_center/EditBankCard"
-import DrugDetail from "@/pages/advisory/DrugDetail"
-import Calendar from "@/components/Calendar"
-import Help from "@pages/index/Help"
-import Home from "@pages/Home"
 import Test from "@pages/Test"
 import RealNameAuth from "@pages/user/RealNameAuth"
-import UploadPrescription from "@pages/index/UploadPrescription"
 import sColor from "@styles/color"
 import gImg from "@utils/img"
 import React from "react"
-import PostInquiry from "@pages/address_book/PostInquiry"
-import UploadPrescriptionList from "@pages/index/UploadPrescriptionList"
-import UploadPrescriptionDetail from "@pages/index/UploadPrescriptionDetail"
-import GroupChat from "@pages/group_chat/Index"
-import EnteringGroupChat from "@pages/group_chat/EnteringGroupChat"
-import GroupChatDetail from "@pages/group_chat/Detail"
-import GroupChatApplyList from "@/pages/group_chat/ApplyList"
-import ArticleList from "@/pages/group_chat/ArticleList"
-import ArticleDetail from "@/pages/group_chat/ArticleDetail"
-import AddOrEditArticle from "@/pages/group_chat/AddOrEditArticle"
-import Prescribing from "@/pages/index/Prescribing"
-
 import { Image, StyleSheet, View } from "react-native"
 import {
   createBottomTabNavigator,
@@ -67,6 +66,9 @@ import {
   getActiveChildNavigationOptions,
 } from "react-navigation"
 import pathMap from "./pathMap"
+import AdvisoryTabbar from "./AdvisoryTabbar"
+import GroupChatTabbar from "./GroupChatTabbar"
+
 const style = StyleSheet.create({
   icon: {
     width: 30,
@@ -77,6 +79,20 @@ const style = StyleSheet.create({
     width: 30,
     height: 30,
     overflow: "hidden",
+  },
+  consultation: {
+    position: "relative",
+  },
+  countPar: {
+    position: "absolute",
+    top: 0,
+    right: 0,
+    width: 8,
+    height: 8,
+    borderRadius: 6,
+    backgroundColor: "red",
+    zIndex: 9,
+    justifyContent: "center",
   },
 })
 const TabNav = createBottomTabNavigator(
@@ -111,14 +127,7 @@ const TabNav = createBottomTabNavigator(
       navigationOptions: () => ({
         title: "咨询",
         tabBarIcon: ({ focused }: { focused: boolean }) => {
-          return (
-            <View style={style.iconFa}>
-              <Image
-                style={style.icon}
-                source={focused ? gImg.common.advisoryActive : gImg.common.advisory}
-              />
-            </View>
-          )
+          return <AdvisoryTabbar focused={focused} />
         },
         tabBarOnPress: (obj: any) => {
           obj.navigation.navigate(obj.navigation.state.routeName)
@@ -135,14 +144,7 @@ const TabNav = createBottomTabNavigator(
       navigationOptions: () => ({
         title: "聊天室",
         tabBarIcon: ({ focused }: { focused: boolean }) => {
-          return (
-            <View style={style.iconFa}>
-              <Image
-                style={style.icon}
-                source={focused ? gImg.common.chatActive : gImg.common.chat}
-              />
-            </View>
-          )
+          return <GroupChatTabbar focused={focused} />
         },
         tabBarOnPress: (obj: any) => {
           obj.navigation.navigate(obj.navigation.state.routeName) //跳转

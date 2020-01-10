@@ -2,6 +2,7 @@ import { Msg } from "@/pages/Ws"
 import { Toast } from "@ant-design/react-native"
 import * as wsAction from "../actions/ws"
 type Uid = number
+type GroupId = number
 type UnReadMsgCount = number
 export interface WsState {
   currScreen: string
@@ -10,6 +11,8 @@ export interface WsState {
   // 未读消息数量统计
   unReadMsgCountRecord: Record<Uid, UnReadMsgCount>
   chatMsg: Record<number, Msg[]>
+  // 未读群聊消息数量统计
+  unReadGroupMsgCountRecord: Record<GroupId, UnReadMsgCount>
   groupMsg: Record<number, Msg[]>
   wsGet: (data: { url: string; query?: Object }) => boolean
   wsPost: (data: { url: string; data?: Object }) => boolean
@@ -22,6 +25,7 @@ export const initState: WsState = {
   unReadMsgCountRecord: {},
   chatMsg: {},
   groupMsg: {},
+  unReadGroupMsgCountRecord: {},
   wsGet: ({ url, query = {} }) => {
     console.log(query)
     if (url !== "/ws/ping") {
@@ -169,6 +173,22 @@ function setUserUnReadMsgCount(state = initState, action: Action<{ uid: number; 
   return state
 }
 /**
+ * 设置与某用户的未读消息数量
+ */
+function setGroupUnReadMsgCount(
+  state = initState,
+  action: Action<{ groupId: number; count: number }>,
+) {
+  let newState = Object.assign({}, state)
+  let { groupId, count } = action.preload
+  if (groupId in newState.unReadGroupMsgCountRecord && count === 0) {
+    delete newState.unReadGroupMsgCountRecord[groupId]
+  } else {
+    newState.unReadGroupMsgCountRecord[groupId] = count
+  }
+  return newState
+}
+/**
  * 改变当前屏幕
  */
 function changeScreen(state = initState, action: Action<{ screenName: string }>) {
@@ -204,6 +224,8 @@ export default function reducer(state = initState, action: Action<any>) {
       return setWsFn(state, action)
     case wsAction.SET_USER_UNREAD_MSG_COUNT:
       return setUserUnReadMsgCount(state, action)
+    case wsAction.SET_GROUP_UNREAD_MSG_COUNT:
+      return setGroupUnReadMsgCount(state, action)
     case wsAction.CHANGE_SCREEN:
       return changeScreen(state, action)
     case wsAction.SET_CURR_CHAT_UID:

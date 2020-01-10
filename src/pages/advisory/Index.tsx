@@ -374,9 +374,12 @@ export default class Index extends Component<
               )
             })}
             {this.state.consultationList.length === 0 ? <Empty /> : null}
-            <View style={{ padding: 10, marginTop: 5 }}>
-              <Text style={{ fontSize: 16 }}>微信扫码用户</Text>
-            </View>
+            {this.state.scanUserList.filter(user => !consultationOpenIdList.includes(user.openid))
+              .length > 0 ? (
+              <View style={{ padding: 10, marginTop: 5 }}>
+                <Text style={{ fontSize: 16 }}>微信扫码用户</Text>
+              </View>
+            ) : null}
             <View style={[{ flex: 1 }]}>
               {this.state.scanUserList
                 .filter(user => !consultationOpenIdList.includes(user.openid))

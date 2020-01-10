@@ -141,6 +141,9 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
     setUserUnReadMsgCount: (preload: { uid: number; count: number }) => {
       dispatch(wsAction.setUserUnReadMsgCount(preload))
     },
+    setGroupUnReadMsgCount: (preload: { groupId: number; count: number }) => {
+      dispatch(wsAction.setGroupUnReadMsgCount(preload))
+    },
   }
 }
 class Ws extends React.Component<
@@ -265,9 +268,12 @@ class Ws extends React.Component<
     frame: ReceiveFrame<Exclude<Overwrite<Msg, MsgOptionalDataToRequired>, "dom">>,
   ) => {
     console.log(frame)
+    let { unReadGroupMsgCountRecord } = this.props.ws
     let groupId = frame.data.receiveGroup!.id
     console.log("正在添加群聊消息")
     this.props.addGroupMsg({ groupId, msg: frame.data })
+    let groupUnreadMsgCount = unReadGroupMsgCountRecord[groupId] || 0
+    this.props.setGroupUnReadMsgCount({ groupId, count: groupUnreadMsgCount + 1 })
   }
   initClient = async () => {
     console.log("正在初始化ws客户端")

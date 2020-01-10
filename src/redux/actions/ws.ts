@@ -31,6 +31,7 @@ export const ADD_MSG_LIST = "新增消息列表"
 export const ADD_GROUP_MSG_LIST = "新增群聊消息列表"
 export const SET_WS_FN = "设置ws 函数"
 export const SET_USER_UNREAD_MSG_COUNT = "改变与指定用户的未读消息数量"
+export const SET_GROUP_UNREAD_MSG_COUNT = "改变与指定群组的未读消息数量"
 export const CHANGE_SCREEN = "设置当前screen"
 export const SET_CURR_CHAT_UID = "设置当前聊天的患者uid"
 
@@ -89,6 +90,12 @@ export function setWsFn(preload: WsFnPreload) {
 export function setUserUnReadMsgCount(preload: { uid: number; count: number }) {
   return {
     type: SET_USER_UNREAD_MSG_COUNT,
+    preload,
+  }
+}
+export function setGroupUnReadMsgCount(preload: { groupId: number; count: number }) {
+  return {
+    type: SET_GROUP_UNREAD_MSG_COUNT,
     preload,
   }
 }

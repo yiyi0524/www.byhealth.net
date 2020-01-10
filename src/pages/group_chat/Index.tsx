@@ -6,7 +6,7 @@ import { GroupChat, joinGroupChat, listGroupChat, STATUS, TAB, TAB_ZH } from "@/
 import { getPersonalInfo } from "@/services/user"
 import { TYPE } from "@/utils/constant"
 import { getPicCdnUrl } from "@/utils/utils"
-import { Icon, InputItem, Modal, Toast } from "@ant-design/react-native"
+import { Icon, InputItem, Modal, Toast, Badge } from "@ant-design/react-native"
 import gImg from "@utils/img"
 import gSass from "@utils/style"
 import moment from "moment"
@@ -43,6 +43,7 @@ const mapStateToProps = (state: AppState) => {
     isLogin: state.user.isLogin,
     name: state.user.name,
     uid: state.user.uid,
+    ws: state.ws,
   }
 }
 //@ts-ignore
@@ -194,6 +195,7 @@ export default class Index extends Component<Props & DefaultProps, State> {
   }
   groupChat = () => {
     let { search, list, currentPage, isJoinGroupChat, hasRealNameAuth } = this.state
+    let { unReadGroupMsgCountRecord } = this.props.ws
     return (
       <View style={style.group}>
         <View
@@ -265,7 +267,16 @@ export default class Index extends Component<Props & DefaultProps, State> {
                           {isJoined && <Text style={style.add}>已加入</Text>}
                         </View>
                       ) : (
-                        <Text style={style.addTime}>{ctime}</Text>
+                        <View style={[global.flex, global.aCenter]}>
+                          {group.id in unReadGroupMsgCountRecord &&
+                          unReadGroupMsgCountRecord[group.id] > 0 ? (
+                            <Badge
+                              style={{ marginLeft: 20, marginRight: 20 }}
+                              text={unReadGroupMsgCountRecord[group.id]}
+                            />
+                          ) : null}
+                          <Text style={style.addTime}>{ctime}</Text>
+                        </View>
                       )}
                     </View>
                     {/* <View style={[style.descPar, global.flex, global.aCenter]}>

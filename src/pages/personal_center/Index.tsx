@@ -168,6 +168,15 @@ export default class Index extends Component<
     try {
       await Promise.all([api.logout(), new Promise(s => setTimeout(s, 300))])
       await storage.remove("session")
+      this.props.login({
+        uid: 0,
+        name: "未命名",
+        avatar: {
+          id: 0,
+          title: "",
+          url: "",
+        },
+      })
       navigation.navigate(pathMap.Login)
       DeviceEventEmitter.emit(pathMap.PersonalCenter + "Reload", null)
       DeviceEventEmitter.emit("wsReload", null)
