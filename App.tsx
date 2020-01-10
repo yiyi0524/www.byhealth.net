@@ -13,7 +13,6 @@ import SplashScreen from "react-native-splash-screen"
 import { wxAppId } from "@/config/api"
 import * as WeChat from "react-native-wechat"
 
-WeChat.registerApp(wxAppId)
 const mapStateToProps = (state: AppState) => {
   return {
     isLogin: state.user.isLogin,
@@ -53,6 +52,7 @@ export default class App extends Component<any> {
     return route.routeName
   }
   componentDidMount() {
+    WeChat.registerApp(wxAppId)
     SplashScreen.hide()
     RnAppState.addEventListener("change", this.onAppStateChange)
   }
