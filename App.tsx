@@ -12,6 +12,7 @@ import CodePush from "react-native-code-push"
 import SplashScreen from "react-native-splash-screen"
 import { wxAppId } from "@/config/api"
 import * as WeChat from "react-native-wechat"
+import Sentry from "react-native-sentry"
 
 const mapStateToProps = (state: AppState) => {
   return {
@@ -53,6 +54,11 @@ export default class App extends Component<any> {
   }
   componentDidMount() {
     WeChat.registerApp(wxAppId)
+    CodePush.getUpdateMetadata().then(update => {
+      if (update) {
+        Sentry.setVersion(update.appVersion + "-codepush:" + update.label)
+      }
+    })
     SplashScreen.hide()
     RnAppState.addEventListener("change", this.onAppStateChange)
   }

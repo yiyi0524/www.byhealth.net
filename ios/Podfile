@@ -4,6 +4,7 @@ source 'https://github.com/aliyun/aliyun-specs.git'
 target '博一健康' do
   # buff
   pod 'AlicloudPush', '~> 1.9.8'
+  pod 'SentryReactNative', :path => '../node_modules/react-native-sentry/SentryReactNative.podspec' # or your path to node_modules
   pod 'SSZipArchive', :git => 'https://github.com/ZipArchive/ZipArchive',:tag => 'v2.1.5'
   pod 'JWT', :git => 'https://github.com/yourkarma/JWT', :tag => '3.0.0-beta.12'
   pod 'Base64', :git =>'https://github.com/ekscrypto/Base64', :tag => '1.1.2''
