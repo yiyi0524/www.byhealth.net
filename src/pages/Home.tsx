@@ -1,20 +1,22 @@
 import global from "@/assets/styles/global"
-import { BASE_URL } from "@/config/api"
 import * as userAction from "@/redux/actions/user"
 import { AppState } from "@/redux/stores/store"
 import pathMap from "@/routes/pathMap"
 import { ALLOW_INQUIRY } from "@/services/doctor"
-import { isDebugMode, getPicCdnUrl } from "@/utils/utils"
+import { getPicCdnUrl, isDebugMode } from "@/utils/utils"
 import { Icon, Toast } from "@ant-design/react-native"
 import api, { checkUpdate, updateAliPushDeviceId } from "@api/api"
 import userApi from "@api/user"
+import Buff from "@utils/Buff"
 import gImg from "@utils/img"
 import gStyle from "@utils/style"
 import React, { Component } from "react"
 import {
+  Alert,
   DeviceEventEmitter,
   EmitterSubscription,
   Image,
+  Linking,
   NativeEventSubscription,
   PermissionsAndroid,
   RefreshControl,
@@ -22,14 +24,11 @@ import {
   Text,
   TouchableOpacity,
   View,
-  Linking,
-  Alert,
 } from "react-native"
 import { NavigationScreenProp } from "react-navigation"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
 import { Picture } from "./advisory/Chat"
-import Buff from "@utils/Buff"
 const style = gStyle.home
 const globalStyle = gStyle.global
 interface Props {
@@ -103,6 +102,11 @@ export default class Home extends Component<
         icon: gImg.home.invite,
         title: "邀请患者",
         link: pathMap.InvitePatients,
+      },
+      {
+        icon: gImg.home.invite,
+        title: "邀请医生",
+        link: pathMap.InviteDoctors,
       },
       {
         icon: gImg.home.sittingInformation,
