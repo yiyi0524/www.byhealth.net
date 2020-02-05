@@ -13,7 +13,8 @@ import SplashScreen from "react-native-splash-screen"
 import { wxAppId } from "@/config/api"
 import * as WeChat from "react-native-wechat"
 import Sentry from "react-native-sentry"
-
+import { enableScreens } from "react-native-screens"
+enableScreens();
 const mapStateToProps = (state: AppState) => {
   return {
     isLogin: state.user.isLogin,

@@ -309,8 +309,8 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
 // @ts-ignore
 @connect(mapStateToProps, mapDispatchToProps)
 export default class Chat extends Component<
-  Props & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
-  State
+Props & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
+State
 > {
   static navigationOptions = ({ navigation }: { navigation: NavigationScreenProp<State> }) => {
     let title = ""
@@ -350,16 +350,16 @@ export default class Chat extends Component<
           <Icon style={[style.headerRight, global.fontSize18]} name="menu"></Icon>
         </TouchableOpacity>
       ) : (
-        <TouchableOpacity
-          onPress={() => {
-            navigation.push(pathMap.AdvisoryMedicalRecord, {
-              patientUid: navigation.getParam("patientUid"),
-              consultationId: navigation.getParam("consultationId"),
-            })
-          }}>
-          <Text style={[style.headerRight, global.fontSize14, global.fontStyle]}>病历</Text>
-        </TouchableOpacity>
-      ),
+          <TouchableOpacity
+            onPress={() => {
+              navigation.push(pathMap.AdvisoryMedicalRecord, {
+                patientUid: navigation.getParam("patientUid"),
+                consultationId: navigation.getParam("consultationId"),
+              })
+            }}>
+            <Text style={[style.headerRight, global.fontSize14, global.fontStyle]}>病历</Text>
+          </TouchableOpacity>
+        ),
     }
   }
   bottomNavList: bottomNavItem[] = [
@@ -566,7 +566,7 @@ export default class Chat extends Component<
     console.log(didSucceed)
     console.log(
       `Finished recording of duration ${
-        this.state.recordTime
+      this.state.recordTime
       } seconds at path: ${filePath} and size of ${fileSize || 0} bytes`,
     )
   }
@@ -987,8 +987,8 @@ export default class Chat extends Component<
                             style.input,
                             isInputBlur
                               ? {
-                                  height: 45,
-                                }
+                                height: 45,
+                              }
                               : {},
                           ]}
                           placeholder="请输入"
@@ -1023,36 +1023,36 @@ export default class Chat extends Component<
                       </TouchableOpacity>
                     </>
                   ) : (
-                    <View
-                      style={{
-                        flex: 1,
-                        // alignItems: "center",
-                        justifyContent: "center",
-                      }}>
-                      <TouchableOpacity
-                        style={{ width: "100%" }}
-                        onPressIn={this.onRecordPressIn}
-                        onPressOut={this.onRecordPressOut}>
-                        <View
-                          style={{
-                            width: "100%",
-                            borderRadius: 5,
-                            padding: 13,
-                            justifyContent: "center",
-                            alignItems: "center",
-                            backgroundColor: isRecord ? sColor.white : sColor.mainRed,
-                          }}>
-                          <Text
+                      <View
+                        style={{
+                          flex: 1,
+                          // alignItems: "center",
+                          justifyContent: "center",
+                        }}>
+                        <TouchableOpacity
+                          style={{ width: "100%" }}
+                          onPressIn={this.onRecordPressIn}
+                          onPressOut={this.onRecordPressOut}>
+                          <View
                             style={{
-                              textAlign: "center",
-                              color: isRecord ? sColor.color666 : sColor.white,
+                              width: "100%",
+                              borderRadius: 5,
+                              padding: 13,
+                              justifyContent: "center",
+                              alignItems: "center",
+                              backgroundColor: isRecord ? sColor.white : sColor.mainRed,
                             }}>
-                            {isRecord ? "松开发送录音 " + recordTime : "按下录音"}
-                          </Text>
-                        </View>
-                      </TouchableOpacity>
-                    </View>
-                  )}
+                            <Text
+                              style={{
+                                textAlign: "center",
+                                color: isRecord ? sColor.color666 : sColor.white,
+                              }}>
+                              {isRecord ? "松开发送录音 " + recordTime : "按下录音"}
+                            </Text>
+                          </View>
+                        </TouchableOpacity>
+                      </View>
+                    )}
                 </View>
                 <View
                   style={[
@@ -1081,7 +1081,7 @@ export default class Chat extends Component<
                                             const uploadingImgKey = Toast.loading(
                                               "上传图片中",
                                               0,
-                                              () => {},
+                                              () => { },
                                               true,
                                             )
                                             if (resp.didCancel) {
@@ -1145,7 +1145,7 @@ export default class Chat extends Component<
                                     const uploadingImgKey = Toast.loading(
                                       "上传图片中",
                                       0,
-                                      () => {},
+                                      () => { },
                                       true,
                                     )
                                     if (resp.didCancel) {
@@ -1220,7 +1220,7 @@ export default class Chat extends Component<
                                   const uploadingImgKey = Toast.loading(
                                     "上传图片中",
                                     0,
-                                    () => {},
+                                    () => { },
                                     true,
                                   )
                                   if (resp.didCancel) {
@@ -1273,7 +1273,7 @@ export default class Chat extends Component<
                             })
                           } else {
                             RnImagePicker.launchCamera(imgPickerOpt, (resp: any) => {
-                              const uploadingImgKey = Toast.loading("上传图片中", 0, () => {}, true)
+                              const uploadingImgKey = Toast.loading("上传图片中", 0, () => { }, true)
                               if (resp.didCancel) {
                                 Portal.remove(uploadingImgKey)
                               } else if (resp.error) {
@@ -1361,20 +1361,20 @@ export default class Chat extends Component<
                 source={{ uri: getPicFullUrl(this.state.imagesViewer[0].url) }}
               />
             ) : (
-              <ImageZoom
-                cropWidth={windowWidth}
-                cropHeight={windowHeight}
-                imageWidth={windowWidth}
-                imageHeight={this.state.imageHeight}>
-                <Image
-                  style={{
-                    width: windowWidth,
-                    height: this.state.imageHeight,
-                  }}
-                  source={{ uri: getPicFullUrl(this.state.imagesViewer[0].url) }}
-                />
-              </ImageZoom>
-            )}
+                <ImageZoom
+                  cropWidth={windowWidth}
+                  cropHeight={windowHeight}
+                  imageWidth={windowWidth}
+                  imageHeight={this.state.imageHeight}>
+                  <Image
+                    style={{
+                      width: windowWidth,
+                      height: this.state.imageHeight,
+                    }}
+                    source={{ uri: getPicFullUrl(this.state.imagesViewer[0].url) }}
+                  />
+                </ImageZoom>
+              )}
           </View>
         </View>
         {/* 表情 */}
@@ -1540,6 +1540,7 @@ export default class Chat extends Component<
   pictureFormat = (serverMsg: Exclude<Overwrite<Msg, { pic: Picture }>, "dom">) => {
     let msg: Overwrite<Msg, { pic: Picture }> = serverMsg
     let isSelfMsg = msg.sendUser.uid === this.props.uid
+    console.log('url:', getThumbUrl({ path: getPicFullUrl(msg.pic.url) }))
     msg.dom = (
       <View>
         {/* 左边图片 */}
@@ -1553,7 +1554,7 @@ export default class Chat extends Component<
                 style={style.itemImg}
                 source={
                   msg.sendUser.avatar.url
-                    ? { uri: getThumbUrl({ path: getPicFullUrl(msg.sendUser.avatar.url) }) }
+                    ? { uri: getThumbUrl({ path: getPicFullUrl(msg.sendUser.avatar.url) }), width: 400, height: 400 }
                     : gImg.common.defaultAvatar
                 }
               />
@@ -1656,47 +1657,47 @@ export default class Chat extends Component<
             </View>
           </View>
         ) : (
-          <View style={isSelfMsg ? global.hidden : style.item}>
-            <Text style={[style.sendTime, global.fontStyle, global.fontSize12]}>
-              {msg.sendTime.substr(0, 16)}
-            </Text>
-            <View style={[style.leftItem, global.flex]}>
-              <View style={style.itemPic}>
-                <Image
-                  style={style.itemImg}
-                  source={
-                    msg.sendUser.avatar.url
-                      ? { uri: getThumbUrl({ path: getPicFullUrl(msg.sendUser.avatar.url) }) }
-                      : gImg.common.defaultAvatar
-                  }
-                />
-              </View>
-              <View style={isSelfMsg ? global.hidden : style.leftItemIcon} />
-              <TouchableOpacity
-                style={style.leftAudio}
-                onPress={() => this.startPlayAudio(msg.id, msg.file.url)}>
-                <View
-                  style={{
-                    alignItems: "flex-start",
-                    justifyContent: "center",
-                    paddingRight: 10,
-                    width: 80,
-                    paddingTop: 3,
-                    paddingBottom: 3,
-                  }}>
+            <View style={isSelfMsg ? global.hidden : style.item}>
+              <Text style={[style.sendTime, global.fontStyle, global.fontSize12]}>
+                {msg.sendTime.substr(0, 16)}
+              </Text>
+              <View style={[style.leftItem, global.flex]}>
+                <View style={style.itemPic}>
                   <Image
-                    style={{ width: 15, height: 15 }}
+                    style={style.itemImg}
                     source={
-                      isPalyAudio && currAudioMsgId === msg.id
-                        ? gImg.common.leftSoundPlaying
-                        : gImg.common.leftSound
+                      msg.sendUser.avatar.url
+                        ? { uri: getThumbUrl({ path: getPicFullUrl(msg.sendUser.avatar.url) }) }
+                        : gImg.common.defaultAvatar
                     }
                   />
                 </View>
-              </TouchableOpacity>
+                <View style={isSelfMsg ? global.hidden : style.leftItemIcon} />
+                <TouchableOpacity
+                  style={style.leftAudio}
+                  onPress={() => this.startPlayAudio(msg.id, msg.file.url)}>
+                  <View
+                    style={{
+                      alignItems: "flex-start",
+                      justifyContent: "center",
+                      paddingRight: 10,
+                      width: 80,
+                      paddingTop: 3,
+                      paddingBottom: 3,
+                    }}>
+                    <Image
+                      style={{ width: 15, height: 15 }}
+                      source={
+                        isPalyAudio && currAudioMsgId === msg.id
+                          ? gImg.common.leftSoundPlaying
+                          : gImg.common.leftSound
+                      }
+                    />
+                  </View>
+                </TouchableOpacity>
+              </View>
             </View>
-          </View>
-        )}
+          )}
       </View>
     )
     return msg
