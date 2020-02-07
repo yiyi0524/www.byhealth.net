@@ -60,4 +60,12 @@ export default {
   ArticleList: "ArticleList",
   ArticleDetail: "ArticleDetail",
   Prescribing: "Prescribing",
+  //邀请
+  MyInvite:"MyInvite",
+  InviteDoctorList:"InviteDoctorList",
+  InviteDoctorGradeList:"InviteDoctorGradeList",
+  Order:"Order",
+  OrderMoney:"OrderMoney",
+  OrderCount:"OrderCount",
+
 }

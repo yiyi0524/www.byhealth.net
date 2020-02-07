@@ -86,6 +86,10 @@ export default class Index extends Component<
       //   link: pathMap.InviteDoctors,
       // },
       {
+        name: "我的邀请",
+        link: pathMap.MyInvite,
+       },
+      {
         name: "关于我们",
         link: pathMap.About,
       },

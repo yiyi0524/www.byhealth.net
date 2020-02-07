@@ -58,6 +58,10 @@ import addArticle from "@/assets/styles/group_chat/addArticle"
 import articleList from "@/assets/styles/group_chat/articleList"
 import articleDetail from "@/assets/styles/group_chat/articleDetail"
 import prescribing from "@/assets/styles/index/prescribing"
+import myInviteIndex from "@/assets/styles/my_invite/index"
+import myInviteDoctorList from "@/assets/styles/my_invite/doctorList"
+import myInviteDoctorGradeList from "@/assets/styles/my_invite/doctorGradeList"
+import order from "@/assets/styles/my_invite/order"
 
 export default {
   home,
@@ -133,6 +137,12 @@ export default {
     addArticle,
     articleList,
     articleDetail,
+  },
+  myInvite:{
+    myInviteIndex,
+    myInviteDoctorList,
+    myInviteDoctorGradeList,
+    order,
   },
   admin: {},
 }

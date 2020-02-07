@@ -54,6 +54,12 @@ import UploadPrescriptionDetail from "@pages/index/UploadPrescriptionDetail"
 import UploadPrescriptionList from "@pages/index/UploadPrescriptionList"
 import InvisiblePatients from "@pages/personal_center/InvisiblePatients"
 import InviteDoctors from "@pages/personal_center/InviteDoctors"
+import MyInvite from "@pages/my_invite/Index"
+import MyInviteDoctorList from "@pages/my_invite/DoctorList"
+import OrderCount from "@pages/my_invite/OrderCount"
+import OrderMoney from "@pages/my_invite/OrderMoney"
+import MyInviteDoctorGradeList from "@pages/my_invite/DoctorGradeList"
+import Order from "@pages/my_invite/Order"
 import Test from "@pages/Test"
 import RealNameAuth from "@pages/user/RealNameAuth"
 import sColor from "@styles/color"
@@ -431,6 +437,25 @@ const StacksOverTabs = createStackNavigator({
   },
   [pathMap.Prescribing]: {
     screen: Prescribing,
+  },
+  //我的邀请
+  [pathMap.MyInvite]: {
+    screen: MyInvite,
+  },
+  [pathMap.InviteDoctorList]: {
+    screen: MyInviteDoctorList,
+  },
+  [pathMap.OrderMoney]: {
+    screen: OrderMoney,
+  },
+  [pathMap.OrderCount]: {
+    screen: OrderCount,
+  },
+  [pathMap.InviteDoctorGradeList]: {
+    screen: MyInviteDoctorGradeList,
+  },
+  [pathMap.Order]: {
+    screen: Order,
   },
 })
 export default StacksOverTabs
