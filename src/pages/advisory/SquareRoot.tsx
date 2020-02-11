@@ -650,7 +650,7 @@ export default class SquareRoot extends Component<
                     <InputItem
                       style={style.input}
                       value={this.state.phone}
-                      type="phone"
+                      type="text"
                       onChange={phone => {
                         if (phone || phone === "") {
                           this.setState({
@@ -658,9 +658,11 @@ export default class SquareRoot extends Component<
                           })
                         }
                       }}
-                      onBlur={phone => {
+                      onBlur={() => {
+                        const { phone } = this.state
                         if (phone) {
-                          if (!/^1[3456789]\d{9}$/.test(phone)) {
+                          if (!/^1\d{10}$/.test(phone)) {
+                            console.log("phone: ", phone)
                             Toast.info("手机号码格式错误", 1)
                             this.setState({
                               phone: "",
