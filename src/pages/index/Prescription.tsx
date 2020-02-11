@@ -38,6 +38,7 @@ export interface prescriptionItem {
   syndromeDifferentiation: string //辨证
   status: number
   ctime: string
+  type: "wx" | "common" | "phone"
 }
 
 const mapStateToProps = (state: AppState) => {
@@ -54,10 +55,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
     },
   }
 }
-@connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)
+@connect(mapStateToProps, mapDispatchToProps)
 export default class Prescription extends Component<
   Props & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
   State
@@ -146,10 +144,12 @@ export default class Prescription extends Component<
           <View style={[style.prescriptionItemHeaderLeft, global.flex, global.alignItemsCenter]}>
             <View style={style.prescriptionItemHeaderLeftIcon} />
             <Text style={[style.prescriptionItemHeaderLeftTitle, global.fontSize14]}>{v.name}</Text>
-            <Text style={[style.prescriptionItemHeaderLeftDetail, global.fontSize14]}>
-              {GENDER_ZH[v.gender]}
-              {v.yearAge >= 3 ? v.yearAge + "岁" : v.yearAge + "岁" + v.monthAge + "月"}
-            </Text>
+            {v.type === "common" && (
+              <Text style={[style.prescriptionItemHeaderLeftDetail, global.fontSize14]}>
+                {GENDER_ZH[v.gender]}
+                {v.yearAge >= 3 ? v.yearAge + "岁" : v.yearAge + "岁" + v.monthAge + "月"}
+              </Text>
+            )}
           </View>
           <View style={[style.prescriptionItemHeaderRight, global.flex, global.alignItemsCenter]}>
             <Text style={[style.prescriptionItemHeaderRightTitle, global.fontSize14]}>

@@ -175,7 +175,10 @@ export default class OrderCount extends Component<Props, State> {
                     global.jBetween,
                   ]}>
                   <View style={style.title}>
-                    <Text style={style.desc}>{item.name}</Text>
+                    <Text style={style.desc}>
+                      {item.name + " "}
+                      {item.orderCount}
+                    </Text>
                   </View>
                   <Text
                     style={style.desc}

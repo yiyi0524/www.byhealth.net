@@ -177,7 +177,9 @@ export default class OrderMoney extends Component<Props, State> {
                   ]}
                   key={"item" + idx}>
                   <View style={style.title}>
-                    <Text style={style.desc}>{item.name}</Text>
+                    <Text style={style.desc}>
+                      {item.name} ￥{(item.moneyCount / 100).toFixed(0)}
+                    </Text>
                   </View>
                   <Text
                     style={style.desc}

@@ -141,7 +141,7 @@ export default class Index extends Component<Props, State> {
                   </View>
                   <View style={style.detail}>
                     <Text style={style.desc}>{statistics.fourthLevelInviteCount}</Text>
-                    <Text style={style.title}>三级</Text>
+                    <Text style={style.title}>四级</Text>
                   </View>
                 </View>
               </View>
@@ -190,7 +190,7 @@ export default class Index extends Component<Props, State> {
                     <Text style={style.desc}>
                       {(orderMoneyInfo.fourthLevelMoney / 100).toFixed(0)}
                     </Text>
-                    <Text style={style.title}>三级</Text>
+                    <Text style={style.title}>四级</Text>
                   </View>
                 </View>
               </View>
@@ -227,11 +227,11 @@ export default class Index extends Component<Props, State> {
                   </View>
                   <View style={style.detail}>
                     <Text style={style.desc}>{orderInfo.thirdLevelCount}</Text>
-                    <Text style={style.title}>二级</Text>
+                    <Text style={style.title}>三级</Text>
                   </View>
                   <View style={style.detail}>
                     <Text style={style.desc}>{orderInfo.fourthLevelCount}</Text>
-                    <Text style={style.title}>三级</Text>
+                    <Text style={style.title}>四级</Text>
                   </View>
                 </View>
               </View>

@@ -28,6 +28,8 @@ export interface InviteDoctorOrderInfo {
 //邀请的医生详情
 export interface InviteDoctorChildInfo {
   name: string
+  orderCount: number
+  moneyCount: number
   doctorId: number
   firstLevelDoctorCount: number
   secondLevelDoctorCount: number

@@ -43,6 +43,7 @@ interface drugCategory {
   child: drugCategory[]
 }
 interface prescriptionDetail {
+  type: "wx" | "phone" | "common"
   doctor: {
     name: string
   }
@@ -126,6 +127,7 @@ export default class SquareRoot extends Component<
           yearAge: 0,
           monthAge: 0,
         },
+        type: "common",
         discrimination: "", //辨病
         syndromeDifferentiation: "", //辨证
         advice: "", //医嘱
@@ -197,8 +199,22 @@ export default class SquareRoot extends Component<
       )
     }
     let { detail, mode } = this.state,
-      status = detail.status
-    console.log(detail)
+      status = detail.status,
+      typeZh = "问诊开方",
+      patientName = detail.patient.name,
+      phone = detail.patient.phone
+
+    if (detail.type === "wx") {
+      typeZh = "微信开方"
+      if (patientName === "") {
+        patientName = "未命名微信用户"
+      }
+    } else if (detail.type === "phone") {
+      typeZh = "手机开方"
+      if (patientName === "") {
+        patientName = "未命名手机用户"
+      }
+    }
     return (
       <>
         <ScrollView
@@ -267,24 +283,30 @@ export default class SquareRoot extends Component<
               <View style={style.titleSpot} />
             </View>
             <View style={[style.diagnosisItem, global.flex, global.alignItemsCenter]}>
-              <Text style={[style.diagnosisItemTitle, global.fontSize14]}>[ 患者信息 ]</Text>
-              {detail.patient.phone !== "" && (
-                <Text style={[style.diagnosisItemLineTitle, global.fontSize14]}>
-                  手机号: {detail.patient.phone}
-                </Text>
-              )}
-              <Text style={[style.diagnosisItemLineTitle, global.fontSize14]}>
-                {detail.patient.name}
-              </Text>
-              <Text style={[style.diagnosisItemLineTitle, global.fontSize14]}>
-                {GENDER_ZH[detail.patient.gender]}
-              </Text>
-              <Text style={[style.diagnosisItemLineTitle, global.fontSize14]}>
-                {detail.patient.yearAge >= 3
-                  ? detail.patient.yearAge + "岁"
-                  : detail.patient.yearAge + "岁" + detail.patient.monthAge + "月"}
-              </Text>
+              <Text style={[style.diagnosisItemTitle, global.fontSize14]}>[ 类型 ] </Text>
+              <Text style={[style.diagnosisItemLineTitle, global.fontSize14]}>{typeZh}</Text>
             </View>
+            <View style={[style.diagnosisItem, global.flex, global.alignItemsCenter]}>
+              <Text style={[style.diagnosisItemTitle, global.fontSize14]}>[ 患者姓名 ] </Text>
+              <Text style={[style.diagnosisItemLineTitle, global.fontSize14]}>{patientName}</Text>
+            </View>
+            <View style={[style.diagnosisItem, global.flex, global.alignItemsCenter]}>
+              <Text style={[style.diagnosisItemTitle, global.fontSize14]}>[ 手机号 ] </Text>
+              <Text style={[style.diagnosisItemLineTitle, global.fontSize14]}>{phone}</Text>
+            </View>
+            {detail.type === "common" && (
+              <View style={[style.diagnosisItem, global.flex, global.alignItemsCenter]}>
+                <Text style={[style.diagnosisItemTitle, global.fontSize14]}>[ 年龄&性别 ]</Text>
+                <Text style={[style.diagnosisItemLineTitle, global.fontSize14]}>
+                  性别: {GENDER_ZH[detail.patient.gender]}
+                </Text>
+                <Text style={[style.diagnosisItemLineTitle, global.fontSize14]}>
+                  {detail.patient.yearAge >= 3
+                    ? detail.patient.yearAge + "岁"
+                    : detail.patient.yearAge + "岁" + detail.patient.monthAge + "月"}
+                </Text>
+              </View>
+            )}
             <View style={[style.diagnosisItem, global.flex, global.alignItemsCenter]}>
               <Text style={[style.diagnosisItemTitle, global.fontSize14]}>[ 诊断 ] </Text>
               <Text style={[style.diagnosisItemLineTitle, global.fontSize14]}>
