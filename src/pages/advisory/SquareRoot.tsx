@@ -102,6 +102,7 @@ interface State {
     activeId: number
   }
   prescriptionDrugCategoryList: PrescriptionDrugCategory[]
+  patientName: string
 }
 /**
  * 处方中某个药品分类的药品集合
@@ -304,6 +305,7 @@ export default class SquareRoot extends Component<
       medicalRecordPicList: [],
       advice: "",
       prescriptionDrugCategoryList,
+      patientName: "",
     }
   }
   async componentDidMount() {
@@ -607,20 +609,75 @@ export default class SquareRoot extends Component<
               </View>
               <View style={[style.diagnosisItem, global.flex, global.alignItemsCenter]}>
                 <Text style={[style.diagnosisItemTitle, global.fontSize14]}>患者信息</Text>
-                <Text style={[style.diagnosisItemLineTitle, global.fontSize14]}>{patientName}</Text>
-                <Text style={[style.diagnosisItemLineTitle, global.fontSize14]}>
-                  {GENDER_ZH[patientInfo.gender]}
-                </Text>
-                <Text style={[style.diagnosisItemLineTitle, global.fontSize14]}>
-                  {patientInfo.yearAge} 岁
-                </Text>
-              </View>
-              <View style={[style.diagnosisItem, global.flex, global.alignItemsCenter]}>
-                <Text style={[style.diagnosisItemTitle, global.fontSize14]}>手机:</Text>
-                {mode === "phone" && (
-                  <Text style={[style.diagnosisItemInput, global.fontSize14]}>{phone}</Text>
+                {mode !== "wx" && mode !== "phone" && (
+                  <Text style={[style.diagnosisItemLineTitle, global.fontSize14]}>
+                    {patientName}
+                  </Text>
+                )}
+                {mode !== "wx" && mode !== "phone" && (
+                  <Text style={[style.diagnosisItemLineTitle, global.fontSize14]}>
+                    {GENDER_ZH[patientInfo.gender]}
+                  </Text>
+                )}
+                {mode !== "wx" && mode !== "phone" && (
+                  <Text style={[style.diagnosisItemLineTitle, global.fontSize14]}>
+                    {patientInfo.yearAge} 岁
+                  </Text>
                 )}
               </View>
+              {(mode === "wx" || mode === "phone") && (
+                <View style={[style.diagnosisItem, global.flex, global.alignItemsCenter]}>
+                  <Text style={[style.diagnosisItemTitle, global.fontSize14]}>姓名</Text>
+                  <View style={style.diagnosisItemInput}>
+                    <InputItem
+                      style={style.input}
+                      value={this.state.patientName}
+                      onChange={patientName => {
+                        if (patientName || patientName === "") {
+                          this.setState({
+                            patientName,
+                          })
+                        }
+                      }}
+                    />
+                  </View>
+                </View>
+              )}
+              {mode === "wx" && (
+                <View style={[style.diagnosisItem, global.flex, global.alignItemsCenter]}>
+                  <Text style={[style.diagnosisItemTitle, global.fontSize14]}>手机号码</Text>
+                  <View style={style.diagnosisItemInput}>
+                    <InputItem
+                      style={style.input}
+                      value={this.state.phone}
+                      type="phone"
+                      onChange={phone => {
+                        if (phone || phone === "") {
+                          this.setState({
+                            phone,
+                          })
+                        }
+                      }}
+                      onBlur={phone => {
+                        if (phone) {
+                          if (!/^1[3456789]\d{9}$/.test(phone)) {
+                            Toast.info("手机号码格式错误", 1)
+                            this.setState({
+                              phone: "",
+                            })
+                          }
+                        }
+                      }}
+                    />
+                  </View>
+                </View>
+              )}
+              {mode === "phone" && (
+                <View style={[style.diagnosisItem, global.flex, global.alignItemsCenter]}>
+                  <Text style={[style.diagnosisItemTitle, global.fontSize14]}>手机:</Text>
+                  <Text style={[style.diagnosisItemInput, global.fontSize14]}>{phone}</Text>
+                </View>
+              )}
               <View style={[style.diagnosisItem, global.flex, global.alignItemsCenter]}>
                 <Text style={[style.diagnosisItemTitle, global.fontSize14]}>辨病</Text>
                 <View style={style.diagnosisItemInput}>
@@ -1168,6 +1225,7 @@ export default class SquareRoot extends Component<
       prescriptionDrugCategoryList,
       isSaveToTpl,
       tplName,
+      patientName: name,
       // drugServiceMoney,
     } = this.state
     // if (discrimination === "") {
@@ -1213,8 +1271,9 @@ export default class SquareRoot extends Component<
       syndromeDifferentiation,
       drugCategoryList: prescriptionDrugCategoryList,
     }
-    if (mode === "phone") {
+    if (mode === "phone" || mode === "wx") {
       args.phone = phone
+      args.patientName = name
     }
     if (serviceMoney !== "") {
       args.serviceMoney = parseFloat(serviceMoney) * 100

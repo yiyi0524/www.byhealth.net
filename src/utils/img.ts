@@ -46,6 +46,8 @@ export default {
     prescribingPhone: require("@img/home/prescribing-phone.png"),
     prescribingWeChat: require("@img/home/prescribing-wechat.png"),
     prescribingPhotograph: require("@img/home/prescribing-photograph.png"),
+    myInvite: require("@img/home/my_invite.jpg"),
+    inviteDoctor: require("@img/home/invite_doctor.jpg"),
   },
   advisory: {
     pillPurchase: require("@img/advisory/pill_purchase.png"),

@@ -8,7 +8,15 @@ import sColor from "@styles/color"
 import gImg from "@utils/img"
 import gStyle from "@utils/style"
 import React, { Component } from "react"
-import { Image, PixelRatio, RefreshControl, Text, View, Alert } from "react-native"
+import {
+  Image,
+  PixelRatio,
+  RefreshControl,
+  Text,
+  View,
+  Alert,
+  TouchableOpacity,
+} from "react-native"
 import { ScrollView } from "react-native-gesture-handler"
 import QRCode from "react-native-qrcode-svg"
 import * as WeChat from "react-native-wechat"
@@ -16,6 +24,7 @@ import { NavigationScreenProp } from "react-navigation"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
 import { Picture } from "../advisory/Chat"
+import pathMap from "@/routes/pathMap"
 
 const style = gStyle.index.InvitePatients
 const global = gStyle.global
@@ -55,7 +64,7 @@ export default class InvitePatients extends Component<
   Props & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
   State
 > {
-  static navigationOptions = () => ({
+  static navigationOptions = ({ navigation }: { navigation: NavigationScreenProp<State> }) => ({
     title: "邀请医生",
     headerStyle: {
       backgroundColor: sColor.white,
@@ -73,6 +82,15 @@ export default class InvitePatients extends Component<
       fontSize: 14,
       textAlign: "center",
     },
+    headerRight: (
+      <TouchableOpacity
+        style={{ paddingRight: 20 }}
+        onPress={() => {
+          navigation.push(pathMap.MyInvite)
+        }}>
+        <Text style={{ fontSize: 14, color: "#05A4A5" }}>我的邀请</Text>
+      </TouchableOpacity>
+    ),
   })
   constructor(props: any) {
     super(props)

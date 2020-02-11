@@ -104,7 +104,7 @@ export default class Home extends Component<
         link: pathMap.InvitePatients,
       },
       {
-        icon: gImg.home.invite,
+        icon: gImg.home.inviteDoctor,
         title: "邀请医生",
         link: pathMap.InviteDoctors,
       },
@@ -119,7 +119,7 @@ export default class Home extends Component<
         link: pathMap.UploadPrescription,
       },
       {
-        icon: gImg.home.uploadPrescription,
+        icon: gImg.home.myInvite,
         title: "我的邀请",
         link: pathMap.MyInvite,
       },

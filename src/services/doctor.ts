@@ -382,6 +382,7 @@ export async function getPrescriptionDetail({ prescriptionId }: { prescriptionId
 export interface AddPrescriptionParam {
   mode?: "common" | "phone" | "wx"
   phone?: string
+  patientName?: string
   tplName?: string
   patientUid?: number
   discrimination: string

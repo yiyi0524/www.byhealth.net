@@ -49,65 +49,68 @@ export default StyleSheet.create({
     paddingLeft: 10,
     color: "#fff",
   },
-  header:{
-    height:79,
-    paddingTop:13,
-    backgroundColor:"#05A4A5",
+  header: {
+    height: 79,
+    paddingTop: 13,
+    backgroundColor: "#05A4A5",
   },
-  year:{
-    paddingLeft:16,
-    paddingRight:16,
+  year: {
+    paddingLeft: 16,
+    paddingRight: 16,
   },
-  themeHeight:{
-    height:35,
+  themeHeight: {
+    height: 35,
   },
-  icon:{
-    fontSize:16,
-    color:"#fff",
+  iconPar: {
+    width: 40,
   },
-  time:{
-    fontSize:13,
-    color:"#fff",
-    marginLeft:10,
-    marginRight:10,
+  iconLeft: {
+    textAlign: "left",
   },
-  list:{
-    padding:16,
-    paddingTop:17,
+  icon: {
+    textAlign: "right",
+    fontSize: 16,
+    color: "#fff",
   },
-  item:{
-    borderRadius:10,
-    overflow:"hidden",
-    marginBottom:15,
-    borderWidth:1,
-    borderColor:"#eee",
-    padding:15,
-    paddingLeft:16,
-    paddingRight:16,
+  time: {
+    fontSize: 13,
+    color: "#fff",
   },
-  title:{
-    fontSize:18,
-    color:"#333",
-    fontWeight:"700",
+  list: {
+    padding: 16,
+    paddingTop: 17,
   },
-  desc:{
-    marginTop:10,
+  item: {
+    borderRadius: 10,
+    overflow: "hidden",
+    marginBottom: 15,
+    borderWidth: 1,
+    borderColor: "#eee",
+    padding: 15,
+    paddingLeft: 16,
+    paddingRight: 16,
   },
-  label:{
-    fontSize:14,
-    color:"#333",
-    marginRight:10,
+  title: {
+    fontSize: 18,
+    color: "#333",
+    fontWeight: "700",
   },
-  money:{
-
+  desc: {
+    marginTop: 10,
   },
-  moneyLabel:{
-    fontSize:15,
-    color:"#666",
-    marginRight:10,
+  label: {
+    fontSize: 14,
+    color: "#333",
+    marginRight: 10,
   },
-  moneyNum:{
-    fontSize:20,
-    color:"#FF3B3B",
+  money: {},
+  moneyLabel: {
+    fontSize: 15,
+    color: "#666",
+    marginRight: 10,
+  },
+  moneyNum: {
+    fontSize: 20,
+    color: "#FF3B3B",
   },
 })
