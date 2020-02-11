@@ -42,7 +42,7 @@
     "react-native-permissions": "^1.2.0",
     "react-native-qrcode": "https://github.com/buffge/react-native-qrcode#master",
     "react-native-qrcode-svg": "^5.2.0",
-    "react-native-screens": "^2.0.0-alpha.34",
+    "react-native-screens": "^2.0.0-beta.2",
     "react-native-sentry": "^0.43.2",
     "react-native-sound": "^0.11.0",
     "react-native-splash-screen": "^3.2.0",

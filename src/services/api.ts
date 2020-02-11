@@ -21,9 +21,10 @@ export const TYPE = {
   betweenValue: 0x4,
   //字符串
   eqString: 0x5,
-  like: 0x6,
-  notLike: 0x7,
-  //时间
+  
+
+
+  
   before: 0x8,
   after: 0x9,
   betweenTime: 0xa,
