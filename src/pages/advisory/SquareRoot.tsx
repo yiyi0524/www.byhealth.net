@@ -42,11 +42,12 @@ import {
   Text,
   TouchableOpacity,
   View,
+  ScrollView,
 } from "react-native"
-import { NavigationScreenProp, ScrollView } from "react-navigation"
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
 import { MsgType, Picture } from "./Chat"
+import { NavigationScreenProp } from "react-navigation"
 
 const style = gStyle.advisory.SquareRoot
 
@@ -610,19 +611,17 @@ export default class SquareRoot extends Component<
               <View style={[style.diagnosisItem, global.flex, global.alignItemsCenter]}>
                 <Text style={[style.diagnosisItemTitle, global.fontSize14]}>患者信息</Text>
                 {mode !== "wx" && mode !== "phone" && (
-                  <Text style={[style.diagnosisItemLineTitle, global.fontSize14]}>
-                    {patientName}
-                  </Text>
-                )}
-                {mode !== "wx" && mode !== "phone" && (
-                  <Text style={[style.diagnosisItemLineTitle, global.fontSize14]}>
-                    {GENDER_ZH[patientInfo.gender]}
-                  </Text>
-                )}
-                {mode !== "wx" && mode !== "phone" && (
-                  <Text style={[style.diagnosisItemLineTitle, global.fontSize14]}>
-                    {patientInfo.yearAge} 岁
-                  </Text>
+                  <>
+                    <Text style={[style.diagnosisItemLineTitle, global.fontSize14]}>
+                      {patientName}
+                    </Text>
+                    <Text style={[style.diagnosisItemLineTitle, global.fontSize14]}>
+                      {GENDER_ZH[patientInfo.gender]}
+                    </Text>
+                    <Text style={[style.diagnosisItemLineTitle, global.fontSize14]}>
+                      {patientInfo.yearAge} 岁
+                    </Text>
+                  </>
                 )}
               </View>
               {(mode === "wx" || mode === "phone") && (
