@@ -1,31 +1,23 @@
-import global from "@/assets/styles/global"
-import * as userAction from "@/redux/actions/user"
-import { AppState } from "@/redux/stores/store"
-import { Icon, InputItem, Picker, Toast } from "@ant-design/react-native"
-import api, { registerParam, TYPE } from "@api/api"
-import hospitalApi from "@api/hospital"
-import pathMap from "@routes/pathMap"
-import gImg from "@utils/img"
-import gStyle from "@utils/style"
-import gColor from "@styles/color"
-import React, { Component } from "react"
-import { Checkbox } from "@ant-design/react-native"
-import {
-  Image,
-  ScrollView,
-  Text,
-  TouchableOpacity,
-  View,
-  Platform,
-  KeyboardAvoidingView,
-} from "react-native"
-import { NavigationScreenProp } from "react-navigation"
-import { connect } from "react-redux"
-import { Dispatch } from "redux"
+import global from '@/assets/styles/global'
+import * as userAction from '@/redux/actions/user'
+import { AppState } from '@/redux/stores/store'
+import { Icon, InputItem, Picker, Toast } from '@ant-design/react-native'
+import api, { registerParam, TYPE } from '@api/api'
+import hospitalApi from '@api/hospital'
+import pathMap from '@routes/pathMap'
+import gImg from '@utils/img'
+import gStyle from '@utils/style'
+import gColor from '@styles/color'
+import React, { Component } from 'react'
+import { Checkbox } from '@ant-design/react-native'
+import { Image, ScrollView, Text, TouchableOpacity, View, Platform, KeyboardAvoidingView } from 'react-native'
+import { connect } from 'react-redux'
+import { Dispatch } from 'redux'
+import { StackNavigationProp } from '@react-navigation/stack'
 const AgreeItem = Checkbox.AgreeItem
 const style = gStyle.user.register
 interface Props {
-  navigation: NavigationScreenProp<State>
+  navigation: StackNavigationProp<any>
 }
 interface State {
   hasAgreeAgreement: boolean
@@ -69,10 +61,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
   }
 }
 // @ts-ignore
-@connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)
+@connect(mapStateToProps, mapDispatchToProps)
 export default class Register extends Component<
   Props & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
   State
@@ -88,14 +77,14 @@ export default class Register extends Component<
       hospitalId: 0,
       page: -1,
       limit: -1,
-      name: "",
-      phone: "",
-      pwd: "",
-      rePwd: "",
-      verificationCode: "",
-      verificationCodeUuid: "",
-      verificationCodeMsg: "获取验证码",
-      hospitalName: "",
+      name: '',
+      phone: '',
+      pwd: '',
+      rePwd: '',
+      verificationCode: '',
+      verificationCodeUuid: '',
+      verificationCodeMsg: '获取验证码',
+      hospitalName: '',
       filter: {},
       addressId: [],
       region: [],
@@ -168,7 +157,7 @@ export default class Register extends Component<
       })
       this.setState({
         hospitalList,
-        hospitalName: "",
+        hospitalName: '',
         hospitalId: 0,
       })
     } catch (err) {
@@ -176,24 +165,24 @@ export default class Register extends Component<
     }
   }
   sendVerificationCode = () => {
-    if (this.state.phone === "") {
-      return Toast.fail("请输入手机号码", 2)
+    if (this.state.phone === '') {
+      return Toast.fail('请输入手机号码', 2)
     }
-    if (!/^1[3456789]\d{9}$/.test(this.state.phone)) {
-      return Toast.fail("请输入正确的手机号码", 2)
+    if (!/^1[3456789]\d{9}$/u.test(this.state.phone)) {
+      return Toast.fail('请输入正确的手机号码', 2)
     }
     api
       .sendPhoneRegisterVerifyCode({ phone: this.state.phone })
       // Promise.resolve({ data: { uuid: "2323" } })
       .then(json => {
-        Toast.info("发送成功", 1)
+        Toast.info('发送成功', 1)
         let timeout = 60
         this.setState({
-          verificationCodeMsg: timeout-- + "秒后重新发送",
+          verificationCodeMsg: timeout-- + '秒后重新发送',
         })
         let timer = setInterval(_ => {
           this.setState({
-            verificationCodeMsg: timeout-- + "秒后重新发送",
+            verificationCodeMsg: timeout-- + '秒后重新发送',
           })
         }, 1000)
         this.setState({
@@ -202,45 +191,45 @@ export default class Register extends Component<
         setTimeout(_ => {
           clearInterval(timer)
           this.setState({
-            verificationCodeMsg: "获取验证码",
+            verificationCodeMsg: '获取验证码',
           })
         }, timeout * 1000)
       })
       .catch(err => {
         console.log(err)
-        Toast.info("发送失败 错误信息: " + err.msg, 3)
+        Toast.info('发送失败 错误信息: ' + err.msg, 3)
       })
   }
   submit = async () => {
     if (!this.state.hasAgreeAgreement) {
-      return Toast.fail("请阅读并同意注册协议", 1)
+      return Toast.fail('请阅读并同意注册协议', 1)
     }
     if (this.state.cityId.length === 0) {
-      return Toast.fail("请选择地区", 2)
+      return Toast.fail('请选择地区', 2)
     }
-    if (this.state.hospitalId === 0 && this.state.hospitalName === "") {
-      return Toast.fail("请选择医疗机构", 2)
+    if (this.state.hospitalId === 0 && this.state.hospitalName === '') {
+      return Toast.fail('请选择医疗机构', 2)
     }
-    if (this.state.name === "") {
-      return Toast.fail("请输入姓名", 2)
+    if (this.state.name === '') {
+      return Toast.fail('请输入姓名', 2)
     }
-    if (this.state.phone === "") {
-      return Toast.fail("请输入手机号码", 2)
+    if (this.state.phone === '') {
+      return Toast.fail('请输入手机号码', 2)
     }
     if (!/^1[3456789]\d{9}$/.test(this.state.phone)) {
-      return Toast.fail("请输入正确的手机号码", 2)
+      return Toast.fail('请输入正确的手机号码', 2)
     }
-    if (this.state.verificationCodeUuid === "") {
-      return Toast.fail("请获取验证码", 2)
+    if (this.state.verificationCodeUuid === '') {
+      return Toast.fail('请获取验证码', 2)
     }
-    if (this.state.verificationCode === "") {
-      return Toast.fail("请输入验证码", 2)
+    if (this.state.verificationCode === '') {
+      return Toast.fail('请输入验证码', 2)
     }
-    if (this.state.pwd === "") {
-      return Toast.fail("请输入密码", 2)
+    if (this.state.pwd === '') {
+      return Toast.fail('请输入密码', 2)
     }
-    if (this.state.rePwd === "") {
-      return Toast.fail("请确认密码", 2)
+    if (this.state.rePwd === '') {
+      return Toast.fail('请确认密码', 2)
     }
     const param: registerParam = {
       smsUuid: this.state.verificationCodeUuid,
@@ -258,38 +247,30 @@ export default class Register extends Component<
     }
     try {
       await api.register(param)
-      Toast.success("注册成功", 2, () => {
+      Toast.success('注册成功', 2, () => {
         this.props.navigation.navigate(pathMap.Login)
       })
     } catch (err) {
       console.log(err)
-      Toast.fail("注册失败, 错误信息: " + err.msg, 3)
+      Toast.fail('注册失败, 错误信息: ' + err.msg, 3)
     }
   }
   render() {
     return (
       <>
         <KeyboardAvoidingView
-          enabled={Platform.OS !== "android"}
-          behavior="padding"
+          enabled={Platform.OS !== 'android'}
+          behavior='padding'
           style={{ flex: 1 }}
-          keyboardVerticalOffset={70}>
+          keyboardVerticalOffset={70}
+        >
           <ScrollView
-            style={[style.content, { backgroundColor: "#fff", position: "relative" }]}
-            keyboardShouldPersistTaps="handled">
-            <View
-              style={[
-                style.header,
-                global.flex,
-                global.justifyContentSpaceBetween,
-                global.alignItemsCenter,
-              ]}>
-              <TouchableOpacity
-                style={style.headerLeft}
-                onPress={() => this.props.navigation.navigate(pathMap.Login)}>
-                <Text style={[style.headerLeftTitle, global.fontStyle, global.fontSize14]}>
-                  关闭
-                </Text>
+            style={[style.content, { backgroundColor: '#fff', position: 'relative' }]}
+            keyboardShouldPersistTaps='handled'
+          >
+            <View style={[style.header, global.flex, global.justifyContentSpaceBetween, global.alignItemsCenter]}>
+              <TouchableOpacity style={style.headerLeft} onPress={() => this.props.navigation.navigate(pathMap.Login)}>
+                <Text style={[style.headerLeftTitle, global.fontStyle, global.fontSize14]}>关闭</Text>
               </TouchableOpacity>
               <Text style={[style.headerTitle, global.fontStyle, global.fontSize14]}>注册</Text>
               <Text style={style.headerLeft} />
@@ -305,27 +286,25 @@ export default class Register extends Component<
                   global.flex,
                   global.justifyContentSpaceBetween,
                   global.alignItemsCenter,
-                ]}>
+                ]}
+              >
                 <Text style={style.formItemTitle}>地区</Text>
                 <Picker
                   data={this.state.region}
                   style={style.picker}
                   value={this.state.cityId}
-                  triggerType="onPress"
-                  onChange={cityId => this.chooseCityId(cityId)}>
+                  triggerType='onPress'
+                  onChange={cityId => this.chooseCityId(cityId)}
+                >
                   <TouchableOpacity
-                    style={[
-                      style.pickerTitle,
-                      global.flex,
-                      global.justifyContentEnd,
-                      global.alignItemsCenter,
-                    ]}>
+                    style={[style.pickerTitle, global.flex, global.justifyContentEnd, global.alignItemsCenter]}
+                  >
                     <Text style={[style.topItemTitle, global.fontStyle, global.fontSize14]}>
                       {this.state.cityId.length === 0
-                        ? "请选择"
+                        ? '请选择'
                         : this.state.regionCidMapAreaName[this.state.cityId[2]]}
                     </Text>
-                    <Icon name="right" style={[style.inputIcon, global.fontSize16]} />
+                    <Icon name='right' style={[style.inputIcon, global.fontSize16]} />
                   </TouchableOpacity>
                 </Picker>
               </View>
@@ -336,22 +315,24 @@ export default class Register extends Component<
                   global.flex,
                   global.justifyContentSpaceBetween,
                   global.alignItemsCenter,
-                ]}>
+                ]}
+              >
                 <Text style={style.formItemTitle}>医疗机构</Text>
                 <TouchableOpacity
                   style={[style.hospital, global.flex, global.justifyContentSpaceBetween]}
                   onPress={() => {
                     if (this.state.cityId.length === 0) {
-                      return Toast.info("请先选择地区", 3)
+                      return Toast.info('请先选择地区', 3)
                     }
                     this.setState({
                       selectHospitalActive: true,
                     })
-                  }}>
+                  }}
+                >
                   <Text style={[style.hospitalTitle, global.fontSize14, global.fontStyle]}>
-                    {this.state.hospitalName === "" ? "请选择" : this.state.hospitalName}
+                    {this.state.hospitalName === '' ? '请选择' : this.state.hospitalName}
                   </Text>
-                  <Icon name="right" style={[style.inputIcon, global.fontSize16]} />
+                  <Icon name='right' style={[style.inputIcon, global.fontSize16]} />
                 </TouchableOpacity>
               </View>
 
@@ -360,7 +341,7 @@ export default class Register extends Component<
                   clear
                   style={[style.input, global.fontStyle, global.fontSize14]}
                   value={this.state.name}
-                  placeholder="姓名"
+                  placeholder='姓名'
                   onChange={name => {
                     this.setState({ name })
                   }}
@@ -371,8 +352,8 @@ export default class Register extends Component<
                   clear
                   style={[style.input, global.fontStyle, global.fontSize14]}
                   value={this.state.phone}
-                  placeholder="手机号码"
-                  type="number"
+                  placeholder='手机号码'
+                  type='number'
                   onChange={phone => {
                     this.setState({ phone })
                   }}
@@ -380,10 +361,10 @@ export default class Register extends Component<
               </View>
               <View style={style.formItem}>
                 <InputItem
-                  type="number"
+                  type='number'
                   style={[style.input, global.fontStyle, global.fontSize14]}
                   value={this.state.verificationCode}
-                  placeholder="验证码"
+                  placeholder='验证码'
                   onChange={verificationCode => {
                     this.setState({ verificationCode })
                   }}
@@ -392,7 +373,8 @@ export default class Register extends Component<
                   style={style.getVerificationCodeBtn}
                   onPress={() => {
                     this.sendVerificationCode()
-                  }}>
+                  }}
+                >
                   <Text
                     style={[
                       style.verificationCode,
@@ -400,11 +382,10 @@ export default class Register extends Component<
                       global.fontSize14,
                       {
                         backgroundColor:
-                          this.state.verificationCodeMsg === "获取验证码"
-                            ? gColor.mainRed
-                            : gColor.colorCcc,
+                          this.state.verificationCodeMsg === '获取验证码' ? gColor.mainRed : gColor.colorCcc,
                       },
-                    ]}>
+                    ]}
+                  >
                     {this.state.verificationCodeMsg}
                   </Text>
                 </TouchableOpacity>
@@ -414,8 +395,8 @@ export default class Register extends Component<
                   clear
                   style={[style.input, global.fontStyle, global.fontSize14]}
                   value={this.state.pwd}
-                  type="password"
-                  placeholder="密码"
+                  type='password'
+                  placeholder='密码'
                   onChange={pwd => {
                     this.setState({ pwd })
                   }}
@@ -426,33 +407,31 @@ export default class Register extends Component<
                   clear
                   style={[style.input, global.fontStyle, global.fontSize14]}
                   value={this.state.rePwd}
-                  type="password"
-                  placeholder="确认密码"
+                  type='password'
+                  placeholder='确认密码'
                   onChange={rePwd => {
                     this.setState({ rePwd })
                   }}
                   onBlur={() => {
                     if (this.state.pwd !== this.state.rePwd) {
-                      Toast.fail("两次密码不一致", 2)
+                      Toast.fail('两次密码不一致', 2)
                       this.setState({
-                        rePwd: "",
+                        rePwd: '',
                       })
                     }
                   }}
                 />
               </View>
             </View>
-            <View
-              style={[style.agreement, global.flex, global.alignItemsCenter, { flexWrap: "wrap" }]}>
+            <View style={[style.agreement, global.flex, global.alignItemsCenter, { flexWrap: 'wrap' }]}>
               <AgreeItem
                 checked={this.state.hasAgreeAgreement}
                 checkboxStyle={{ color: gColor.mainRed }}
                 onChange={(evt: any) => {
-                  this.setState({ hasAgreeAgreement: !!evt.target.checked })
-                }}>
-                <Text style={[{ color: gColor.color888 }, global.fontStyle, global.fontSize14]}>
-                  注册即同意
-                </Text>
+                  this.setState({ hasAgreeAgreement: Boolean(evt.target.checked) })
+                }}
+              >
+                <Text style={[{ color: gColor.color888 }, global.fontStyle, global.fontSize14]}>注册即同意</Text>
               </AgreeItem>
               <View
                 style={[
@@ -460,12 +439,13 @@ export default class Register extends Component<
                   global.aCenter,
                   {
                     flex: 1,
-                    alignItems: "flex-start",
+                    alignItems: 'flex-start',
                     marginLeft: 30,
                     marginTop: 5,
                     marginBottom: 5,
                   },
-                ]}>
+                ]}
+              >
                 <TouchableOpacity
                   style={{
                     marginTop: 5,
@@ -473,10 +453,9 @@ export default class Register extends Component<
                   }}
                   onPress={() => {
                     this.props.navigation.navigate(pathMap.RegisterAgreement)
-                  }}>
-                  <Text style={[style.agreementName, global.fontStyle, global.fontSize14]}>
-                    医生注册协议
-                  </Text>
+                  }}
+                >
+                  <Text style={[style.agreementName, global.fontStyle, global.fontSize14]}>医生注册协议</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={{
@@ -485,35 +464,28 @@ export default class Register extends Component<
                   }}
                   onPress={() => {
                     this.props.navigation.navigate(pathMap.LawAgreement)
-                  }}>
-                  <Text style={[style.agreementName, global.fontStyle, global.fontSize14]}>
-                    法律声明与隐私政策
-                  </Text>
+                  }}
+                >
+                  <Text style={[style.agreementName, global.fontStyle, global.fontSize14]}>法律声明与隐私政策</Text>
                 </TouchableOpacity>
               </View>
             </View>
             <TouchableOpacity style={style.subBtn} onPress={this.submit}>
-              <Text style={[style.subTitle, global.fontStyle, global.fontSize15]}>
-                完成医生版注册
-              </Text>
+              <Text style={[style.subTitle, global.fontStyle, global.fontSize15]}>完成医生版注册</Text>
             </TouchableOpacity>
             {/* 医疗机构选择 */}
             <View style={this.state.selectHospitalActive ? style.hospitalSelect : global.hidden}>
-              <ScrollView style={style.hospitalContent} keyboardShouldPersistTaps="handled">
+              <ScrollView style={style.hospitalContent} keyboardShouldPersistTaps='handled'>
                 <View
-                  style={[
-                    style.hospitalAdd,
-                    global.flex,
-                    global.alignItemsCenter,
-                    global.justifyContentSpaceBetween,
-                  ]}>
-                  <Icon style={style.hospitalSearchIcon} name="search" />
+                  style={[style.hospitalAdd, global.flex, global.alignItemsCenter, global.justifyContentSpaceBetween]}
+                >
+                  <Icon style={style.hospitalSearchIcon} name='search' />
                   <View style={style.hospitalSearch}>
                     <InputItem
                       clear
                       style={[style.hospitalInput, global.fontStyle, global.fontSize14]}
                       value={this.state.hospitalName}
-                      placeholder="输入所在医疗机构"
+                      placeholder='输入所在医疗机构'
                       onChange={hospitalName => {
                         this.setState({ hospitalName })
                       }}
@@ -524,16 +496,17 @@ export default class Register extends Component<
                     onPress={() => {
                       this.setState({
                         selectHospitalActive: false,
-                        hospitalName: "",
+                        hospitalName: '',
                         hospitalId: 0,
                       })
-                    }}>
+                    }}
+                  >
                     <Text style={[style.close, global.fontSize14, global.fontStyle]}>取消</Text>
                   </TouchableOpacity>
                 </View>
                 <TouchableOpacity
                   style={[
-                    this.state.hospitalName !== "" ? style.addHospital : global.hidden,
+                    this.state.hospitalName !== '' ? style.addHospital : global.hidden,
                     global.flex,
                     global.alignItemsCenter,
                     global.justifyContentCenter,
@@ -542,13 +515,10 @@ export default class Register extends Component<
                     this.setState({
                       selectHospitalActive: false,
                     })
-                  }}>
-                  <Text style={[style.addHospitalBtn, global.fontSize14, global.fontStyle]}>
-                    添加
-                  </Text>
-                  <Text
-                    numberOfLines={1}
-                    style={[style.addHospitalBtn, global.fontSize14, global.fontStyle]}>
+                  }}
+                >
+                  <Text style={[style.addHospitalBtn, global.fontSize14, global.fontStyle]}>添加</Text>
+                  <Text numberOfLines={1} style={[style.addHospitalBtn, global.fontSize14, global.fontStyle]}>
                     {this.state.hospitalName}
                   </Text>
                 </TouchableOpacity>
@@ -563,7 +533,8 @@ export default class Register extends Component<
                             hospitalName: v.name,
                             selectHospitalActive: false,
                           })
-                        }}>
+                        }}
+                      >
                         <Text style={style.hospitalItem}>{v.name}</Text>
                       </TouchableOpacity>
                     )

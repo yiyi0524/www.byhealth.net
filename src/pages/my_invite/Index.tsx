@@ -1,12 +1,12 @@
-import sColor from "@styles/color"
-import global from "@styles/global"
-import gImg from "@utils/img"
-import gSass from "@utils/style"
-import React, { Component } from "react"
-import { Image, PixelRatio, Text, View } from "react-native"
-import { ScrollView, TouchableOpacity } from "react-native-gesture-handler"
-import pathMap from "@/routes/pathMap"
-import { NavigationScreenProp } from "react-navigation"
+import sColor from '@styles/color'
+import global from '@styles/global'
+import gImg from '@utils/img'
+import gSass from '@utils/style'
+import React, { Component } from 'react'
+import { Image, PixelRatio, Text, View } from 'react-native'
+import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler'
+import pathMap from '@/routes/pathMap'
+import { StackNavigationProp } from '@react-navigation/stack'
 import {
   InviteDoctorStatistics,
   InviteDoctorOrderMoneyInfo,
@@ -14,11 +14,11 @@ import {
   getInviteDoctorStatistics,
   getInviteDoctorOrderMoneyInfo,
   getInviteDoctorOrderInfo,
-} from "@/services/myInvite"
-import moment from "moment"
+} from '@/services/myInvite'
+import moment from 'moment'
 const style = gSass.myInvite.myInviteIndex
 interface Props {
-  navigation: NavigationScreenProp<State>
+  navigation: StackNavigationProp<any>
 }
 interface State {
   hasLoad: boolean
@@ -29,7 +29,7 @@ interface State {
 
 export default class Index extends Component<Props, State> {
   static navigationOptions = () => ({
-    title: "我的邀请",
+    title: '我的邀请',
     headerStyle: {
       backgroundColor: sColor.white,
       height: 50,
@@ -41,15 +41,13 @@ export default class Index extends Component<Props, State> {
     headerTintColor: sColor.color333,
     headerTitleStyle: {
       flex: 1,
-      alignItems: "center",
-      justifyContent: "center",
+      alignItems: 'center',
+      justifyContent: 'center',
       fontSize: 14,
-      textAlign: "center",
+      textAlign: 'center',
     },
     headerRight: (
-      <TouchableOpacity>
-        {/* <Text style={[style.headerRight, global.fontSize14]}>保存</Text> */}
-      </TouchableOpacity>
+      <TouchableOpacity>{/* <Text style={[style.headerRight, global.fontSize14]}>保存</Text> */}</TouchableOpacity>
     ),
   })
   constructor(props: any) {
@@ -71,12 +69,12 @@ export default class Index extends Component<Props, State> {
     try {
       let getInviteDoctorStatisticsTask = getInviteDoctorStatistics()
       let getInviteDoctorOrderMoneyInfoTask = getInviteDoctorOrderMoneyInfo({
-        year: parseInt(moment().format("YYYY")),
-        month: parseInt(moment().format("M")),
+        year: parseInt(moment().format('YYYY')),
+        month: parseInt(moment().format('M')),
       })
       let getInviteDoctorOrderInfoTask = getInviteDoctorOrderInfo({
-        year: parseInt(moment().format("YYYY")),
-        month: parseInt(moment().format("M")),
+        year: parseInt(moment().format('YYYY')),
+        month: parseInt(moment().format('M')),
       })
       let { data: statistics } = await getInviteDoctorStatisticsTask
       let { data: orderMoneyInfo } = await getInviteDoctorOrderMoneyInfoTask
@@ -94,12 +92,7 @@ export default class Index extends Component<Props, State> {
 
   render() {
     let { statistics, orderInfo, orderMoneyInfo } = this.state
-    if (
-      !this.state.hasLoad ||
-      statistics === null ||
-      orderMoneyInfo === null ||
-      orderInfo === null
-    ) {
+    if (!this.state.hasLoad || statistics === null || orderMoneyInfo === null || orderInfo === null) {
       return (
         <View style={style.loading}>
           <View style={style.loadingPic}>
@@ -115,9 +108,10 @@ export default class Index extends Component<Props, State> {
             <TouchableOpacity
               onPress={() => {
                 this.props.navigation.push(pathMap.InviteDoctorList)
-              }}>
+              }}
+            >
               <View style={style.item}>
-                <View style={[style.header, { backgroundColor: "#06BABB" }]}>
+                <View style={[style.header, { backgroundColor: '#06BABB' }]}>
                   <Text style={style.theme}>我邀请的医师</Text>
                 </View>
                 <View style={[style.detail, global.flex, global.aCenter, global.jBetween]}>
@@ -149,17 +143,12 @@ export default class Index extends Component<Props, State> {
             <TouchableOpacity
               onPress={() => {
                 this.props.navigation.push(pathMap.OrderMoney)
-              }}>
+              }}
+            >
               <View style={style.item}>
-                <View
-                  style={[
-                    style.header,
-                    { backgroundColor: "#058687" },
-                    global.flex,
-                    global.jBetween,
-                  ]}>
+                <View style={[style.header, { backgroundColor: '#058687' }, global.flex, global.jBetween]}>
                   <Text style={style.theme}>我邀请的订单金额 (元)</Text>
-                  <Text style={style.time}>{moment().format("YYYY年MM月")}</Text>
+                  <Text style={style.time}>{moment().format('YYYY年MM月')}</Text>
                 </View>
                 <View style={[style.detail, global.flex, global.aCenter, global.jBetween]}>
                   <View style={style.detail}>
@@ -169,27 +158,19 @@ export default class Index extends Component<Props, State> {
                     </View>
                   </View>
                   <View style={style.detail}>
-                    <Text style={style.desc}>
-                      {(orderMoneyInfo.firstLevelMoney / 100).toFixed(0)}
-                    </Text>
+                    <Text style={style.desc}>{(orderMoneyInfo.firstLevelMoney / 100).toFixed(0)}</Text>
                     <Text style={style.title}>一级</Text>
                   </View>
                   <View style={style.detail}>
-                    <Text style={style.desc}>
-                      {(orderMoneyInfo.secondLevelMoney / 100).toFixed(0)}
-                    </Text>
+                    <Text style={style.desc}>{(orderMoneyInfo.secondLevelMoney / 100).toFixed(0)}</Text>
                     <Text style={style.title}>二级</Text>
                   </View>
                   <View style={style.detail}>
-                    <Text style={style.desc}>
-                      {(orderMoneyInfo.thirdLevelMoney / 100).toFixed(0)}
-                    </Text>
+                    <Text style={style.desc}>{(orderMoneyInfo.thirdLevelMoney / 100).toFixed(0)}</Text>
                     <Text style={style.title}>三级</Text>
                   </View>
                   <View style={style.detail}>
-                    <Text style={style.desc}>
-                      {(orderMoneyInfo.fourthLevelMoney / 100).toFixed(0)}
-                    </Text>
+                    <Text style={style.desc}>{(orderMoneyInfo.fourthLevelMoney / 100).toFixed(0)}</Text>
                     <Text style={style.title}>四级</Text>
                   </View>
                 </View>
@@ -198,17 +179,12 @@ export default class Index extends Component<Props, State> {
             <TouchableOpacity
               onPress={() => {
                 this.props.navigation.push(pathMap.OrderCount)
-              }}>
+              }}
+            >
               <View style={style.item}>
-                <View
-                  style={[
-                    style.header,
-                    { backgroundColor: "#058A88" },
-                    global.flex,
-                    global.jBetween,
-                  ]}>
+                <View style={[style.header, { backgroundColor: '#058A88' }, global.flex, global.jBetween]}>
                   <Text style={style.theme}>我邀请的订单</Text>
-                  <Text style={style.time}>{moment().format("YYYY年MM月")}</Text>
+                  <Text style={style.time}>{moment().format('YYYY年MM月')}</Text>
                 </View>
                 <View style={[style.detail, global.flex, global.aCenter, global.jBetween]}>
                   <View style={style.detail}>

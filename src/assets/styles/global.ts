@@ -1,56 +1,56 @@
-import { StyleSheet } from "react-native"
-import sColor from "@styles/color"
+import { StyleSheet } from 'react-native'
+import sColor from '@styles/color'
 export default StyleSheet.create({
   flex: {
-    flexDirection: "row",
+    flexDirection: 'row',
   },
   justifyContentSpaceBetween: {
-    justifyContent: "space-between",
+    justifyContent: 'space-between',
   },
   justifyContentSpaceAround: {
-    justifyContent: "space-around",
+    justifyContent: 'space-around',
   },
   justifyContentCenter: {
-    justifyContent: "center",
+    justifyContent: 'center',
   },
   justifyContentStart: {
-    justifyContent: "flex-start",
+    justifyContent: 'flex-start',
   },
   justifyContentEnd: {
-    justifyContent: "flex-end",
+    justifyContent: 'flex-end',
   },
   alignItemsCenter: {
-    alignItems: "center",
+    alignItems: 'center',
   },
   alignItemsStretch: {
-    alignItems: "stretch",
+    alignItems: 'stretch',
   },
   alignItemsEnd: {
-    alignItems: "flex-end",
+    alignItems: 'flex-end',
   },
   alignItemsStart: {
-    alignItems: "flex-start",
+    alignItems: 'flex-start',
   },
   flexWrap: {
-    flexWrap: "wrap",
+    flexWrap: 'wrap',
   },
   flexNoWrap: {
-    flexWrap: "nowrap",
+    flexWrap: 'nowrap',
   },
   aCenter: {
-    alignItems: "center",
+    alignItems: 'center',
   },
   jCenter: {
-    justifyContent: "center",
+    justifyContent: 'center',
   },
   jBetween: {
-    justifyContent: "space-between",
+    justifyContent: 'space-between',
   },
   jAround: {
-    justifyContent: "space-around",
+    justifyContent: 'space-around',
   },
   wrap: {
-    flexWrap: "wrap",
+    flexWrap: 'wrap',
   },
   fontStyle: {
     // fontFamily: "微软雅黑"
@@ -101,7 +101,7 @@ export default StyleSheet.create({
     fontSize: 32,
   },
   hidden: {
-    display: "none",
+    display: 'none',
   },
   titleIcon: {
     width: 6,

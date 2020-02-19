@@ -1,11 +1,11 @@
-import global from "@/assets/styles/global"
-import pathMap from "@/routes/pathMap"
-import doctor, { QuickReply, QUICK_REPLY_TYPE, QUICK_REPLY_TYPE_ZH } from "@/services/doctor"
-import { Icon, TextareaItem, Toast } from "@ant-design/react-native"
-import sColor from "@styles/color"
-import gImg from "@utils/img"
-import gStyle from "@utils/style"
-import React, { Component } from "react"
+import global from '@/assets/styles/global'
+import pathMap from '@/routes/pathMap'
+import doctor, { QuickReply, QUICK_REPLY_TYPE, QUICK_REPLY_TYPE_ZH } from '@/services/doctor'
+import { Icon, TextareaItem, Toast } from '@ant-design/react-native'
+import sColor from '@styles/color'
+import gImg from '@utils/img'
+import gStyle from '@utils/style'
+import React, { Component } from 'react'
 import {
   DeviceEventEmitter,
   Image,
@@ -15,15 +15,15 @@ import {
   Text,
   TouchableOpacity,
   View,
-} from "react-native"
-import { NavigationScreenProp } from "react-navigation"
+} from 'react-native'
+import { StackNavigationProp } from '@react-navigation/stack'
 const style = gStyle.advisory.QuickReply
 interface NavParams {
   navigatePress: () => void
-  mode: "delete" | "done"
+  mode: 'delete' | 'done'
 }
 interface Props {
-  navigation: NavigationScreenProp<State>
+  navigation: StackNavigationProp<any>
   msg: string
 }
 interface State {
@@ -40,13 +40,9 @@ interface State {
 }
 
 export default class QuickReplyScreen extends Component<Props, State> {
-  static navigationOptions = ({
-    navigation,
-  }: {
-    navigation: NavigationScreenProp<State, NavParams>
-  }) => {
+  static navigationOptions = ({ navigation }: { navigation: NavigationScreenProp<State, NavParams> }) => {
     return {
-      title: "快捷回复",
+      title: '快捷回复',
       headerStyle: {
         backgroundColor: sColor.white,
         height: 50,
@@ -57,22 +53,23 @@ export default class QuickReplyScreen extends Component<Props, State> {
       headerTintColor: sColor.color333,
       headerTitleStyle: {
         flex: 1,
-        alignItems: "center",
-        justifyContent: "center",
+        alignItems: 'center',
+        justifyContent: 'center',
         fontSize: 14,
-        textAlign: "center",
+        textAlign: 'center',
       },
       headerRight: (
         <TouchableOpacity
           onPress={() => {
-            let oriMode = navigation.getParam("mode")
+            let oriMode = navigation.getParam('mode')
             navigation.setParams({
-              mode: oriMode === "done" ? "delete" : "done",
+              mode: oriMode === 'done' ? 'delete' : 'done',
             })
             navigation.state.params!.navigatePress()
-          }}>
+          }}
+        >
           <Text style={style.headerRight}>
-            {navigation.state.params && navigation.state.params!.mode === "done" ? "编辑" : "完成"}
+            {navigation.state.params && navigation.state.params!.mode === 'done' ? '编辑' : '完成'}
           </Text>
         </TouchableOpacity>
       ),
@@ -91,15 +88,15 @@ export default class QuickReplyScreen extends Component<Props, State> {
       isAddMsg: false,
       editId: 0,
       addType: 0,
-      editMsg: "",
-      addMsg: "",
+      editMsg: '',
+      addMsg: '',
       quickReplyList: [],
     }
   }
   componentDidMount() {
     this.init()
     this.props.navigation.setParams({
-      mode: "done",
+      mode: 'done',
       navigatePress: this.editMsg,
     })
   }
@@ -178,10 +175,10 @@ export default class QuickReplyScreen extends Component<Props, State> {
   deleteMsg = async (id: number) => {
     try {
       await doctor.deleteQuickReply({ id })
-      Toast.success("删除成功", 1)
+      Toast.success('删除成功', 1)
       this.init()
     } catch (err) {
-      Toast.fail("删除失败, 错误信息: " + err.msg, 3)
+      Toast.fail('删除失败, 错误信息: ' + err.msg, 3)
     }
   }
   editQuickReplayMsg = async () => {
@@ -190,10 +187,10 @@ export default class QuickReplyScreen extends Component<Props, State> {
     })
     try {
       await doctor.editQuickReply({ id: this.state.editId, msg: this.state.editMsg })
-      Toast.success("编辑成功", 1)
+      Toast.success('编辑成功', 1)
       this.init()
     } catch (err) {
-      Toast.fail("编辑失败, 错误信息: " + err.msg, 3)
+      Toast.fail('编辑失败, 错误信息: ' + err.msg, 3)
     }
   }
 
@@ -203,15 +200,15 @@ export default class QuickReplyScreen extends Component<Props, State> {
     })
     try {
       await doctor.addQuickReply({ type: this.state.addType, msg: this.state.addMsg })
-      Toast.success("添加成功", 1)
+      Toast.success('添加成功', 1)
       this.init()
     } catch (err) {
-      Toast.fail("添加失败, 错误信息: " + err.msg, 3)
+      Toast.fail('添加失败, 错误信息: ' + err.msg, 3)
     }
   }
   selectMsg = (msg: string, id: number) => {
     if (!this.state.isChangeMode) {
-      DeviceEventEmitter.emit(pathMap.SquareRoot + "Reload", msg)
+      DeviceEventEmitter.emit(pathMap.SquareRoot + 'Reload', msg)
       this.props.navigation.goBack()
     } else {
       this.setState({
@@ -228,7 +225,7 @@ export default class QuickReplyScreen extends Component<Props, State> {
         this.setState({ refreshing: false })
       })
       .catch(err => {
-        Toast.fail("刷新失败,错误信息: " + err.msg)
+        Toast.fail('刷新失败,错误信息: ' + err.msg)
       })
   }
   render() {
@@ -245,20 +242,15 @@ export default class QuickReplyScreen extends Component<Props, State> {
       <>
         <ScrollView
           style={style.main}
-          refreshControl={
-            <RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh} />
-          }>
+          refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh} />}
+        >
           <View style={[global.flex]}>
             <View>
               {this.state.quickReplyList.map((v, k) => {
                 return (
                   <View style={style.type} key={k}>
                     <TouchableOpacity onPress={() => this.selectType(k)}>
-                      <Text
-                        style={[
-                          v.isChecked ? style.typeTitleActive : style.typeTitle,
-                          global.fontSize14,
-                        ]}>
+                      <Text style={[v.isChecked ? style.typeTitleActive : style.typeTitle, global.fontSize14]}>
                         {v.name}
                       </Text>
                     </TouchableOpacity>
@@ -275,9 +267,10 @@ export default class QuickReplyScreen extends Component<Props, State> {
                         isAddMsg: true,
                         addType: v.type,
                       })
-                    }}>
+                    }}
+                  >
                     <View style={[style.msgAdd, global.flex, global.alignItemsCenter]}>
-                      <Icon style={[style.msgIcon, global.fontSize18]} name="plus-circle" />
+                      <Icon style={[style.msgIcon, global.fontSize18]} name='plus-circle' />
                       <Text style={[style.addTitle, global.fontSize14]}>添加随访时说的话</Text>
                     </View>
                   </TouchableOpacity>
@@ -286,15 +279,11 @@ export default class QuickReplyScreen extends Component<Props, State> {
                       <View style={[style.msgItem, global.flex, global.alignItemsCenter]} key={k1}>
                         <TouchableOpacity
                           style={!this.state.isChangeMode ? global.hidden : null}
-                          onPress={() => this.deleteMsg(v1.id)}>
-                          <Icon
-                            style={[style.msgItemIcon, global.fontSize18]}
-                            name="minus-circle"
-                          />
+                          onPress={() => this.deleteMsg(v1.id)}
+                        >
+                          <Icon style={[style.msgItemIcon, global.fontSize18]} name='minus-circle' />
                         </TouchableOpacity>
-                        <TouchableOpacity
-                          style={{ flex: 1 }}
-                          onPress={() => this.selectMsg(v1.msg, v1.id)}>
+                        <TouchableOpacity style={{ flex: 1 }} onPress={() => this.selectMsg(v1.msg, v1.id)}>
                           <Text style={[style.msgTitle, global.fontSize14]}>{v1.msg}</Text>
                         </TouchableOpacity>
                       </View>
@@ -312,7 +301,7 @@ export default class QuickReplyScreen extends Component<Props, State> {
             rows={6}
             value={this.state.editMsg}
             onChange={editMsg => {
-              if (editMsg || editMsg === "") {
+              if (editMsg || editMsg === '') {
                 this.setState({
                   editMsg,
                 })
@@ -328,10 +317,10 @@ export default class QuickReplyScreen extends Component<Props, State> {
           <TextareaItem
             style={style.input}
             rows={6}
-            placeholder="请输入您要添加的快捷回复内容"
+            placeholder='请输入您要添加的快捷回复内容'
             value={this.state.addMsg}
             onChange={addMsg => {
-              if (addMsg || addMsg === "") {
+              if (addMsg || addMsg === '') {
                 this.setState({
                   addMsg,
                 })

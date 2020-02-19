@@ -1,28 +1,28 @@
-import sColor from "@styles/color"
-import { StyleSheet, PixelRatio } from "react-native"
-import { windowHeight, windowWidth } from "@/utils/utils"
+import sColor from '@styles/color'
+import { StyleSheet, PixelRatio } from 'react-native'
+import { windowHeight, windowWidth } from '@/utils/utils'
 export default StyleSheet.create({
   loading: {
     width: windowWidth,
     height: windowHeight,
     backgroundColor: sColor.white,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
     flex: 1,
   },
   loadingTitle: {
-    textAlign: "center",
-    justifyContent: "center",
+    textAlign: 'center',
+    justifyContent: 'center',
   },
   loadingPic: {
-    width: "100%",
-    overflow: "hidden",
-    justifyContent: "center",
-    alignItems: "center",
+    width: '100%',
+    overflow: 'hidden',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   loadingImg: {
     width: 300,
-    resizeMode: "contain",
+    resizeMode: 'contain',
   },
   main: {
     flex: 1,
@@ -43,13 +43,13 @@ export default StyleSheet.create({
   typeTitle: {
     height: 60,
     lineHeight: 60,
-    textAlign: "center",
+    textAlign: 'center',
     color: sColor.color666,
   },
   typeTitleActive: {
     height: 60,
     lineHeight: 60,
-    textAlign: "center",
+    textAlign: 'center',
     color: sColor.color666,
     backgroundColor: sColor.lightBlue,
   },
@@ -60,7 +60,7 @@ export default StyleSheet.create({
   },
   msgAdd: {
     height: 50,
-    justifyContent: "center",
+    justifyContent: 'center',
   },
   msgIcon: {
     marginRight: 5,
@@ -92,7 +92,7 @@ export default StyleSheet.create({
   },
   // 编辑
   edit: {
-    position: "absolute",
+    position: 'absolute',
     top: 0,
     left: 0,
     right: 0,
@@ -108,7 +108,7 @@ export default StyleSheet.create({
     marginTop: 30,
     height: 45,
     lineHeight: 45,
-    textAlign: "center",
+    textAlign: 'center',
     borderRadius: 5,
     backgroundColor: sColor.mainRed,
     color: sColor.white,

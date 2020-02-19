@@ -1,29 +1,29 @@
-import { StyleSheet, PixelRatio } from "react-native"
-import sColor from "@styles/color"
-import { windowWidth } from "@api/api"
-import { windowHeight } from "@/utils/utils"
+import { StyleSheet, PixelRatio } from 'react-native'
+import sColor from '@styles/color'
+import { windowWidth } from '@api/api'
+import { windowHeight } from '@/utils/utils'
 export default StyleSheet.create({
   loading: {
     width: windowWidth,
     height: windowHeight,
     backgroundColor: sColor.white,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
     flex: 1,
   },
   loadingTitle: {
-    textAlign: "center",
-    justifyContent: "center",
+    textAlign: 'center',
+    justifyContent: 'center',
   },
   loadingPic: {
-    width: "100%",
-    overflow: "hidden",
-    justifyContent: "center",
-    alignItems: "center",
+    width: '100%',
+    overflow: 'hidden',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   loadingImg: {
     width: 300,
-    resizeMode: "contain",
+    resizeMode: 'contain',
   },
   headerRight: {
     color: sColor.mainRed,
@@ -38,7 +38,7 @@ export default StyleSheet.create({
   },
   promptTitle: {
     lineHeight: 50,
-    textAlign: "center",
+    textAlign: 'center',
     color: sColor.color888,
   },
   diagnosis: {
@@ -51,7 +51,7 @@ export default StyleSheet.create({
   theme: {},
   title: {
     color: sColor.mainBlack,
-    fontWeight: "500",
+    fontWeight: '500',
     marginBottom: 5,
   },
   titleSpot: {
@@ -191,11 +191,11 @@ export default StyleSheet.create({
     backgroundColor: sColor.mainRed,
     color: sColor.white,
     borderRadius: 5,
-    textAlign: "center",
+    textAlign: 'center',
     marginBottom: 8,
   },
   selectPharmacy: {
-    position: "absolute",
+    position: 'absolute',
     top: 0,
     right: 0,
     bottom: 0,
@@ -205,7 +205,7 @@ export default StyleSheet.create({
     backgroundColor: sColor.blackOpa7,
   },
   selectdrug: {
-    position: "absolute",
+    position: 'absolute',
     top: 0,
     right: 0,
     bottom: 0,

@@ -1,29 +1,29 @@
-import { StyleSheet, PixelRatio } from "react-native"
-import sColor from "@styles/color"
-import { windowWidth } from "@api/api"
-import { windowHeight } from "@/utils/utils"
+import { StyleSheet, PixelRatio } from 'react-native'
+import sColor from '@styles/color'
+import { windowWidth } from '@api/api'
+import { windowHeight } from '@/utils/utils'
 export default StyleSheet.create({
   loading: {
     width: windowWidth,
     height: windowHeight,
     backgroundColor: sColor.white,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
     flex: 1,
   },
   loadingTitle: {
-    textAlign: "center",
-    justifyContent: "center",
+    textAlign: 'center',
+    justifyContent: 'center',
   },
   loadingPic: {
-    width: "100%",
-    overflow: "hidden",
-    justifyContent: "center",
-    alignItems: "center",
+    width: '100%',
+    overflow: 'hidden',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   loadingImg: {
     width: 300,
-    resizeMode: "contain",
+    resizeMode: 'contain',
   },
   main: {
     backgroundColor: sColor.mainBgColor,
@@ -36,12 +36,12 @@ export default StyleSheet.create({
   },
   headerItem: {
     width: windowWidth / 2,
-    justifyContent: "center",
+    justifyContent: 'center',
   },
   headerIcon: {
     width: 30,
     height: 30,
-    resizeMode: "contain",
+    resizeMode: 'contain',
   },
   headerItemTitle: {
     color: sColor.color666,
@@ -70,13 +70,13 @@ export default StyleSheet.create({
     width: 50,
     height: 50,
     borderRadius: 100,
-    overflow: "hidden",
+    overflow: 'hidden',
     marginBottom: 5,
   },
   avatar: {
     width: 50,
     height: 50,
-    resizeMode: "contain",
+    resizeMode: 'contain',
   },
   baseInformationBottom: {
     borderWidth: 1 / PixelRatio.get(),
@@ -88,7 +88,7 @@ export default StyleSheet.create({
   gender: {
     width: 15,
     height: 15,
-    resizeMode: "contain",
+    resizeMode: 'contain',
   },
   age: {
     color: sColor.color666,

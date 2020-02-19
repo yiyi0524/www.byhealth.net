@@ -1,29 +1,29 @@
-import { windowHeight } from "@/utils/utils"
-import { windowWidth } from "@api/api"
-import sColor from "@styles/color"
-import { StyleSheet, PixelRatio } from "react-native"
+import { windowHeight } from '@/utils/utils'
+import { windowWidth } from '@api/api'
+import sColor from '@styles/color'
+import { StyleSheet, PixelRatio } from 'react-native'
 export default StyleSheet.create({
   loading: {
     width: windowWidth,
     height: windowHeight,
     backgroundColor: sColor.white,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
     flex: 1,
   },
   loadingTitle: {
-    textAlign: "center",
-    justifyContent: "center",
+    textAlign: 'center',
+    justifyContent: 'center',
   },
   loadingPic: {
-    width: "100%",
-    overflow: "hidden",
-    justifyContent: "center",
-    alignItems: "center",
+    width: '100%',
+    overflow: 'hidden',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   loadingImg: {
     width: 300,
-    resizeMode: "contain",
+    resizeMode: 'contain',
   },
   main: {
     flex: 0.9,
@@ -35,8 +35,8 @@ export default StyleSheet.create({
   },
   list: {},
   item: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     height: 50,
     borderBottomWidth: 1 / PixelRatio.get(),
     borderBottomColor: sColor.colorDdd,
@@ -56,7 +56,7 @@ export default StyleSheet.create({
     flex: 1,
     fontSize: 14,
     color: sColor.color666,
-    textAlign: "right",
+    textAlign: 'right',
     paddingRight: 15,
   },
   input: {
@@ -79,7 +79,7 @@ export default StyleSheet.create({
     color: sColor.color888,
   },
   hospital: {
-    position: "absolute",
+    position: 'absolute',
     top: 0,
     left: 0,
     right: 0,
@@ -89,7 +89,7 @@ export default StyleSheet.create({
   close: {
     height: 45,
     lineHeight: 45,
-    textAlign: "center",
+    textAlign: 'center',
     backgroundColor: sColor.color666,
     color: sColor.white,
   },
@@ -121,7 +121,7 @@ export default StyleSheet.create({
     paddingRight: 8,
     color: sColor.white,
     backgroundColor: sColor.mainRed,
-    textAlign: "center",
+    textAlign: 'center',
     borderRadius: 5,
   },
   addHospitalName: {

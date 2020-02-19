@@ -1,6 +1,6 @@
-import { Picture } from "@/pages/advisory/Chat"
-import { prescriptionItem } from "@/pages/index/Prescription"
-import { bget, GetListParam } from "./api"
+import { Picture } from '@/pages/advisory/Chat'
+import { prescriptionItem } from '@/pages/index/Prescription'
+import { bget, GetListParam } from './api'
 export interface PersonalInfo {
   info: {
     id: number
@@ -33,7 +33,7 @@ export interface DoctorInfo {
 
 export async function getPersonalInfo() {
   return bget<PersonalInfo>({
-    url: "api/getDoctorPersonalInfo",
+    url: 'api/getDoctorPersonalInfo',
   })
 }
 
@@ -42,7 +42,7 @@ export async function getPersonalInfo() {
  */
 export async function getPrescriptionList({ page = -1, limit = -1, filter = {} }: GetListParam) {
   return bget<{ list: prescriptionItem[] }>({
-    url: "api/getDoctorPrescriptionList",
+    url: 'api/getDoctorPrescriptionList',
     query: {
       page,
       limit,
@@ -55,7 +55,7 @@ export async function getPrescriptionList({ page = -1, limit = -1, filter = {} }
  */
 export async function getHospitalList({ page = -1, limit = -1, filter = {} }: GetListParam) {
   return bget({
-    url: "/hospital/getList",
+    url: '/hospital/getList',
     query: {
       page,
       limit,
@@ -73,7 +73,7 @@ export async function getUserWxInfo(query: { openid: string }) {
     nick: string
     avatar: string // 头像url
   }>({
-    url: "/api/getUserWxInfo",
+    url: '/api/getUserWxInfo',
     query,
   })
 }

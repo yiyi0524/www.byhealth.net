@@ -1,14 +1,14 @@
-import Empty from "@/components/Empty"
-import * as userAction from "@/redux/actions/user"
-import { AppState } from "@/redux/stores/store"
-import pathMap from "@/routes/pathMap"
-import doctor, { GENDER, InvisiblePatient } from "@/services/doctor"
-import { getPicCdnUrl } from "@/utils/utils"
-import { Toast } from "@ant-design/react-native"
-import sColor from "@styles/color"
-import gImg from "@utils/img"
-import gStyle from "@utils/style"
-import React, { Component } from "react"
+import Empty from '@/components/Empty'
+import * as userAction from '@/redux/actions/user'
+import { AppState } from '@/redux/stores/store'
+import pathMap from '@/routes/pathMap'
+import doctor, { GENDER, InvisiblePatient } from '@/services/doctor'
+import { getPicCdnUrl } from '@/utils/utils'
+import { Toast } from '@ant-design/react-native'
+import sColor from '@styles/color'
+import gImg from '@utils/img'
+import gStyle from '@utils/style'
+import React, { Component } from 'react'
 import {
   DeviceEventEmitter,
   Image,
@@ -18,9 +18,9 @@ import {
   Text,
   TouchableOpacity,
   View,
-} from "react-native"
-import { connect } from "react-redux"
-import { Dispatch } from "redux"
+} from 'react-native'
+import { connect } from 'react-redux'
+import { Dispatch } from 'redux'
 const style = gStyle.personalCenter.InvisiblePatients
 const global = gStyle.global
 interface Props {
@@ -45,14 +45,17 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
     },
   }
 }
-@connect(mapStateToProps, mapDispatchToProps)
+@connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)
 export default class Index extends Component<
   Props & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
   State
 > {
   static navigationOptions = () => {
     return {
-      title: "患者不可见",
+      title: '患者不可见',
       headerStyle: {
         backgroundColor: sColor.white,
         height: 45,
@@ -63,10 +66,10 @@ export default class Index extends Component<
       headerTintColor: sColor.color333,
       headerTitleStyle: {
         flex: 1,
-        alignItems: "center",
-        justifyContent: "center",
+        alignItems: 'center',
+        justifyContent: 'center',
         fontSize: 14,
-        textAlign: "center",
+        textAlign: 'center',
       },
       headerRight: <Text />,
     }
@@ -100,23 +103,23 @@ export default class Index extends Component<
   }
   onRefresh = () => {
     this.setState({ refreshing: true })
-    Promise.all([this.init(), new Promise(s => setTimeout(s, 500))])
-      .then(_ => {
+    Promise.all([this.init(), new Promise(s => setTimeout(s, 500))]).
+      then(_ => {
         this.setState({ refreshing: false })
-      })
-      .catch(err => {
-        Toast.fail("刷新失败,错误信息: " + err.msg)
+      }).
+      catch(err => {
+        Toast.fail('刷新失败,错误信息: ' + err.msg)
       })
   }
   setInvisiblePatients = async (id: number) => {
     try {
       await doctor.setInvisiblePatients({ patientUid: id })
-      Toast.success("设置成功", 2)
-      DeviceEventEmitter.emit(pathMap.AddressBookIndex + "Reload", null)
-      DeviceEventEmitter.emit(pathMap.AdvisoryIndex + "Reload", null)
+      Toast.success('设置成功', 2)
+      DeviceEventEmitter.emit(pathMap.AddressBookIndex + 'Reload', null)
+      DeviceEventEmitter.emit(pathMap.AdvisoryIndex + 'Reload', null)
       this.init()
     } catch (err) {
-      Toast.success("设置失败, 错误原因: " + err.msg, 3)
+      Toast.success('设置失败, 错误原因: ' + err.msg, 3)
     }
   }
   render() {
@@ -134,9 +137,8 @@ export default class Index extends Component<
       <>
         <ScrollView
           style={style.main}
-          refreshControl={
-            <RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh} />
-          }>
+          refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh} />}
+        >
           {list.length === 0 ? (
             <Empty />
           ) : (
@@ -148,14 +150,12 @@ export default class Index extends Component<
                       <Image
                         style={style.avatarImg}
                         source={
-                          v.avatar.url
-                            ? { uri: getPicCdnUrl(v.avatar.url, "avatar") }
-                            : gImg.common.defaultAvatar
+                          v.avatar.url ? { uri: getPicCdnUrl(v.avatar.url, 'avatar') } : gImg.common.defaultAvatar
                         }
                       />
                     </View>
                     <View style={style.itemCenter}>
-                      <Text style={[style.name, global.fontSize16]}>{v.name || "未命名"}</Text>
+                      <Text style={[style.name, global.fontSize16]}>{v.name || '未命名'}</Text>
                       <View style={[global.flex, global.alignItemsCenter]}>
                         <Text style={[style.time, global.fontSize14]}>{v.time.substr(0, 10)} </Text>
                         <Image
@@ -169,7 +169,7 @@ export default class Index extends Component<
                           }
                         />
                         <Text style={[style.age, global.fontSize14]}>
-                          {v.yearAge >= 3 ? v.yearAge + "岁" : v.yearAge + "岁" + v.monthAge + "月"}
+                          {v.yearAge >= 3 ? v.yearAge + '岁' : v.yearAge + '岁' + v.monthAge + '月'}
                         </Text>
                       </View>
                     </View>

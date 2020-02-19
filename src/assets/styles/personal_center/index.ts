@@ -1,29 +1,29 @@
-import { StyleSheet, PixelRatio } from "react-native"
-import sColor from "@styles/color"
-import { windowWidth } from "@api/api"
-import { windowHeight } from "@/utils/utils"
+import { StyleSheet, PixelRatio } from 'react-native'
+import sColor from '@styles/color'
+import { windowWidth } from '@api/api'
+import { windowHeight } from '@/utils/utils'
 export default StyleSheet.create({
   loading: {
     width: windowWidth,
     height: windowHeight,
     backgroundColor: sColor.white,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
     flex: 1,
   },
   loadingTitle: {
-    textAlign: "center",
-    justifyContent: "center",
+    textAlign: 'center',
+    justifyContent: 'center',
   },
   loadingPic: {
-    width: "100%",
-    overflow: "hidden",
-    justifyContent: "center",
-    alignItems: "center",
+    width: '100%',
+    overflow: 'hidden',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   loadingImg: {
     width: 300,
-    resizeMode: "contain",
+    resizeMode: 'contain',
   },
   main: {
     backgroundColor: sColor.white,
@@ -48,7 +48,7 @@ export default StyleSheet.create({
     color: sColor.mainRed,
     height: 45,
     lineHeight: 45,
-    textAlign: "center",
+    textAlign: 'center',
   },
   icon: {
     color: sColor.color888,

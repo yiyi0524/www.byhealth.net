@@ -1,17 +1,17 @@
-import { Toast } from "@ant-design/react-native"
-import drugApi, { Drug, TYPE } from "@api/drug"
-import sColor from "@styles/color"
-import gImg from "@utils/img"
-import gStyle from "@utils/style"
-import React, { Component } from "react"
-import { Image, PixelRatio, RefreshControl, ScrollView, Text, View } from "react-native"
-import { TouchableOpacity } from "react-native-gesture-handler"
-import { NavigationScreenProp } from "react-navigation"
-import { getPicFullUrl } from "@/utils/utils"
+import { Toast } from '@ant-design/react-native'
+import drugApi, { Drug, TYPE } from '@api/drug'
+import sColor from '@styles/color'
+import gImg from '@utils/img'
+import gStyle from '@utils/style'
+import React, { Component } from 'react'
+import { Image, PixelRatio, RefreshControl, ScrollView, Text, View } from 'react-native'
+import { TouchableOpacity } from 'react-native-gesture-handler'
+import { StackNavigationProp } from '@react-navigation/stack'
+import { getPicFullUrl } from '@/utils/utils'
 const style = gStyle.advisory.DrugDetail
 const global = gStyle.global
 interface Props {
-  navigation: NavigationScreenProp<State>
+  navigation: StackNavigationProp<any>
 }
 interface State {
   hasLoad: boolean
@@ -20,8 +20,8 @@ interface State {
 }
 
 export default class DrugDetail extends Component<Props, State> {
-  static navigationOptions = ({ navigation }: { navigation: NavigationScreenProp<State> }) => ({
-    title: navigation.getParam("name") || "药品详情",
+  static navigationOptions = ({ navigation }: { navigation: StackNavigationProp<any> }) => ({
+    title: navigation.getParam('name') || '药品详情',
     headerStyle: {
       backgroundColor: sColor.white,
       height: 50,
@@ -33,10 +33,10 @@ export default class DrugDetail extends Component<Props, State> {
     headerTintColor: sColor.color333,
     headerTitleStyle: {
       flex: 1,
-      alignItems: "center",
-      justifyContent: "center",
+      alignItems: 'center',
+      justifyContent: 'center',
       fontSize: 14,
-      textAlign: "center",
+      textAlign: 'center',
     },
     headerRight: <TouchableOpacity />,
   })
@@ -49,31 +49,31 @@ export default class DrugDetail extends Component<Props, State> {
       hasLoad: false,
       refreshing: false,
       detail: {
-        category: { id: 0, name: "" },
-        description: "",
+        category: { id: 0, name: '' },
+        description: '',
         id: 0,
         isChinesePatentDrug: false,
-        manufacturer: "",
-        name: "",
-        notes: "",
+        manufacturer: '',
+        name: '',
+        notes: '',
         picture: {
           id: 0,
-          title: "",
-          url: "",
+          title: '',
+          url: '',
         },
         price: 0,
-        signature: "",
-        standard: "",
-        taboo: "",
+        signature: '',
+        standard: '',
+        taboo: '',
         type: 0,
-        unit: "",
-        drugInteraction: "",
-        untowardEffect: "",
+        unit: '',
+        drugInteraction: '',
+        untowardEffect: '',
       },
     }
   }
   init = async () => {
-    let id = this.props.navigation.getParam("id")
+    let id = this.props.navigation.getParam('id')
     try {
       let {
         data: { detail },
@@ -113,10 +113,11 @@ export default class DrugDetail extends Component<Props, State> {
         this.setState({ refreshing: false })
       })
       .catch(err => {
-        Toast.fail("刷新失败,错误信息: " + err.msg)
+        Toast.fail('刷新失败,错误信息: ' + err.msg)
       })
   }
 
+  // eslint-disable-next-line complexity
   render() {
     if (!this.state.hasLoad) {
       return (
@@ -131,17 +132,11 @@ export default class DrugDetail extends Component<Props, State> {
     return (
       <ScrollView
         style={style.main}
-        refreshControl={
-          <RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh} />
-        }>
+        refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh} />}
+      >
         <View style={style.content}>
           {/* 中药 */}
-          <View
-            style={
-              detail.type === TYPE.chinese && !detail.isChinesePatentDrug
-                ? style.drug
-                : global.hidden
-            }>
+          <View style={detail.type === TYPE.chinese && !detail.isChinesePatentDrug ? style.drug : global.hidden}>
             <View style={style.themePar}>
               <Text style={style.theme}>中药</Text>
             </View>
@@ -180,15 +175,10 @@ export default class DrugDetail extends Component<Props, State> {
             </View>
           </View>
           {/* 西药 */}
-          <View
-            style={
-              detail.type === TYPE.western || detail.isChinesePatentDrug
-                ? style.drug
-                : global.hidden
-            }>
+          <View style={detail.type === TYPE.western || detail.isChinesePatentDrug ? style.drug : global.hidden}>
             <View style={style.themePar}>
               <Text style={style.theme}>
-                {detail.type === TYPE.western ? "西药" : detail.isChinesePatentDrug ? "中成药" : ""}
+                {detail.type === TYPE.western ? '西药' : detail.isChinesePatentDrug ? '中成药' : ''}
               </Text>
             </View>
             <View style={style.item}>
@@ -228,49 +218,49 @@ export default class DrugDetail extends Component<Props, State> {
             <View style={style.item}>
               <Text style={style.title}>描述</Text>
               <View style={style.detailPar}>
-                <Text style={style.detail}>{detail.description || "无"}</Text>
+                <Text style={style.detail}>{detail.description || '无'}</Text>
               </View>
             </View>
             <View style={style.item}>
               <Text style={style.title}>规格</Text>
               <View style={style.detailPar}>
-                <Text style={style.detail}>{detail.standard || "无"}</Text>
+                <Text style={style.detail}>{detail.standard || '无'}</Text>
               </View>
             </View>
             <View style={style.item}>
               <Text style={style.title}>厂商</Text>
               <View style={style.detailPar}>
-                <Text style={style.detail}>{detail.manufacturer || "无"}</Text>
+                <Text style={style.detail}>{detail.manufacturer || '无'}</Text>
               </View>
             </View>
             <View style={style.item}>
               <Text style={style.title}>用法用量</Text>
               <View style={style.detailPar}>
-                <Text style={style.detail}>{detail.signature || "无"}</Text>
+                <Text style={style.detail}>{detail.signature || '无'}</Text>
               </View>
             </View>
             <View style={style.item}>
               <Text style={style.title}>不良反应</Text>
               <View style={style.detailPar}>
-                <Text style={style.detail}>{detail.untowardEffect || "无"}</Text>
+                <Text style={style.detail}>{detail.untowardEffect || '无'}</Text>
               </View>
             </View>
             <View style={style.item}>
               <Text style={style.title}>禁忌</Text>
               <View style={style.detailPar}>
-                <Text style={style.detail}>{detail.taboo || "无"}</Text>
+                <Text style={style.detail}>{detail.taboo || '无'}</Text>
               </View>
             </View>
             <View style={style.item}>
               <Text style={style.title}>注意事项</Text>
               <View style={style.detailPar}>
-                <Text style={style.detail}>{detail.notes || "无"}</Text>
+                <Text style={style.detail}>{detail.notes || '无'}</Text>
               </View>
             </View>
             <View style={style.item}>
               <Text style={style.title}>药物相互作用</Text>
               <View style={style.detailPar}>
-                <Text style={style.detail}>{detail.drugInteraction || "无"}</Text>
+                <Text style={style.detail}>{detail.drugInteraction || '无'}</Text>
               </View>
             </View>
           </View>

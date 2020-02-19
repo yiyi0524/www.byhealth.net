@@ -1,23 +1,23 @@
-import * as userAction from "@/redux/actions/user"
-import { AppState } from "@/redux/stores/store"
-import pathMap from "@/routes/pathMap"
-import { GENDER_ZH, PRESCRIPTION_STATUS, PRESCRIPTION_STATUS_ZH } from "@/services/doctor"
-import { Icon, Toast } from "@ant-design/react-native"
-import userApi from "@api/user"
-import sColor from "@styles/color"
-import gImg from "@utils/img"
-import gStyle from "@utils/style"
-import moment from "moment"
-import React, { Component } from "react"
-import { Image, PixelRatio, Text, View } from "react-native"
-import { ScrollView, TouchableOpacity } from "react-native-gesture-handler"
-import { NavigationScreenProp } from "react-navigation"
-import { connect } from "react-redux"
-import { Dispatch } from "redux"
+import * as userAction from '@/redux/actions/user'
+import { AppState } from '@/redux/stores/store'
+import pathMap from '@/routes/pathMap'
+import { GENDER_ZH, PRESCRIPTION_STATUS, PRESCRIPTION_STATUS_ZH } from '@/services/doctor'
+import { Icon, Toast } from '@ant-design/react-native'
+import userApi from '@api/user'
+import sColor from '@styles/color'
+import gImg from '@utils/img'
+import gStyle from '@utils/style'
+import moment from 'moment'
+import React, { Component } from 'react'
+import { Image, PixelRatio, Text, View } from 'react-native'
+import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler'
+import { StackNavigationProp } from '@react-navigation/stack'
+import { connect } from 'react-redux'
+import { Dispatch } from 'redux'
 const style = gStyle.index.Prescription
 const global = gStyle.global
 interface Props {
-  navigation: NavigationScreenProp<State>
+  navigation: StackNavigationProp<any>
 }
 interface State {
   hasLoad: boolean
@@ -38,7 +38,7 @@ export interface prescriptionItem {
   syndromeDifferentiation: string //辨证
   status: number
   ctime: string
-  type: "wx" | "common" | "phone"
+  type: 'wx' | 'common' | 'phone'
 }
 
 const mapStateToProps = (state: AppState) => {
@@ -61,7 +61,7 @@ export default class Prescription extends Component<
   State
 > {
   static navigationOptions = () => ({
-    title: "已开处方",
+    title: '已开处方',
     headerStyle: {
       backgroundColor: sColor.white,
       height: 50,
@@ -73,10 +73,10 @@ export default class Prescription extends Component<
     headerTintColor: sColor.color333,
     headerTitleStyle: {
       flex: 1,
-      alignItems: "center",
-      justifyContent: "center",
+      alignItems: 'center',
+      justifyContent: 'center',
       fontSize: 14,
-      textAlign: "center",
+      textAlign: 'center',
     },
     headerRight: <Text />,
   })
@@ -88,7 +88,7 @@ export default class Prescription extends Component<
     return {
       hasLoad: false,
       refreshing: false,
-      selectTab: "all",
+      selectTab: 'all',
       prescriptionList: [],
       page: -1,
       limit: -1,
@@ -118,50 +118,42 @@ export default class Prescription extends Component<
         this.setState({ refreshing: false })
       })
       .catch(err => {
-        Toast.fail("刷新失败,错误信息: " + err.msg)
+        Toast.fail('刷新失败,错误信息: ' + err.msg)
       })
   }
 
-  buildPrescriptionDom = (
-    v: prescriptionItem,
-    k: number,
-    showPayStatus = true,
-  ): React.ReactChild => {
+  buildPrescriptionDom = (v: prescriptionItem, k: number, showPayStatus = true): React.ReactChild => {
     return (
       <TouchableOpacity
         key={k}
         style={style.prescriptionItem}
-        onPress={() =>
-          this.props.navigation.push(pathMap.PrescriptionDetail, { prescriptionId: v.id })
-        }>
+        onPress={() => this.props.navigation.push(pathMap.PrescriptionDetail, { prescriptionId: v.id })}
+      >
         <View
           style={[
             style.prescriptionItemHeader,
             global.flex,
             global.alignItemsCenter,
             global.justifyContentSpaceBetween,
-          ]}>
+          ]}
+        >
           <View style={[style.prescriptionItemHeaderLeft, global.flex, global.alignItemsCenter]}>
             <View style={style.prescriptionItemHeaderLeftIcon} />
             <Text style={[style.prescriptionItemHeaderLeftTitle, global.fontSize14]}>{v.name}</Text>
-            {v.type === "common" && (
+            {v.type === 'common' && (
               <Text style={[style.prescriptionItemHeaderLeftDetail, global.fontSize14]}>
                 {GENDER_ZH[v.gender]}
-                {v.yearAge >= 3 ? v.yearAge + "岁" : v.yearAge + "岁" + v.monthAge + "月"}
+                {v.yearAge >= 3 ? v.yearAge + '岁' : v.yearAge + '岁' + v.monthAge + '月'}
               </Text>
             )}
           </View>
           <View style={[style.prescriptionItemHeaderRight, global.flex, global.alignItemsCenter]}>
-            <Text style={[style.prescriptionItemHeaderRightTitle, global.fontSize14]}>
-              查看详情
-            </Text>
-            <Icon name="right" style={[style.prescriptionItemHeaderRightIcon, global.fontSize14]} />
+            <Text style={[style.prescriptionItemHeaderRightTitle, global.fontSize14]}>查看详情</Text>
+            <Icon name='right' style={[style.prescriptionItemHeaderRightIcon, global.fontSize14]} />
           </View>
         </View>
         <View style={style.prescriptionItemDescription}>
-          <Text
-            style={[style.prescriptionItemDescriptionDiagnosis, global.fontSize14]}
-            numberOfLines={1}>
+          <Text style={[style.prescriptionItemDescriptionDiagnosis, global.fontSize14]} numberOfLines={1}>
             [ 诊断 ] {v.discrimination}; {v.syndromeDifferentiation}
           </Text>
           <View
@@ -170,16 +162,13 @@ export default class Prescription extends Component<
               global.flex,
               global.alignItemsCenter,
               global.justifyContentSpaceBetween,
-            ]}>
-            <Text
-              style={[style.prescriptionItemDescriptionTime, global.fontSize14]}
-              numberOfLines={1}>
-              {moment(v.ctime).format("YYYY" + "年" + "MM" + "月" + "DD" + "日 HH:mm")}
+            ]}
+          >
+            <Text style={[style.prescriptionItemDescriptionTime, global.fontSize14]} numberOfLines={1}>
+              {moment(v.ctime).format('YYYY年MM月DD日 HH:mm')}
             </Text>
             {showPayStatus ? (
-              <Text
-                style={[style.prescriptionItemDescriptionStatus, global.fontSize14]}
-                numberOfLines={1}>
+              <Text style={[style.prescriptionItemDescriptionStatus, global.fontSize14]} numberOfLines={1}>
                 {PRESCRIPTION_STATUS_ZH[v.status]}
               </Text>
             ) : null}
@@ -202,25 +191,21 @@ export default class Prescription extends Component<
       <>
         <View style={style.main}>
           <View style={style.prescription}>
-            <View
-              style={[
-                style.header,
-                global.flex,
-                global.alignItemsCenter,
-                global.justifyContentSpaceAround,
-              ]}>
+            <View style={[style.header, global.flex, global.alignItemsCenter, global.justifyContentSpaceAround]}>
               <TouchableOpacity
                 style={style.headerItem}
                 onPress={() => {
                   this.setState({
-                    selectTab: "all",
+                    selectTab: 'all',
                   })
-                }}>
+                }}
+              >
                 <Text
                   style={[
-                    this.state.selectTab === "all" ? style.headerTitleActive : style.headerTitle,
+                    this.state.selectTab === 'all' ? style.headerTitleActive : style.headerTitle,
                     global.fontSize14,
-                  ]}>
+                  ]}
+                >
                   全部 ( {this.state.prescriptionList.length} )
                 </Text>
               </TouchableOpacity>
@@ -228,32 +213,27 @@ export default class Prescription extends Component<
                 style={style.headerItem}
                 onPress={() => {
                   this.setState({
-                    selectTab: "pay",
+                    selectTab: 'pay',
                   })
-                }}>
+                }}
+              >
                 <Text
                   style={[
-                    this.state.selectTab === "pay" ? style.headerTitleActive : style.headerTitle,
+                    this.state.selectTab === 'pay' ? style.headerTitleActive : style.headerTitle,
                     global.fontSize14,
-                  ]}>
-                  已支付({" "}
-                  {
-                    this.state.prescriptionList.filter(
-                      v => v.status === PRESCRIPTION_STATUS.completePay,
-                    ).length
-                  }{" "}
+                  ]}
+                >
+                  已支付( {this.state.prescriptionList.filter(v => v.status === PRESCRIPTION_STATUS.completePay).length}{' '}
                   )
                 </Text>
               </TouchableOpacity>
             </View>
-            <View style={this.state.selectTab === "all" ? style.prescriptionList : global.hidden}>
+            <View style={this.state.selectTab === 'all' ? style.prescriptionList : global.hidden}>
               <ScrollView style={style.tabScroll}>
-                {this.state.prescriptionList.map((v: prescriptionItem, k: number) =>
-                  this.buildPrescriptionDom(v, k),
-                )}
+                {this.state.prescriptionList.map((v: prescriptionItem, k: number) => this.buildPrescriptionDom(v, k))}
               </ScrollView>
             </View>
-            <View style={this.state.selectTab === "pay" ? style.prescriptionList : global.hidden}>
+            <View style={this.state.selectTab === 'pay' ? style.prescriptionList : global.hidden}>
               <ScrollView style={style.tabScroll}>
                 {this.state.prescriptionList
                   .filter(v => v.status === PRESCRIPTION_STATUS.completePay)

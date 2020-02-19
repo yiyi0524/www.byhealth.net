@@ -1,9 +1,10 @@
 <resources>
     <string name="app_name">博一健康</string>
+    <string moduleConfig="true" name="CodePushDeploymentKey">TOCpuf9dUM2Ic4ujizY-SoZeX-ysdMovMHzge</string>
     <string name="reactNativeCodePush_androidDeploymentKey" moduleConfig="true">TOCpuf9dUM2Ic4ujizY-SoZeX-ysdMovMHzge</string>
     <string name="reactNativeCodePush_androidDevKey" moduleConfig="true">TOCpuf9dUM2Ic4ujizY-SoZeX-ysdMovMHzge</string>
     <string name="reactNativeCodePush_androidProductionKey" moduleConfig="true">TOCpuf9dUM2Ic4ujizY-SoZeX-ysdMovMHzge</string>
-    <string name="codePushServerUrl">https://codepush.buffge.com/</string>
+    <string name="codePushServerUrl2">https://codepush.buffge.com/</string>
     <string name="appCenterCrashes_whenToSendCrashes" moduleConfig="true" translatable="false">DO_NOT_ASK_JAVASCRIPT</string>
     <string name="appCenterAnalytics_whenToEnableAnalytics" moduleConfig="true" translatable="false">ALWAYS_SEND</string>
 </resources>

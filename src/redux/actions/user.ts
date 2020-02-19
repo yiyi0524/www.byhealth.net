@@ -1,9 +1,9 @@
-import { Picture } from "@/pages/advisory/Chat"
-import { CurrSetPrescription } from "../reducers/user"
+import { Picture } from '@/pages/advisory/Chat'
+import { CurrSetPrescription } from '../reducers/user'
 
-export const USER_LOGIN = "用户登录"
-export const SAVE_CURR_SET_PRESCRIPTION = "存储当前开方信息"
-export const DEL_CURR_SET_PRESCRIPTION = "删除当前开方信息"
+export const USER_LOGIN = '用户登录'
+export const SAVE_CURR_SET_PRESCRIPTION = '存储当前开方信息'
+export const DEL_CURR_SET_PRESCRIPTION = '删除当前开方信息'
 
 export interface UserInfo {
   uid: number

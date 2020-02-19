@@ -1,16 +1,16 @@
-import { BASE_URL } from "@config/api"
-import storage from "@utils/storage"
-import idCard from "idcard"
-import { request as BuffReq } from "jsbdk"
-import qs from "qs"
-import { AppStateStatus, Dimensions, Platform } from "react-native"
-import DeviceInfo from "react-native-device-info"
+import { BASE_URL } from '@config/api'
+import storage from '@utils/storage'
+import idCard from 'idcard'
+import { request as BuffReq } from 'jsbdk'
+import qs from 'qs'
+import { AppStateStatus, Dimensions, Platform } from 'react-native'
+import DeviceInfo from 'react-native-device-info'
 export const JsonReturnCode = {
   SUCCESS: 0x0,
 }
 export const NOT_LIMIT = -1
-export const windowWidth = Dimensions.get("window").width
-export const windowHeight = Dimensions.get("window").height
+export const windowWidth = Dimensions.get('window').width
+export const windowHeight = Dimensions.get('window').height
 export const TYPE = {
   undefined: -1,
   //数值
@@ -21,10 +21,8 @@ export const TYPE = {
   betweenValue: 0x4,
   //字符串
   eqString: 0x5,
-  
-
-
-  
+  like: 0x6,
+  notLike: 0x7,
   before: 0x8,
   after: 0x9,
   betweenTime: 0xa,
@@ -34,25 +32,25 @@ export const TYPE = {
   neqString: 0xd,
 }
 export const TYPE_ZH = {
-  [TYPE.undefined]: "未定义",
+  [TYPE.undefined]: '未定义',
   //数值比较
-  [TYPE.eq]: "等于",
-  [TYPE.lt]: "小于",
-  [TYPE.gt]: "大于",
-  [TYPE.neq]: "不等于",
-  [TYPE.betweenValue]: "在什么值之间",
+  [TYPE.eq]: '等于',
+  [TYPE.lt]: '小于',
+  [TYPE.gt]: '大于',
+  [TYPE.neq]: '不等于',
+  [TYPE.betweenValue]: '在什么值之间',
   //字符串比较
-  [TYPE.eqString]: "等于",
-  [TYPE.like]: "包含",
-  [TYPE.notLike]: "不包含",
+  [TYPE.eqString]: '等于',
+  [TYPE.like]: '包含',
+  [TYPE.notLike]: '不包含',
   //日期
-  [TYPE.before]: "在什么日期之前",
-  [TYPE.after]: "在什么日期之后",
-  [TYPE.betweenTime]: "在什么日期之间",
+  [TYPE.before]: '在什么日期之前',
+  [TYPE.after]: '在什么日期之后',
+  [TYPE.betweenTime]: '在什么日期之间',
   //数组
-  [TYPE.in]: "在数组中",
-  [TYPE.notIn]: "不在数组中",
-  [TYPE.neqString]: "不等于",
+  [TYPE.in]: '在数组中',
+  [TYPE.notIn]: '不在数组中',
+  [TYPE.neqString]: '不等于',
 }
 export interface RequestParam {
   url: string
@@ -69,48 +67,48 @@ export interface GetListParam {
   filter?: object
 }
 export async function bget<T = any>({ url, query = {}, headers = {} }: RequestParam) {
-  let session = await storage.get("session")
-  headers["session"] = session
-  headers["content-type"] = "application/json"
-  return BuffReq<T>(BASE_URL, url + "?" + qs.stringify(query), null, "GET", "include", headers)
+  let session = await storage.get('session')
+  headers.session = session
+  headers['content-type'] = 'application/json'
+  return BuffReq<T>(BASE_URL, url + '?' + qs.stringify(query), null, 'GET', 'include', headers)
 }
 export async function bpost<T = any>({ url, data = {}, headers = {} }: RequestParam) {
-  let session = await storage.get("session")
-  headers["session"] = session
-  headers["content-type"] = "application/json"
-  return BuffReq<T>(BASE_URL, url, data, "POST", "include", headers)
+  let session = await storage.get('session')
+  headers.session = session
+  headers['content-type'] = 'application/json'
+  return BuffReq<T>(BASE_URL, url, data, 'POST', 'include', headers)
 }
 export async function isLogin() {
-  let session = await storage.get("session")
+  let session = await storage.get('session')
   if (!session) {
-    console.log("session 不存在 未登录")
+    console.log('session 不存在 未登录')
     return false
   }
-  let isLogin: boolean = await new Promise(s => {
+  let userIsLogin: boolean = await new Promise(s => {
     try {
       bpost({
-        url: "/api/isLogin",
+        url: '/api/isLogin',
       })
         .then(() => {
-          console.log("s true")
+          console.log('s true')
           s(true)
         })
         .catch(err => {
-          if (err.msg && err.msg.includes("Network request failed")) {
+          if (err.msg && err.msg.includes('Network request failed')) {
             s(true)
           } else {
             s(false)
           }
         })
     } catch (err) {
-      console.log("check isLogin err: ", err)
+      console.log('check isLogin err: ', err)
       s(false)
     }
   })
-  if (isLogin === false) {
-    console.log("not login: ", session)
+  if (!userIsLogin) {
+    console.log('not login: ', session)
   }
-  return isLogin
+  return userIsLogin
 }
 export interface AccountLoginParam {
   account: string
@@ -121,7 +119,7 @@ export interface AccountLoginParam {
  */
 export async function accountLogin({ account, pwd }: AccountLoginParam) {
   return bpost({
-    url: "/api/accountLogin",
+    url: '/api/accountLogin',
     data: { account, pwd },
   })
 }
@@ -135,7 +133,7 @@ export interface PhoneLoginParam {
  */
 export async function phoneLogin({ phone, code, codeUuid }: PhoneLoginParam) {
   return bpost({
-    url: "/api/phoneLogin",
+    url: '/api/phoneLogin',
     data: { phone, code, codeUuid },
   })
 }
@@ -144,7 +142,7 @@ export async function phoneLogin({ phone, code, codeUuid }: PhoneLoginParam) {
  */
 export async function logout() {
   return bget({
-    url: "/api/logout",
+    url: '/api/logout',
   })
 }
 
@@ -153,7 +151,7 @@ export async function logout() {
  */
 export function sendPhoneRegisterVerifyCode({ phone }: { phone: string }) {
   return bpost({
-    url: "/api/sendPhoneRegisterVerifyCode",
+    url: '/api/sendPhoneRegisterVerifyCode',
     data: {
       phone,
     },
@@ -185,7 +183,7 @@ export function register({
   hospitalName,
 }: registerParam) {
   return bpost({
-    url: "/api/register",
+    url: '/api/register',
     data: {
       smsUuid,
       verifyCode,
@@ -204,7 +202,7 @@ export function register({
  */
 export function getLoginPhoneVerifyCode({ phone }: { phone: string }) {
   return bpost({
-    url: "/api/getLoginPhoneVerifyCode",
+    url: '/api/getLoginPhoneVerifyCode',
     data: {
       phone,
     },
@@ -215,7 +213,7 @@ export function getLoginPhoneVerifyCode({ phone }: { phone: string }) {
  */
 export function getForgetPwdPhoneVerifyCode({ phone }: { phone: string }) {
   return bpost({
-    url: "/api/getForgetPwdPhoneVerifyCode",
+    url: '/api/getForgetPwdPhoneVerifyCode',
     data: {
       phone,
     },
@@ -224,17 +222,9 @@ export function getForgetPwdPhoneVerifyCode({ phone }: { phone: string }) {
 /**
  * 检查忘记密码手机验证码是否正确
  */
-export function checkforGetPwdVerifyCode({
-  phone,
-  uuid,
-  code,
-}: {
-  phone: string
-  uuid: string
-  code: string
-}) {
+export function checkforGetPwdVerifyCode({ phone, uuid, code }: { phone: string; uuid: string; code: string }) {
   return bpost({
-    url: "/api/checkForgetPwdVerifyCode",
+    url: '/api/checkForgetPwdVerifyCode',
     data: {
       phone,
       uuid,
@@ -246,14 +236,14 @@ export function checkforGetPwdVerifyCode({
  * 已登录修改密码
  */
 export function modifyPwd({ oriPwd, pwd, rePwd }: { oriPwd: string; pwd: string; rePwd: string }) {
-  return bpost({ url: "/api/modifyPwd", data: { oriPwd, pwd, rePwd } })
+  return bpost({ url: '/api/modifyPwd', data: { oriPwd, pwd, rePwd } })
 }
 /**
  * 发送修改密码手机验证码
  */
 export function getmodifyPwdWithPhoneCode({ phone }: { phone: string }) {
   return bpost({
-    url: "/api/getmodifyPwdWithPhoneCode",
+    url: '/api/getmodifyPwdWithPhoneCode',
     data: {
       phone,
     },
@@ -262,17 +252,9 @@ export function getmodifyPwdWithPhoneCode({ phone }: { phone: string }) {
 /**
  * 手机验证码修改密码
  */
-export function modifyPwdWithOriPwd({
-  oriPwd,
-  newPwd,
-  rePwd,
-}: {
-  oriPwd: string
-  newPwd: string
-  rePwd: string
-}) {
+export function modifyPwdWithOriPwd({ oriPwd, newPwd, rePwd }: { oriPwd: string; newPwd: string; rePwd: string }) {
   return bpost({
-    url: "api/modifyPwdWithOriPwd",
+    url: 'api/modifyPwdWithOriPwd',
     data: { oriPwd, newPwd, rePwd },
   })
 }
@@ -286,7 +268,7 @@ export interface AliPayOrderInfo {
  */
 export function buildAliPayOrderInfo({ body, subject, money }: AliPayOrderInfo) {
   return bpost({
-    url: "/ali_pay/buildOrderInfo",
+    url: '/ali_pay/buildOrderInfo',
     data: {
       body,
       subject,
@@ -305,7 +287,7 @@ export interface WxPayOrderInfo {
  */
 export function buildWxPayOrderInfo({ body, detail, attach, money }: WxPayOrderInfo) {
   return bpost({
-    url: "/ali_pay/buildOrderInfo",
+    url: '/ali_pay/buildOrderInfo',
     data: {
       body,
       detail,
@@ -319,7 +301,7 @@ export function buildWxPayOrderInfo({ body, detail, attach, money }: WxPayOrderI
  */
 export function updateGetuiCid(cid: string) {
   return bpost({
-    url: "/user/updateGetuiCid",
+    url: '/user/updateGetuiCid',
     data: {
       cid,
     },
@@ -330,7 +312,7 @@ export function updateGetuiCid(cid: string) {
  */
 export function updateAliPushDeviceId(data: { deviceId: string }) {
   return bpost({
-    url: "/user/updateAliPushDeviceId",
+    url: '/user/updateAliPushDeviceId',
     data: {
       ...data,
       os: Platform.OS,
@@ -342,7 +324,7 @@ export function updateAliPushDeviceId(data: { deviceId: string }) {
  */
 export function updateAppStateStatus(data: { status: AppStateStatus }) {
   return bpost({
-    url: "/user/updateAppStateStatus",
+    url: '/user/updateAppStateStatus',
     data,
   })
 }
@@ -351,15 +333,15 @@ export function updateAppStateStatus(data: { status: AppStateStatus }) {
 //  */
 export function uploadImg(file: any) {
   let formData = new FormData()
-  formData.append("name", "file")
-  formData.append("file", {
+  formData.append('name', 'file')
+  formData.append('file', {
     // @ts-ignore
     uri: file.url,
-    name: "file.jpg",
-    type: "image/jpeg",
+    name: 'file.jpg',
+    type: 'image/jpeg',
   })
-  return BuffReq(BASE_URL, "/uploadImg", formData, "POST", "include", {
-    "Content-Type": "multipart/form-data",
+  return BuffReq(BASE_URL, '/uploadImg', formData, 'POST', 'include', {
+    'Content-Type': 'multipart/form-data',
   })
 }
 
@@ -368,7 +350,7 @@ export function uploadImg(file: any) {
  */
 export function getRegion() {
   return bget({
-    url: "/getRegion",
+    url: '/getRegion',
   })
 }
 /**
@@ -376,21 +358,21 @@ export function getRegion() {
  */
 export function getMedicalInstitutions(cityId: any) {
   return bpost({
-    url: "/common/getMedicalInstitutions",
+    url: '/common/getMedicalInstitutions',
     data: {
       cityId,
     },
   })
 }
 export function idCardIDChecked(sId: string) {
-  return !!idCard.verify(sId)
+  return Boolean(idCard.verify(sId))
 }
 /**
  * 获取缩略图url
  */
 export function getThumbUrl({ path, width = 400 }: { width?: number; path: string }) {
   // 如果不是我们服务器的图片就不转换,比如微信
-  if (path.indexOf("http") === 0 && path.indexOf(BASE_URL) !== 0) {
+  if (path.indexOf('http') === 0 && path.indexOf(BASE_URL) !== 0) {
     return path
   }
   return BASE_URL + `/getThumb?path=${path}&width=${width}`
@@ -400,7 +382,7 @@ export function getThumbUrl({ path, width = 400 }: { width?: number; path: strin
  */
 export function checkUpdate() {
   return bget<{ needUpdate: boolean; updateUrl: string; forceUpdate: boolean }>({
-    url: "/app/checkUpdate",
+    url: '/app/checkUpdate',
     query: {
       os: Platform.OS,
       version: DeviceInfo.getVersion(),
@@ -417,15 +399,15 @@ export interface FileRes {
  */
 export function uploadAudio(uri: string) {
   let formData = new FormData()
-  formData.append("name", "file")
-  formData.append("file", {
+  formData.append('name', 'file')
+  formData.append('file', {
     // @ts-ignore
     uri,
-    name: "file.aac",
-    type: "audio/x-aac",
+    name: 'file.aac',
+    type: 'audio/x-aac',
   })
-  return BuffReq<FileRes>(BASE_URL, "/uploadAudio", formData, "POST", "include", {
-    "Content-Type": "multipart/form-data",
+  return BuffReq<FileRes>(BASE_URL, '/uploadAudio', formData, 'POST', 'include', {
+    'Content-Type': 'multipart/form-data',
   })
 }
 export default {

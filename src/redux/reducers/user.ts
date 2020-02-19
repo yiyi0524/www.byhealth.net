@@ -1,6 +1,6 @@
-import * as userAction from "../actions/user"
-import { Picture } from "@/pages/advisory/Chat"
-import { PrescriptionDrugCategory } from "@/pages/advisory/SquareRoot"
+import * as userAction from '../actions/user'
+import { Picture } from '@/pages/advisory/Chat'
+import { PrescriptionDrugCategory } from '@/pages/advisory/SquareRoot'
 export interface CurrSetPrescription {
   // 辨病
   discrimination: string
@@ -30,11 +30,11 @@ export interface UserState {
 const initState: UserState = {
   isLogin: false,
   uid: 0,
-  name: "未命名",
+  name: '未命名',
   avatar: {
     id: 0,
-    title: "",
-    url: "",
+    title: '',
+    url: '',
   },
   currSetPrescription: {},
 }
@@ -42,10 +42,7 @@ export interface Action<T> {
   type: string
   preload: T
 }
-function saveCurrSetPrescription(
-  state = initState,
-  action: Action<[number, CurrSetPrescription | null]>,
-) {
+function saveCurrSetPrescription(state = initState, action: Action<[number, CurrSetPrescription | null]>) {
   if (action.type === userAction.SAVE_CURR_SET_PRESCRIPTION) {
     let newState = Object.assign({}, state)
     newState.currSetPrescription[action.preload[0]] = action.preload[1]

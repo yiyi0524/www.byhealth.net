@@ -1,29 +1,29 @@
-import { windowHeight } from "@/utils/utils"
-import { windowWidth } from "@api/api"
-import sColor from "@styles/color"
-import { StyleSheet, PixelRatio } from "react-native"
+import { windowHeight } from '@/utils/utils'
+import { windowWidth } from '@api/api'
+import sColor from '@styles/color'
+import { StyleSheet, PixelRatio } from 'react-native'
 export default StyleSheet.create({
   loading: {
     width: windowWidth,
     height: windowHeight,
     backgroundColor: sColor.white,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
     flex: 1,
   },
   loadingTitle: {
-    textAlign: "center",
-    justifyContent: "center",
+    textAlign: 'center',
+    justifyContent: 'center',
   },
   loadingPic: {
-    width: "100%",
-    overflow: "hidden",
-    justifyContent: "center",
-    alignItems: "center",
+    width: '100%',
+    overflow: 'hidden',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   loadingImg: {
     width: 300,
-    resizeMode: "contain",
+    resizeMode: 'contain',
   },
   headerRight: {
     paddingRight: 15,
@@ -35,11 +35,11 @@ export default StyleSheet.create({
   },
   main: {
     backgroundColor: sColor.mainBgColor,
-    position: "relative",
+    position: 'relative',
     height: windowHeight,
   },
   btn: {
-    position: "relative",
+    position: 'relative',
     backgroundColor: sColor.mainBgColor,
     marginBottom: 10,
   },
@@ -54,9 +54,9 @@ export default StyleSheet.create({
   },
   btnTitle: {
     lineHeight: 40,
-    textAlign: "center",
+    textAlign: 'center',
     fontSize: 14,
-    color: "#fff",
+    color: '#fff',
   },
   content: {
     flex: 1,
@@ -64,14 +64,14 @@ export default StyleSheet.create({
     marginBottom: 8,
   },
   item: {
-    backgroundColor: "#fff",
+    backgroundColor: '#fff',
     borderBottomWidth: 1 / PixelRatio.get(),
-    borderBottomColor: "#eee",
+    borderBottomColor: '#eee',
     padding: 12,
   },
   title: {
     fontSize: 14,
-    color: "#666",
+    color: '#666',
     width: 110,
   },
   titleCenter: {
@@ -80,22 +80,22 @@ export default StyleSheet.create({
   input: {
     flex: 1,
     fontSize: 14,
-    color: "#333",
+    color: '#333',
   },
   list: {},
   picItem: {
-    width: "33%",
+    width: '33%',
     height: 110,
     borderWidth: 1 / PixelRatio.get(),
-    borderColor: "#eee",
+    borderColor: '#eee',
   },
   pic: {
     width: 110,
     height: 110,
-    resizeMode: "contain",
+    resizeMode: 'contain',
   },
   showMode: {
-    position: "absolute",
+    position: 'absolute',
     backgroundColor: sColor.color333,
     top: 0,
     left: 0,
@@ -104,27 +104,27 @@ export default StyleSheet.create({
   showImg: {
     width: 350,
     height: 350,
-    resizeMode: "contain",
+    resizeMode: 'contain',
   },
   showImgPar: {
-    position: "relative",
+    position: 'relative',
     width: windowWidth,
     height: windowHeight,
     top: 15,
   },
   close: {
     padding: 15,
-    position: "absolute",
+    position: 'absolute',
     top: 15,
     right: 15,
     zIndex: 10,
   },
   closeIcon: {
-    color: "#fff",
+    color: '#fff',
     fontSize: 20,
-    textAlign: "center",
+    textAlign: 'center',
     borderWidth: 2,
-    borderColor: "#fff",
+    borderColor: '#fff',
     width: 30,
     height: 30,
     borderRadius: 100,

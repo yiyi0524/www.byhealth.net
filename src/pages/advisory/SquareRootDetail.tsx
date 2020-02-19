@@ -1,26 +1,22 @@
-import global from "@/assets/styles/global"
-import * as userAction from "@/redux/actions/user"
-import { AppState } from "@/redux/stores/store"
-import { windowWidth } from "@/services/api"
-import doctor, { GENDER_ZH, squareRoot } from "@/services/doctor"
-import hospital from "@/services/hospital"
-import { DrugInfo } from "@/services/patient"
-import { Toast } from "@ant-design/react-native"
-import DashLine from "@components/DashLine"
-import sColor from "@styles/color"
-import gImg from "@utils/img"
-import gStyle from "@utils/style"
-import moment from "moment"
-import React, { Component } from "react"
-import { Image, PixelRatio, RefreshControl, Text, View } from "react-native"
-import { NavigationScreenProp, ScrollView } from "react-navigation"
-import { connect } from "react-redux"
-import { Dispatch } from "redux"
-import {
-  ORAL_CHINESE_DRUG_ID,
-  EXTERN_CHINESE_DRUG_ID,
-  TOPICAL_CHINESE_DRUG_ID,
-} from "@/services/drug"
+import global from '@/assets/styles/global'
+import * as userAction from '@/redux/actions/user'
+import { AppState } from '@/redux/stores/store'
+import { windowWidth } from '@/services/api'
+import doctor, { GENDER_ZH, squareRoot } from '@/services/doctor'
+import hospital from '@/services/hospital'
+import { DrugInfo } from '@/services/patient'
+import { Toast } from '@ant-design/react-native'
+import DashLine from '@components/DashLine'
+import sColor from '@styles/color'
+import gImg from '@utils/img'
+import gStyle from '@utils/style'
+import moment from 'moment'
+import React, { Component } from 'react'
+import { Image, PixelRatio, RefreshControl, Text, View } from 'react-native'
+import { NavigationScreenProp, ScrollView } from 'react-navigation'
+import { connect } from 'react-redux'
+import { Dispatch } from 'redux'
+import { ORAL_CHINESE_DRUG_ID, EXTERN_CHINESE_DRUG_ID, TOPICAL_CHINESE_DRUG_ID } from '@/services/drug'
 const style = gStyle.advisory.SquareRootDetail
 const mapStateToProps = (state: AppState) => {
   return {
@@ -42,7 +38,7 @@ interface drugCategory {
   child: drugCategory[]
 }
 interface Props {
-  navigation: NavigationScreenProp<State>
+  navigation: StackNavigationProp<any>
 }
 
 interface State {
@@ -60,7 +56,7 @@ export default class SquareRoot extends Component<
 > {
   static navigationOptions = () => {
     return {
-      title: "查看整体治疗方案",
+      title: '查看整体治疗方案',
       headerStyle: {
         backgroundColor: sColor.white,
         height: 45,
@@ -71,10 +67,10 @@ export default class SquareRoot extends Component<
       headerTintColor: sColor.color333,
       headerTitleStyle: {
         flex: 1,
-        alignItems: "center",
-        justifyContent: "center",
+        alignItems: 'center',
+        justifyContent: 'center',
         fontSize: 14,
-        textAlign: "center",
+        textAlign: 'center',
       },
       headerRight: <Text />,
     }
@@ -87,27 +83,27 @@ export default class SquareRoot extends Component<
     return {
       hasLoad: false,
       refreshing: false,
-      prescriptionId: this.props.navigation.getParam("prescriptionId"),
+      prescriptionId: this.props.navigation.getParam('prescriptionId'),
       detail: {
         doctor: {
-          name: "",
+          name: '',
         },
         patient: {
-          name: "",
+          name: '',
           gender: 0,
           yearAge: 0,
           monthAge: 0,
         },
-        discrimination: "", //辨病
-        syndromeDifferentiation: "", //辨证
-        advice: "", //医嘱
+        discrimination: '', //辨病
+        syndromeDifferentiation: '', //辨证
+        advice: '', //医嘱
         drugList: [],
         cost: {
           drugCost: 0,
           doctorServiceCost: 0,
           expressCost: 0,
         },
-        time: "",
+        time: '',
       },
       drugCategoryList: [],
       drugList: [],
@@ -117,7 +113,6 @@ export default class SquareRoot extends Component<
     this.init()
   }
 
-  getDrugList = () => {}
   init = async () => {
     try {
       let {
@@ -146,7 +141,7 @@ export default class SquareRoot extends Component<
         this.setState({ refreshing: false })
       })
       .catch(err => {
-        Toast.fail("刷新失败,错误信息: " + err.msg)
+        Toast.fail('刷新失败,错误信息: ' + err.msg)
       })
   }
   render() {
@@ -164,39 +159,28 @@ export default class SquareRoot extends Component<
       <>
         <ScrollView
           style={style.main}
-          refreshControl={
-            <RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh} />
-          }>
+          refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh} />}
+        >
           <View style={style.prompt}>
             <Text style={[style.promptTitle, global.fontSize14]}>
-              {moment(detail.time).format("YYYY" + "年" + "MM" + "月" + "DD" + "日" + "HH:mm")}
+              {moment(detail.time).format('YYYY年MM月DD日HH:mm')}
             </Text>
           </View>
           {/* 诊断 */}
           <View style={style.diagnosis}>
-            <View
-              style={[
-                style.theme,
-                global.flex,
-                global.alignItemsCenter,
-                global.justifyContentCenter,
-              ]}>
+            <View style={[style.theme, global.flex, global.alignItemsCenter, global.justifyContentCenter]}>
               <View style={style.titleSpot} />
               <Text style={[style.title, global.fontSize14]}> 诊断 </Text>
               <View style={style.titleSpot} />
             </View>
             <View style={[style.diagnosisItem, global.flex, global.alignItemsCenter]}>
               <Text style={[style.diagnosisItemTitle, global.fontSize14]}>[ 患者信息 ]</Text>
-              <Text style={[style.diagnosisItemLineTitle, global.fontSize14]}>
-                {detail.patient.name}
-              </Text>
-              <Text style={[style.diagnosisItemLineTitle, global.fontSize14]}>
-                {GENDER_ZH[detail.patient.gender]}
-              </Text>
+              <Text style={[style.diagnosisItemLineTitle, global.fontSize14]}>{detail.patient.name}</Text>
+              <Text style={[style.diagnosisItemLineTitle, global.fontSize14]}>{GENDER_ZH[detail.patient.gender]}</Text>
               <Text style={[style.diagnosisItemLineTitle, global.fontSize14]}>
                 {detail.patient.yearAge >= 3
-                  ? detail.patient.yearAge + "岁"
-                  : detail.patient.yearAge + "岁" + detail.patient.monthAge + "月"}
+                  ? detail.patient.yearAge + '岁'
+                  : detail.patient.yearAge + '岁' + detail.patient.monthAge + '月'}
               </Text>
             </View>
             <View style={[style.diagnosisItem, global.flex]}>
@@ -208,13 +192,7 @@ export default class SquareRoot extends Component<
           </View>
           {/* 开方 */}
           <View style={style.diagnosis}>
-            <View
-              style={[
-                style.theme,
-                global.flex,
-                global.alignItemsCenter,
-                global.justifyContentCenter,
-              ]}>
+            <View style={[style.theme, global.flex, global.alignItemsCenter, global.justifyContentCenter]}>
               <View style={style.titleSpot} />
               <Text style={[style.title, global.fontSize14]}> 开方 </Text>
               <View style={style.titleSpot} />
@@ -223,7 +201,7 @@ export default class SquareRoot extends Component<
             <Text style={[style.drug, global.fontSize24]}>R:</Text>
             <View style={style.drugList}>
               {detail.drugList.map((v, k) => {
-                let categoryName = ""
+                let categoryName = ''
                 for (let v1 of this.state.drugCategoryList) {
                   if (v.categoryId === v1.id) {
                     categoryName = v1.name
@@ -246,23 +224,19 @@ export default class SquareRoot extends Component<
                       <View style={[]}>
                         <Text
                           style={[style.drugItemLeftTitle, global.fontSize16, { marginBottom: 8 }]}
-                          numberOfLines={1}>
+                          numberOfLines={1}
+                        >
                           {categoryName} 共{v.list.length}味
                         </Text>
-                        <View
-                          style={[
-                            style.drugListFa,
-                            global.flex,
-                            global.alignItemsCenter,
-                            global.flexWrap,
-                          ]}>
+                        <View style={[style.drugListFa, global.flex, global.alignItemsCenter, global.flexWrap]}>
+                          {/* eslint-disable-next-line no-shadow */}
                           {v.list.map((v, k) => {
-                            let drugItem = "",
-                              unit = ""
+                            let drugItem = '',
+                              unit = ''
                             for (let v1 of this.state.drugList) {
                               if (v.id === v1.id) {
-                                drugItem = v1.name || "未命名"
-                                unit = v1.unit || "盒"
+                                drugItem = v1.name || '未命名'
+                                unit = v1.unit || '盒'
                               }
                             }
                             return (
@@ -274,13 +248,9 @@ export default class SquareRoot extends Component<
                                   global.flex,
                                   global.alignItemsCenter,
                                   { marginRight: 15 },
-                                ]}>
-                                <Text
-                                  style={[
-                                    style.drugItemTitle,
-                                    global.fontSize14,
-                                    { marginRight: 5 },
-                                  ]}>
+                                ]}
+                              >
+                                <Text style={[style.drugItemTitle, global.fontSize14, { marginRight: 5 }]}>
                                   {drugItem}
                                 </Text>
                                 <Text style={[style.drugItemTitle, global.fontSize12]}>
@@ -291,176 +261,129 @@ export default class SquareRoot extends Component<
                           })}
                         </View>
                       </View>
-                      <View
-                        style={[style.dose, global.flex, global.alignItemsCenter, global.flexWrap]}>
+                      <View style={[style.dose, global.flex, global.alignItemsCenter, global.flexWrap]}>
                         <Text style={[style.doseTitle, global.fontSize14]}>共计</Text>
-                        <Text style={[style.doseDetail, global.fontSize14]}>
-                          {v.doseCount || 0}
-                        </Text>
+                        <Text style={[style.doseDetail, global.fontSize14]}>{v.doseCount || 0}</Text>
                         <Text style={[style.doseTitle, global.fontSize14]}>剂</Text>
                         <Text style={[style.doseTitle, global.fontSize14]}>, 每日</Text>
-                        <Text style={[style.doseDetail, global.fontSize14]}>
-                          {v.dailyDose || 0}
-                        </Text>
+                        <Text style={[style.doseDetail, global.fontSize14]}>{v.dailyDose || 0}</Text>
                         <Text style={[style.doseTitle, global.fontSize14]}>剂, 一剂分</Text>
-                        <Text style={[style.doseDetail, global.fontSize14]}>
-                          {v.everyDoseUseCount || 0}
-                        </Text>
+                        <Text style={[style.doseDetail, global.fontSize14]}>{v.everyDoseUseCount || 0}</Text>
                         <Text style={[style.doseTitle, global.fontSize14]}>次使用</Text>
                       </View>
                     </View>
                   )
-                } else {
-                  return (
-                    <View style={style.drugCategoryItem} key={k}>
-                      <View style={[]}>
-                        <Text
-                          style={[style.drugItemLeftTitle, global.fontSize16]}
-                          numberOfLines={1}>
-                          {categoryName} 共{v.list.length}味
-                        </Text>
-                        <View style={style.drugListFa}>
-                          {v.list.map((v, k) => {
-                            let drugItem = "",
-                              unit = "",
-                              standard = "",
-                              price = 0,
-                              manufacturer = ""
-                            for (let v1 of this.state.drugList) {
-                              if (v.id === v1.id) {
-                                drugItem = v1.name || "未命名"
-                                unit = v1.unit || "盒"
-                                standard = v1.standard || "暂无地址"
-                                price = v1.price || 0
-                                manufacturer = v1.manufacturer || "暂无规格"
-                              }
+                }
+                return (
+                  <View style={style.drugCategoryItem} key={k}>
+                    <View style={[]}>
+                      <Text style={[style.drugItemLeftTitle, global.fontSize16]} numberOfLines={1}>
+                        {categoryName} 共{v.list.length}味
+                      </Text>
+                      <View style={style.drugListFa}>
+                        {/* eslint-disable-next-line no-shadow */}
+                        {v.list.map((v, k) => {
+                          let drugItem = '',
+                            unit = '',
+                            standard = '',
+                            price = 0,
+                            manufacturer = ''
+                          for (let v1 of this.state.drugList) {
+                            if (v.id === v1.id) {
+                              drugItem = v1.name || '未命名'
+                              unit = v1.unit || '盒'
+                              standard = v1.standard || '暂无地址'
+                              price = v1.price || 0
+                              manufacturer = v1.manufacturer || '暂无规格'
                             }
-                            return (
-                              <View key={k} style={style.drugItem}>
-                                <View
-                                  style={[
-                                    style.drugItemFa,
-                                    global.flex,
-                                    global.alignItemsCenter,
-                                    global.justifyContentSpaceBetween,
-                                  ]}>
-                                  <Text
-                                    style={[style.drugItemTitle, global.fontSize14]}
-                                    numberOfLines={1}>
-                                    {drugItem}
-                                  </Text>
-                                  <Text
-                                    style={[style.drugItemTitle, global.fontSize12]}
-                                    numberOfLines={1}>
-                                    {v.count} {unit}
-                                  </Text>
-                                </View>
-                                <View
-                                  style={[
-                                    style.drugItemFa,
-                                    global.flex,
-                                    global.alignItemsCenter,
-                                    global.justifyContentSpaceBetween,
-                                  ]}>
-                                  <Text
-                                    style={[style.drugItemDetail, global.fontSize14]}
-                                    numberOfLines={1}>
-                                    {standard}
-                                  </Text>
-                                  <Text
-                                    style={[style.drugItemDetail, global.fontSize12]}
-                                    numberOfLines={1}>
-                                    {((price / 1000) * v.count).toFixed(2)}元
-                                  </Text>
-                                </View>
-                                <Text
-                                  style={[style.drugItemDetail, global.fontSize12]}
-                                  numberOfLines={1}>
-                                  {manufacturer}
+                          }
+                          return (
+                            <View key={k} style={style.drugItem}>
+                              <View
+                                style={[
+                                  style.drugItemFa,
+                                  global.flex,
+                                  global.alignItemsCenter,
+                                  global.justifyContentSpaceBetween,
+                                ]}
+                              >
+                                <Text style={[style.drugItemTitle, global.fontSize14]} numberOfLines={1}>
+                                  {drugItem}
                                 </Text>
-                                <View style={[style.usageDosage, global.flex]}>
-                                  <Text style={[style.diagnosisItemTitle, global.fontSize14]}>
-                                    用法用量
-                                  </Text>
-                                  <Text style={[style.diagnosisItemDescription, global.fontSize14]}>
-                                    {v.usage}
-                                  </Text>
-                                </View>
+                                <Text style={[style.drugItemTitle, global.fontSize12]} numberOfLines={1}>
+                                  {v.count} {unit}
+                                </Text>
                               </View>
-                            )
-                          })}
-                        </View>
+                              <View
+                                style={[
+                                  style.drugItemFa,
+                                  global.flex,
+                                  global.alignItemsCenter,
+                                  global.justifyContentSpaceBetween,
+                                ]}
+                              >
+                                <Text style={[style.drugItemDetail, global.fontSize14]} numberOfLines={1}>
+                                  {standard}
+                                </Text>
+                                <Text style={[style.drugItemDetail, global.fontSize12]} numberOfLines={1}>
+                                  {((price / 1000) * v.count).toFixed(2)}元
+                                </Text>
+                              </View>
+                              <Text style={[style.drugItemDetail, global.fontSize12]} numberOfLines={1}>
+                                {manufacturer}
+                              </Text>
+                              <View style={[style.usageDosage, global.flex]}>
+                                <Text style={[style.diagnosisItemTitle, global.fontSize14]}>用法用量</Text>
+                                <Text style={[style.diagnosisItemDescription, global.fontSize14]}>{v.usage}</Text>
+                              </View>
+                            </View>
+                          )
+                        })}
                       </View>
                     </View>
-                  )
-                }
+                  </View>
+                )
               })}
             </View>
           </View>
           {/* 选填 */}
           <View style={style.diagnosis}>
-            <View
-              style={[
-                style.theme,
-                global.flex,
-                global.alignItemsCenter,
-                global.justifyContentCenter,
-              ]}>
+            <View style={[style.theme, global.flex, global.alignItemsCenter, global.justifyContentCenter]}>
               <View style={style.titleSpot} />
               <Text style={[style.title, global.fontSize14]}> 选填 </Text>
               <View style={style.titleSpot} />
             </View>
             <View style={[style.diagnosisItem, global.flex]}>
               <Text style={[style.diagnosisItemTitle, global.fontSize14]}>[ 医嘱提醒 ]</Text>
-              <Text style={[style.diagnosisItemDescription, global.fontSize14]}>
-                {detail.advice}
-              </Text>
+              <Text style={[style.diagnosisItemDescription, global.fontSize14]}>{detail.advice}</Text>
             </View>
           </View>
           {/* 明细 */}
           <View style={style.diagnosis}>
-            <View
-              style={[
-                style.theme,
-                global.flex,
-                global.alignItemsCenter,
-                global.justifyContentCenter,
-              ]}>
+            <View style={[style.theme, global.flex, global.alignItemsCenter, global.justifyContentCenter]}>
               <View style={style.titleSpot} />
               <Text style={[style.title, global.fontSize14]}> 明细 </Text>
               <View style={style.titleSpot} />
             </View>
             <View
-              style={[
-                style.diagnosisItem,
-                global.flex,
-                global.alignItemsCenter,
-                global.justifyContentSpaceBetween,
-              ]}>
+              style={[style.diagnosisItem, global.flex, global.alignItemsCenter, global.justifyContentSpaceBetween]}
+            >
               <Text style={[style.diagnosisItemTitle, global.fontSize14]}>药费</Text>
               <Text style={[style.diagnosisItemTitle, global.fontSize14]}>
                 ¥ {(detail.cost.drugCost / 100).toFixed(2)}
               </Text>
             </View>
             <View
-              style={[
-                style.diagnosisItem,
-                global.flex,
-                global.alignItemsCenter,
-                global.justifyContentSpaceBetween,
-              ]}>
+              style={[style.diagnosisItem, global.flex, global.alignItemsCenter, global.justifyContentSpaceBetween]}
+            >
               <Text style={[style.diagnosisItemTitle, global.fontSize14]}>诊后管理费</Text>
               <Text style={[style.diagnosisItemTitle, global.fontSize14]}>
                 ¥ {(detail.cost.doctorServiceCost / 100).toFixed(2)}
               </Text>
             </View>
             <View
-              style={[
-                style.diagnosisItem,
-                global.flex,
-                global.alignItemsCenter,
-                global.justifyContentSpaceBetween,
-              ]}>
+              style={[style.diagnosisItem, global.flex, global.alignItemsCenter, global.justifyContentSpaceBetween]}
+            >
               <Text style={[style.diagnosisItemTitle, global.fontSize14]}>邮费</Text>
               <Text style={[style.diagnosisItemTitle, global.fontSize14]}>
                 ¥ {(detail.cost.expressCost / 100).toFixed(2)}
@@ -468,29 +391,19 @@ export default class SquareRoot extends Component<
             </View>
             <DashLine len={45} width={windowWidth - 46} backgroundColor={sColor.colorEee} />
             <View
-              style={[
-                style.diagnosisItem,
-                global.flex,
-                global.alignItemsCenter,
-                global.justifyContentSpaceBetween,
-              ]}>
+              style={[style.diagnosisItem, global.flex, global.alignItemsCenter, global.justifyContentSpaceBetween]}
+            >
               <Text style={[style.diagnosisItemTitle, global.fontSize14]}>
                 总计
                 <Text style={[style.diagnosisItemDetail, global.fontSize12]}>( 不含快递费 )</Text>
               </Text>
               <Text style={[style.diagnosisItemAll, global.fontSize15]}>
-                ¥{" "}
-                {(
-                  (detail.cost.drugCost + detail.cost.doctorServiceCost + detail.cost.expressCost) /
-                  100
-                ).toFixed(2)}
+                ¥ {((detail.cost.drugCost + detail.cost.doctorServiceCost + detail.cost.expressCost) / 100).toFixed(2)}
               </Text>
             </View>
           </View>
           <View style={style.doctor}>
-            <Text style={[style.doctorName, global.fontSize14]}>
-              [ 医生签名 ] {detail.doctor.name}
-            </Text>
+            <Text style={[style.doctorName, global.fontSize14]}>[ 医生签名 ] {detail.doctor.name}</Text>
           </View>
         </ScrollView>
       </>

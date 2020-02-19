@@ -1,22 +1,22 @@
-import global from "@/assets/styles/global"
-import DashLine from "@/components/DashLine"
-import * as wsAction from "@/redux/actions/ws"
-import { AppState } from "@/redux/stores/store"
-import pathMap from "@/routes/pathMap"
-import api, { getRegion, getThumbUrl, uploadAudio, uploadImg, windowHeight } from "@/services/api"
-import { clearPatientUnreadMsgCount, GENDER_ZH } from "@/services/doctor"
-import { Article } from "@/services/groupChat"
-import gImg from "@/utils/img"
-import { getFileCdnUrl, getPicCdnUrl, getPicFullUrl, windowWidth } from "@/utils/utils"
-import { Icon, ImagePicker, Portal, TextareaItem, Toast } from "@ant-design/react-native"
-import userApi from "@api/user"
-import wsMsgApi from "@api/wsMsg"
-import imgPickerOpt from "@config/imgPickerOpt"
-import { Msg } from "@pages/Ws"
-import sColor from "@styles/color"
-import Buff from "@utils/Buff"
-import gStyle from "@utils/style"
-import React, { Component } from "react"
+import global from '@/assets/styles/global'
+import DashLine from '@/components/DashLine'
+import * as wsAction from '@/redux/actions/ws'
+import { AppState } from '@/redux/stores/store'
+import pathMap from '@/routes/pathMap'
+import api, { getRegion, getThumbUrl, uploadAudio, uploadImg, windowHeight } from '@/services/api'
+import { clearPatientUnreadMsgCount, GENDER_ZH } from '@/services/doctor'
+import { Article } from '@/services/groupChat'
+import gImg from '@/utils/img'
+import { getFileCdnUrl, getPicCdnUrl, getPicFullUrl, windowWidth } from '@/utils/utils'
+import { Icon, ImagePicker, Portal, TextareaItem, Toast } from '@ant-design/react-native'
+import userApi from '@api/user'
+import wsMsgApi from '@api/wsMsg'
+import imgPickerOpt from '@config/imgPickerOpt'
+import { Msg } from '@pages/Ws'
+import sColor from '@styles/color'
+import Buff from '@utils/Buff'
+import gStyle from '@utils/style'
+import React, { Component } from 'react'
 import {
   AppState as RnAppState,
   AppStateStatus,
@@ -31,22 +31,22 @@ import {
   RefreshControl,
   Text,
   View,
-} from "react-native"
-import { AudioRecorder, AudioUtils } from "react-native-audio"
-import { TouchableOpacity } from "react-native-gesture-handler"
-import ImageZoom from "react-native-image-pan-zoom"
-import RnImagePicker from "react-native-image-picker"
-import Permissions from "react-native-permissions"
-import Sound from "react-native-sound"
-import { NavigationScreenProp, ScrollView } from "react-navigation"
-import { connect } from "react-redux"
-import { Dispatch } from "redux"
-import { Overwrite } from "utility-types"
+} from 'react-native'
+import { AudioRecorder, AudioUtils } from 'react-native-audio'
+import { TouchableOpacity } from 'react-native-gesture-handler'
+import ImageZoom from 'react-native-image-pan-zoom'
+import RnImagePicker from 'react-native-image-picker'
+import Permissions from 'react-native-permissions'
+import Sound from 'react-native-sound'
+import { NavigationScreenProp, ScrollView } from 'react-navigation'
+import { connect } from 'react-redux'
+import { Dispatch } from 'redux'
+import { Overwrite } from 'utility-types'
 const style = gStyle.groupChat.chat
-const audioPath = AudioUtils.DocumentDirectoryPath + "/tempAudio.aac"
-export type ChatMode = "text" | "audio"
+const audioPath = AudioUtils.DocumentDirectoryPath + '/tempAudio.aac'
+export type ChatMode = 'text' | 'audio'
 interface Props {
-  navigation: NavigationScreenProp<State>
+  navigation: StackNavigationProp<any>
 }
 
 /**
@@ -223,8 +223,8 @@ export default class EnteringGroupChat extends Component<
   Props & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
   State
 > {
-  static navigationOptions = ({ navigation }: { navigation: NavigationScreenProp<State> }) => {
-    let title = ""
+  static navigationOptions = ({ navigation }: { navigation: StackNavigationProp<any> }) => {
+    let title = ''
     if (navigation.state.params) {
       title = navigation.state.params.groupChatName
     }
@@ -240,20 +240,21 @@ export default class EnteringGroupChat extends Component<
       headerTintColor: sColor.color333,
       headerTitleStyle: {
         flex: 1,
-        alignItems: "center",
-        justifyContent: "center",
+        alignItems: 'center',
+        justifyContent: 'center',
         fontSize: 14,
-        textAlign: "center",
+        textAlign: 'center',
       },
       headerRight: (
         <TouchableOpacity
           onPress={() => {
             navigation.push(pathMap.GroupChatDetail, {
-              groupChatId: navigation.getParam("groupChatId"),
-              groupChatName: navigation.getParam("groupChatName"),
+              groupChatId: navigation.getParam('groupChatId'),
+              groupChatName: navigation.getParam('groupChatName'),
             })
-          }}>
-          <Icon style={[style.headerRight, global.fontSize18]} name="menu"></Icon>
+          }}
+        >
+          <Icon style={[style.headerRight, global.fontSize18]} name='menu' />
         </TouchableOpacity>
       ),
     }
@@ -261,23 +262,23 @@ export default class EnteringGroupChat extends Component<
   bottomNavList: bottomNavItem[] = [
     {
       icon: gImg.groupChat.release,
-      title: "发布",
+      title: '发布',
       link: pathMap.AddOrEditArticle,
     },
     {
       icon: gImg.groupChat.article,
-      title: "文章",
+      title: '文章',
       link: pathMap.ArticleList,
     },
     {
       icon: gImg.groupChat.smile,
-      title: "表情",
-      link: "",
+      title: '表情',
+      link: '',
     },
     {
       icon: gImg.groupChat.picture,
-      title: "图片",
-      link: "",
+      title: '图片',
+      link: '',
     },
   ]
   myScroll: ScrollView | null = null
@@ -289,8 +290,8 @@ export default class EnteringGroupChat extends Component<
     this.state = this.getInitState()
   }
   getInitState = (): State => {
-    let patientUid = this.props.navigation.getParam("patientUid")
-    let groupChatId = this.props.navigation.getParam("groupChatId")
+    let patientUid = this.props.navigation.getParam('patientUid')
+    let groupChatId = this.props.navigation.getParam('groupChatId')
     return {
       groupChatId,
       isStopRecord: false,
@@ -300,7 +301,7 @@ export default class EnteringGroupChat extends Component<
       hasMicAuth: false,
       isRecord: false,
       recordTime: 0,
-      chatMode: "text",
+      chatMode: 'text',
       lastIsInBackground: false,
       shouldScrollToEnd: true,
       hasLoad: false,
@@ -311,28 +312,28 @@ export default class EnteringGroupChat extends Component<
       isShowPic: false,
       patientUid,
       scrollHeight: 0,
-      showPicUrl: "",
+      showPicUrl: '',
       info: {
         id: 0,
-        name: "",
-        account: "",
-        email: "",
+        name: '',
+        account: '',
+        email: '',
         gender: 0,
-        phone: "",
-        profile: "",
+        phone: '',
+        profile: '',
         avatar: {
           id: 0,
-          title: "",
-          url: "",
+          title: '',
+          url: '',
         },
       },
       page: 1,
       limit: 10,
-      sendMsg: "",
+      sendMsg: '',
       region: [],
       imagesViewer: [
         {
-          url: "https://www.byhealth.net/static/media/collapsed_logo.db8ef9b3.png",
+          url: 'https://www.byhealth.net/static/media/collapsed_logo.db8ef9b3.png',
           width: windowWidth,
           height: windowHeight,
         },
@@ -345,9 +346,9 @@ export default class EnteringGroupChat extends Component<
     this.init()
     this.requestReadExteralStorage()
     setTimeout(() => this.myScroll && this.myScroll.scrollToEnd(), 100)
-    RnAppState.addEventListener("change", this.onAppStateChange)
-    Permissions.check("microphone").then(resp => {
-      if (resp === "authorized") {
+    RnAppState.addEventListener('change', this.onAppStateChange)
+    Permissions.check('microphone').then(resp => {
+      if (resp === 'authorized') {
         this.setState({
           hasMicAuth: true,
         })
@@ -356,18 +357,18 @@ export default class EnteringGroupChat extends Component<
     AudioRecorder.prepareRecordingAtPath(audioPath, {
       SampleRate: 22050,
       Channels: 1,
-      AudioQuality: "Low",
-      AudioEncoding: "aac",
+      AudioQuality: 'Low',
+      AudioEncoding: 'aac',
       AudioEncodingBitRate: 32000,
     })
     AudioRecorder.onProgress = data => {
       this.setState({ recordTime: Math.floor(data.currentTime) })
     }
     AudioRecorder.onFinished = data => {
-      console.log("onFinished: ", data)
-      if (Platform.OS === "ios") {
+      console.log('onFinished: ', data)
+      if (Platform.OS === 'ios') {
         console.log(data)
-        this.finishRecording(data.status === "OK", data.audioFileURL, 0)
+        this.finishRecording(data.status === 'OK', data.audioFileURL, 0)
       }
     }
   }
@@ -375,9 +376,8 @@ export default class EnteringGroupChat extends Component<
   finishRecording = (didSucceed: boolean, filePath: string, fileSize: number) => {
     console.log(didSucceed)
     console.log(
-      `Finished recording of duration ${
-        this.state.recordTime
-      } seconds at path: ${filePath} and size of ${fileSize || 0} bytes`,
+      `Finished recording of duration ${this.state.recordTime} seconds at path: ${filePath} and size of ${fileSize ||
+        0} bytes`,
     )
   }
   cancelRecord = () => {
@@ -392,14 +392,14 @@ export default class EnteringGroupChat extends Component<
     if (this.listener) {
       this.listener.remove()
     }
-    RnAppState.removeEventListener("change", this.onAppStateChange)
+    RnAppState.removeEventListener('change', this.onAppStateChange)
   }
   onAppStateChange = (status: AppStateStatus) => {
-    if (status === "background") {
+    if (status === 'background') {
       this.setState({
         lastIsInBackground: true,
       })
-    } else if (status === "active") {
+    } else if (status === 'active') {
       if (this.state.lastIsInBackground) {
         this.setState({
           lastIsInBackground: false,
@@ -478,13 +478,13 @@ export default class EnteringGroupChat extends Component<
   }
   onRecordPressIn = () => {
     const { hasMicAuth, isRecord } = this.state
-    console.log(hasMicAuth, "pressIn")
+    console.log(hasMicAuth, 'pressIn')
     if (!hasMicAuth) {
       this.checkAudioRecordAuth()
       return
     }
     if (isRecord) {
-      console.log("当前正在录音,取消")
+      console.log('当前正在录音,取消')
       return
     }
     this.setState(
@@ -492,13 +492,13 @@ export default class EnteringGroupChat extends Component<
         isRecord: true,
       },
       () => {
-        console.log("is pre record at path")
+        console.log('is pre record at path')
         if (this.state.isStopRecord) {
           AudioRecorder.prepareRecordingAtPath(audioPath, {
             SampleRate: 22050,
             Channels: 1,
-            AudioQuality: "Low",
-            AudioEncoding: "aac",
+            AudioQuality: 'Low',
+            AudioEncoding: 'aac',
             AudioEncodingBitRate: 32000,
           })
         }
@@ -508,12 +508,12 @@ export default class EnteringGroupChat extends Component<
   }
   checkAudioRecordAuth = () => {
     return new Promise((s, j) => {
-      Permissions.check("microphone")
+      Permissions.check('microphone')
         .then(resp => {
           // Response is one of: 'authorized', 'denied', 'restricted', or 'undetermined'
-          if (resp !== "authorized") {
-            Permissions.request("microphone").then(status => {
-              if (status === "authorized") {
+          if (resp !== 'authorized') {
+            Permissions.request('microphone').then(status => {
+              if (status === 'authorized') {
                 s()
               } else {
                 j()
@@ -534,13 +534,13 @@ export default class EnteringGroupChat extends Component<
   }
   onRecordPressOut = async () => {
     const { isRecord, patientUid } = this.state
-    console.log(isRecord, "pressOut")
+    console.log(isRecord, 'pressOut')
     if (!isRecord) {
       return
     }
     const { recordTime } = this.state
     if (recordTime < 1) {
-      console.log("录音时间过短正在取消")
+      console.log('录音时间过短正在取消')
       this.cancelRecord()
       return
     }
@@ -554,7 +554,7 @@ export default class EnteringGroupChat extends Component<
         recordTime: 0,
       })
 
-      let filePrefix = Platform.OS === "android" ? "file://" : ""
+      let filePrefix = Platform.OS === 'android' ? 'file://' : ''
       uploadAudio(filePrefix + audioPath)
         .then(json => {
           console.log(json)
@@ -562,7 +562,7 @@ export default class EnteringGroupChat extends Component<
             data: { fileId, url },
           } = json
           this.props.ws.wsPost({
-            url: "/ws/sendMsg",
+            url: '/ws/sendMsg',
             data: {
               file: {
                 url,
@@ -576,7 +576,6 @@ export default class EnteringGroupChat extends Component<
         .catch(err => console.log(err))
     } catch (err) {
       console.error(err)
-      return
     }
   }
   render() {
@@ -592,13 +591,14 @@ export default class EnteringGroupChat extends Component<
     const { chatMode, isRecord, recordTime } = this.state
     return (
       <KeyboardAvoidingView
-        enabled={Platform.OS !== "android"}
-        behavior="padding"
+        enabled={Platform.OS !== 'android'}
+        behavior='padding'
         style={{ flex: 1 }}
-        keyboardVerticalOffset={90}>
+        keyboardVerticalOffset={90}
+      >
         <View style={style.main}>
           <ScrollView
-            ref={ref => (this.myScroll = ref)}
+            ref={this.myScroll}
             style={style.content}
             onContentSizeChange={() => {
               if (this.myScroll && this.state.shouldScrollToEnd) {
@@ -608,16 +608,16 @@ export default class EnteringGroupChat extends Component<
                 })
               }
             }}
-            refreshControl={
-              <RefreshControl refreshing={this.state.refreshing} onRefresh={this.getMoreMsgList} />
-            }>
+            refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={this.getMoreMsgList} />}
+          >
             <View style={style.list}>
               <Text
                 style={[
                   this.state.hasMoreRecord ? style.downloadMore : global.hidden,
                   global.fontStyle,
                   global.fontSize12,
-                ]}>
+                ]}
+              >
                 下拉查看更多聊天记录
               </Text>
               {Array.isArray(this.props.ws.chatMsg[this.state.patientUid]) &&
@@ -651,6 +651,7 @@ export default class EnteringGroupChat extends Component<
                   if (formatMsg) {
                     return <View key={k}>{formatMsg.dom}</View>
                   }
+                  return null
                 })}
             </View>
           </ScrollView>
@@ -662,61 +663,49 @@ export default class EnteringGroupChat extends Component<
                   global.flex,
                   global.alignItemsCenter,
                   global.flexWrap,
-                ]}>
+                ]}
+              >
                 {this.bottomNavList.map((v: bottomNavItem, k: number) => {
                   return (
-                    <TouchableOpacity
-                      onPress={() => this.selectBottomNav(v)}
-                      key={k}
-                      style={style.bottomNavItem}>
+                    <TouchableOpacity onPress={() => this.selectBottomNav(v)} key={k} style={style.bottomNavItem}>
                       <View style={style.bottomNavItemPicFa}>
                         <Image style={style.bottomNavItemPic} source={v.icon} />
                       </View>
-                      <Text style={[style.bottomNavItemTitle, global.fontSize13, global.fontStyle]}>
-                        {v.title}
-                      </Text>
+                      <Text style={[style.bottomNavItemTitle, global.fontSize13, global.fontStyle]}>{v.title}</Text>
                     </TouchableOpacity>
                   )
                 })}
               </View>
               <View style={style.bottomInputFa}>
                 <View
-                  style={[
-                    style.bottomInput,
-                    global.flex,
-                    global.justifyContentSpaceBetween,
-                    global.alignItemsCenter,
-                  ]}>
+                  style={[style.bottomInput, global.flex, global.justifyContentSpaceBetween, global.alignItemsCenter]}
+                >
                   <TouchableOpacity onPress={this.changeMode}>
                     <Image
                       style={style.bottomInputImg}
-                      source={chatMode === "text" ? gImg.advisory.voice : gImg.advisory.text}
+                      source={chatMode === 'text' ? gImg.advisory.voice : gImg.advisory.text}
                     />
                   </TouchableOpacity>
-                  {chatMode === "text" ? (
+                  {chatMode === 'text' ? (
                     <>
                       <View style={style.inputFa}>
                         <TextareaItem
                           style={style.input}
-                          placeholder="请输入"
+                          placeholder='请输入'
                           autoHeight
                           clear
                           last
                           ref={ref => (this.msgInput = ref)}
                           value={this.state.sendMsg}
-                          onChange={val => {
-                            val = val || ""
+                          onChange={editSendMsg => {
                             this.setState({
-                              sendMsg: val,
+                              sendMsg: editSendMsg || '',
                             })
                           }}
                         />
                       </View>
                       <TouchableOpacity onPress={this.sendMsg}>
-                        <Text
-                          style={[style.bottomInputSendBtn, global.fontSize14, global.fontStyle]}>
-                          发送
-                        </Text>
+                        <Text style={[style.bottomInputSendBtn, global.fontSize14, global.fontStyle]}>发送</Text>
                       </TouchableOpacity>
                     </>
                   ) : (
@@ -724,27 +713,31 @@ export default class EnteringGroupChat extends Component<
                       style={{
                         flex: 1,
                         // alignItems: "center",
-                        justifyContent: "center",
-                      }}>
+                        justifyContent: 'center',
+                      }}
+                    >
                       <TouchableOpacity
-                        style={{ width: "100%" }}
+                        style={{ width: '100%' }}
                         onPressIn={this.onRecordPressIn}
-                        onPressOut={this.onRecordPressOut}>
+                        onPressOut={this.onRecordPressOut}
+                      >
                         <View
                           style={{
-                            width: "100%",
+                            width: '100%',
                             borderRadius: 5,
                             padding: 13,
-                            justifyContent: "center",
-                            alignItems: "center",
+                            justifyContent: 'center',
+                            alignItems: 'center',
                             backgroundColor: isRecord ? sColor.white : sColor.mainRed,
-                          }}>
+                          }}
+                        >
                           <Text
                             style={{
-                              textAlign: "center",
+                              textAlign: 'center',
                               color: isRecord ? sColor.color666 : sColor.white,
-                            }}>
-                            {isRecord ? "松开发送录音 " + recordTime : "按下录音"}
+                            }}
+                          >
+                            {isRecord ? '松开发送录音 ' + recordTime : '按下录音'}
                           </Text>
                         </View>
                       </TouchableOpacity>
@@ -757,7 +750,8 @@ export default class EnteringGroupChat extends Component<
                     global.flex,
                     global.alignItemsCenter,
                     global.justifyContentSpaceAround,
-                  ]}>
+                  ]}
+                >
                   <View style={style.selectPicFa}>
                     <View style={style.imgSelector}>
                       <ImagePicker
@@ -765,28 +759,20 @@ export default class EnteringGroupChat extends Component<
                         files={this.state.selectPic}
                         onAddImageClick={() => {
                           try {
-                            Permissions.check("camera")
+                            Permissions.check('camera')
                               .then(res => {
-                                if (res !== "authorized") {
+                                if (res !== 'authorized') {
                                   try {
-                                    Permissions.request("camera").then(status => {
-                                      if (status === "authorized") {
-                                        console.log("获得摄像头权限")
+                                    Permissions.request('camera').then(status => {
+                                      if (status === 'authorized') {
+                                        console.log('获得摄像头权限')
                                         RnImagePicker.launchImageLibrary(imgPickerOpt, resp => {
-                                          const uploadingImgKey = Toast.loading(
-                                            "上传图片中",
-                                            0,
-                                            () => {},
-                                            true,
-                                          )
+                                          const uploadingImgKey = Toast.loading('上传图片中', 0, undefined, true)
                                           if (resp.didCancel) {
                                             Portal.remove(uploadingImgKey)
                                           } else if (resp.error) {
                                             Portal.remove(uploadingImgKey)
-                                            return Toast.info(
-                                              "您禁止了拍摄照片和录制视频权限, 请到设置中心打开",
-                                              3,
-                                            )
+                                            return Toast.info('您禁止了拍摄照片和录制视频权限, 请到设置中心打开', 3)
                                           } else {
                                             uploadImg({ url: resp.uri })
                                               .then(json => {
@@ -798,7 +784,7 @@ export default class EnteringGroupChat extends Component<
                                                 const { patientUid } = this.state
                                                 const { url, picId } = json.data
                                                 this.props.ws.wsPost({
-                                                  url: "/ws/sendMsg",
+                                                  url: '/ws/sendMsg',
                                                   data: {
                                                     pic: {
                                                       url,
@@ -811,37 +797,26 @@ export default class EnteringGroupChat extends Component<
                                               })
                                               .catch(e => {
                                                 Portal.remove(uploadingImgKey)
-                                                Toast.fail("上传图片, 错误信息: " + e)
+                                                Toast.fail('上传图片, 错误信息: ' + e)
                                               })
                                           }
                                         })
                                       } else {
-                                        return Toast.info(
-                                          "您禁止了拍摄照片和录制视频权限, 请到设置中心打开",
-                                          3,
-                                        )
+                                        return Toast.info('您禁止了拍摄照片和录制视频权限, 请到设置中心打开', 3)
                                       }
                                     })
                                   } catch (err) {
                                     console.warn(err)
                                   }
                                 } else {
-                                  console.log("获得摄像头权限已经获取")
+                                  console.log('获得摄像头权限已经获取')
                                   RnImagePicker.launchImageLibrary(imgPickerOpt, resp => {
-                                    const uploadingImgKey = Toast.loading(
-                                      "上传图片中",
-                                      0,
-                                      () => {},
-                                      true,
-                                    )
+                                    const uploadingImgKey = Toast.loading('上传图片中', 0, undefined, true)
                                     if (resp.didCancel) {
                                       Portal.remove(uploadingImgKey)
                                     } else if (resp.error) {
                                       Portal.remove(uploadingImgKey)
-                                      return Toast.info(
-                                        "您禁止了拍摄照片和录制视频权限, 请到设置中心打开",
-                                        3,
-                                      )
+                                      return Toast.info('您禁止了拍摄照片和录制视频权限, 请到设置中心打开', 3)
                                     } else {
                                       uploadImg({ url: resp.uri })
                                         .then(json => {
@@ -853,7 +828,7 @@ export default class EnteringGroupChat extends Component<
                                           const { patientUid } = this.state
                                           const { url, picId } = json.data
                                           this.props.ws.wsPost({
-                                            url: "/ws/sendMsg",
+                                            url: '/ws/sendMsg',
                                             data: {
                                               pic: {
                                                 url,
@@ -866,14 +841,14 @@ export default class EnteringGroupChat extends Component<
                                         })
                                         .catch(e => {
                                           Portal.remove(uploadingImgKey)
-                                          Toast.fail("上传图片, 错误信息: " + e)
+                                          Toast.fail('上传图片, 错误信息: ' + e)
                                         })
                                     }
                                   })
                                 }
                               })
                               .catch(err => {
-                                console.log("读取权限失败: " + err)
+                                console.log('读取权限失败: ' + err)
                               })
                           } catch (err) {
                             console.log(err)
@@ -882,33 +857,23 @@ export default class EnteringGroupChat extends Component<
                       />
                     </View>
                     <Image source={gImg.advisory.selectPic} style={style.pickerImg} />
-                    <Text style={[style.selectTitle, global.fontSize14, global.fontStyle]}>
-                      图片
-                    </Text>
+                    <Text style={[style.selectTitle, global.fontSize14, global.fontStyle]}>图片</Text>
                   </View>
                   <TouchableOpacity
                     style={style.selectPicFa}
                     onPress={() => {
                       try {
-                        Permissions.check("camera").then(res => {
-                          if (res !== "authorized") {
-                            Permissions.request("camera").then(status => {
-                              if (status === "authorized") {
+                        Permissions.check('camera').then(res => {
+                          if (res !== 'authorized') {
+                            Permissions.request('camera').then(status => {
+                              if (status === 'authorized') {
                                 RnImagePicker.launchCamera(imgPickerOpt, resp => {
-                                  const uploadingImgKey = Toast.loading(
-                                    "上传图片中",
-                                    0,
-                                    () => {},
-                                    true,
-                                  )
+                                  const uploadingImgKey = Toast.loading('上传图片中', 0, undefined, true)
                                   if (resp.didCancel) {
                                     Portal.remove(uploadingImgKey)
                                   } else if (resp.error) {
                                     Portal.remove(uploadingImgKey)
-                                    return Toast.info(
-                                      "您禁止了拍摄照片和录制视频权限, 请到设置中心打开",
-                                      3,
-                                    )
+                                    return Toast.info('您禁止了拍摄照片和录制视频权限, 请到设置中心打开', 3)
                                   } else {
                                     uploadImg({ url: resp.uri })
                                       .then(json => {
@@ -920,7 +885,7 @@ export default class EnteringGroupChat extends Component<
                                         const { patientUid } = this.state
                                         const { url, picId } = json.data
                                         this.props.ws.wsPost({
-                                          url: "/ws/sendMsg",
+                                          url: '/ws/sendMsg',
                                           data: {
                                             pic: {
                                               url,
@@ -933,28 +898,22 @@ export default class EnteringGroupChat extends Component<
                                       })
                                       .catch(e => {
                                         Portal.remove(uploadingImgKey)
-                                        Toast.fail("上传图片, 错误信息: " + e)
+                                        Toast.fail('上传图片, 错误信息: ' + e)
                                       })
                                   }
                                 })
                               } else {
-                                return Toast.info(
-                                  "您禁止了拍摄照片和录制视频权限, 请到设置中心打开",
-                                  3,
-                                )
+                                return Toast.info('您禁止了拍摄照片和录制视频权限, 请到设置中心打开', 3)
                               }
                             })
                           } else {
                             RnImagePicker.launchCamera(imgPickerOpt, resp => {
-                              const uploadingImgKey = Toast.loading("上传图片中", 0, () => {}, true)
+                              const uploadingImgKey = Toast.loading('上传图片中', 0, undefined, true)
                               if (resp.didCancel) {
                                 Portal.remove(uploadingImgKey)
                               } else if (resp.error) {
                                 Portal.remove(uploadingImgKey)
-                                return Toast.info(
-                                  "您禁止了拍摄照片和录制视频权限, 请到设置中心打开",
-                                  3,
-                                )
+                                return Toast.info('您禁止了拍摄照片和录制视频权限, 请到设置中心打开', 3)
                               } else {
                                 uploadImg({ url: resp.uri })
                                   .then(json => {
@@ -966,7 +925,7 @@ export default class EnteringGroupChat extends Component<
                                     const { patientUid } = this.state
                                     const { url, picId } = json.data
                                     this.props.ws.wsPost({
-                                      url: "/ws/sendMsg",
+                                      url: '/ws/sendMsg',
                                       data: {
                                         pic: {
                                           url,
@@ -979,7 +938,7 @@ export default class EnteringGroupChat extends Component<
                                   })
                                   .catch(e => {
                                     Portal.remove(uploadingImgKey)
-                                    Toast.fail("上传图片, 错误信息: " + e)
+                                    Toast.fail('上传图片, 错误信息: ' + e)
                                   })
                               }
                             })
@@ -988,11 +947,10 @@ export default class EnteringGroupChat extends Component<
                       } catch (err) {
                         console.log(err)
                       }
-                    }}>
+                    }}
+                  >
                     <Image source={gImg.advisory.selectPhoto} style={style.selectImg} />
-                    <Text style={[style.selectTitle, global.fontSize14, global.fontStyle]}>
-                      拍照
-                    </Text>
+                    <Text style={[style.selectTitle, global.fontSize14, global.fontStyle]}>拍照</Text>
                   </TouchableOpacity>
                 </View>
               </View>
@@ -1008,7 +966,7 @@ export default class EnteringGroupChat extends Component<
                   this.setState({
                     imagesViewer: [
                       {
-                        url: getPicCdnUrl("/static/media/collapsed_logo.db8ef9b3.png"),
+                        url: getPicCdnUrl('/static/media/collapsed_logo.db8ef9b3.png'),
                       },
                     ],
                     imageHeight: 0,
@@ -1016,7 +974,7 @@ export default class EnteringGroupChat extends Component<
                   })
                 }}
                 style={style.closeIcon}
-                name="close"
+                name='close'
               />
             </View>
             {this.state.imageHeight === 0 ? (
@@ -1030,7 +988,8 @@ export default class EnteringGroupChat extends Component<
                 cropWidth={windowWidth}
                 cropHeight={windowHeight}
                 imageWidth={windowWidth}
-                imageHeight={this.state.imageHeight}>
+                imageHeight={this.state.imageHeight}
+              >
                 <Image
                   style={{
                     width: windowWidth,
@@ -1052,7 +1011,7 @@ export default class EnteringGroupChat extends Component<
       (width, height) => {
         let ratio = width / height
         this.setState({
-          imageHeight: Dimensions.get("window").width / ratio,
+          imageHeight: Dimensions.get('window').width / ratio,
         })
       },
       err => {
@@ -1062,14 +1021,10 @@ export default class EnteringGroupChat extends Component<
   }
   changeMode = () => {
     this.setState({
-      chatMode: this.state.chatMode === "audio" ? "text" : "audio",
+      chatMode: this.state.chatMode === 'audio' ? 'text' : 'audio',
     })
   }
-  getMsgList = async (
-    page: number,
-    limit: number,
-    filter = { patientUid: this.state.patientUid },
-  ) => {
+  getMsgList = async (page: number, limit: number, filter = { patientUid: this.state.patientUid }) => {
     try {
       let {
         data: { list: msgList },
@@ -1081,56 +1036,47 @@ export default class EnteringGroupChat extends Component<
         msgList,
       })
       this.setState({
-        hasMoreRecord:
-          this.props.ws.chatMsg[patientUid] && count > this.props.ws.chatMsg[patientUid].length,
+        hasMoreRecord: this.props.ws.chatMsg[patientUid] && count > this.props.ws.chatMsg[patientUid].length,
       })
     } catch (err) {
       console.log(err)
     }
   }
-  txtFormat = (serverMsg: Exclude<Msg, "dom">) => {
+  txtFormat = (serverMsg: Exclude<Msg, 'dom'>) => {
     let msg: Msg = serverMsg
     let isSelfMsg = msg.sendUser.uid === this.props.uid
     msg.dom = (
       <View>
         {/*  左边文字 */}
         <View style={isSelfMsg ? global.hidden : style.item}>
-          <Text style={[style.sendTime, global.fontStyle, global.fontSize12]}>
-            {msg.sendTime.substr(0, 16)}
-          </Text>
+          <Text style={[style.sendTime, global.fontStyle, global.fontSize12]}>{msg.sendTime.substr(0, 16)}</Text>
           <View style={[style.leftItem, global.flex]}>
             <View style={style.itemPic}>
               <Image
                 style={style.itemImg}
                 source={
                   msg.sendUser.avatar.url
-                    ? { uri: getPicCdnUrl(msg.sendUser.avatar.url, "avatar") }
+                    ? { uri: getPicCdnUrl(msg.sendUser.avatar.url, 'avatar') }
                     : gImg.common.defaultAvatar
                 }
               />
             </View>
             <View style={isSelfMsg ? global.hidden : style.leftItemIcon} />
-            <Text style={[style.leftItemTitle, global.fontStyle, global.fontSize14]}>
-              {msg.msg}
-            </Text>
+            <Text style={[style.leftItemTitle, global.fontStyle, global.fontSize14]}>{msg.msg}</Text>
           </View>
         </View>
         {/* 右边文字 */}
         <View style={isSelfMsg ? style.item : global.hidden}>
-          <Text style={[style.sendTime, global.fontStyle, global.fontSize12]}>
-            {msg.sendTime.substr(0, 16)}
-          </Text>
+          <Text style={[style.sendTime, global.fontStyle, global.fontSize12]}>{msg.sendTime.substr(0, 16)}</Text>
           <View style={[style.leftItem, global.flex, global.justifyContentEnd]}>
-            <Text style={[style.rightItemTitle, global.fontStyle, global.fontSize14]}>
-              {msg.msg}
-            </Text>
+            <Text style={[style.rightItemTitle, global.fontStyle, global.fontSize14]}>{msg.msg}</Text>
             <View style={isSelfMsg ? style.rightItemIcon : global.hidden} />
             <View style={style.itemPic}>
               <Image
                 style={style.itemImg}
                 source={
                   msg.sendUser.avatar.url
-                    ? { uri: getPicCdnUrl(msg.sendUser.avatar.url, "avatar") }
+                    ? { uri: getPicCdnUrl(msg.sendUser.avatar.url, 'avatar') }
                     : gImg.common.defaultAvatar
                 }
               />
@@ -1141,16 +1087,14 @@ export default class EnteringGroupChat extends Component<
     )
     return msg
   }
-  pictureFormat = (serverMsg: Exclude<Overwrite<Msg, { pic: Picture }>, "dom">) => {
+  pictureFormat = (serverMsg: Exclude<Overwrite<Msg, { pic: Picture }>, 'dom'>) => {
     let msg: Overwrite<Msg, { pic: Picture }> = serverMsg
     let isSelfMsg = msg.sendUser.uid === this.state.info.id
     msg.dom = (
       <View>
         {/* 左边图片 */}
         <View style={isSelfMsg ? global.hidden : style.item}>
-          <Text style={[style.sendTime, global.fontStyle, global.fontSize12]}>
-            {msg.sendTime.substr(0, 16)}
-          </Text>
+          <Text style={[style.sendTime, global.fontStyle, global.fontSize12]}>{msg.sendTime.substr(0, 16)}</Text>
           <View style={[style.leftItem, global.flex]}>
             <View style={style.itemPic}>
               <Image
@@ -1165,13 +1109,12 @@ export default class EnteringGroupChat extends Component<
             <View style={isSelfMsg ? global.hidden : style.leftItemIcon} />
             <TouchableOpacity
               style={style.leftItemPicture}
-              onPress={() => this.openShowPic(getThumbUrl({ path: getPicFullUrl(msg.pic.url) }))}>
+              onPress={() => this.openShowPic(getThumbUrl({ path: getPicFullUrl(msg.pic.url) }))}
+            >
               <Image
                 style={style.itemPicImg}
                 source={
-                  msg.pic.url
-                    ? { uri: getThumbUrl({ path: getPicFullUrl(msg.pic.url) }) }
-                    : gImg.common.defaultPic
+                  msg.pic.url ? { uri: getThumbUrl({ path: getPicFullUrl(msg.pic.url) }) } : gImg.common.defaultPic
                 }
               />
             </TouchableOpacity>
@@ -1179,19 +1122,16 @@ export default class EnteringGroupChat extends Component<
         </View>
         {/* 右边图片 */}
         <View style={isSelfMsg ? style.item : global.hidden}>
-          <Text style={[style.sendTime, global.fontStyle, global.fontSize12]}>
-            {msg.sendTime.substr(0, 16)}
-          </Text>
+          <Text style={[style.sendTime, global.fontStyle, global.fontSize12]}>{msg.sendTime.substr(0, 16)}</Text>
           <View style={[style.leftItem, global.flex, global.justifyContentEnd]}>
             <TouchableOpacity
               style={style.rightItemPicture}
-              onPress={() => this.openShowPic(getThumbUrl({ path: getPicFullUrl(msg.pic.url) }))}>
+              onPress={() => this.openShowPic(getThumbUrl({ path: getPicFullUrl(msg.pic.url) }))}
+            >
               <Image
                 style={style.itemPicImg}
                 source={
-                  msg.pic.url
-                    ? { uri: getThumbUrl({ path: getPicFullUrl(msg.pic.url) }) }
-                    : gImg.common.defaultPic
+                  msg.pic.url ? { uri: getThumbUrl({ path: getPicFullUrl(msg.pic.url) }) } : gImg.common.defaultPic
                 }
               />
             </TouchableOpacity>
@@ -1212,7 +1152,7 @@ export default class EnteringGroupChat extends Component<
     )
     return msg
   }
-  audioFormat = (serverMsg: Exclude<Overwrite<Msg, { file: File }>, "dom">) => {
+  audioFormat = (serverMsg: Exclude<Overwrite<Msg, { file: File }>, 'dom'>) => {
     const { isPalyAudio, currAudioMsgId } = this.state
     let msg: Overwrite<Msg, { file: File }> = serverMsg
     let isSelfMsg = msg.sendUser.uid === this.state.info.id
@@ -1220,28 +1160,23 @@ export default class EnteringGroupChat extends Component<
       <View>
         {isSelfMsg ? (
           <View style={isSelfMsg ? style.item : global.hidden}>
-            <Text style={[style.sendTime, global.fontStyle, global.fontSize12]}>
-              {msg.sendTime.substr(0, 16)}
-            </Text>
+            <Text style={[style.sendTime, global.fontStyle, global.fontSize12]}>{msg.sendTime.substr(0, 16)}</Text>
             <View style={[style.leftItem, global.flex, global.justifyContentEnd]}>
-              <TouchableOpacity
-                style={style.rightAudio}
-                onPress={() => this.startPlayAudio(msg.id, msg.file.url)}>
+              <TouchableOpacity style={style.rightAudio} onPress={() => this.startPlayAudio(msg.id, msg.file.url)}>
                 <View
                   style={{
-                    alignItems: "flex-end",
-                    justifyContent: "center",
+                    alignItems: 'flex-end',
+                    justifyContent: 'center',
                     paddingRight: 10,
                     width: 80,
                     paddingTop: 3,
                     paddingBottom: 3,
-                  }}>
+                  }}
+                >
                   <Image
                     style={{ width: 15, height: 15 }}
                     source={
-                      isPalyAudio && currAudioMsgId === msg.id
-                        ? gImg.common.rightSoundPlaying
-                        : gImg.common.rightSound
+                      isPalyAudio && currAudioMsgId === msg.id ? gImg.common.rightSoundPlaying : gImg.common.rightSound
                     }
                   />
                 </View>
@@ -1261,9 +1196,7 @@ export default class EnteringGroupChat extends Component<
           </View>
         ) : (
           <View style={isSelfMsg ? global.hidden : style.item}>
-            <Text style={[style.sendTime, global.fontStyle, global.fontSize12]}>
-              {msg.sendTime.substr(0, 16)}
-            </Text>
+            <Text style={[style.sendTime, global.fontStyle, global.fontSize12]}>{msg.sendTime.substr(0, 16)}</Text>
             <View style={[style.leftItem, global.flex]}>
               <View style={style.itemPic}>
                 <Image
@@ -1276,24 +1209,21 @@ export default class EnteringGroupChat extends Component<
                 />
               </View>
               <View style={isSelfMsg ? global.hidden : style.leftItemIcon} />
-              <TouchableOpacity
-                style={style.leftAudio}
-                onPress={() => this.startPlayAudio(msg.id, msg.file.url)}>
+              <TouchableOpacity style={style.leftAudio} onPress={() => this.startPlayAudio(msg.id, msg.file.url)}>
                 <View
                   style={{
-                    alignItems: "flex-start",
-                    justifyContent: "center",
+                    alignItems: 'flex-start',
+                    justifyContent: 'center',
                     paddingRight: 10,
                     width: 80,
                     paddingTop: 3,
                     paddingBottom: 3,
-                  }}>
+                  }}
+                >
                   <Image
                     style={{ width: 15, height: 15 }}
                     source={
-                      isPalyAudio && currAudioMsgId === msg.id
-                        ? gImg.common.leftSoundPlaying
-                        : gImg.common.leftSound
+                      isPalyAudio && currAudioMsgId === msg.id ? gImg.common.leftSoundPlaying : gImg.common.leftSound
                     }
                   />
                 </View>
@@ -1306,7 +1236,7 @@ export default class EnteringGroupChat extends Component<
     return msg
   }
   //文章
-  articleFormat = (serverMsg: Exclude<Overwrite<Msg, { extraData: ArticlePlan }>, "dom">) => {
+  articleFormat = (serverMsg: Exclude<Overwrite<Msg, { extraData: ArticlePlan }>, 'dom'>) => {
     let msg: Overwrite<Msg, { extraData: ArticlePlan }> = serverMsg
     msg.dom = (
       <View style={style.treatmentPlan}>
@@ -1325,9 +1255,7 @@ export default class EnteringGroupChat extends Component<
               <Text style={[style.treatmentPlanHeaderTheme, global.fontSize18]} numberOfLines={1}>
                 {msg.extraData.title}
               </Text>
-              <Text style={[style.treatmentPlanHeaderTime, global.fontSize14]}>
-                {msg.extraData.ctime}
-              </Text>
+              <Text style={[style.treatmentPlanHeaderTime, global.fontSize14]}>{msg.extraData.ctime}</Text>
             </View>
           </View>
           <TouchableOpacity
@@ -1335,7 +1263,8 @@ export default class EnteringGroupChat extends Component<
               this.props.navigation.push(pathMap.ArticleDetail, {
                 id: msg.extraData.id,
               })
-            }}>
+            }}
+          >
             <Text style={[style.treatmentPlanBtn, global.fontSize14]}>点此查看论文</Text>
           </TouchableOpacity>
           <Image style={style.treatmentPlanFlag} source={gImg.common.flag} />
@@ -1345,9 +1274,7 @@ export default class EnteringGroupChat extends Component<
     return msg
   }
   // 治疗方案
-  treatmentPlanFormat = (
-    serverMsg: Exclude<Overwrite<Msg, { extraData: TreatmentPlan }>, "dom">,
-  ) => {
+  treatmentPlanFormat = (serverMsg: Exclude<Overwrite<Msg, { extraData: TreatmentPlan }>, 'dom'>) => {
     let msg: Overwrite<Msg, { extraData: TreatmentPlan }> = serverMsg
     msg.dom = (
       <View style={style.treatmentPlan}>
@@ -1362,27 +1289,25 @@ export default class EnteringGroupChat extends Component<
           </View>
           <DashLine len={45} backgroundColor={sColor.colorEee} width={windowWidth - 90} />
           <Text style={[style.treatmentPlanItem, global.fontSize14]}>
-            患者 {msg.extraData.patient.name} ( {GENDER_ZH[msg.extraData.patient.gender]}{" "}
+            患者 {msg.extraData.patient.name} ( {GENDER_ZH[msg.extraData.patient.gender]}{' '}
             {msg.extraData.patient.yearAge > 3
-              ? msg.extraData.patient.yearAge + "岁"
-              : msg.extraData.patient.yearAge + "岁" + msg.extraData.patient.monthAge + "月"}{" "}
+              ? msg.extraData.patient.yearAge + '岁'
+              : msg.extraData.patient.yearAge + '岁' + msg.extraData.patient.monthAge + '月'}{' '}
             )
           </Text>
           <DashLine len={45} backgroundColor={sColor.colorEee} width={windowWidth - 90} />
           <Text style={[style.treatmentPlanItem, global.fontSize14]}>
-            诊断 {msg.extraData.patient.discrimination};
-            {msg.extraData.patient.syndromeDifferentiation}
+            诊断 {msg.extraData.patient.discrimination};{msg.extraData.patient.syndromeDifferentiation}
           </Text>
           <DashLine len={45} backgroundColor={sColor.colorEee} width={windowWidth - 90} />
-          <Text style={[style.treatmentPlanItem, global.fontSize14]}>
-            根据治疗方案购买 服药, 并按时复诊
-          </Text>
+          <Text style={[style.treatmentPlanItem, global.fontSize14]}>根据治疗方案购买 服药, 并按时复诊</Text>
           <TouchableOpacity
             onPress={() => {
               this.props.navigation.push(pathMap.SquareRootDetail, {
                 prescriptionId: msg.extraData.id,
               })
-            }}>
+            }}
+          >
             <Text style={[style.treatmentPlanBtn, global.fontSize14]}>点此查看治疗方案</Text>
           </TouchableOpacity>
           <Image style={style.treatmentPlanFlag} source={gImg.common.flag} />
@@ -1392,9 +1317,7 @@ export default class EnteringGroupChat extends Component<
     return msg
   }
   //问诊单
-  inquirySheetFormat = (
-    serverMsg: Exclude<Overwrite<Msg, { extraData: MsgInquirySheetData }>, "dom">,
-  ) => {
+  inquirySheetFormat = (serverMsg: Exclude<Overwrite<Msg, { extraData: MsgInquirySheetData }>, 'dom'>) => {
     let msg: Overwrite<Msg, { extraData: MsgInquirySheetData }> = serverMsg
     msg.dom = (
       <View style={style.inquirySheet}>
@@ -1406,24 +1329,23 @@ export default class EnteringGroupChat extends Component<
               patientUid: msg.extraData.patient.id,
             })
           }
-          style={style.inquirySheetContent}>
+          style={style.inquirySheetContent}
+        >
           <View style={[style.inquirySheetHeader, global.flex, global.alignItemsCenter]}>
             <Image style={style.inquirySheetHeaderImg} source={gImg.common.injury} />
             <View>
               <Text style={[style.inquirySheetHeaderTitle, global.fontSize18]}>
                 {msg.extraData.patient.name}的问诊单
               </Text>
-              <Text style={[style.inquirySheetHeaderTime, global.fontSize14]}>
-                {msg.extraData.ctime}
-              </Text>
+              <Text style={[style.inquirySheetHeaderTime, global.fontSize14]}>{msg.extraData.ctime}</Text>
             </View>
           </View>
           <DashLine backgroundColor={sColor.colorEee} len={45} width={windowWidth - 90} />
           <Text style={[style.inquirySheetPatient, global.fontSize14]}>
-            患者 {msg.extraData.patient.name} ( {GENDER_ZH[msg.extraData.patient.gender]}{" "}
+            患者 {msg.extraData.patient.name} ( {GENDER_ZH[msg.extraData.patient.gender]}{' '}
             {msg.extraData.patient.yearAge > 3
-              ? msg.extraData.patient.yearAge + "岁"
-              : msg.extraData.patient.yearAge + "岁" + msg.extraData.patient.monthAge + "月"}{" "}
+              ? msg.extraData.patient.yearAge + '岁'
+              : msg.extraData.patient.yearAge + '岁' + msg.extraData.patient.monthAge + '月'}{' '}
             )
           </Text>
           <DashLine backgroundColor={sColor.colorEee} len={45} width={windowWidth - 90} />
@@ -1435,28 +1357,23 @@ export default class EnteringGroupChat extends Component<
     return msg
   }
   //患者自述
-  patientsThemselvesFormat = (
-    serverMsg: Exclude<Overwrite<Msg, { extraData: PatientsThemselves }>, "dom">,
-  ) => {
+  patientsThemselvesFormat = (serverMsg: Exclude<Overwrite<Msg, { extraData: PatientsThemselves }>, 'dom'>) => {
     let msg: Overwrite<Msg, { extraData: PatientsThemselves }> = serverMsg
     msg.dom = (
       <View style={style.patientsThemselves}>
         <Text style={[style.sendTime, global.fontStyle, global.fontSize12]}>{msg.sendTime}</Text>
         <View style={style.patientsThemselvesContent}>
           <View style={style.patientsThemselvesHeader}>
-            <Text style={[style.patientsThemselvesHeaderTitle, global.fontSize18]}>
-              {msg.extraData.patient.name}
-            </Text>
-            <View
-              style={[style.patientsThemselvesHeaderPatient, global.flex, global.alignItemsCenter]}>
+            <Text style={[style.patientsThemselvesHeaderTitle, global.fontSize18]}>{msg.extraData.patient.name}</Text>
+            <View style={[style.patientsThemselvesHeaderPatient, global.flex, global.alignItemsCenter]}>
               <Text style={[style.patientsThemselvesHeaderPatientTitle, global.fontSize14]}>
                 {GENDER_ZH[msg.extraData.patient.gender]}
               </Text>
               <View style={style.dot} />
               <Text style={[style.patientsThemselvesHeaderPatientTitle, global.fontSize14]}>
                 {msg.extraData.patient.yearAge > 3
-                  ? msg.extraData.patient.yearAge + "岁"
-                  : msg.extraData.patient.yearAge + "岁" + msg.extraData.patient.monthAge + "月"}
+                  ? msg.extraData.patient.yearAge + '岁'
+                  : msg.extraData.patient.yearAge + '岁' + msg.extraData.patient.monthAge + '月'}
               </Text>
               <View style={style.dot} />
               <Text style={[style.patientsThemselvesHeaderPatientTitle, global.fontSize14]}>
@@ -1464,6 +1381,7 @@ export default class EnteringGroupChat extends Component<
                   if (region.cid === msg.extraData.patient.provinceCid) {
                     return region.areaName
                   }
+                  return ''
                 })}
               </Text>
             </View>
@@ -1474,19 +1392,16 @@ export default class EnteringGroupChat extends Component<
               global.flex,
               global.alignItemsCenter,
               global.justifyContentSpaceAround,
-            ]}>
+            ]}
+          >
             <View>
-              <Text style={[style.patientsThemeselvesPatientTitle, global.fontSize13]}>
-                患者身高
-              </Text>
+              <Text style={[style.patientsThemeselvesPatientTitle, global.fontSize13]}>患者身高</Text>
               <Text style={[style.patientsThemeselvesPatientDetail, global.fontSize15]}>
                 {msg.extraData.patient.height} cm
               </Text>
             </View>
             <View>
-              <Text style={[style.patientsThemeselvesPatientTitle, global.fontSize13]}>
-                患者体重
-              </Text>
+              <Text style={[style.patientsThemeselvesPatientTitle, global.fontSize13]}>患者体重</Text>
               <Text style={[style.patientsThemeselvesPatientDetail, global.fontSize15]}>
                 {msg.extraData.patient.weight} kg
               </Text>
@@ -1512,13 +1427,7 @@ export default class EnteringGroupChat extends Component<
           </View>
           <View style={style.patientsThemeselvesPatientItem}>
             <Text style={[style.patientsThemeselvesPatientTitle, global.fontSize13]}>舌苔面照</Text>
-            <View
-              style={[
-                style.patientsThemeselvesPatientPic,
-                global.flex,
-                global.alignItemsCenter,
-                global.flexWrap,
-              ]}>
+            <View style={[style.patientsThemeselvesPatientPic, global.flex, global.alignItemsCenter, global.flexWrap]}>
               {msg.extraData.patient.tongueCoatingPics.map(v => {
                 return (
                   <TouchableOpacity
@@ -1528,12 +1437,11 @@ export default class EnteringGroupChat extends Component<
                         isShowPic: true,
                         showPicUrl: v.url,
                       })
-                    }}>
+                    }}
+                  >
                     <Image
                       style={style.patientsThemeselvesPatientImg}
-                      source={
-                        v.url ? { uri: getPicCdnUrl(v.url, "avatar") } : gImg.common.defaultPic
-                      }
+                      source={v.url ? { uri: getPicCdnUrl(v.url, 'avatar') } : gImg.common.defaultPic}
                     />
                   </TouchableOpacity>
                 )
@@ -1542,9 +1450,7 @@ export default class EnteringGroupChat extends Component<
                 <Text style={[style.patientsThemeselvesPatientTitle, global.fontSize13]}>暂无</Text>
               ) : null}
             </View>
-            <Text style={[style.patientsThemeselvesPatientTitle, global.fontSize13]}>
-              问诊单问题
-            </Text>
+            <Text style={[style.patientsThemeselvesPatientTitle, global.fontSize13]}>问诊单问题</Text>
             <Text style={[style.patientsThemeselvesPatientDetail, global.fontSize15]}>已提交</Text>
           </View>
         </View>
@@ -1558,10 +1464,12 @@ export default class EnteringGroupChat extends Component<
       this.stopPlayAudio()
       return
     }
-    this.whoosh = new Sound(getFileCdnUrl(url), "", error => {
+    this.whoosh = new Sound(getFileCdnUrl(url), '', error => {
       if (error) {
-        console.log("failed to load the sound", error)
-        this.whoosh && this.whoosh.release()
+        console.log('failed to load the sound', error)
+        if (this.whoosh) {
+          this.whoosh.release()
+        }
         this.whoosh = null
         return
       }
@@ -1572,12 +1480,12 @@ export default class EnteringGroupChat extends Component<
       // loaded successfully
       // console.log("duration in seconds: " + whoosh.getDuration())
       // Play the sound with an onEnd callback
-      this.whoosh &&
+      if (this.whoosh) {
         this.whoosh.play(success => {
           if (success) {
-            console.log("successfully finished playing")
+            console.log('successfully finished playing')
           } else {
-            Toast.fail("播放音频失败")
+            Toast.fail('播放音频失败')
           }
           this.setState(
             {
@@ -1587,6 +1495,7 @@ export default class EnteringGroupChat extends Component<
             this.stopPlayAudio,
           )
         })
+      }
     })
   }
   stopPlayAudio = () => {
@@ -1597,7 +1506,9 @@ export default class EnteringGroupChat extends Component<
           isPalyAudio: false,
           currAudioMsgId: 0,
         })
-        this.whoosh && this.whoosh.release()
+        if (this.whoosh) {
+          this.whoosh.release()
+        }
         this.whoosh = null
       })
     }
@@ -1625,7 +1536,7 @@ export default class EnteringGroupChat extends Component<
       this.setState({ refreshing: false })
     } catch (err) {
       this.setState({ refreshing: false })
-      Toast.fail("刷新失败,错误信息: " + err.msg)
+      Toast.fail('刷新失败,错误信息: ' + err.msg)
     }
   }
   updateMsgList = async () => {
@@ -1659,20 +1570,20 @@ export default class EnteringGroupChat extends Component<
       })
     } catch (err) {
       this.setState({ refreshing: false })
-      Toast.fail("刷新失败,错误信息: " + err.msg)
+      Toast.fail('刷新失败,错误信息: ' + err.msg)
     }
   }
   selectBottomNav = (v: bottomNavItem) => {
-    if (v.title === "发布") {
+    if (v.title === '发布') {
       this.props.navigation.push(v.link, {
         patientUid: this.state.patientUid,
       })
-    } else if (v.title === "文章") {
+    } else if (v.title === '文章') {
       this.props.navigation.push(v.link, {
         patientUid: this.state.patientUid,
       })
-    } else if (v.title === "表情") {
-      return Toast.info("正在努力开发中, 敬请期待...", 2)
+    } else if (v.title === '表情') {
+      return Toast.info('正在努力开发中, 敬请期待...', 2)
     } else {
       this.setState({
         isShowBottomPicSelect: !this.state.isShowBottomPicSelect,
@@ -1684,15 +1595,13 @@ export default class EnteringGroupChat extends Component<
       shouldScrollToEnd: true,
       isShowBottomPicSelect: false,
     })
-    if (this.state.sendMsg === "") {
+    if (this.state.sendMsg === '') {
       return
     }
     const { patientUid } = this.state
-    if (
-      this.props.ws.wsPost({ url: "/ws/sendMsg", data: { msg: this.state.sendMsg, patientUid } })
-    ) {
+    if (this.props.ws.wsPost({ url: '/ws/sendMsg', data: { msg: this.state.sendMsg, patientUid } })) {
       this.setState({
-        sendMsg: "",
+        sendMsg: '',
       })
       if (this.myScroll && this.state.shouldScrollToEnd) {
         this.myScroll.scrollToEnd()
@@ -1700,7 +1609,9 @@ export default class EnteringGroupChat extends Component<
           shouldScrollToEnd: false,
         })
       }
-      this.msgInput && this.msgInput.textAreaRef && this.msgInput.textAreaRef.blur()
+      if (this.msgInput && this.msgInput.textAreaRef) {
+        this.msgInput.textAreaRef.blur()
+      }
     }
   }
   openShowPic = (url: string) => {
@@ -1717,16 +1628,16 @@ export default class EnteringGroupChat extends Component<
   closeShowPic = () => {
     this.setState({
       isShowPic: false,
-      showPicUrl: "",
+      showPicUrl: '',
     })
   }
   selectPic = (files: Array<{}>, operationType: string) => {
-    if (operationType === "add") {
-      let key = Toast.loading("上传图片中")
+    if (operationType === 'add') {
+      let key = Toast.loading('上传图片中')
       api
         .uploadImg(files[files.length - 1])
         .then(json => {
-          if (typeof json === "object") {
+          if (typeof json === 'object') {
             if (json.code === 0) {
               Portal.remove(key)
               this.setState({
@@ -1735,7 +1646,7 @@ export default class EnteringGroupChat extends Component<
               const { patientUid } = this.state
               const { url, picId } = json.data
               this.props.ws.wsPost({
-                url: "/ws/sendMsg",
+                url: '/ws/sendMsg',
                 data: {
                   pic: {
                     url,
@@ -1747,36 +1658,31 @@ export default class EnteringGroupChat extends Component<
               })
             } else {
               Portal.remove(key)
-              Toast.fail("上传图片失败,错误信息: " + json.msg, 3)
+              Toast.fail('上传图片失败,错误信息: ' + json.msg, 3)
             }
           } else {
             Portal.remove(key)
-            Toast.fail("上传图片失败,服务器错误", 3)
+            Toast.fail('上传图片失败,服务器错误', 3)
           }
         })
         .catch(err => {
           Portal.remove(key)
-          Toast.fail("上传失败, 错误原因: " + err.msg + ", 请重试", 3)
+          Toast.fail('上传失败, 错误原因: ' + err.msg + ', 请重试', 3)
           console.log(err)
         })
     }
   }
   requestReadExteralStorage = async () => {
-    if (Platform.OS === "android") {
+    if (Platform.OS === 'android') {
       try {
-        const granted = await PermissionsAndroid.request(
-          PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
-          {
-            title: "Permission To Load Photos From External Storage",
-            message:
-              "Permissions have to be granted in order to list photos on your phones for you to choose.",
-            buttonPositive: "",
-          },
-        )
+        const granted = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE, {
+          title: 'Permission To Load Photos From External Storage',
+          message: 'Permissions have to be granted in order to list photos on your phones for you to choose.',
+          buttonPositive: '',
+        })
 
-        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        } else {
-          console.log("READ_EXTERNAL_STORAGE permission denied!")
+        if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
+          console.log('READ_EXTERNAL_STORAGE permission denied!')
         }
       } catch (err) {
         console.warn(err)

@@ -1,35 +1,35 @@
-import { windowHeight, windowWidth } from "@api/api"
-import sColor from "@styles/color"
-import { PixelRatio, StyleSheet } from "react-native"
+import { windowHeight, windowWidth } from '@api/api'
+import sColor from '@styles/color'
+import { PixelRatio, StyleSheet } from 'react-native'
 export default StyleSheet.create({
   loading: {
     width: windowWidth,
     height: windowHeight,
     backgroundColor: sColor.white,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
     flex: 1,
   },
   loadingTitle: {
-    textAlign: "center",
-    justifyContent: "center",
+    textAlign: 'center',
+    justifyContent: 'center',
   },
   loadingPic: {
-    width: "100%",
-    overflow: "hidden",
-    justifyContent: "center",
-    alignItems: "center",
+    width: '100%',
+    overflow: 'hidden',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   loadingImg: {
     width: 300,
-    resizeMode: "contain",
+    resizeMode: 'contain',
   },
   main: {
     backgroundColor: sColor.white,
     margin: 0,
     padding: 0,
     flex: 1,
-    position: "relative",
+    position: 'relative',
   },
   content: {
     flex: 0.9,
@@ -57,7 +57,7 @@ export default StyleSheet.create({
     height: 55,
     lineHeight: 55,
     flex: 1,
-    textAlign: "center",
+    textAlign: 'center',
     backgroundColor: sColor.mainBgColor,
   },
   ThemeTitle_2: {
@@ -66,7 +66,7 @@ export default StyleSheet.create({
     padding: 15,
     lineHeight: 30,
     flex: 1,
-    textAlign: "center",
+    textAlign: 'center',
     backgroundColor: sColor.mainBgColor,
   },
   form: {},
@@ -94,13 +94,13 @@ export default StyleSheet.create({
   },
   formAvatar: {
     height: 95,
-    position: "relative",
-    justifyContent: "center",
+    position: 'relative',
+    justifyContent: 'center',
   },
   formItem: {
     height: 55,
-    position: "relative",
-    justifyContent: "center",
+    position: 'relative',
+    justifyContent: 'center',
   },
   formItemTextarea: {
     height: 100,
@@ -109,8 +109,8 @@ export default StyleSheet.create({
   },
   formItemPickerImage: {
     height: 55,
-    position: "relative",
-    justifyContent: "center",
+    position: 'relative',
+    justifyContent: 'center',
     paddingLeft: 15,
   },
   formItemImg: {
@@ -139,7 +139,7 @@ export default StyleSheet.create({
     color: sColor.color666,
   },
   getVerificationCodeBtn: {
-    position: "absolute",
+    position: 'absolute',
     right: 10,
   },
   verificationCode: {
@@ -147,7 +147,7 @@ export default StyleSheet.create({
     height: 30,
     backgroundColor: sColor.colorCcc,
     color: sColor.white,
-    textAlign: "center",
+    textAlign: 'center',
     lineHeight: 30,
     borderRadius: 5,
   },
@@ -202,13 +202,13 @@ export default StyleSheet.create({
     backgroundColor: sColor.mainRed,
     borderRadius: 5,
     lineHeight: 40,
-    textAlign: "center",
+    textAlign: 'center',
   },
   hospitalSelect: {
-    position: "absolute",
+    position: 'absolute',
     borderTopWidth: 1 / PixelRatio.get(),
     borderTopColor: sColor.colorDdd,
-    width: "100%",
+    width: '100%',
     backgroundColor: sColor.white,
     height: windowHeight,
   },
@@ -219,7 +219,7 @@ export default StyleSheet.create({
   hospitalAdd: {
     height: 55,
     paddingBottom: 8,
-    position: "relative",
+    position: 'relative',
   },
   hospitalSearch: {
     borderRadius: 20,
@@ -236,11 +236,11 @@ export default StyleSheet.create({
     marginLeft: 15,
   },
   close: {
-    textAlign: "right",
+    textAlign: 'right',
     color: sColor.color666,
   },
   hospitalList: {
-    position: "relative",
+    position: 'relative',
   },
   hospitalItem: {
     height: 50,
@@ -258,9 +258,9 @@ export default StyleSheet.create({
   },
   // 擅长
   adeptSymptom: {
-    position: "absolute",
+    position: 'absolute',
     top: 1 / PixelRatio.get(),
-    width: "100%",
+    width: '100%',
     backgroundColor: sColor.white,
     height: windowHeight,
     paddingBottom: 60,
@@ -270,7 +270,7 @@ export default StyleSheet.create({
     lineHeight: 50,
     backgroundColor: sColor.mainRed,
     color: sColor.white,
-    textAlign: "center",
+    textAlign: 'center',
     paddingLeft: 15,
     marginTop: -1,
   },
@@ -320,14 +320,14 @@ export default StyleSheet.create({
   previewPic: {
     borderTopWidth: 1 / PixelRatio.get(),
     borderTopColor: sColor.colorDdd,
-    borderStyle: "dotted",
+    borderStyle: 'dotted',
     padding: 15,
   },
   example: {
     width: 80,
     paddingTop: 2,
     paddingBottom: 2,
-    textAlign: "center",
+    textAlign: 'center',
     height: 35,
     lineHeight: 35,
     backgroundColor: sColor.lightBlue,
@@ -342,16 +342,16 @@ export default StyleSheet.create({
   viewPic: {
     width: 150,
     height: 100,
-    resizeMode: "cover",
+    resizeMode: 'cover',
   },
   picView: {
-    position: "absolute",
+    position: 'absolute',
     top: 0,
     left: 0,
     right: 0,
     backgroundColor: sColor.mainBlack,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   closePicView: {
     height: 45,
@@ -359,19 +359,19 @@ export default StyleSheet.create({
     backgroundColor: sColor.mainBgColor,
     color: sColor.mainBlack,
     width: windowWidth,
-    textAlign: "center",
+    textAlign: 'center',
   },
   viewImgFather: {
-    position: "relative",
+    position: 'relative',
     width: 350,
     padding: 15,
-    justifyContent: "center",
-    alignItems: "center",
-    textAlign: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
+    textAlign: 'center',
   },
   viewImg: {
     width: 350,
-    resizeMode: "contain",
+    resizeMode: 'contain',
   },
   examine: {
     padding: 15,

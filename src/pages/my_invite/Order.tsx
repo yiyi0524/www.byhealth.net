@@ -1,18 +1,18 @@
-import { listInviteDoctorOrder } from "@/services/myInvite"
-import { Icon } from "@ant-design/react-native"
-import sColor from "@styles/color"
-import global from "@styles/global"
-import gImg from "@utils/img"
-import gSass from "@utils/style"
-import moment from "moment"
-import React, { Component } from "react"
-import { Image, PixelRatio, Text, View } from "react-native"
-import { ScrollView, TouchableOpacity } from "react-native-gesture-handler"
-import { NavigationScreenProp } from "react-navigation"
-import Empty from "@/components/Empty"
+import { listInviteDoctorOrder } from '@/services/myInvite'
+import { Icon } from '@ant-design/react-native'
+import sColor from '@styles/color'
+import global from '@styles/global'
+import gImg from '@utils/img'
+import gSass from '@utils/style'
+import moment from 'moment'
+import React, { Component } from 'react'
+import { Image, PixelRatio, Text, View } from 'react-native'
+import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler'
+import { StackNavigationProp } from '@react-navigation/stack'
+import Empty from '@/components/Empty'
 const style = gSass.myInvite.order
 interface Props {
-  navigation: NavigationScreenProp<State>
+  navigation: StackNavigationProp<any>
 }
 interface State {
   hasLoad: boolean
@@ -25,7 +25,7 @@ interface State {
 
 export default class Order extends Component<Props, State> {
   static navigationOptions = () => ({
-    title: "医师订单",
+    title: '医师订单',
     headerStyle: {
       backgroundColor: sColor.white,
       height: 50,
@@ -37,15 +37,13 @@ export default class Order extends Component<Props, State> {
     headerTintColor: sColor.color333,
     headerTitleStyle: {
       flex: 1,
-      alignItems: "center",
-      justifyContent: "center",
+      alignItems: 'center',
+      justifyContent: 'center',
       fontSize: 14,
-      textAlign: "center",
+      textAlign: 'center',
     },
     headerRight: (
-      <TouchableOpacity>
-        {/* <Text style={[style.headerRight, global.fontSize14]}>保存</Text> */}
-      </TouchableOpacity>
+      <TouchableOpacity>{/* <Text style={[style.headerRight, global.fontSize14]}>保存</Text> */}</TouchableOpacity>
     ),
   })
   constructor(props: any) {
@@ -54,12 +52,12 @@ export default class Order extends Component<Props, State> {
   }
   getInitState = (props: Props): State => {
     let doctorId = 0,
-      doctorName = "",
-      date = moment().format("YYYY-MM")
+      doctorName = '',
+      date = moment().format('YYYY-MM')
     if (props.navigation.state.params) {
       doctorId = props.navigation.state.params.doctorId || 0
-      doctorName = props.navigation.state.params.doctorName || ""
-      date = props.navigation.state.params.date || moment().format("YYYY-MM")
+      doctorName = props.navigation.state.params.doctorName || ''
+      date = props.navigation.state.params.date || moment().format('YYYY-MM')
     }
     return {
       hasLoad: false,
@@ -77,8 +75,8 @@ export default class Order extends Component<Props, State> {
     try {
       let { date, doctorId } = this.state,
         total = 0
-      let searchYear = parseInt(moment(date).format("YYYY"))
-      let searchMonth = parseInt(moment(date).format("M"))
+      let searchYear = parseInt(moment(date).format('YYYY'))
+      let searchMonth = parseInt(moment(date).format('M'))
       let listInviteDoctorOrderTask = listInviteDoctorOrder({
         year: searchYear,
         month: searchMonth,
@@ -104,8 +102,8 @@ export default class Order extends Component<Props, State> {
   prevMonth = () => {
     let { date } = this.state
     date = moment(date)
-      .subtract(1, "month")
-      .format("YYYY-MM")
+      .subtract(1, 'month')
+      .format('YYYY-MM')
     this.setState(
       {
         date,
@@ -116,9 +114,9 @@ export default class Order extends Component<Props, State> {
   nextMonth = () => {
     let { date } = this.state
     date = moment(date)
-      .add(1, "month")
-      .format("YYYY-MM")
-    let currDate = moment().format("YYYY-MM")
+      .add(1, 'month')
+      .format('YYYY-MM')
+    let currDate = moment().format('YYYY-MM')
     if (date > currDate) {
       return false
     }
@@ -147,11 +145,11 @@ export default class Order extends Component<Props, State> {
             <View style={[style.yearPar, global.flex, global.aCenter, global.jBetween]}>
               <View style={[style.year, global.flex, global.aCenter]}>
                 <TouchableOpacity style={[style.iconPar]} onPress={this.prevMonth}>
-                  <Icon style={[style.icon, style.iconLeft]} name="left"></Icon>
+                  <Icon style={[style.icon, style.iconLeft]} name='left' />
                 </TouchableOpacity>
-                <Text style={style.time}>{moment(date).format("YYYY年MM月")}</Text>
+                <Text style={style.time}>{moment(date).format('YYYY年MM月')}</Text>
                 <TouchableOpacity style={style.iconPar} onPress={this.nextMonth}>
-                  <Icon style={style.icon} name="right"></Icon>
+                  <Icon style={style.icon} name='right' />
                 </TouchableOpacity>
               </View>
               <View style={[style.rightContent, global.flex, global.aCenter]}>
@@ -159,14 +157,7 @@ export default class Order extends Component<Props, State> {
                 <Text style={style.themeNum}>{list.length}</Text>
               </View>
             </View>
-            <View
-              style={[
-                style.theme,
-                style.themeHeight,
-                global.flex,
-                global.aCenter,
-                global.jBetween,
-              ]}>
+            <View style={[style.theme, style.themeHeight, global.flex, global.aCenter, global.jBetween]}>
               <Text style={style.themeTitle}>{doctorName}邀请的订单</Text>
               <View style={[style.rightContent, global.flex, global.aCenter]}>
                 <Text style={style.themeCount}>总金额 (元)</Text>
@@ -175,22 +166,17 @@ export default class Order extends Component<Props, State> {
             </View>
           </View>
           <View style={style.list}>
-            <View
-              style={[style.item, style.itemGray, global.flex, global.aCenter, global.jBetween]}>
+            <View style={[style.item, style.itemGray, global.flex, global.aCenter, global.jBetween]}>
               <Text style={style.desc}>订单日期</Text>
               <Text style={style.desc}>订单编号</Text>
               <Text style={style.desc}>交易金额</Text>
             </View>
             {list.map((item, idx) => {
               return (
-                <View
-                  style={[style.item, global.flex, global.aCenter, global.jBetween]}
-                  key={"item" + idx}>
-                  <Text style={style.desc}>{moment(item.ctime).format("YYYY/MM/DD")}</Text>
+                <View style={[style.item, global.flex, global.aCenter, global.jBetween]} key={'item' + idx}>
+                  <Text style={style.desc}>{moment(item.ctime).format('YYYY/MM/DD')}</Text>
                   <Text style={style.desc}>
-                    {item.out_trade_no.length > 10
-                      ? item.out_trade_no.substr(0, 10) + "..."
-                      : item.out_trade_no}
+                    {item.out_trade_no.length > 10 ? item.out_trade_no.substr(0, 10) + '...' : item.out_trade_no}
                   </Text>
                   <Text style={style.money}>￥{parseFloat((item.total_fee / 100).toFixed(0))}</Text>
                 </View>

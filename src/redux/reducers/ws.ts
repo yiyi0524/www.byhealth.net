@@ -1,6 +1,6 @@
-import { Msg } from "@/pages/Ws"
-import { Toast } from "@ant-design/react-native"
-import * as wsAction from "../actions/ws"
+import { Msg } from '@/pages/Ws'
+import { Toast } from '@ant-design/react-native'
+import * as wsAction from '../actions/ws'
 type Uid = number
 type GroupId = number
 type UnReadMsgCount = number
@@ -18,7 +18,7 @@ export interface WsState {
   wsPost: (data: { url: string; data?: Object }) => boolean
 }
 export const initState: WsState = {
-  currScreen: "",
+  currScreen: '',
   currChatUid: 0,
   // websocket 状态
   status: WebSocket.CLOSED,
@@ -28,15 +28,15 @@ export const initState: WsState = {
   unReadGroupMsgCountRecord: {},
   wsGet: ({ url, query = {} }) => {
     console.log(query)
-    if (url !== "/ws/ping") {
-      Toast.info("未连接到服务器,无法发送消息")
+    if (url !== '/ws/ping') {
+      Toast.info('未连接到服务器,无法发送消息')
     }
     return false
   },
   wsPost: ({ url, data = {} }) => {
     console.log(data)
-    if (url !== "/ws/ping") {
-      Toast.info("未连接到服务器,无法发送消息")
+    if (url !== '/ws/ping') {
+      Toast.info('未连接到服务器,无法发送消息')
     }
     return false
   },
@@ -49,10 +49,7 @@ export interface Action<T> {
 /**
  * 改变 ws 状态
  */
-function setWsFn(
-  state = initState,
-  action: Action<{ wsGet: WsState["wsGet"]; wsPost: WsState["wsPost"] }>,
-) {
+function setWsFn(state = initState, action: Action<{ wsGet: WsState['wsGet']; wsPost: WsState['wsPost'] }>) {
   if (action.type === wsAction.SET_WS_FN) {
     let newState = Object.assign({}, state)
     newState.wsGet = action.preload.wsGet
@@ -175,10 +172,7 @@ function setUserUnReadMsgCount(state = initState, action: Action<{ uid: number; 
 /**
  * 设置与某用户的未读消息数量
  */
-function setGroupUnReadMsgCount(
-  state = initState,
-  action: Action<{ groupId: number; count: number }>,
-) {
+function setGroupUnReadMsgCount(state = initState, action: Action<{ groupId: number; count: number }>) {
   let newState = Object.assign({}, state)
   let { groupId, count } = action.preload
   if (groupId in newState.unReadGroupMsgCountRecord && count === 0) {

@@ -1,29 +1,29 @@
-import { windowHeight } from "@/utils/utils"
-import { windowWidth } from "@api/api"
-import sColor from "@styles/color"
-import { StyleSheet, PixelRatio } from "react-native"
+import { windowHeight } from '@/utils/utils'
+import { windowWidth } from '@api/api'
+import sColor from '@styles/color'
+import { StyleSheet, PixelRatio } from 'react-native'
 export default StyleSheet.create({
   loading: {
     width: windowWidth,
     height: windowHeight,
     backgroundColor: sColor.white,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
     flex: 1,
   },
   loadingTitle: {
-    textAlign: "center",
-    justifyContent: "center",
+    textAlign: 'center',
+    justifyContent: 'center',
   },
   loadingPic: {
-    width: "100%",
-    overflow: "hidden",
-    justifyContent: "center",
-    alignItems: "center",
+    width: '100%',
+    overflow: 'hidden',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   loadingImg: {
     width: 300,
-    resizeMode: "contain",
+    resizeMode: 'contain',
   },
   main: {
     flex: 1,
@@ -45,8 +45,8 @@ export default StyleSheet.create({
   },
   tabBarUnderlineStyle: {
     backgroundColor: sColor.mainRed,
-    width: "35%",
-    marginLeft: "5%",
+    width: '35%',
+    marginLeft: '5%',
   },
   prescriptionItem: {
     marginTop: 8,
@@ -96,7 +96,7 @@ export default StyleSheet.create({
   },
   header: {
     height: 45,
-    backgroundColor: "#fff",
+    backgroundColor: '#fff',
     marginBottom: 8,
   },
   headerItem: {
@@ -110,7 +110,7 @@ export default StyleSheet.create({
     width: 150,
     borderBottomWidth: 1,
     borderBottomColor: sColor.white,
-    textAlign: "center",
+    textAlign: 'center',
   },
   headerTitleActive: {
     lineHeight: 45,
@@ -118,7 +118,7 @@ export default StyleSheet.create({
     width: 150,
     borderBottomWidth: 1,
     borderBottomColor: sColor.mainRed,
-    textAlign: "center",
+    textAlign: 'center',
     color: sColor.mainRed,
   },
 })

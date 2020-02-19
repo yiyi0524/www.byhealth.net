@@ -1,6 +1,6 @@
-import * as userAction from "@/redux/actions/user"
-import { AppState } from "@/redux/stores/store"
-import { getBalance } from "@/services/doctor"
+import * as userAction from '@/redux/actions/user'
+import { AppState } from '@/redux/stores/store'
+import { getBalance } from '@/services/doctor'
 import doctorBankCard, {
   DoctorBankCard,
   CashOutApply,
@@ -8,12 +8,12 @@ import doctorBankCard, {
   CASH_OUT_APPLY_STATUS,
   Type,
   CashOutData,
-} from "@/services/doctorBankCard"
-import { Icon, Toast, Modal, InputItem } from "@ant-design/react-native"
-import sColor from "@styles/color"
-import gImg from "@utils/img"
-import gStyle from "@utils/style"
-import React, { Component } from "react"
+} from '@/services/doctorBankCard'
+import { Icon, Toast, Modal, InputItem } from '@ant-design/react-native'
+import sColor from '@styles/color'
+import gImg from '@utils/img'
+import gStyle from '@utils/style'
+import React, { Component } from 'react'
 import {
   Image,
   RefreshControl,
@@ -23,10 +23,10 @@ import {
   View,
   DeviceEventEmitter,
   EmitterSubscription,
-} from "react-native"
-import { connect } from "react-redux"
-import { Dispatch } from "redux"
-import pathMap from "@/routes/pathMap"
+} from 'react-native'
+import { connect } from 'react-redux'
+import { Dispatch } from 'redux'
+import pathMap from '@/routes/pathMap'
 const style = gStyle.personalCenter.account
 const global = gStyle.global
 interface Props {
@@ -79,7 +79,7 @@ export default class Account extends Component<
 > {
   static navigationOptions = () => {
     return {
-      title: "账户",
+      title: '账户',
       headerStyle: {
         backgroundColor: sColor.lightGreen,
         height: 45,
@@ -89,10 +89,10 @@ export default class Account extends Component<
       headerTintColor: sColor.white,
       headerTitleStyle: {
         flex: 1,
-        alignItems: "center",
-        justifyContent: "center",
+        alignItems: 'center',
+        justifyContent: 'center',
         fontSize: 14,
-        textAlign: "center",
+        textAlign: 'center',
       },
       headerRight: (
         <TouchableOpacity
@@ -115,30 +115,30 @@ export default class Account extends Component<
   }
   getInitState = (): State => {
     return {
-      aliAccount: "",
-      aliName: "",
-      cashType: "bankCard",
+      aliAccount: '',
+      aliName: '',
+      cashType: 'bankCard',
       isCashOutModalActive: false,
-      money: "",
-      wxAccount: "",
+      money: '',
+      wxAccount: '',
       hasLoad: false,
       refreshing: false,
       isShowAccount: true,
       balance: 0.0,
-      name: "",
-      idCardNo: "",
+      name: '',
+      idCardNo: '',
       // 银行名
-      bankName: "",
-      cardNo: "",
+      bankName: '',
+      cardNo: '',
       // 开户名
-      openingBank: "",
-      phone: "",
+      openingBank: '',
+      phone: '',
       bankList: [],
       records: [],
     }
   }
   componentDidMount() {
-    this.subscription = DeviceEventEmitter.addListener(pathMap.Account + "Reload", _ => {
+    this.subscription = DeviceEventEmitter.addListener(pathMap.Account + 'Reload', _ => {
       this.init()
     })
     this.init()
@@ -167,31 +167,31 @@ export default class Account extends Component<
         this.setState({ refreshing: false })
       })
       .catch(err => {
-        Toast.fail("刷新失败,错误信息: " + err.msg)
+        Toast.fail('刷新失败,错误信息: ' + err.msg)
       })
   }
   cashOut = (args: CashOutData) => {
     const { balance } = this.state
     if (args.money) {
       if (args.money > balance) {
-        return Toast.fail("提现金额不能大于余额 ")
+        return Toast.fail('提现金额不能大于余额 ')
       }
       doctorBankCard
         .cashOut(args)
         .then(() => {
-          Toast.success("提交成功, 请等待审核", 1)
+          Toast.success('提交成功, 请等待审核', 1)
           this.setState({
-            aliAccount: "",
-            aliName: "",
-            wxAccount: "",
+            aliAccount: '',
+            aliName: '',
+            wxAccount: '',
           })
           this.init()
         })
         .catch(err => {
-          Toast.success("提交失败,错误原因: " + err.msg, 1)
+          Toast.success('提交失败,错误原因: ' + err.msg, 1)
         })
     } else {
-      Toast.info("请输入正确的金额", 2)
+      Toast.info('请输入正确的金额', 2)
     }
   }
   render() {
@@ -204,84 +204,66 @@ export default class Account extends Component<
         </View>
       )
     }
-    let {
-      bankList,
-      records,
-      isCashOutModalActive,
-      aliAccount,
-      aliName,
-      cashType,
-      wxAccount,
-    } = this.state
+    let { bankList, records, isCashOutModalActive, aliAccount, aliName, cashType, wxAccount } = this.state
     return (
       <>
         <ScrollView
           style={style.main}
-          refreshControl={
-            <RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh} />
-          }>
+          refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh} />}
+        >
           <View style={style.header}>
             <Text style={[style.headerDescription, global.fontSize14, global.fontStyle]}>
               余额已根据国家法律扣除个人所得税
             </Text>
-            <View
-              style={[
-                style.headerCenter,
-                global.flex,
-                global.alignItemsCenter,
-                global.justifyContentSpaceBetween,
-              ]}>
+            <View style={[style.headerCenter, global.flex, global.alignItemsCenter, global.justifyContentSpaceBetween]}>
               <TouchableOpacity
                 style={[style.headerCenterLeft, global.flex, global.alignItemsCenter]}
-                onPress={() => this.setState({ isShowAccount: !this.state.isShowAccount })}>
+                onPress={() => this.setState({ isShowAccount: !this.state.isShowAccount })}
+              >
                 <Icon
-                  name={this.state.isShowAccount ? "eye-invisible" : "eye"}
+                  name={this.state.isShowAccount ? 'eye-invisible' : 'eye'}
                   style={[style.headerCenterLeftIcon, global.fontSize14]}
                 />
-                <Text style={[style.headerCenterLeftTitle]}>
-                  {this.state.isShowAccount ? "隐藏余额" : "显示余额"}
-                </Text>
+                <Text style={[style.headerCenterLeftTitle]}>{this.state.isShowAccount ? '隐藏余额' : '显示余额'}</Text>
               </TouchableOpacity>
               <Text style={[style.headerCenterTitle]}>
-                ¥ {this.state.isShowAccount ? this.state.balance / 100 : "****"}
+                ¥ {this.state.isShowAccount ? this.state.balance / 100 : '****'}
               </Text>
               <TouchableOpacity
                 style={style.headerCenterRightFa}
                 onPress={() => {
-                  const isCashOutModalActive = true
                   Modal.operation([
                     {
-                      text: "支付宝",
+                      text: '支付宝',
                       onPress: () => {
                         this.setState({
-                          cashType: "aliPay",
-                          isCashOutModalActive,
+                          cashType: 'aliPay',
+                          isCashOutModalActive: true,
                         })
                       },
                     },
                     {
-                      text: "微信",
+                      text: '微信',
                       onPress: () => {
                         this.setState({
-                          cashType: "wxPay",
-                          isCashOutModalActive,
+                          cashType: 'wxPay',
+                          isCashOutModalActive: true,
                         })
                       },
                     },
                     {
-                      text: "提现到银行卡",
+                      text: '提现到银行卡',
                       onPress: () => {
                         this.setState({
-                          cashType: "bankCard",
-                          isCashOutModalActive,
+                          cashType: 'bankCard',
+                          isCashOutModalActive: true,
                         })
                       },
                     },
                   ])
-                }}>
-                <Text style={[style.headerCenterRight, global.fontSize14, global.fontStyle]}>
-                  去提现
-                </Text>
+                }}
+              >
+                <Text style={[style.headerCenterRight, global.fontSize14, global.fontStyle]}>去提现</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -292,41 +274,28 @@ export default class Account extends Component<
                 style={style.addBank}
                 onPress={() => {
                   this.props.navigation.push(pathMap.AddBankCard)
-                }}>
-                <View
-                  style={[
-                    style.addBankTitle,
-                    global.flex,
-                    global.alignItemsCenter,
-                    global.justifyContentCenter,
-                  ]}>
-                  <Icon name="plus" style={[style.addBankIcon, global.fontSize14]} />
-                  <Text style={[style.addBankDescription, global.fontSize14, global.fontStyle]}>
-                    绑定银行卡
-                  </Text>
+                }}
+              >
+                <View style={[style.addBankTitle, global.flex, global.alignItemsCenter, global.justifyContentCenter]}>
+                  <Icon name='plus' style={[style.addBankIcon, global.fontSize14]} />
+                  <Text style={[style.addBankDescription, global.fontSize14, global.fontStyle]}>绑定银行卡</Text>
                 </View>
                 <Text style={[style.addBankBtn, global.fontSize14]}>暂无绑定银行卡</Text>
               </TouchableOpacity>
             ) : (
               <TouchableOpacity
-                style={[
-                  style.bankDescription,
-                  global.flex,
-                  global.alignItemsCenter,
-                  global.justifyContentSpaceBetween,
-                ]}
+                style={[style.bankDescription, global.flex, global.alignItemsCenter, global.justifyContentSpaceBetween]}
                 onPress={() => {
                   this.props.navigation.push(pathMap.EditBankCard)
-                }}>
+                }}
+              >
+                <Text style={[style.bankDescriptionTitle, global.fontSize14]}>{bankList[0].bankName}</Text>
                 <Text style={[style.bankDescriptionTitle, global.fontSize14]}>
-                  {bankList[0].bankName}
-                </Text>
-                <Text style={[style.bankDescriptionTitle, global.fontSize14]}>
-                  {bankList[0].cardNo.substr(0, 4) + "************"}
+                  {bankList[0].cardNo.substr(0, 4) + '************'}
                 </Text>
                 <View style={[global.flex, global.alignItemsCenter]}>
                   <Text style={[style.bankDescriptionTitle, global.fontSize14]}>去修改</Text>
-                  <Icon name="right" style={[style.bankDescriptionRight, global.fontSize14]} />
+                  <Icon name='right' style={[style.bankDescriptionRight, global.fontSize14]} />
                 </View>
               </TouchableOpacity>
             )}
@@ -335,23 +304,19 @@ export default class Account extends Component<
           <View style={records.length > 0 ? style.record : global.hidden}>
             <Text style={style.recordTitle}>提现记录</Text>
             {records.map((v, k) => {
-              let name = ""
+              let name = ''
               if (v.bankCard) {
                 name = v.bankCard.bankName
-              } else if (v.type === "aliPay") {
-                name = "支付宝"
-              } else if (v.type === "wxPay") {
-                name = "微信"
+              } else if (v.type === 'aliPay') {
+                name = '支付宝'
+              } else if (v.type === 'wxPay') {
+                name = '微信'
               }
               return (
                 <View
                   key={k}
-                  style={[
-                    style.recordItem,
-                    global.flex,
-                    global.alignItemsCenter,
-                    global.justifyContentSpaceBetween,
-                  ]}>
+                  style={[style.recordItem, global.flex, global.alignItemsCenter, global.justifyContentSpaceBetween]}
+                >
                   <Text style={style.recordName}>{name}</Text>
                   <Text style={style.recordMoney}>{(v.money / 100).toFixed(2)}</Text>
                   <Text
@@ -361,7 +326,8 @@ export default class Account extends Component<
                         : v.status === CASH_OUT_APPLY_STATUS.reject
                         ? style.recordFail
                         : style.recordMoney
-                    }>
+                    }
+                  >
                     {CASH_OUT_APPLY_STATUS_ZH[v.status]}
                   </Text>
                   <Text style={style.recordRime}>{v.ctime.substr(0, 10)}</Text>
@@ -370,7 +336,7 @@ export default class Account extends Component<
             })}
           </View>
           <Modal
-            title="提现"
+            title='提现'
             transparent
             onClose={() => {
               this.setState({
@@ -382,7 +348,7 @@ export default class Account extends Component<
             closable
             footer={[
               {
-                text: "取消",
+                text: '取消',
                 onPress: () => {
                   this.setState({
                     isCashOutModalActive: false,
@@ -390,18 +356,18 @@ export default class Account extends Component<
                 },
               },
               {
-                text: "确定",
+                text: '确定',
                 onPress: () => {
-                  let { aliAccount, aliName, wxAccount, cashType, money } = this.state
+                  let { money } = this.state
                   let fmtMoney = parseFloat(money)
                   if (fmtMoney) {
                     if (fmtMoney <= 0) {
-                      return Toast.fail("输入金额不正确")
+                      return Toast.fail('输入金额不正确')
                     }
                     fmtMoney *= 100
-                    fmtMoney = parseInt(fmtMoney + "")
+                    fmtMoney = parseInt(String(fmtMoney))
                   } else {
-                    return Toast.fail("输入金额不正确")
+                    return Toast.fail('输入金额不正确')
                   }
                   this.cashOut({
                     type: cashType,
@@ -412,7 +378,8 @@ export default class Account extends Component<
                   })
                 },
               },
-            ]}>
+            ]}
+          >
             <View style={{ paddingVertical: 20 }}>
               <InputItem
                 clear
@@ -423,48 +390,52 @@ export default class Account extends Component<
                   })
                 }}
                 style={[global.fontSize14, global.fontStyle]}
-                placeholder="请输入提现金额(元)">
+                placeholder='请输入提现金额(元)'
+              >
                 金额
               </InputItem>
-              {cashType === "aliPay" && (
+              {cashType === 'aliPay' && (
                 <InputItem
                   clear
                   value={aliAccount}
-                  onChange={aliAccount => {
+                  onChange={editAliAccount => {
                     this.setState({
-                      aliAccount,
+                      aliAccount: editAliAccount,
                     })
                   }}
                   style={[global.fontSize14, global.fontStyle]}
-                  placeholder="请输入支付宝账号">
+                  placeholder='请输入支付宝账号'
+                >
                   账号
                 </InputItem>
               )}
-              {cashType === "aliPay" && (
+              {cashType === 'aliPay' && (
                 <InputItem
                   clear
                   value={aliName}
-                  onChange={aliName => {
+                  onChange={editAliName => {
                     this.setState({
-                      aliName,
+                      aliName: editAliName,
                     })
                   }}
                   style={[global.fontSize14, global.fontStyle]}
-                  placeholder="请输入支付宝真实姓名">
+                  placeholder='请输入支付宝真实姓名'
+                >
                   姓名
                 </InputItem>
               )}
-              {cashType === "wxPay" && (
+              {cashType === 'wxPay' && (
                 <InputItem
                   clear
                   value={wxAccount}
-                  onChange={wxAccount => {
+                  onChange={editWxAccount => {
                     this.setState({
-                      wxAccount,
+                      wxAccount: editWxAccount,
                     })
                   }}
                   style={[global.fontSize14, global.fontStyle]}
-                  placeholder="请输入微信账号">
+                  placeholder='请输入微信账号'
+                >
                   微信账号
                 </InputItem>
               )}

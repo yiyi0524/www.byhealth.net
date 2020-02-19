@@ -1,29 +1,29 @@
-import { StyleSheet, PixelRatio } from "react-native"
-import sColor from "@styles/color"
-import { windowWidth } from "@api/api"
-import { windowHeight } from "@/utils/utils"
+import { StyleSheet, PixelRatio } from 'react-native'
+import sColor from '@styles/color'
+import { windowWidth } from '@api/api'
+import { windowHeight } from '@/utils/utils'
 export default StyleSheet.create({
   loading: {
     width: windowWidth,
     height: windowHeight,
     backgroundColor: sColor.white,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
     flex: 1,
   },
   loadingTitle: {
-    textAlign: "center",
-    justifyContent: "center",
+    textAlign: 'center',
+    justifyContent: 'center',
   },
   loadingPic: {
-    width: "100%",
-    overflow: "hidden",
-    justifyContent: "center",
-    alignItems: "center",
+    width: '100%',
+    overflow: 'hidden',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   loadingImg: {
     width: 300,
-    resizeMode: "contain",
+    resizeMode: 'contain',
   },
   main: {
     flex: 1,
@@ -36,12 +36,12 @@ export default StyleSheet.create({
   },
   headerItem: {
     width: windowWidth / 3,
-    textAlign: "center",
+    textAlign: 'center',
     color: sColor.color333,
   },
   headerItemDisabled: {
     width: windowWidth / 3,
-    textAlign: "center",
+    textAlign: 'center',
     color: sColor.color999,
   },
   headerLine: {
@@ -64,7 +64,7 @@ export default StyleSheet.create({
   theme: {
     height: 50,
     lineHeight: 50,
-    textAlign: "center",
+    textAlign: 'center',
     color: sColor.color333,
     borderBottomWidth: 1 / PixelRatio.get(),
     borderBottomColor: sColor.colorDdd,
@@ -81,8 +81,8 @@ export default StyleSheet.create({
   item: {
     padding: 15,
     paddingTop: 5,
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
     borderBottomWidth: 1 / PixelRatio.get(),
     borderBottomColor: sColor.colorEee,
   },
@@ -124,13 +124,13 @@ export default StyleSheet.create({
     color: sColor.color666,
   },
   searchIcon: {
-    color: "#999",
+    color: '#999',
     fontSize: 14,
     borderWidth: 1,
-    borderColor: "#ccc",
+    borderColor: '#ccc',
     borderRadius: 100,
     padding: 5,
-    textAlign: "center",
+    textAlign: 'center',
   },
   drugList: {
     backgroundColor: sColor.white,
@@ -166,14 +166,14 @@ export default StyleSheet.create({
     borderWidth: 1 / PixelRatio.get(),
     borderColor: sColor.colorDdd,
     lineHeight: 25,
-    textAlign: "center",
+    textAlign: 'center',
   },
   count: {
     width: 70,
     margin: 0,
     padding: 0,
     color: sColor.color666,
-    textAlign: "center",
+    textAlign: 'center',
     borderBottomWidth: 1 / PixelRatio.get(),
     borderBottomColor: sColor.colorDdd,
   },
@@ -183,7 +183,7 @@ export default StyleSheet.create({
   popularDrugList: {},
   popularDrugItem: {
     borderWidth: 1,
-    borderColor: "#ccc",
+    borderColor: '#ccc',
     borderRadius: 5,
     marginBottom: 10,
     marginRight: 10,

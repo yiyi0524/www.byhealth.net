@@ -1,5 +1,5 @@
-import { GetListParam, bget, bpost } from "./api"
-export type Type = "bankCard" | "aliPay" | "wxPay"
+import { GetListParam, bget, bpost } from './api'
+export type Type = 'bankCard' | 'aliPay' | 'wxPay'
 /**
  * 医生银行卡模型
  */
@@ -28,7 +28,7 @@ export interface CashOutApply {
   aliAccount: string
   aliName: string
   wxAccount: string
-  bankCard: Omit<DoctorBankCard, "uid" | "doctorId"> | null
+  bankCard: Omit<DoctorBankCard, 'uid' | 'doctorId'> | null
   status: number
   ctime: string
 }
@@ -42,16 +42,16 @@ export const CASH_OUT_APPLY_STATUS = {
   reject: 0x2,
 }
 export const CASH_OUT_APPLY_STATUS_ZH = {
-  [CASH_OUT_APPLY_STATUS.wait]: "审核中",
-  [CASH_OUT_APPLY_STATUS.pass]: "提现通过",
-  [CASH_OUT_APPLY_STATUS.reject]: "提现拒绝",
+  [CASH_OUT_APPLY_STATUS.wait]: '审核中',
+  [CASH_OUT_APPLY_STATUS.pass]: '提现通过',
+  [CASH_OUT_APPLY_STATUS.reject]: '提现拒绝',
 }
 /**
  * 获取银行卡列表
  */
 export function list({ page = -1, limit = -1, filter }: GetListParam) {
   return bget<{ list: DoctorBankCard[] }>({
-    url: "api/listBankCard",
+    url: 'api/listBankCard',
     query: {
       page,
       limit,
@@ -62,18 +62,18 @@ export function list({ page = -1, limit = -1, filter }: GetListParam) {
 /**
  * 添加银行卡
  */
-export function add(data: Omit<DoctorBankCard, "id" | "uid" | "doctorId">) {
+export function add(data: Omit<DoctorBankCard, 'id' | 'uid' | 'doctorId'>) {
   return bpost({
-    url: "api/addBankCard",
+    url: 'api/addBankCard',
     data,
   })
 }
 /**
  * 编辑银行卡
  */
-export function edit(data: Omit<DoctorBankCard, "uid" | "doctorId">) {
+export function edit(data: Omit<DoctorBankCard, 'uid' | 'doctorId'>) {
   return bpost({
-    url: "api/editBankCard",
+    url: 'api/editBankCard',
     data,
   })
 }
@@ -89,7 +89,7 @@ export interface CashOutData {
  */
 export function cashOut(data: CashOutData) {
   return bpost({
-    url: "api/cashOut",
+    url: 'api/cashOut',
     data,
   })
 }
@@ -98,7 +98,7 @@ export function cashOut(data: CashOutData) {
  */
 export function listCashOutApply(query: GetListParam) {
   return bget<{ list: CashOutApply[] }>({
-    url: "api/listCashOutApply",
+    url: 'api/listCashOutApply',
     query,
   })
 }

@@ -1,5 +1,5 @@
-import React, { Component } from "react"
-import { StyleSheet, Text, View } from "react-native"
+import React, { Component } from 'react'
+import { StyleSheet, Text, View } from 'react-native'
 
 /*水平方向的虚线
  * len 虚线个数
@@ -23,10 +23,8 @@ export default class DashLine extends Component<Props, State> {
       <View style={[styles.dashLine, { width: this.props.width }]}>
         {arr.map((_, index) => {
           return (
-            <Text
-              style={[styles.dashItem, { backgroundColor: this.props.backgroundColor }]}
-              key={"dash" + index}>
-              {" "}
+            <Text style={[styles.dashItem, { backgroundColor: this.props.backgroundColor }]} key={'dash' + index}>
+              {' '}
             </Text>
           )
         })}
@@ -36,7 +34,7 @@ export default class DashLine extends Component<Props, State> {
 }
 const styles = StyleSheet.create({
   dashLine: {
-    flexDirection: "row",
+    flexDirection: 'row',
   },
   dashItem: {
     height: 1,

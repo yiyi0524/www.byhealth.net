@@ -1,27 +1,19 @@
-import * as userAction from "@/redux/actions/user"
-import { AppState } from "@/redux/stores/store"
-import pathMap from "@/routes/pathMap"
-import { Icon, Toast } from "@ant-design/react-native"
-import Calendar from "@components/Calendar"
-import sColor from "@styles/color"
-import gImg from "@utils/img"
-import gStyle from "@utils/style"
-import React, { Component } from "react"
-import {
-  Image,
-  PixelRatio,
-  RefreshControl,
-  Text,
-  View,
-  DeviceEventEmitter,
-  EmitterSubscription,
-} from "react-native"
-import { ScrollView, TouchableOpacity } from "react-native-gesture-handler"
-import { NavigationScreenProp } from "react-navigation"
-import { connect } from "react-redux"
-import { Dispatch } from "redux"
-import doctor, { SittingHospital } from "@/services/doctor"
-import hospital from "@/services/hospital"
+import * as userAction from '@/redux/actions/user'
+import { AppState } from '@/redux/stores/store'
+import pathMap from '@/routes/pathMap'
+import { Icon, Toast } from '@ant-design/react-native'
+import Calendar from '@components/Calendar'
+import sColor from '@styles/color'
+import gImg from '@utils/img'
+import gStyle from '@utils/style'
+import React, { Component } from 'react'
+import { Image, PixelRatio, RefreshControl, Text, View, DeviceEventEmitter, EmitterSubscription } from 'react-native'
+import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler'
+import { StackNavigationProp } from '@react-navigation/stack'
+import { connect } from 'react-redux'
+import { Dispatch } from 'redux'
+import doctor, { SittingHospital } from '@/services/doctor'
+import hospital from '@/services/hospital'
 const style = gStyle.index.SittingHospital
 const global = gStyle.global
 interface NavParams {
@@ -54,20 +46,13 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
     },
   }
 }
-@connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)
+@connect(mapStateToProps, mapDispatchToProps)
 export default class SittingInformation extends Component<
   Props & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
   State
 > {
-  static navigationOptions = ({
-    navigation,
-  }: {
-    navigation: NavigationScreenProp<State, NavParams>
-  }) => ({
-    title: "本月坐诊信息",
+  static navigationOptions = ({ navigation }: { navigation: NavigationScreenProp<State, NavParams> }) => ({
+    title: '本月坐诊信息',
     headerStyle: {
       backgroundColor: sColor.white,
       height: 50,
@@ -79,16 +64,17 @@ export default class SittingInformation extends Component<
     headerTintColor: sColor.color333,
     headerTitleStyle: {
       flex: 1,
-      alignItems: "center",
-      justifyContent: "center",
+      alignItems: 'center',
+      justifyContent: 'center',
       fontSize: 14,
-      textAlign: "center",
+      textAlign: 'center',
     },
     headerRight: (
       <TouchableOpacity
         onPress={() => {
           navigation.state.params!.navigatePress()
-        }}>
+        }}
+      >
         {/* <Text style={[style.headerRight, global.fontSize14]}>分享</Text> */}
       </TouchableOpacity>
     ),
@@ -97,15 +83,7 @@ export default class SittingInformation extends Component<
   subscription?: EmitterSubscription
   constructor(props: any) {
     super(props)
-    this.sittingInfoMapColor = [
-      "#f2878d",
-      "#d68db5",
-      "#ac84bf",
-      "#9b9fc5",
-      "#8fb2d4",
-      "#82c6c9",
-      "#71c797",
-    ]
+    this.sittingInfoMapColor = ['#f2878d', '#d68db5', '#ac84bf', '#9b9fc5', '#8fb2d4', '#82c6c9', '#71c797']
     this.state = this.getInitState()
   }
   getInitState = (): State => {
@@ -117,7 +95,7 @@ export default class SittingInformation extends Component<
     }
   }
   async componentDidMount() {
-    this.subscription = DeviceEventEmitter.addListener(pathMap.SittingHospital + "Reload", _ => {
+    this.subscription = DeviceEventEmitter.addListener(pathMap.SittingHospital + 'Reload', _ => {
       this.init()
     })
     await this.init()
@@ -132,7 +110,7 @@ export default class SittingInformation extends Component<
   }
 
   shareInformation = () => {
-    Toast.info("分享成功", 1)
+    Toast.info('分享成功', 1)
   }
   init = async () => {
     try {
@@ -158,7 +136,7 @@ export default class SittingInformation extends Component<
         this.setState({ refreshing: false })
       })
       .catch(err => {
-        Toast.fail("刷新失败,错误信息: " + err.msg)
+        Toast.fail('刷新失败,错误信息: ' + err.msg)
       })
   }
 
@@ -176,26 +154,16 @@ export default class SittingInformation extends Component<
       <>
         <ScrollView
           style={style.main}
-          refreshControl={
-            <RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh} />
-          }>
+          refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh} />}
+        >
           <View style={style.content}>
             <View style={style.medicalInstitution}>
               <View style={[style.header, global.flex, global.alignItemsCenter]}>
-                <Text style={[style.selectMedicalInstitutionTitle, global.fontSize14]}>
-                  医疗机构
-                </Text>
-                <TouchableOpacity
-                  onPress={() => this.props.navigation.push(pathMap.SittingHospitalList)}>
-                  <View
-                    style={[style.selectMedicalInstitution, global.flex, global.alignItemsCenter]}>
-                    <Text style={[style.selectMedicalInstitutionTheme, global.fontSize14]}>
-                      添加医疗机构
-                    </Text>
-                    <Icon
-                      style={[style.selectMedicalInstitutionIcon, global.fontSize14]}
-                      name="right"
-                    />
+                <Text style={[style.selectMedicalInstitutionTitle, global.fontSize14]}>医疗机构</Text>
+                <TouchableOpacity onPress={() => this.props.navigation.push(pathMap.SittingHospitalList)}>
+                  <View style={[style.selectMedicalInstitution, global.flex, global.alignItemsCenter]}>
+                    <Text style={[style.selectMedicalInstitutionTheme, global.fontSize14]}>添加医疗机构</Text>
+                    <Icon style={[style.selectMedicalInstitutionIcon, global.fontSize14]} name='right' />
                   </View>
                 </TouchableOpacity>
               </View>
@@ -208,18 +176,9 @@ export default class SittingInformation extends Component<
                     }
                   }
                   return (
-                    <View
-                      style={[style.medicalInstitutionItem, global.flex, global.alignItemsCenter]}
-                      key={k}>
-                      <View
-                        style={[
-                          style.medicalInstitutionIcon,
-                          { backgroundColor: this.sittingInfoMapColor[k] },
-                        ]}
-                      />
-                      <Text style={[style.medicalInstitutionTitle, global.fontSize14]}>
-                        {hospitalName}
-                      </Text>
+                    <View style={[style.medicalInstitutionItem, global.flex, global.alignItemsCenter]} key={k}>
+                      <View style={[style.medicalInstitutionIcon, { backgroundColor: this.sittingInfoMapColor[k] }]} />
+                      <Text style={[style.medicalInstitutionTitle, global.fontSize14]}>{hospitalName}</Text>
                     </View>
                   )
                 })}

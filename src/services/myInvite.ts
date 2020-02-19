@@ -1,4 +1,4 @@
-import { bpost } from "./api"
+import { bpost } from './api'
 
 //医生统计
 export interface InviteDoctorStatistics {
@@ -52,28 +52,28 @@ export interface FirstLevelDoctorChildOrderInfo {
 //获取医生统计信息
 export async function getInviteDoctorStatistics() {
   return bpost({
-    url: "doctor/getInviteDoctorStatistics",
+    url: 'doctor/getInviteDoctorStatistics',
     data: {},
   })
 }
 //获取金额统计信息
 export async function getInviteDoctorOrderMoneyInfo(data: { year: number; month: number }) {
   return bpost({
-    url: "doctor/getInviteDoctorOrderMoneyInfo",
+    url: 'doctor/getInviteDoctorOrderMoneyInfo',
     data,
   })
 }
 //获取订单数量信息
 export async function getInviteDoctorOrderInfo(data: { year: number; month: number }) {
   return bpost({
-    url: "doctor/getInviteDoctorOrderInfo",
+    url: 'doctor/getInviteDoctorOrderInfo',
     data,
   })
 }
 //获取邀请医生列表
 export async function listInviteDoctorChildInfo(data: { year: number; month: number }) {
   return bpost<{ list: InviteDoctorChildInfo[] }>({
-    url: "doctor/getInviteDoctorChildInfo",
+    url: 'doctor/getInviteDoctorChildInfo',
     data,
   })
 }
@@ -85,18 +85,14 @@ export async function listFirstLevelDoctorChildOrderInfo(data: {
   level: number
 }) {
   return bpost<{ list: FirstLevelDoctorChildOrderInfo[] }>({
-    url: "doctor/getFirstLevelDoctorChildOrderInfo",
+    url: 'doctor/getFirstLevelDoctorChildOrderInfo',
     data,
   })
 }
 //获取某个邀请的医生某月订单列表
-export async function listInviteDoctorOrder(data: {
-  year: number
-  month: number
-  doctorId: number
-}) {
+export async function listInviteDoctorOrder(data: { year: number; month: number; doctorId: number }) {
   return bpost({
-    url: "doctor/getInviteDoctorOrderList",
+    url: 'doctor/getInviteDoctorOrderList',
     data,
   })
 }

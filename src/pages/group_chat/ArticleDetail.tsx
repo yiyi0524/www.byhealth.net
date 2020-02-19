@@ -1,14 +1,14 @@
-import global from "@/assets/styles/global"
-import { AppState } from "@/redux/stores/store"
-import pathMap from "@/routes/pathMap"
-import { Article, getArticle } from "@/services/groupChat"
-import { getPicFullUrl } from "@/utils/utils"
-import { Carousel, Toast } from "@ant-design/react-native"
-import gSass from "@utils/style"
-import React, { Component } from "react"
-import { Image, ScrollView, Text, TouchableOpacity, View } from "react-native"
-import { NavigationScreenProp } from "react-navigation"
-import { connect } from "react-redux"
+import global from '@/assets/styles/global'
+import { AppState } from '@/redux/stores/store'
+import pathMap from '@/routes/pathMap'
+import { Article, getArticle } from '@/services/groupChat'
+import { getPicFullUrl } from '@/utils/utils'
+import { Carousel, Toast } from '@ant-design/react-native'
+import gSass from '@utils/style'
+import React, { Component } from 'react'
+import { Image, ScrollView, Text, TouchableOpacity, View } from 'react-native'
+import { StackNavigationProp } from '@react-navigation/stack'
+import { connect } from 'react-redux'
 const style = gSass.groupChat.articleDetail
 
 interface NavParams {
@@ -36,40 +36,37 @@ const mapStateToProps = (state: AppState) => {
 @connect(mapStateToProps)
 export default class ArticleDetail extends Component<Props & DefaultProps, State> {
   static defaultProps: DefaultProps
-  static navigationOptions = ({
-    navigation,
-  }: {
-    navigation: NavigationScreenProp<State, NavParams>
-  }) => {
+  static navigationOptions = ({ navigation }: { navigation: NavigationScreenProp<State, NavParams> }) => {
     return {
-      title: "文章详情",
+      title: '文章详情',
       headerStyle: {
-        backgroundColor: "#fff",
+        backgroundColor: '#fff',
         height: 45,
         elevation: 0,
-        borderColor: "#E3E3E3",
+        borderColor: '#E3E3E3',
       },
-      headerTintColor: "#333",
+      headerTintColor: '#333',
       headerTitleStyle: {
         flex: 1,
-        alignItems: "center",
-        justifyContent: "center",
+        alignItems: 'center',
+        justifyContent: 'center',
         fontSize: 14,
-        textAlign: "center",
+        textAlign: 'center',
       },
       headerRight: (
         <TouchableOpacity
           onPress={() => {
-            console.log("state: ", navigation.state)
+            console.log('state: ', navigation.state)
             if (navigation.state.params!.isPersonalArticle) {
               navigation.push(pathMap.AddOrEditArticle, {
-                type: "edit",
+                type: 'edit',
                 id: navigation.state.params!.id,
               })
             } else {
-              Toast.info("您不是此文章的作者", 2)
+              Toast.info('您不是此文章的作者', 2)
             }
-          }}>
+          }}
+        >
           <Text style={style.rightTitle}>编辑</Text>
         </TouchableOpacity>
       ),
@@ -90,16 +87,16 @@ export default class ArticleDetail extends Component<Props & DefaultProps, State
       step: 0,
       detail: {
         id: 0,
-        title: "",
+        title: '',
         author: {
           uid: 0,
-          name: "",
-          phone: "",
+          name: '',
+          phone: '',
         },
-        content: "",
+        content: '',
         picList: [],
         viewCount: 0,
-        ctime: "",
+        ctime: '',
       },
     }
   }
@@ -118,7 +115,7 @@ export default class ArticleDetail extends Component<Props & DefaultProps, State
         detail,
       })
       let isPersonalArticle = uid === detail.author.uid
-      console.log("1: ", detail, uid)
+      console.log('1: ', detail, uid)
       this.props.navigation.setParams({
         isPersonalArticle,
       })
@@ -140,15 +137,16 @@ export default class ArticleDetail extends Component<Props & DefaultProps, State
           autoplay
           infinite
           dots={false}
-          afterChange={step => {
+          afterChange={editStep => {
             this.setState({
-              step,
+              step: editStep,
             })
-          }}>
+          }}
+        >
           {detail.picList.map(v => {
             return (
               <View style={style.item} key={v.id}>
-                <Image style={style.img} source={{ uri: getPicFullUrl(v.url) }}></Image>
+                <Image style={style.img} source={{ uri: getPicFullUrl(v.url) }} />
               </View>
             )
           })}

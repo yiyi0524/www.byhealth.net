@@ -1,19 +1,19 @@
-import global from "@/assets/styles/global"
-import { getPicFullUrl, getPicCdnUrl } from "@/utils/utils"
-import { Icon } from "@ant-design/react-native"
-import doctorApi, { UPLOAD_PRESCRIPTION_STATUS } from "@api/doctor"
-import sColor from "@styles/color"
-import gImg from "@utils/img"
-import gSass from "@utils/style"
-import React, { Component } from "react"
-import { Image, Text, TouchableOpacity, View } from "react-native"
-import { ScrollView } from "react-native-gesture-handler"
-import ImageViewer from "react-native-image-zoom-viewer"
-import { NavigationScreenProp } from "react-navigation"
-import { imagesViewer, Picture } from "../advisory/Chat"
+import global from '@/assets/styles/global'
+import { getPicFullUrl, getPicCdnUrl } from '@/utils/utils'
+import { Icon } from '@ant-design/react-native'
+import doctorApi, { UPLOAD_PRESCRIPTION_STATUS } from '@api/doctor'
+import sColor from '@styles/color'
+import gImg from '@utils/img'
+import gSass from '@utils/style'
+import React, { Component } from 'react'
+import { Image, Text, TouchableOpacity, View } from 'react-native'
+import { ScrollView } from 'react-native-gesture-handler'
+import ImageViewer from 'react-native-image-zoom-viewer'
+import { StackNavigationProp } from '@react-navigation/stack'
+import { imagesViewer, Picture } from '../advisory/Chat'
 const style = gSass.index.uploadPrescriptionDetail
 interface Props {
-  navigation: NavigationScreenProp<State>
+  navigation: StackNavigationProp<any>
 }
 interface State {
   hasLoad: boolean
@@ -25,7 +25,7 @@ interface State {
   expressName: string
   expressNo: string
   advice: string
-  status: "cancelOrder" | "hasSend" | "waitSend"
+  status: 'cancelOrder' | 'hasSend' | 'waitSend'
   prescriptionPicList: Picture[]
 }
 type DefaultProps = {}
@@ -33,7 +33,7 @@ type DefaultProps = {}
 export default class UploadPrescriptionDetail extends Component<Props & DefaultProps, State> {
   static defaultProps: DefaultProps
   static navigationOptions = () => ({
-    title: "处方详情",
+    title: '处方详情',
     headerStyle: {
       backgroundColor: sColor.white,
       height: 45,
@@ -43,10 +43,10 @@ export default class UploadPrescriptionDetail extends Component<Props & DefaultP
     headerTintColor: sColor.color333,
     headerTitleStyle: {
       flex: 1,
-      alignItems: "center",
-      justifyContent: "center",
+      alignItems: 'center',
+      justifyContent: 'center',
       fontSize: 14,
-      textAlign: "center",
+      textAlign: 'center',
     },
     headerRight: <Text />,
   })
@@ -58,14 +58,14 @@ export default class UploadPrescriptionDetail extends Component<Props & DefaultP
     return {
       hasLoad: false,
       isShowImg: false,
-      expressName: "",
-      expressNo: "",
-      advice: "",
-      status: "waitSend",
+      expressName: '',
+      expressNo: '',
+      advice: '',
+      status: 'waitSend',
       showImgUrl: [],
-      name: "",
+      name: '',
       serviceMoney: 0,
-      ctime: "",
+      ctime: '',
       prescriptionPicList: [],
     }
   }
@@ -74,19 +74,10 @@ export default class UploadPrescriptionDetail extends Component<Props & DefaultP
   }
   init = async () => {
     try {
-      let id = this.props.navigation.getParam("id")
+      let id = this.props.navigation.getParam('id')
       let {
         data: {
-          detail: {
-            name,
-            serviceMoney,
-            prescriptionPicList,
-            ctime,
-            expressName,
-            expressNo,
-            advice,
-            status,
-          },
+          detail: { name, serviceMoney, prescriptionPicList, ctime, expressName, expressNo, advice, status },
         },
       } = await doctorApi.uploadPrescriptionDetail({ id })
       this.setState({
@@ -99,10 +90,7 @@ export default class UploadPrescriptionDetail extends Component<Props & DefaultP
         expressNo,
         advice,
         status,
-        showImgUrl:
-          prescriptionPicList.length > 0
-            ? [{ url: getPicFullUrl(prescriptionPicList[0].url) }]
-            : [],
+        showImgUrl: prescriptionPicList.length > 0 ? [{ url: getPicFullUrl(prescriptionPicList[0].url) }] : [],
       })
     } catch (err) {
       console.log(err)
@@ -134,7 +122,7 @@ export default class UploadPrescriptionDetail extends Component<Props & DefaultP
     }
     return (
       <>
-        <ScrollView style={style.main} keyboardShouldPersistTaps="handled">
+        <ScrollView style={style.main} keyboardShouldPersistTaps='handled'>
           <View style={style.content}>
             <View style={[style.item, global.flex, global.alignItemsCenter]}>
               <Text style={style.title}>患者姓名</Text>
@@ -177,7 +165,8 @@ export default class UploadPrescriptionDetail extends Component<Props & DefaultP
                             },
                           ],
                         })
-                      }}>
+                      }}
+                    >
                       <Image
                         style={style.pic}
                         source={v.url ? { uri: getPicFullUrl(v.url) } : gImg.common.defaultPic}
@@ -200,24 +189,18 @@ export default class UploadPrescriptionDetail extends Component<Props & DefaultP
                 this.setState({
                   showImgUrl: [
                     {
-                      url: getPicCdnUrl("/static/media/collapsed_logo.db8ef9b3.png"),
+                      url: getPicCdnUrl('/static/media/collapsed_logo.db8ef9b3.png'),
                     },
                   ],
                   isShowImg: false,
                 })
               }}
               style={style.closeIcon}
-              name="close"
+              name='close'
             />
           </View>
           <View style={style.showImgPar}>
-            <ImageViewer
-              saveToLocalByLongPress={false}
-              imageUrls={showImgUrl}
-              index={0}
-              maxOverflow={0}
-              onCancel={() => {}}
-            />
+            <ImageViewer saveToLocalByLongPress={false} imageUrls={showImgUrl} index={0} maxOverflow={0} />
           </View>
         </View>
       </>

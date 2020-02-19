@@ -1,18 +1,18 @@
-import { StyleSheet } from "react-native"
+import { StyleSheet } from 'react-native'
 export default StyleSheet.create({
   icon: {
     fontSize: 14,
-    color: "#E95937",
+    color: '#E95937',
     paddingRight: 15,
   },
   main: {
     flex: 1,
-    backgroundColor: "#F9F9F9",
+    backgroundColor: '#F9F9F9',
   },
   applyList: {
     marginBottom: 20,
     padding: 15,
-    backgroundColor: "#fff",
+    backgroundColor: '#fff',
   },
   applyImg: {
     flex: 1,
@@ -23,7 +23,7 @@ export default StyleSheet.create({
   applyAvatar: {
     width: 34,
     height: 34,
-    resizeMode: "cover",
+    resizeMode: 'cover',
     borderRadius: 100,
   },
   applyCountPar: {
@@ -31,14 +31,14 @@ export default StyleSheet.create({
   },
   applyCount: {
     fontSize: 12,
-    color: "#666",
+    color: '#666',
   },
   applyIcon: {
     fontSize: 15,
-    color: "#333",
+    color: '#333',
   },
   list: {
-    backgroundColor: "#fff",
+    backgroundColor: '#fff',
     padding: 15,
     paddingBottom: 0,
   },
@@ -49,20 +49,20 @@ export default StyleSheet.create({
     width: 39,
     height: 39,
     borderRadius: 100,
-    overflow: "hidden",
+    overflow: 'hidden',
   },
   avatar: {
     width: 39,
     height: 39,
-    resizeMode: "cover",
+    resizeMode: 'cover',
   },
   name: {
     marginLeft: 15,
     fontSize: 15,
-    color: "#333",
+    color: '#333',
   },
   administratorsPar: {
-    backgroundColor: "#ED5736",
+    backgroundColor: '#ED5736',
     padding: 2,
     paddingLeft: 5,
     paddingRight: 5,
@@ -70,7 +70,7 @@ export default StyleSheet.create({
   },
   administrators: {
     fontSize: 9,
-    color: "#fff",
+    color: '#fff',
   },
   select: {
     marginRight: 11,
@@ -78,7 +78,7 @@ export default StyleSheet.create({
     height: 18,
     borderRadius: 100,
     borderWidth: 1,
-    borderColor: "#999",
+    borderColor: '#999',
   },
   selectActive: {
     marginRight: 11,
@@ -86,13 +86,13 @@ export default StyleSheet.create({
     height: 18,
     borderRadius: 100,
     borderWidth: 1,
-    borderColor: "#ED5736",
-    backgroundColor: "#ED5736",
+    borderColor: '#ED5736',
+    backgroundColor: '#ED5736',
   },
   selectTitle: {
     lineHeight: 16,
-    textAlign: "center",
+    textAlign: 'center',
     fontSize: 12,
-    color: "#fff",
+    color: '#fff',
   },
 })

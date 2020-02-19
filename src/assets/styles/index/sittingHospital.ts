@@ -1,29 +1,29 @@
-import { windowHeight } from "@/utils/utils"
-import { windowWidth } from "@api/api"
-import sColor from "@styles/color"
-import { StyleSheet, PixelRatio } from "react-native"
+import { windowHeight } from '@/utils/utils'
+import { windowWidth } from '@api/api'
+import sColor from '@styles/color'
+import { StyleSheet, PixelRatio } from 'react-native'
 export default StyleSheet.create({
   loading: {
     width: windowWidth,
     height: windowHeight,
     backgroundColor: sColor.white,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
     flex: 1,
   },
   loadingTitle: {
-    textAlign: "center",
-    justifyContent: "center",
+    textAlign: 'center',
+    justifyContent: 'center',
   },
   loadingPic: {
-    width: "100%",
-    overflow: "hidden",
-    justifyContent: "center",
-    alignItems: "center",
+    width: '100%',
+    overflow: 'hidden',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   loadingImg: {
     width: 300,
-    resizeMode: "contain",
+    resizeMode: 'contain',
   },
 
   headerRight: {
@@ -35,7 +35,7 @@ export default StyleSheet.create({
     backgroundColor: sColor.mainBgColor,
   },
   content: {
-    position: "relative",
+    position: 'relative',
   },
   header: {
     backgroundColor: sColor.white,
@@ -50,11 +50,11 @@ export default StyleSheet.create({
   selectMedicalInstitutionTitle: {
     color: sColor.color333,
     flex: 1,
-    fontWeight: "500",
+    fontWeight: '500',
   },
   selectMedicalInstitutionTheme: {
     color: sColor.color666,
-    textAlign: "right",
+    textAlign: 'right',
   },
   selectMedicalInstitutionIcon: {
     color: sColor.color888,
@@ -68,7 +68,7 @@ export default StyleSheet.create({
   },
   medicalInstitutionItem: {
     height: 45,
-    justifyContent: "center",
+    justifyContent: 'center',
     borderBottomWidth: 1 / PixelRatio.get(),
     borderBottomColor: sColor.colorEee,
   },

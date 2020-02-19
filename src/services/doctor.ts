@@ -1,11 +1,11 @@
-import { DayStage } from "@/components/Calendar"
-import { patientGroupItem } from "@/pages/address_book/Group"
-import { patientItem } from "@/pages/address_book/GroupDetail"
-import { Picture } from "@/pages/advisory/Chat"
-import { ConsultationItem } from "@/pages/advisory/Index"
-import { PrescriptionDrugCategory, PrescriptionDrugInfo } from "@/pages/advisory/SquareRoot"
-import { Drug as DrugInfo } from "@api/patient"
-import { bget, bpost, GetListParam } from "./api"
+import { DayStage } from '@/components/Calendar'
+import { patientGroupItem } from '@/pages/address_book/Group'
+import { patientItem } from '@/pages/address_book/GroupDetail'
+import { Picture } from '@/pages/advisory/Chat'
+import { ConsultationItem } from '@/pages/advisory/Index'
+import { PrescriptionDrugCategory, PrescriptionDrugInfo } from '@/pages/advisory/SquareRoot'
+import { Drug as DrugInfo } from '@api/patient'
+import { bget, bpost, GetListParam } from './api'
 /**
  * 扫码用户
  */
@@ -30,9 +30,9 @@ export const GENDER = {
   WOMAN: 0x2,
 }
 export const GENDER_ZH = {
-  [GENDER.UNDEFINED]: "未知",
-  [GENDER.MAN]: "男",
-  [GENDER.WOMAN]: "女",
+  [GENDER.UNDEFINED]: '未知',
+  [GENDER.MAN]: '男',
+  [GENDER.WOMAN]: '女',
 }
 export const STATUS = {
   process: 0x0,
@@ -40,9 +40,9 @@ export const STATUS = {
   reject: 0x2,
 }
 export const STATUS_ZH = {
-  [STATUS.process]: "处理中",
-  [STATUS.pass]: "已通过",
-  [STATUS.reject]: "已拒绝",
+  [STATUS.process]: '处理中',
+  [STATUS.pass]: '已通过',
+  [STATUS.reject]: '已拒绝',
 }
 /**
  * 处方状态
@@ -52,8 +52,8 @@ export const PRESCRIPTION_STATUS = {
   completePay: 0x1,
 }
 export const PRESCRIPTION_STATUS_ZH = {
-  [PRESCRIPTION_STATUS.waitPay]: "等待支付",
-  [PRESCRIPTION_STATUS.completePay]: "已支付",
+  [PRESCRIPTION_STATUS.waitPay]: '等待支付',
+  [PRESCRIPTION_STATUS.completePay]: '已支付',
 }
 /**
  * 职称
@@ -65,10 +65,10 @@ export const TECHNICAL_TITLE = {
   CHIEF_PHYSICIAN: 0x3,
 }
 export const TECHNICAL_TITLE_ZH = {
-  [TECHNICAL_TITLE.RESIDENT]: "住院医师",
-  [TECHNICAL_TITLE.ATTENDING_DOCTOR]: "主治医师",
-  [TECHNICAL_TITLE.DEPUTY_CHIEF_PHYSICIAN]: "副主任医师",
-  [TECHNICAL_TITLE.CHIEF_PHYSICIAN]: "主任医师",
+  [TECHNICAL_TITLE.RESIDENT]: '住院医师',
+  [TECHNICAL_TITLE.ATTENDING_DOCTOR]: '主治医师',
+  [TECHNICAL_TITLE.DEPUTY_CHIEF_PHYSICIAN]: '副主任医师',
+  [TECHNICAL_TITLE.CHIEF_PHYSICIAN]: '主任医师',
 }
 export interface authParam {
   avatar: { picId: number }
@@ -97,11 +97,11 @@ export const QUICK_REPLY_TYPE = {
   advice: 0x4,
 }
 export const QUICK_REPLY_TYPE_ZH = {
-  [QUICK_REPLY_TYPE.text]: "文字随访",
-  [QUICK_REPLY_TYPE.common]: "常用回复",
-  [QUICK_REPLY_TYPE.inquiry]: "诊中问题",
-  [QUICK_REPLY_TYPE.drugAndShipping]: "药材与快递",
-  [QUICK_REPLY_TYPE.advice]: "调理建议",
+  [QUICK_REPLY_TYPE.text]: '文字随访',
+  [QUICK_REPLY_TYPE.common]: '常用回复',
+  [QUICK_REPLY_TYPE.inquiry]: '诊中问题',
+  [QUICK_REPLY_TYPE.drugAndShipping]: '药材与快递',
+  [QUICK_REPLY_TYPE.advice]: '调理建议',
 }
 export const STAGE = {
   morning: 0x0,
@@ -109,17 +109,17 @@ export const STAGE = {
   night: 0x2,
 }
 export const STAGE_ZH = {
-  [STAGE.morning]: "上午",
-  [STAGE.afternoon]: "下午",
-  [STAGE.night]: "晚上",
+  [STAGE.morning]: '上午',
+  [STAGE.afternoon]: '下午',
+  [STAGE.night]: '晚上',
 }
 export const SITTING = {
   FALSE: 0x0,
   TRUE: 0x1,
 }
 export const SITTING_ZH = {
-  [SITTING.FALSE]: "坐诊",
-  [SITTING.TRUE]: "不坐诊",
+  [SITTING.FALSE]: '坐诊',
+  [SITTING.TRUE]: '不坐诊',
 }
 /**
  * 注册
@@ -141,7 +141,7 @@ export function doctorAuth({
   hospitalName,
 }: authParam) {
   return bpost({
-    url: "/api/doctorAuth",
+    url: '/api/doctorAuth',
     data: {
       avatar,
       name,
@@ -162,7 +162,7 @@ export function doctorAuth({
 }
 export function getMsgList({ page, limit, filter }: GetListParam) {
   return bget({
-    url: "/api/doctorAuth",
+    url: '/api/doctorAuth',
     data: {
       page,
       limit,
@@ -175,7 +175,7 @@ export function getMsgList({ page, limit, filter }: GetListParam) {
  */
 export function getBalance() {
   return bget({
-    url: "api/getDoctorBalance",
+    url: 'api/getDoctorBalance',
   })
 }
 /**
@@ -183,7 +183,7 @@ export function getBalance() {
  */
 export function setAdeptSymptomIdList({ adeptSymptomIdList }: { adeptSymptomIdList: number[] }) {
   return bpost({
-    url: "api/setAdeptSymptomIdList",
+    url: 'api/setAdeptSymptomIdList',
     data: {
       adeptSymptomIdList,
     },
@@ -194,7 +194,7 @@ export function setAdeptSymptomIdList({ adeptSymptomIdList }: { adeptSymptomIdLi
  */
 export function setProfile({ profile }: { profile: string }) {
   return bpost({
-    url: "api/setProfile",
+    url: 'api/setProfile',
     data: {
       profile,
     },
@@ -210,7 +210,7 @@ export function getInquirySetup() {
     followUpPrice: number
     percentageOfCommission: number
   }>({
-    url: "api/getInquirySetup",
+    url: 'api/getInquirySetup',
   })
 }
 /**
@@ -223,7 +223,7 @@ export function setInquirySetup(data: {
   percentageOfCommission: number
 }) {
   return bpost({
-    url: "api/setInquirySetup",
+    url: 'api/setInquirySetup',
     data,
   })
 }
@@ -232,7 +232,7 @@ export function setInquirySetup(data: {
  */
 export async function getPatientGroupList(param: GetListParam) {
   return bget<{ list: patientGroupItem[] }>({
-    url: "api/getPatientGroupList",
+    url: 'api/getPatientGroupList',
     query: {
       ...param,
     },
@@ -243,7 +243,7 @@ export async function getPatientGroupList(param: GetListParam) {
  */
 export async function deletePatientGroup({ id }: { id: number }) {
   return bpost({
-    url: "api/deletePatientGroup",
+    url: 'api/deletePatientGroup',
     data: {
       id,
     },
@@ -252,15 +252,9 @@ export async function deletePatientGroup({ id }: { id: number }) {
 /**
  * 添加分组
  */
-export async function addPatientGroup({
-  name,
-  patientUidList,
-}: {
-  name: string
-  patientUidList: number[]
-}) {
+export async function addPatientGroup({ name, patientUidList }: { name: string; patientUidList: number[] }) {
   return bpost({
-    url: "api/addPatientGroup",
+    url: 'api/addPatientGroup',
     data: {
       name,
       patientUidList,
@@ -273,7 +267,7 @@ export async function addPatientGroup({
  */
 export async function getPatientGroupDetail({ id }: { id: number }) {
   return bget<{ detail: { patientList: patientItem[] } }>({
-    url: "api/getPatientGroupDetail",
+    url: 'api/getPatientGroupDetail',
     query: {
       id,
     },
@@ -284,7 +278,7 @@ export async function getPatientGroupDetail({ id }: { id: number }) {
  */
 export async function listConsultation(param: GetListParam) {
   return bget<{ list: ConsultationItem[] }>({
-    url: "api/listConsultation",
+    url: 'api/listConsultation',
     query: {
       ...param,
     },
@@ -295,7 +289,7 @@ export async function listConsultation(param: GetListParam) {
  */
 export async function getWaitAuditDoctorDetail() {
   return bget({
-    url: "doctor/getWaitAuditDoctorDetail",
+    url: 'doctor/getWaitAuditDoctorDetail',
     query: {},
   })
 }
@@ -325,14 +319,14 @@ export interface squareRoot {
  */
 export async function getSquareRoot({ prescriptionId }: { prescriptionId: number }) {
   return bget<{ detail: squareRoot }>({
-    url: "patientApi/getPrescriptionDetail",
+    url: 'patientApi/getPrescriptionDetail',
     query: {
       prescriptionId,
     },
   })
 }
 export interface prescriptionDetail {
-  type: "common" | "phone" | "wx"
+  type: 'common' | 'phone' | 'wx'
   doctor: {
     name: string
   }
@@ -361,7 +355,7 @@ export interface prescriptionDetail {
  */
 export async function getPrescriptionDetail({ prescriptionId }: { prescriptionId: number }) {
   return bget<{ detail: prescriptionDetail }>({
-    url: "patientApi/getPrescriptionDetail",
+    url: 'patientApi/getPrescriptionDetail',
     query: {
       prescriptionId,
     },
@@ -380,7 +374,7 @@ export async function getPrescriptionDetail({ prescriptionId }: { prescriptionId
 //   drug_list: DbSaveDrugInfo[]
 // }
 export interface AddPrescriptionParam {
-  mode?: "common" | "phone" | "wx"
+  mode?: 'common' | 'phone' | 'wx'
   phone?: string
   patientName?: string
   tplName?: string
@@ -397,7 +391,7 @@ export interface AddPrescriptionParam {
  */
 export async function addPrescription(data: AddPrescriptionParam) {
   return bpost<{ id: number }>({
-    url: "api/addPrescription",
+    url: 'api/addPrescription',
     data,
   })
 }
@@ -406,7 +400,7 @@ export async function addPrescription(data: AddPrescriptionParam) {
  */
 export async function closeInquiry(data: { patientUid: number }) {
   return bpost<{ id: number }>({
-    url: "api/closeInquiry",
+    url: 'api/closeInquiry',
     data,
   })
 }
@@ -415,7 +409,7 @@ export async function closeInquiry(data: { patientUid: number }) {
  */
 export async function getServiceSettings() {
   return bget<{ allowSearch: number }>({
-    url: "api/getServiceSettings",
+    url: 'api/getServiceSettings',
   })
 }
 /**
@@ -423,7 +417,7 @@ export async function getServiceSettings() {
  */
 export function setServiceSettings(data: { allowSearch: number }) {
   return bpost({
-    url: "api/setServiceSettings",
+    url: 'api/setServiceSettings',
     data,
   })
 }
@@ -432,7 +426,7 @@ export function setServiceSettings(data: { allowSearch: number }) {
  */
 export function setInvisiblePatients(data: { patientUid: number }) {
   return bpost({
-    url: "api/setInvisiblePatient",
+    url: 'api/setInvisiblePatient',
     data,
   })
 }
@@ -450,7 +444,7 @@ export interface InvisiblePatient {
 }
 export function listInvisiblePatient({ page, limit, filter = {} }: GetListParam) {
   return bget<{ list: InvisiblePatient[] }>({
-    url: "api/listInvisiblePatient",
+    url: 'api/listInvisiblePatient',
     query: {
       page,
       limit,
@@ -474,7 +468,7 @@ export interface QuickReplyMsg {
  */
 export function listQuickReply({ page, limit, filter = {} }: GetListParam) {
   return bget<{ list: QuickReplyMsg[] }>({
-    url: "api/listQuickReply",
+    url: 'api/listQuickReply',
     query: {
       page,
       limit,
@@ -487,7 +481,7 @@ export function listQuickReply({ page, limit, filter = {} }: GetListParam) {
  */
 export function deleteQuickReply(data: { id: number }) {
   return bpost({
-    url: "api/deleteQuickReply",
+    url: 'api/deleteQuickReply',
     data,
   })
 }
@@ -496,7 +490,7 @@ export function deleteQuickReply(data: { id: number }) {
  */
 export function addQuickReply(data: { type: number; msg: string }) {
   return bpost({
-    url: "api/addQuickReply",
+    url: 'api/addQuickReply',
     data,
   })
 }
@@ -505,7 +499,7 @@ export function addQuickReply(data: { type: number; msg: string }) {
  */
 export function editQuickReply(data: { id: number; msg: string }) {
   return bpost({
-    url: "api/editQuickReply",
+    url: 'api/editQuickReply',
     data,
   })
 }
@@ -525,7 +519,7 @@ export interface SittingHospital {
  */
 export function listSittingHospital({ page, limit, filter = {} }: GetListParam) {
   return bget<{ list: SittingHospital[] }>({
-    url: "api/listSittingHospital",
+    url: 'api/listSittingHospital',
     query: {
       page,
       limit,
@@ -538,7 +532,7 @@ export function listSittingHospital({ page, limit, filter = {} }: GetListParam) 
  */
 export function deleteSittingHospital(data: { id: number }) {
   return bpost({
-    url: "api/deleteSittingHospital",
+    url: 'api/deleteSittingHospital',
     data,
   })
 }
@@ -552,7 +546,7 @@ export function addSittingHospital(data: {
   detail: string
 }) {
   return bpost({
-    url: "api/addSittingHospital",
+    url: 'api/addSittingHospital',
     data,
   })
 }
@@ -571,7 +565,7 @@ export function getSittingHospital({ id }: { id: number }) {
       detail: string
     }
   }>({
-    url: "api/getSittingHospital",
+    url: 'api/getSittingHospital',
     query: {
       id,
     },
@@ -588,7 +582,7 @@ export function editSittingHospital(data: {
   detail: string
 }) {
   return bpost({
-    url: "api/editSittingHospital",
+    url: 'api/editSittingHospital',
     data,
   })
 }
@@ -604,7 +598,7 @@ interface SittingInfo {
  */
 export async function editSittingInfo(data: SittingInfo) {
   return bpost({
-    url: "api/editSittingInfo",
+    url: 'api/editSittingInfo',
     data,
   })
 }
@@ -619,7 +613,7 @@ export interface sittingRecord {
  */
 export function listSittingRecord({ page, limit, filter = {} }: GetListParam) {
   return bget<{ list: sittingRecord[] }>({
-    url: "api/listSittingRecord",
+    url: 'api/listSittingRecord',
     query: {
       page,
       limit,
@@ -632,7 +626,7 @@ export function listSittingRecord({ page, limit, filter = {} }: GetListParam) {
  */
 export function getMyInvitePatientQrCode() {
   return bget<{ url: string }>({
-    url: "api/getMyInvitePatientQrCode",
+    url: 'api/getMyInvitePatientQrCode',
   })
 }
 export interface PrescriptionTpl {
@@ -658,7 +652,7 @@ export interface PrescriptionTpl {
  */
 export function listPrescriptionTpl({ page, limit, filter }: GetListParam) {
   return bget<{ list: PrescriptionTpl[] }>({
-    url: "api/listPrescriptionTpl",
+    url: 'api/listPrescriptionTpl',
     query: {
       page,
       limit,
@@ -671,7 +665,7 @@ export function listPrescriptionTpl({ page, limit, filter }: GetListParam) {
  */
 export function getPrescriptionTpl({ id }: { id: number }) {
   return bget<{ detail: PrescriptionTpl }>({
-    url: "api/getPrescriptionTpl",
+    url: 'api/getPrescriptionTpl',
     query: {
       id,
     },
@@ -690,7 +684,7 @@ export function addPrescriptionTpl(data: {
   everyDoseUseCount: number
 }) {
   return bpost<{ detail: PrescriptionTpl }>({
-    url: "api/addPrescriptionTpl",
+    url: 'api/addPrescriptionTpl',
     data,
   })
 }
@@ -707,7 +701,7 @@ export function editPrescriptionTpl(data: {
   everyDoseUseCount: number
 }) {
   return bpost<{ detail: PrescriptionTpl }>({
-    url: "api/editPrescriptionTpl",
+    url: 'api/editPrescriptionTpl',
     data,
   })
 }
@@ -716,7 +710,7 @@ export function editPrescriptionTpl(data: {
  */
 export function deletePrescriptionTpl(data: { id: number }) {
   return bpost({
-    url: "api/deletePrescriptionTpl",
+    url: 'api/deletePrescriptionTpl',
     data,
   })
 }
@@ -725,7 +719,7 @@ export function deletePrescriptionTpl(data: { id: number }) {
  */
 export function clearPatientUnreadMsgCount(data: { patientUid: number }) {
   return bpost({
-    url: "api/clearPatientUnreadMsgCount",
+    url: 'api/clearPatientUnreadMsgCount',
     data,
   })
 }
@@ -734,13 +728,13 @@ export function clearPatientUnreadMsgCount(data: { patientUid: number }) {
  */
 export function getUnreadMsgCount() {
   return bget<{ unreadMsgCount: number }>({
-    url: "api/getUnreadMsgCount",
+    url: 'api/getUnreadMsgCount',
   })
 }
 export const UPLOAD_PRESCRIPTION_STATUS = {
-  waitSend: "等待发送",
-  hasSend: "发送成功",
-  cancelOrder: "取消发送",
+  waitSend: '等待发送',
+  hasSend: '发送成功',
+  cancelOrder: '取消发送',
 }
 /**
  *  上传处方
@@ -752,7 +746,7 @@ export function uploadPrescription(data: {
   prescriptionPicList: any
 }) {
   return bpost({
-    url: "api/uploadLocalPrescription",
+    url: 'api/uploadLocalPrescription',
     data,
   })
 }
@@ -760,8 +754,8 @@ export function uploadPrescription(data: {
  * 上传处方列表
  */
 export function listUploadPrescription(query: GetListParam) {
-  return bget<{ list: Pick<UploadPrescription, "id" | "name" | "status" | "ctime">[] }>({
-    url: "api/listUploadPrescription",
+  return bget<{ list: Pick<UploadPrescription, 'id' | 'name' | 'status' | 'ctime'>[] }>({
+    url: 'api/listUploadPrescription',
     query,
   })
 }
@@ -776,12 +770,12 @@ interface UploadPrescription {
   expressName: string
   expressNo: string
   advice: string
-  status: "hasSend" | "cancelOrder" | "waitSend"
+  status: 'hasSend' | 'cancelOrder' | 'waitSend'
   prescriptionPicList: Picture[]
 }
 export function uploadPrescriptionDetail(query: { id: number }) {
   return bget<{ detail: UploadPrescription }>({
-    url: "api/uploadPrescriptionDetail",
+    url: 'api/uploadPrescriptionDetail',
     query,
   })
 }
@@ -790,7 +784,7 @@ export function uploadPrescriptionDetail(query: { id: number }) {
  */
 export function listScanUser() {
   return bget<{ list: ScanUser[] }>({
-    url: "api/listScanUser",
+    url: 'api/listScanUser',
   })
 }
 /**
@@ -798,7 +792,7 @@ export function listScanUser() {
  */
 export function getWxPrescriptionGuideUrl(query: { id: number }) {
   return bget<{ url: string }>({
-    url: "getWxPrescriptionGuideUrl",
+    url: 'getWxPrescriptionGuideUrl',
     query,
   })
 }
@@ -807,7 +801,7 @@ export function getWxPrescriptionGuideUrl(query: { id: number }) {
  */
 export function getDoctorAvatarUrl() {
   return bget<{ url: string }>({
-    url: "getDoctorAvatarUrl",
+    url: 'getDoctorAvatarUrl',
   })
 }
 export default {

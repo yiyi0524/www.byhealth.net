@@ -1,15 +1,15 @@
-import * as userAction from "@/redux/actions/user"
-import { AppState } from "@/redux/stores/store"
-import pathMap from "@/routes/pathMap"
-import api from "@/services/api"
-import { getPicCdnUrl } from "@/utils/utils"
-import { Icon, InputItem, Toast } from "@ant-design/react-native"
-import patientApi from "@api/patient"
-import userApi from "@api/user"
-import { Picture } from "@pages/advisory/Chat"
-import gImg from "@utils/img"
-import gStyle from "@utils/style"
-import React, { Component } from "react"
+import * as userAction from '@/redux/actions/user'
+import { AppState } from '@/redux/stores/store'
+import pathMap from '@/routes/pathMap'
+import api from '@/services/api'
+import { getPicCdnUrl } from '@/utils/utils'
+import { Icon, InputItem, Toast } from '@ant-design/react-native'
+import patientApi from '@api/patient'
+import userApi from '@api/user'
+import { Picture } from '@pages/advisory/Chat'
+import gImg from '@utils/img'
+import gStyle from '@utils/style'
+import React, { Component } from 'react'
 import {
   DeviceEventEmitter,
   EmitterSubscription,
@@ -19,10 +19,10 @@ import {
   Text,
   TouchableOpacity,
   View,
-} from "react-native"
-import { connect } from "react-redux"
-import { Dispatch } from "redux"
-import { Assign } from "utility-types"
+} from 'react-native'
+import { connect } from 'react-redux'
+import { Dispatch } from 'redux'
+import { Assign } from 'utility-types'
 const style = gStyle.addressBook.AddressBookIndex
 const global = gStyle.global
 interface Props {
@@ -66,7 +66,10 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
   }
 }
 //@ts-ignore
-@connect(mapStateToProps, mapDispatchToProps)
+@connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)
 export default class Index extends Component<
   Props & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
   State
@@ -82,11 +85,11 @@ export default class Index extends Component<
       hasRealNameAuth: false,
       refreshing: false,
       communicationList: [],
-      search: "",
+      search: '',
     }
   }
   componentDidMount() {
-    this.subscription = DeviceEventEmitter.addListener(pathMap.AddressBookIndex + "Reload", () => {
+    this.subscription = DeviceEventEmitter.addListener(pathMap.AddressBookIndex + 'Reload', () => {
       this.init()
     })
     this.init()
@@ -119,12 +122,12 @@ export default class Index extends Component<
   }
   onRefresh = () => {
     this.setState({ refreshing: true })
-    Promise.all([this.init(), new Promise(s => setTimeout(s, 500))])
-      .then(_ => {
+    Promise.all([this.init(), new Promise(s => setTimeout(s, 500))]).
+      then(_ => {
         this.setState({ refreshing: false })
-      })
-      .catch(err => {
-        Toast.fail("刷新失败,错误信息: " + err.msg)
+      }).
+      catch(err => {
+        Toast.fail('刷新失败,错误信息: ' + err.msg)
       })
   }
 
@@ -143,23 +146,16 @@ export default class Index extends Component<
         <ScrollView
           keyboardShouldPersistTaps="always"
           style={style.main}
-          refreshControl={
-            <RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh} />
-          }>
+          refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh} />}
+        >
           <View style={style.header}>
-            <View
-              style={[
-                style.search,
-                global.flex,
-                global.justifyContentCenter,
-                global.alignItemsCenter,
-              ]}>
+            <View style={[style.search, global.flex, global.justifyContentCenter, global.alignItemsCenter]}>
               <View style={style.searchTitle}>
                 <TouchableOpacity
                   style={this.state.hasRealNameAuth ? global.hidden : style.searchMode}
                   onPress={() => {
                     if (!this.state.hasRealNameAuth) {
-                      return Toast.info("您未认证完成", 1)
+                      return Toast.info('您未认证完成', 1)
                     }
                   }}
                 />
@@ -174,7 +170,7 @@ export default class Index extends Component<
                       search,
                     })
                     let { communicationList } = this.state
-                    if (search !== "") {
+                    if (search !== '') {
                       for (let patient of communicationList) {
                         patient.hidden = patient.name.indexOf(search) < 0
                       }
@@ -188,7 +184,8 @@ export default class Index extends Component<
                       communicationList,
                     })
                   }}
-                  placeholder="搜索患者">
+                  placeholder="搜索患者"
+                >
                   <Icon name="search" style={[style.searchIcon, global.fontSize20]} />
                 </InputItem>
               </View>
@@ -196,25 +193,15 @@ export default class Index extends Component<
           </View>
           <View style={style.separationModule} />
           <TouchableOpacity
-            style={[
-              style.group,
-              global.flex,
-              global.justifyContentSpaceBetween,
-              global.alignItemsCenter,
-            ]}
+            style={[style.group, global.flex, global.justifyContentSpaceBetween, global.alignItemsCenter]}
             onPress={() => {
               if (!this.state.hasRealNameAuth) {
-                return Toast.info("您未认证完成", 1)
+                return Toast.info('您未认证完成', 1)
               }
               this.props.navigation.push(pathMap.AddressBookGroup)
-            }}>
-            <View
-              style={[
-                style.groupTheme,
-                global.flex,
-                global.alignItemsCenter,
-                global.justifyContentStart,
-              ]}>
+            }}
+          >
+            <View style={[style.groupTheme, global.flex, global.alignItemsCenter, global.justifyContentStart]}>
               <View style={style.groupImgFa}>
                 <Image style={style.groupImg} source={gImg.addressBook.group} />
               </View>
@@ -224,129 +211,106 @@ export default class Index extends Component<
           </TouchableOpacity>
           <View style={style.separationModule} />
           <View style={style.communicationList}>
-            {this.state.communicationList.map(
-              (v: Assign<communicationItem, { hidden?: boolean }>, k: number) => {
-                if (v.hidden) {
-                  return null
-                }
-                return (
-                  <TouchableOpacity
-                    key={k}
-                    style={[
-                      style.communicationItem,
-                      global.flex,
-                      global.justifyContentStart,
-                      global.alignItemsCenter,
-                    ]}
-                    onPress={() => {
-                      if (!this.state.hasRealNameAuth) {
-                        return Toast.info("您未认证完成", 1)
+            {this.state.communicationList.map((v: Assign<communicationItem, { hidden?: boolean }>, k: number) => {
+              if (v.hidden) {
+                return null
+              }
+              return (
+                <TouchableOpacity
+                  key={k}
+                  style={[style.communicationItem, global.flex, global.justifyContentStart, global.alignItemsCenter]}
+                  onPress={() => {
+                    if (!this.state.hasRealNameAuth) {
+                      return Toast.info('您未认证完成', 1)
+                    }
+                    if (v.isInquiryPatient) {
+                      this.props.navigation.push(pathMap.AdvisoryMedicalRecord, {
+                        title: v.name,
+                        patientUid: v.uid,
+                        consultationId: v.consultationId,
+                      })
+                    } else {
+                      this.props.navigation.push(pathMap.PatientDetail, {
+                        title: v.name,
+                        patientUid: v.uid,
+                      })
+                    }
+                  }}
+                >
+                  <View style={style.communicationItemPicture}>
+                    <Image
+                      style={style.communicationItemPic}
+                      source={
+                        v.avatar.url !== '' ? { uri: getPicCdnUrl(v.avatar.url, 'avatar') } : gImg.common.defaultAvatar
                       }
-                      if (v.isInquiryPatient) {
-                        this.props.navigation.push(pathMap.AdvisoryMedicalRecord, {
-                          title: v.name,
-                          patientUid: v.uid,
-                          consultationId: v.consultationId,
-                        })
-                      } else {
-                        this.props.navigation.push(pathMap.PatientDetail, {
-                          title: v.name,
-                          patientUid: v.uid,
-                        })
-                      }
-                    }}>
-                    <View style={style.communicationItemPicture}>
-                      <Image
-                        style={style.communicationItemPic}
-                        source={
-                          v.avatar.url !== ""
-                            ? { uri: getPicCdnUrl(v.avatar.url, "avatar") }
-                            : gImg.common.defaultAvatar
-                        }
-                      />
-                    </View>
-                    <View style={[style.groupTheme, global.justifyContentCenter]}>
-                      <Text
-                        style={[style.communicationItemTitle, global.fontSize14, global.fontStyle]}>
-                        {v.name} {v.isScanJoin ? "扫码加入" : ""}
-                      </Text>
+                    />
+                  </View>
+                  <View style={[style.groupTheme, global.justifyContentCenter]}>
+                    <Text style={[style.communicationItemTitle, global.fontSize14, global.fontStyle]}>
+                      {v.name} {v.isScanJoin ? '扫码加入' : ''}
+                    </Text>
+                    <View
+                      style={[
+                        style.communicationItemdescriptionBottom,
+                        global.flex,
+                        global.justifyContentSpaceBetween,
+                        global.alignItemsCenter,
+                      ]}
+                    >
                       <View
                         style={[
-                          style.communicationItemdescriptionBottom,
+                          style.communicationItemDescription,
                           global.flex,
-                          global.justifyContentSpaceBetween,
+                          global.justifyContentStart,
                           global.alignItemsCenter,
-                        ]}>
-                        <View
-                          style={[
-                            style.communicationItemDescription,
-                            global.flex,
-                            global.justifyContentStart,
-                            global.alignItemsCenter,
-                          ]}>
-                          <View style={style.genderIconFa}>
-                            <Image
-                              style={style.genderIcon}
-                              source={
-                                v.gender === 1
-                                  ? gImg.common.man
-                                  : v.gender === 2
-                                  ? gImg.common.woman
-                                  : gImg.common.genderNull
-                              }
-                            />
-                          </View>
-                          <Text
-                            style={[
-                              style.communicationItemDetail,
-                              global.fontSize11,
-                              global.fontStyle,
-                            ]}>
-                            {v.year_age || "未知"}
-                          </Text>
-                          <View style={style.genderIconFa}>
-                            <Image style={style.genderIcon} source={gImg.addressBook.phone} />
-                          </View>
-                          <Text
-                            style={[
-                              style.communicationItemDetail,
-                              global.fontSize11,
-                              global.fontStyle,
-                            ]}>
-                            {v.phone.substr(7, 4) || "未填写"}
-                          </Text>
+                        ]}
+                      >
+                        <View style={style.genderIconFa}>
+                          <Image
+                            style={style.genderIcon}
+                            source={
+                              v.gender === 1
+                                ? gImg.common.man
+                                : v.gender === 2
+                                ? gImg.common.woman
+                                : gImg.common.genderNull
+                            }
+                          />
                         </View>
-                        <View
-                          style={[
-                            global.flex,
-                            global.justifyContentStart,
-                            global.alignItemsCenter,
-                          ]}>
-                          {!v.isInquiryPatient && v.hasPostInquiryMsg ? (
-                            <TouchableOpacity
-                              onPress={() =>
-                                this.props.navigation.push(pathMap.PostInquiry, {
-                                  id: v.id,
-                                })
-                              }>
-                              <Text>诊后咨询</Text>
-                            </TouchableOpacity>
-                          ) : null}
-                          <Text
-                            style={[style.firstConsultTime, global.fontStyle, global.fontSize13]}>
-                            {v.ctime.substr(0, 10)}
-                          </Text>
-                          <Text
-                            style={[style.firstConsultTime, global.fontStyle, global.fontSize13]}>
-                            {v.consultStyle}
-                          </Text>
+                        <Text style={[style.communicationItemDetail, global.fontSize11, global.fontStyle]}>
+                          {v.year_age || '未知'}
+                        </Text>
+                        <View style={style.genderIconFa}>
+                          <Image style={style.genderIcon} source={gImg.addressBook.phone} />
                         </View>
+                        <Text style={[style.communicationItemDetail, global.fontSize11, global.fontStyle]}>
+                          {v.phone.substr(7, 4) || '未填写'}
+                        </Text>
+                      </View>
+                      <View style={[global.flex, global.justifyContentStart, global.alignItemsCenter]}>
+                        {!v.isInquiryPatient && v.hasPostInquiryMsg ? (
+                          <TouchableOpacity
+                            onPress={() =>
+                              this.props.navigation.push(pathMap.PostInquiry, {
+                                id: v.id,
+                              })
+                            }
+                          >
+                            <Text>诊后咨询</Text>
+                          </TouchableOpacity>
+                        ) : null}
+                        <Text style={[style.firstConsultTime, global.fontStyle, global.fontSize13]}>
+                          {v.ctime.substr(0, 10)}
+                        </Text>
+                        <Text style={[style.firstConsultTime, global.fontStyle, global.fontSize13]}>
+                          {v.consultStyle}
+                        </Text>
                       </View>
                     </View>
-                  </TouchableOpacity>
-                )
-              },
-            )}
+                  </View>
+                </TouchableOpacity>
+              )
+            })}
           </View>
         </ScrollView>
       </>

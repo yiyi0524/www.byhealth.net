@@ -1,29 +1,29 @@
-import { StyleSheet, PixelRatio } from "react-native"
-import sColor from "@styles/color"
-import { windowWidth } from "@api/api"
-import { windowHeight } from "@/utils/utils"
+import { StyleSheet, PixelRatio } from 'react-native'
+import sColor from '@styles/color'
+import { windowWidth } from '@api/api'
+import { windowHeight } from '@/utils/utils'
 export default StyleSheet.create({
   loading: {
     width: windowWidth,
     height: windowHeight,
     backgroundColor: sColor.white,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
     flex: 1,
   },
   loadingTitle: {
-    textAlign: "center",
-    justifyContent: "center",
+    textAlign: 'center',
+    justifyContent: 'center',
   },
   loadingPic: {
-    width: "100%",
-    overflow: "hidden",
-    justifyContent: "center",
-    alignItems: "center",
+    width: '100%',
+    overflow: 'hidden',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   loadingImg: {
     width: 300,
-    resizeMode: "contain",
+    resizeMode: 'contain',
   },
   main: {
     backgroundColor: sColor.white,
@@ -40,12 +40,12 @@ export default StyleSheet.create({
     borderRadius: 100,
     borderWidth: 2 / PixelRatio.get(),
     borderColor: sColor.colorEee,
-    overflow: "hidden",
+    overflow: 'hidden',
   },
   headerAvatar: {
     width: 60,
     height: 60,
-    resizeMode: "contain",
+    resizeMode: 'contain',
   },
   headerTitle: {
     flex: 1,
@@ -90,7 +90,7 @@ export default StyleSheet.create({
   },
   prescriptionItem: {
     width: windowWidth / 2,
-    alignItems: "center",
+    alignItems: 'center',
   },
   prescriptionItemTitle: {
     color: sColor.color999,
@@ -136,22 +136,22 @@ export default StyleSheet.create({
   },
   categoryItem: {
     width: (windowWidth - 30) / 4,
-    alignItems: "center",
+    alignItems: 'center',
     marginBottom: 15,
   },
   categoryItemPicFa: {
     width: 35,
     height: 35,
-    overflow: "hidden",
+    overflow: 'hidden',
     borderRadius: 7,
   },
   categoryItemPic: {
     width: 35,
     height: 35,
-    resizeMode: "contain",
+    resizeMode: 'contain',
   },
   categoryItemTitle: {
-    textAlign: "center",
+    textAlign: 'center',
     color: sColor.mainBlack,
     marginTop: 8,
   },
@@ -174,14 +174,14 @@ export default StyleSheet.create({
     borderRadius: 5,
     borderWidth: 1 / PixelRatio.get(),
     borderColor: sColor.colorCcc,
-    overflow: "hidden",
+    overflow: 'hidden',
     marginTop: 10,
     marginBottom: 10,
   },
   bannerImg: {
     width: 130,
     height: 80,
-    resizeMode: "cover",
+    resizeMode: 'cover',
   },
   /**
    * 设置

@@ -1,45 +1,45 @@
-import global from "@/assets/styles/global"
-import { agreeJoin, GroupChat, listGroupChat, rejectJoin } from "@/services/groupChat"
-import { getPicFullUrl } from "@/utils/utils"
-import { Toast } from "@ant-design/react-native"
-import gImg from "@utils/img"
-import gSass from "@utils/style"
-import React, { Component } from "react"
-import { Image, ScrollView, Text, TouchableOpacity, View } from "react-native"
-import { NavigationScreenProp } from "react-navigation"
+import global from '@/assets/styles/global'
+import { agreeJoin, GroupChat, listGroupChat, rejectJoin } from '@/services/groupChat'
+import { getPicFullUrl } from '@/utils/utils'
+import { Toast } from '@ant-design/react-native'
+import gImg from '@utils/img'
+import gSass from '@utils/style'
+import React, { Component } from 'react'
+import { Image, ScrollView, Text, TouchableOpacity, View } from 'react-native'
+import { StackNavigationProp } from '@react-navigation/stack'
 const style = gSass.groupChat.applyList
 interface Props {
-  navigation: NavigationScreenProp<State>
+  navigation: StackNavigationProp<any>
 }
 interface State {
   groupChatId: number
   groupChatName: string
-  list: GroupChat["applyList"]
+  list: GroupChat['applyList']
 }
 type DefaultProps = {}
 
 export default class ApplyList extends Component<Props & DefaultProps, State> {
   static defaultProps: DefaultProps
-  static navigationOptions = ({ navigation }: { navigation: NavigationScreenProp<State> }) => {
-    let title = ""
+  static navigationOptions = ({ navigation }: { navigation: StackNavigationProp<any> }) => {
+    let title = ''
     if (navigation.state.params) {
       title = navigation.state.params.name
     }
     return {
       title,
       headerStyle: {
-        backgroundColor: "#fff",
+        backgroundColor: '#fff',
         height: 45,
         elevation: 0,
-        borderColor: "#E3E3E3",
+        borderColor: '#E3E3E3',
       },
-      headerTintColor: "#333",
+      headerTintColor: '#333',
       headerTitleStyle: {
         flex: 1,
-        alignItems: "center",
-        justifyContent: "center",
+        alignItems: 'center',
+        justifyContent: 'center',
         fontSize: 14,
-        textAlign: "center",
+        textAlign: 'center',
       },
       headerRight: (
         <TouchableOpacity>
@@ -54,7 +54,7 @@ export default class ApplyList extends Component<Props & DefaultProps, State> {
   }
   getInitState = (props: Props): State => {
     let groupChatId = 0,
-      groupChatName = ""
+      groupChatName = ''
     if (props.navigation.state.params) {
       groupChatId = props.navigation.state.params.id
       groupChatName = props.navigation.state.params.name
@@ -103,11 +103,8 @@ export default class ApplyList extends Component<Props & DefaultProps, State> {
                   <View style={style.avatarPar}>
                     <Image
                       style={style.avatar}
-                      source={
-                        v.avatar.url
-                          ? { uri: getPicFullUrl(v.avatar.url) }
-                          : gImg.common.defaultAvatar
-                      }></Image>
+                      source={v.avatar.url ? { uri: getPicFullUrl(v.avatar.url) } : gImg.common.defaultAvatar}
+                    />
                   </View>
                   <View style={style.right}>
                     <Text style={style.name} numberOfLines={1}>
@@ -137,20 +134,20 @@ export default class ApplyList extends Component<Props & DefaultProps, State> {
     let { groupChatId: groupId } = this.state
     rejectJoin({ id, groupId })
       .then(() => {
-        Toast.success("操作成功", 1, this.init)
+        Toast.success('操作成功', 1, this.init)
       })
       .catch(err => {
-        Toast.fail("操作失败, 错误信息: " + err.msg, 3)
+        Toast.fail('操作失败, 错误信息: ' + err.msg, 3)
       })
   }
   agree = (id: number) => {
     let { groupChatId: groupId } = this.state
     agreeJoin({ id, groupId })
       .then(() => {
-        Toast.success("操作成功", 1, this.init)
+        Toast.success('操作成功', 1, this.init)
       })
       .catch(err => {
-        Toast.fail("操作失败, 错误信息: " + err.msg, 3)
+        Toast.fail('操作失败, 错误信息: ' + err.msg, 3)
       })
   }
 }

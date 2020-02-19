@@ -1,29 +1,29 @@
-import { windowHeight } from "@/utils/utils"
-import { windowWidth } from "@api/api"
-import sColor from "@styles/color"
-import { StyleSheet, PixelRatio } from "react-native"
+import { windowHeight } from '@/utils/utils'
+import { windowWidth } from '@api/api'
+import sColor from '@styles/color'
+import { StyleSheet, PixelRatio } from 'react-native'
 export default StyleSheet.create({
   loading: {
     width: windowWidth,
     height: windowHeight,
     backgroundColor: sColor.white,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
     flex: 1,
   },
   loadingTitle: {
-    textAlign: "center",
-    justifyContent: "center",
+    textAlign: 'center',
+    justifyContent: 'center',
   },
   loadingPic: {
-    width: "100%",
-    overflow: "hidden",
-    justifyContent: "center",
-    alignItems: "center",
+    width: '100%',
+    overflow: 'hidden',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   loadingImg: {
     width: 300,
-    resizeMode: "contain",
+    resizeMode: 'contain',
   },
   main: {
     flex: 0.9,
@@ -34,8 +34,8 @@ export default StyleSheet.create({
     marginTop: 8,
     padding: 15,
     backgroundColor: sColor.white,
-    position: "relative",
-    overflow: "hidden",
+    position: 'relative',
+    overflow: 'hidden',
   },
   itemImg: {
     marginRight: 8,
@@ -55,22 +55,22 @@ export default StyleSheet.create({
     marginTop: 10,
   },
   itemRight: {
-    position: "absolute",
+    position: 'absolute',
     top: 0,
     right: 0,
   },
   itemIcon: {
     width: 0,
     height: 0,
-    borderStyle: "solid",
+    borderStyle: 'solid',
     borderWidth: 12,
-    borderTopColor: "#f2878d", //下箭头颜色
-    borderLeftColor: "transparent", //右箭头颜色
-    borderBottomColor: "transparent", //上箭头颜色
-    borderRightColor: "#f2878d", //左箭头颜色
+    borderTopColor: '#f2878d', //下箭头颜色
+    borderLeftColor: 'transparent', //右箭头颜色
+    borderBottomColor: 'transparent', //上箭头颜色
+    borderRightColor: '#f2878d', //左箭头颜色
   },
   btn: {
-    justifyContent: "center",
+    justifyContent: 'center',
     height: 50,
     marginTop: 8,
     backgroundColor: sColor.white,

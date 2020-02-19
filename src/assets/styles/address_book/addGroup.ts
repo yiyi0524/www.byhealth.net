@@ -1,7 +1,7 @@
-import { StyleSheet, PixelRatio } from "react-native"
-import sColor from "@styles/color"
-import { windowWidth } from "@api/api"
-import { windowHeight } from "@/utils/utils"
+import { StyleSheet, PixelRatio } from 'react-native'
+import sColor from '@styles/color'
+import { windowWidth } from '@api/api'
+import { windowHeight } from '@/utils/utils'
 export default StyleSheet.create({
   group: {
     flex: 1,
@@ -10,11 +10,11 @@ export default StyleSheet.create({
     width: windowWidth,
     height: windowHeight,
     backgroundColor: sColor.white,
-    justifyContent: "center",
+    justifyContent: 'center',
     flex: 1,
   },
   loadingTitle: {
-    textAlign: "center",
+    textAlign: 'center',
   },
   main: {
     backgroundColor: sColor.mainBgColor,
@@ -74,13 +74,13 @@ export default StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 100,
-    overflow: "hidden",
+    overflow: 'hidden',
     marginRight: 10,
   },
   patientAvatar: {
     width: 40,
     height: 40,
-    resizeMode: "contain",
+    resizeMode: 'contain',
   },
   patientName: {
     color: sColor.color333,
@@ -101,7 +101,7 @@ export default StyleSheet.create({
   patientGender: {
     width: 15,
     height: 15,
-    resizeMode: "contain",
+    resizeMode: 'contain',
     marginRight: 2,
   },
   patientAge: {
@@ -119,7 +119,7 @@ export default StyleSheet.create({
   submit: {
     height: 50,
     lineHeight: 50,
-    textAlign: "center",
+    textAlign: 'center',
     color: sColor.white,
     backgroundColor: sColor.mainRed,
   },

@@ -1,20 +1,21 @@
-import * as wsAction from "@/redux/actions/ws"
-import { AppState } from "@/redux/stores/store"
-import routeConfig from "@/routes/route"
-import Ws from "@pages/Ws"
-import React, { Component } from "react"
-import { createAppContainer, createStackNavigator } from "react-navigation"
-import { connect } from "react-redux"
-import { Dispatch } from "redux"
-import { AppState as RnAppState, AppStateStatus } from "react-native"
-import { isLogin, updateAppStateStatus } from "@/services/api"
-import CodePush from "react-native-code-push"
-import SplashScreen from "react-native-splash-screen"
-import { wxAppId } from "@/config/api"
-import * as WeChat from "react-native-wechat"
-import Sentry from "react-native-sentry"
-import { enableScreens } from "react-native-screens"
-enableScreens();
+import * as wsAction from '@/redux/actions/ws'
+import { AppState } from '@/redux/stores/store'
+import routeConfig from '@/routes/route'
+import Ws from '@pages/Ws'
+import React, { Component } from 'react'
+import { NavigationContainer, NavigationContainerRef } from '@react-navigation/native'
+import { connect } from 'react-redux'
+import { Dispatch } from 'redux'
+import { AppState as RnAppState, AppStateStatus } from 'react-native'
+import { isLogin, updateAppStateStatus } from '@/services/api'
+import CodePush from 'react-native-code-push'
+import SplashScreen from 'react-native-splash-screen'
+import { wxAppId } from '@/config/api'
+import * as WeChat from 'react-native-wechat'
+import * as Sentry from '@sentry/react-native'
+import { enableScreens } from 'react-native-screens'
+import { createStackNavigator } from '@react-navigation/stack'
+enableScreens()
 const mapStateToProps = (state: AppState) => {
   return {
     isLogin: state.user.isLogin,
@@ -31,9 +32,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
   }
 }
 
-const stackNavigator = createStackNavigator(routeConfig[0], routeConfig[1])
-const AppNavigator = createAppContainer(stackNavigator)
-
+const Stack = createStackNavigator()
 const codePushOptions = {
   checkFrequency: CodePush.CheckFrequency.ON_APP_RESUME,
   installMode: CodePush.InstallMode.ON_NEXT_RESUME,
@@ -43,6 +42,7 @@ const codePushOptions = {
 // @ts-ignore
 @connect(mapStateToProps, mapDispatchToProps)
 export default class App extends Component<any> {
+  containerRef = React.createRef<NavigationContainerRef>()
   getActiveRouteName = (navigationState: any): any => {
     if (!navigationState) {
       return null
@@ -57,37 +57,34 @@ export default class App extends Component<any> {
     WeChat.registerApp(wxAppId)
     CodePush.getUpdateMetadata().then(update => {
       if (update) {
-        Sentry.setVersion(update.appVersion + "-codepush:" + update.label)
+        Sentry.setRelease(update.appVersion + '-codepush:' + update.label)
       }
     })
     SplashScreen.hide()
-    RnAppState.addEventListener("change", this.onAppStateChange)
+    RnAppState.addEventListener('change', this.onAppStateChange)
   }
   componentWillUnmount() {
-    RnAppState.removeEventListener("change", this.onAppStateChange)
+    RnAppState.removeEventListener('change', this.onAppStateChange)
   }
   onAppStateChange = async (status: AppStateStatus) => {
     if (!(await isLogin())) {
       return
     }
-    if (status === "background" || status === "active") {
+    if (status === 'background' || status === 'active') {
       updateAppStateStatus({ status })
     }
   }
   render() {
     return (
       <Ws>
-        <AppNavigator
-          onNavigationStateChange={(prevState, currentState) => {
-            const currentScreen = this.getActiveRouteName(currentState)
-            const prevScreen = this.getActiveRouteName(prevState)
-            if (prevScreen !== currentScreen) {
-              if (currentScreen !== null) {
-                this.props.changeScreen(currentScreen)
-              }
-            }
-          }}
-        />
+        <NavigationContainer ref={this.containerRef}>
+          <Stack.Navigator {...routeConfig.stackNavConfig}>
+            {Object.keys(routeConfig.screens).map(screenName => {
+              const props = routeConfig.screens[screenName]
+              return <Stack.Screen key={screenName} {...props} />
+            })}
+          </Stack.Navigator>
+        </NavigationContainer>
       </Ws>
     )
   }

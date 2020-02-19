@@ -1,6 +1,6 @@
-import { StyleSheet, PixelRatio } from "react-native"
-import sColor from "@styles/color"
-import { windowHeight } from "@api/api"
+import { StyleSheet, PixelRatio } from 'react-native'
+import sColor from '@styles/color'
+import { windowHeight } from '@api/api'
 export default StyleSheet.create({
   main: {
     backgroundColor: sColor.white,
@@ -37,25 +37,25 @@ export default StyleSheet.create({
     flex: 1,
   },
   tabBarUnderlineStyle: {
-    width: "30%",
-    marginLeft: "7%",
+    width: '30%',
+    marginLeft: '7%',
     backgroundColor: sColor.mainRed,
   },
   inputList: {
     marginTop: 30,
   },
   inputItem: {
-    position: "relative",
+    position: 'relative',
     marginRight: 15,
     height: 55,
-    justifyContent: "center",
+    justifyContent: 'center',
   },
   input: {
     fontSize: 14,
     color: sColor.color888,
   },
   verificationBtn: {
-    position: "absolute",
+    position: 'absolute',
     top: 8,
     right: 5,
   },
@@ -64,7 +64,7 @@ export default StyleSheet.create({
     height: 30,
     lineHeight: 30,
     color: sColor.white,
-    textAlign: "center",
+    textAlign: 'center',
     borderRadius: 5,
   },
   register: {
@@ -75,7 +75,7 @@ export default StyleSheet.create({
     height: 45,
     marginRight: 30,
     lineHeight: 45,
-    textAlign: "right",
+    textAlign: 'right',
     color: sColor.color888,
   },
   subBtn: {
@@ -84,10 +84,10 @@ export default StyleSheet.create({
   },
   subBtnName: {
     height: 45,
-    width: "100%",
+    width: '100%',
     backgroundColor: sColor.mainRed,
     lineHeight: 45,
-    textAlign: "center",
+    textAlign: 'center',
     borderRadius: 5,
     color: sColor.white,
   },
@@ -96,7 +96,7 @@ export default StyleSheet.create({
     height: 30,
     lineHeight: 30,
     color: sColor.color888,
-    textAlign: "center",
+    textAlign: 'center',
     borderRadius: 5,
   },
   savePwd: {
@@ -104,7 +104,7 @@ export default StyleSheet.create({
     marginBottom: 5,
     paddingLeft: 15,
     paddingRight: 15,
-    width: "100%",
+    width: '100%',
   },
   savePwdTitle: {
     height: 50,

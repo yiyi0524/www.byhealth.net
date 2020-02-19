@@ -1,24 +1,24 @@
-import * as userAction from "@/redux/actions/user"
-import { AppState } from "@/redux/stores/store"
-import { getPicCdnUrl } from "@/utils/utils"
-import { Icon, InputItem, Toast } from "@ant-design/react-native"
-import doctor, { GENDER } from "@api/doctor"
-import patientApi from "@api/patient"
-import sColor from "@styles/color"
-import gImg from "@utils/img"
-import gStyle from "@utils/style"
-import React, { Component } from "react"
+import * as userAction from '@/redux/actions/user'
+import { AppState } from '@/redux/stores/store'
+import { getPicCdnUrl } from '@/utils/utils'
+import { Icon, InputItem, Toast } from '@ant-design/react-native'
+import doctor, { GENDER } from '@api/doctor'
+import patientApi from '@api/patient'
+import sColor from '@styles/color'
+import gImg from '@utils/img'
+import gStyle from '@utils/style'
+import React, { Component } from 'react'
 // prettier-ignore
-import { Image, PixelRatio, RefreshControl, ScrollView, Text, TouchableOpacity, View } from "react-native";
-import { NavigationScreenProp } from "react-navigation"
-import { connect } from "react-redux"
-import { Dispatch } from "redux"
-import { patientItem } from "./GroupDetail"
+import { Image, PixelRatio, RefreshControl, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { StackNavigationProp } from '@react-navigation/stack'
+import { connect } from 'react-redux'
+import { Dispatch } from 'redux'
+import { patientItem } from './GroupDetail'
 const style = gStyle.addressBook.AddressBookAddGroup
 const global = gStyle.global
 
 interface Props {
-  navigation: NavigationScreenProp<State>
+  navigation: StackNavigationProp<any>
 }
 interface State {
   hasLoad: boolean
@@ -50,7 +50,7 @@ export default class Index extends Component<
   State
 > {
   static navigationOptions = () => ({
-    title: "添加新分组",
+    title: '添加新分组',
     headerStyle: {
       backgroundColor: sColor.white,
       height: 50,
@@ -62,10 +62,10 @@ export default class Index extends Component<
     headerTintColor: sColor.color333,
     headerTitleStyle: {
       flex: 1,
-      alignItems: "center",
-      justifyContent: "center",
+      alignItems: 'center',
+      justifyContent: 'center',
       fontSize: 14,
-      textAlign: "center",
+      textAlign: 'center',
     },
     headerRight: <TouchableOpacity />,
   })
@@ -77,8 +77,8 @@ export default class Index extends Component<
     return {
       hasLoad: true,
       refreshing: false,
-      name: "",
-      groupName: "",
+      name: '',
+      groupName: '',
       patientList: [],
       patientUidList: [],
       selectPatientList: [],
@@ -118,15 +118,15 @@ export default class Index extends Component<
         this.setState({ refreshing: false })
       })
       .catch(err => {
-        Toast.fail("刷新失败,错误信息: " + err.msg)
+        Toast.fail('刷新失败,错误信息: ' + err.msg)
       })
   }
   submit = () => {
-    if (this.state.groupName === "") {
-      return Toast.info("请输入分组名", 3)
+    if (this.state.groupName === '') {
+      return Toast.info('请输入分组名', 3)
     }
     if (this.state.patientUidList.length === 0) {
-      return Toast.info("请至少选择一名患者", 2)
+      return Toast.info('请至少选择一名患者', 2)
     }
     doctor
       .addPatientGroup({
@@ -134,12 +134,12 @@ export default class Index extends Component<
         patientUidList: this.state.patientUidList,
       })
       .then(() => {
-        Toast.success("添加成功", 1, () => {
+        Toast.success('添加成功', 1, () => {
           this.setState(this.getInitState(), this.init)
         })
       })
       .catch(err => {
-        Toast.fail("添加分组失败, 错误信息: " + err.msg, 3)
+        Toast.fail('添加分组失败, 错误信息: ' + err.msg, 3)
       })
   }
   render() {
@@ -153,11 +153,10 @@ export default class Index extends Component<
     return (
       <View style={style.group}>
         <ScrollView
-          keyboardShouldPersistTaps="handled"
+          keyboardShouldPersistTaps='handled'
           style={style.main}
-          refreshControl={
-            <RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh} />
-          }>
+          refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh} />}
+        >
           <View style={style.header}>
             <InputItem
               clear
@@ -168,7 +167,8 @@ export default class Index extends Component<
                 })
               }}
               style={[style.headerInput, global.fontSize14, global.fontStyle]}
-              placeholder="输入分组名称">
+              placeholder='输入分组名称'
+            >
               名称
             </InputItem>
           </View>
@@ -182,7 +182,8 @@ export default class Index extends Component<
               global.fontSize14,
               global.fontStyle,
             ]}
-            numberOfLines={1}>
+            numberOfLines={1}
+          >
             所选患者
           </Text>
           <Text
@@ -191,27 +192,22 @@ export default class Index extends Component<
               global.fontSize12,
               global.fontStyle,
             ]}
-            numberOfLines={1}>
+            numberOfLines={1}
+          >
             {this.state.selectPatientList.map((v: string) => {
-              return v + "、"
+              return v + '、'
             })}
           </Text>
           <Text
-            style={[
-              this.state.name !== "" ? style.selectPatient : global.hidden,
-              global.fontSize14,
-              global.fontStyle,
-            ]}
-            numberOfLines={1}>
+            style={[this.state.name !== '' ? style.selectPatient : global.hidden, global.fontSize14, global.fontStyle]}
+            numberOfLines={1}
+          >
             " {this.state.name} " 的搜索结果
           </Text>
           <Text
-            style={[
-              this.state.name === "" ? style.selectPatient : global.hidden,
-              global.fontSize14,
-              global.fontStyle,
-            ]}
-            numberOfLines={1}>
+            style={[this.state.name === '' ? style.selectPatient : global.hidden, global.fontSize14, global.fontStyle]}
+            numberOfLines={1}
+          >
             所有患者
           </Text>
           <View style={style.patientList}>
@@ -242,19 +238,17 @@ export default class Index extends Component<
                       patientUidList,
                       selectPatientList,
                     })
-                  }}>
+                  }}
+                >
                   <View style={style.patientItemAvatar}>
                     <Image
                       style={style.patientAvatar}
                       source={
-                        v.avatar.url !== ""
-                          ? { uri: getPicCdnUrl(v.avatar.url, "avatar") }
-                          : gImg.common.defaultAvatar
+                        v.avatar.url !== '' ? { uri: getPicCdnUrl(v.avatar.url, 'avatar') } : gImg.common.defaultAvatar
                       }
                     />
                   </View>
-                  <View
-                    style={[style.patientItemDescription, global.flex, global.alignItemsCenter]}>
+                  <View style={[style.patientItemDescription, global.flex, global.alignItemsCenter]}>
                     <Text style={style.patientName}>{v.name}</Text>
                     <View style={[style.patientDescription, global.flex, global.alignItemsCenter]}>
                       <Image
@@ -268,16 +262,13 @@ export default class Index extends Component<
                         }
                       />
                       <Text style={[style.patientAge, global.fontSize12, global.fontStyle]}>
-                        {v.year_age}岁{v.month_age !== 0 ? v.month_age + "月" : null}
+                        {v.year_age}岁{v.month_age !== 0 ? v.month_age + '月' : null}
                       </Text>
                     </View>
                   </View>
                   <Icon
-                    name="check-circle"
-                    style={[
-                      v.isChecked ? style.selectIconActive : style.selectIcon,
-                      global.fontSize18,
-                    ]}
+                    name='check-circle'
+                    style={[v.isChecked ? style.selectIconActive : style.selectIcon, global.fontSize18]}
                   />
                 </TouchableOpacity>
               )

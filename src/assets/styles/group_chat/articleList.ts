@@ -1,25 +1,24 @@
-import { windowWidth } from "@/services/api"
-import { StyleSheet } from "react-native"
+import { StyleSheet } from 'react-native'
 export default StyleSheet.create({
   main: {
     flex: 1,
-    position: "relative",
-    backgroundColor: "#fff",
+    position: 'relative',
+    backgroundColor: '#fff',
   },
   search: {
     flex: 1,
     marginTop: 15,
     marginBottom: 15,
-    backgroundColor: "#F5F5F5",
+    backgroundColor: '#F5F5F5',
     borderRadius: 19,
   },
   input: {
     fontSize: 14,
-    color: "#999",
-    textAlign: "left",
+    color: '#999',
+    textAlign: 'left',
   },
   searchIcon: {
-    color: "rgba(0,0,0,.45)",
+    color: 'rgba(0,0,0,.45)',
     fontSize: 20,
   },
   theme: {
@@ -35,16 +34,16 @@ export default StyleSheet.create({
     marginRight: 5,
   },
   themeIconActive: {
-    backgroundColor: "#ED5736",
+    backgroundColor: '#ED5736',
   },
   themeTitle: {
     fontSize: 14,
-    color: "#666",
+    color: '#666',
   },
   themeTitleActive: {
     fontSize: 15,
-    color: "#333",
-    fontWeight: "700",
+    color: '#333',
+    fontWeight: '700',
   },
   list: {
     paddingLeft: 15,
@@ -54,32 +53,32 @@ export default StyleSheet.create({
     paddingTop: 15,
     paddingBottom: 15,
     borderBottomWidth: 1,
-    borderBottomColor: "#EDEDED",
+    borderBottomColor: '#EDEDED',
   },
   titlePar: {
     marginBottom: 9,
   },
   title: {
     fontSize: 15,
-    color: "#3A3A3A",
+    color: '#3A3A3A',
     flex: 1,
-    fontWeight: "700",
+    fontWeight: '700',
   },
   icon: {
-    color: "#D3D3D3",
+    color: '#D3D3D3',
     fontSize: 18,
   },
   desc: {
     marginBottom: 9,
     fontSize: 14,
-    color: "#7F7F7F",
+    color: '#7F7F7F',
   },
   time: {
     fontSize: 12,
-    color: "#D4D2D2",
+    color: '#D4D2D2',
   },
   loading: {
-    textAlign: "center",
+    textAlign: 'center',
     lineHeight: 80,
   },
 })

@@ -1,25 +1,18 @@
-import { uploadImg } from "@/services/api"
-import { addArticle, editArticle, getArticle } from "@/services/groupChat"
-import { getPicFullUrl } from "@/utils/utils"
-import { ImagePicker, InputItem, Portal, TextareaItem, Toast } from "@ant-design/react-native"
-import imgPickerOpt from "@config/imgPickerOpt"
-import gSass from "@utils/style"
-import React, { Component } from "react"
-import {
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native"
-import RnImagePicker from "react-native-image-picker"
-import Permissions from "react-native-permissions"
-import { NavigationScreenProp } from "react-navigation"
-import { Picture } from "../advisory/Chat"
+import { uploadImg } from '@/services/api'
+import { addArticle, editArticle, getArticle } from '@/services/groupChat'
+import { getPicFullUrl } from '@/utils/utils'
+import { ImagePicker, InputItem, Portal, TextareaItem, Toast } from '@ant-design/react-native'
+import imgPickerOpt from '@config/imgPickerOpt'
+import gSass from '@utils/style'
+import React, { Component } from 'react'
+import { KeyboardAvoidingView, Platform, ScrollView, Text, TouchableOpacity, View } from 'react-native'
+import RnImagePicker from 'react-native-image-picker'
+import Permissions from 'react-native-permissions'
+import { StackNavigationProp } from '@react-navigation/stack'
+import { Picture } from '../advisory/Chat'
 const style = gSass.groupChat.addArticle
 interface Props {
-  navigation: NavigationScreenProp<State>
+  navigation: StackNavigationProp<any>
 }
 interface State {
   id: number
@@ -32,32 +25,32 @@ type DefaultProps = {}
 
 export default class AddArticle extends Component<Props & DefaultProps, State> {
   static defaultProps: DefaultProps
-  static navigationOptions = ({ navigation }: { navigation: NavigationScreenProp<State> }) => {
-    let title = "添加文章"
+  static navigationOptions = ({ navigation }: { navigation: StackNavigationProp<any> }) => {
+    let title = '添加文章'
     if (navigation.state.params) {
-      if (navigation.state.params.type === "edit") {
-        title = "编辑文章"
+      if (navigation.state.params.type === 'edit') {
+        title = '编辑文章'
       }
     }
     return {
       title,
       headerStyle: {
-        backgroundColor: "#fff",
+        backgroundColor: '#fff',
         height: 45,
         elevation: 0,
-        borderColor: "#E3E3E3",
+        borderColor: '#E3E3E3',
       },
-      headerTintColor: "#333",
+      headerTintColor: '#333',
       headerTitleStyle: {
         flex: 1,
-        alignItems: "center",
-        justifyContent: "center",
+        alignItems: 'center',
+        justifyContent: 'center',
         fontSize: 14,
-        textAlign: "center",
+        textAlign: 'center',
       },
       headerRight: (
         <TouchableOpacity>
-          <Text></Text>
+          <Text />
         </TouchableOpacity>
       ),
     }
@@ -68,16 +61,16 @@ export default class AddArticle extends Component<Props & DefaultProps, State> {
   }
   getInitState = (props: Props): State => {
     let id = 0,
-      type = "add"
+      type = 'add'
     if (props.navigation.state.params) {
       id = props.navigation.state.params.id || 0
-      type = props.navigation.state.params.type || "add"
+      type = props.navigation.state.params.type || 'add'
     }
     return {
       id,
       type,
-      title: "",
-      content: "",
+      title: '',
+      content: '',
       picList: [],
     }
   }
@@ -87,7 +80,7 @@ export default class AddArticle extends Component<Props & DefaultProps, State> {
   init = async () => {
     try {
       let { id, type } = this.state
-      if (type === "edit") {
+      if (type === 'edit') {
         let detailTask = getArticle({ id })
         let {
           data: {
@@ -111,12 +104,13 @@ export default class AddArticle extends Component<Props & DefaultProps, State> {
     let { title, content, picList, type } = this.state
     return (
       <KeyboardAvoidingView
-        enabled={Platform.OS !== "android"}
-        behavior="padding"
+        enabled={Platform.OS !== 'android'}
+        behavior='padding'
         style={{ flex: 1 }}
-        keyboardVerticalOffset={90}>
+        keyboardVerticalOffset={90}
+      >
         <View style={style.main}>
-          <ScrollView style={style.content} keyboardShouldPersistTaps="always">
+          <ScrollView style={style.content} keyboardShouldPersistTaps='always'>
             <View style={style.list}>
               <View style={style.item}>
                 <InputItem
@@ -124,12 +118,13 @@ export default class AddArticle extends Component<Props & DefaultProps, State> {
                   last
                   style={style.input}
                   value={title}
-                  onChange={title => {
+                  onChange={editTitle => {
                     this.setState({
-                      title,
+                      title: editTitle,
                     })
                   }}
-                  placeholder="请输入">
+                  placeholder='请输入'
+                >
                   标题:
                 </InputItem>
               </View>
@@ -137,24 +132,20 @@ export default class AddArticle extends Component<Props & DefaultProps, State> {
                 <TextareaItem
                   value={content}
                   onChange={val => {
-                    let content: string = val ? val : ""
+                    let editContent: string = val ? val : ''
                     this.setState({
-                      content,
+                      content: editContent,
                     })
                   }}
                   last
                   style={style.textarea}
                   rows={12}
-                  placeholder="请输入文章内容"
+                  placeholder='请输入文章内容'
                 />
               </View>
               <View style={style.item}>
                 <Text style={style.title}>图片展示</Text>
-                <ImagePicker
-                  files={picList}
-                  onAddImageClick={this.addImage}
-                  onChange={this.onImageChange}
-                />
+                <ImagePicker files={picList} onAddImageClick={this.addImage} onChange={this.onImageChange} />
               </View>
             </View>
           </ScrollView>
@@ -162,7 +153,7 @@ export default class AddArticle extends Component<Props & DefaultProps, State> {
             <View style={style.btnPar}>
               <TouchableOpacity onPress={this.submit}>
                 <View style={style.btnContent}>
-                  <Text style={style.btn}>{type === "add" ? "发布" : "更新"}</Text>
+                  <Text style={style.btn}>{type === 'add' ? '发布' : '更新'}</Text>
                 </View>
               </TouchableOpacity>
             </View>
@@ -180,20 +171,20 @@ export default class AddArticle extends Component<Props & DefaultProps, State> {
   //上传图片
   addImage = () => {
     try {
-      Permissions.check("camera")
+      Permissions.check('camera')
         .then(res => {
-          if (res !== "authorized") {
+          if (res !== 'authorized') {
             try {
-              Permissions.request("camera").then(status => {
-                if (status === "authorized") {
-                  console.log("获得摄像头权限")
+              Permissions.request('camera').then(status => {
+                if (status === 'authorized') {
+                  console.log('获得摄像头权限')
                   RnImagePicker.launchImageLibrary(imgPickerOpt, (resp: any) => {
-                    const uploadingImgKey = Toast.loading("上传图片中", 0, () => {}, true)
+                    const uploadingImgKey = Toast.loading('上传图片中', 0, undefined, true)
                     if (resp.didCancel) {
                       Portal.remove(uploadingImgKey)
                     } else if (resp.error) {
                       Portal.remove(uploadingImgKey)
-                      return Toast.info("您禁止了拍摄照片和录制视频权限, 请到设置中心打开", 3)
+                      return Toast.info('您禁止了拍摄照片和录制视频权限, 请到设置中心打开', 3)
                     } else {
                       uploadImg({ url: resp.uri })
                         .then(json => {
@@ -211,26 +202,26 @@ export default class AddArticle extends Component<Props & DefaultProps, State> {
                         })
                         .catch(e => {
                           Portal.remove(uploadingImgKey)
-                          Toast.fail("上传图片, 错误信息: " + e)
+                          Toast.fail('上传图片, 错误信息: ' + e)
                         })
                     }
                   })
                 } else {
-                  return Toast.info("您禁止了拍摄照片和录制视频权限, 请到设置中心打开", 3)
+                  return Toast.info('您禁止了拍摄照片和录制视频权限, 请到设置中心打开', 3)
                 }
               })
             } catch (err) {
               console.warn(err)
             }
           } else {
-            console.log("获得摄像头权限已经获取")
+            console.log('获得摄像头权限已经获取')
             RnImagePicker.launchImageLibrary(imgPickerOpt, (resp: any) => {
-              const uploadingImgKey = Toast.loading("上传图片中", 0, () => {}, true)
+              const uploadingImgKey = Toast.loading('上传图片中', 0, undefined, true)
               if (resp.didCancel) {
                 Portal.remove(uploadingImgKey)
               } else if (resp.error) {
                 Portal.remove(uploadingImgKey)
-                return Toast.info("您禁止了拍摄照片和录制视频权限, 请到设置中心打开", 3)
+                return Toast.info('您禁止了拍摄照片和录制视频权限, 请到设置中心打开', 3)
               } else {
                 uploadImg({ url: resp.uri })
                   .then(json => {
@@ -247,14 +238,14 @@ export default class AddArticle extends Component<Props & DefaultProps, State> {
                   })
                   .catch(e => {
                     Portal.remove(uploadingImgKey)
-                    Toast.fail("上传图片, 错误信息: " + e)
+                    Toast.fail('上传图片, 错误信息: ' + e)
                   })
               }
             })
           }
         })
         .catch(err => {
-          console.log("读取权限失败: " + err)
+          console.log('读取权限失败: ' + err)
         })
     } catch (err) {
       console.log(err)
@@ -264,11 +255,11 @@ export default class AddArticle extends Component<Props & DefaultProps, State> {
   submit = () => {
     let { title, content, picList, type, id } = this.state
     try {
-      if (title === "") {
-        return Toast.info("请填写标题", 1)
+      if (title === '') {
+        return Toast.info('请填写标题', 1)
       }
-      if (content === "") {
-        return Toast.info("请填内容", 1)
+      if (content === '') {
+        return Toast.info('请填内容', 1)
       }
       let picIdList: number[] = []
       for (let v of picList) {
@@ -280,30 +271,30 @@ export default class AddArticle extends Component<Props & DefaultProps, State> {
         content,
         picIdList,
       }
-      if (type === "add") {
+      if (type === 'add') {
         addArticle(data)
           .then(json => {
-            Toast.success("发布成功", 1, async () => {
+            Toast.success('发布成功', 1, async () => {
               let {
                 data: { detail: article },
               } = await getArticle({ id: json.data.id })
-              let sendArticle = this.props.navigation.getParam("sendArticle")
+              let sendArticle = this.props.navigation.getParam('sendArticle')
               sendArticle(article)
               this.props.navigation.goBack()
             })
           })
           .catch(err => {
             console.log(err)
-            Toast.fail("发布错误, 错误信息: " + err.msg, 3)
+            Toast.fail('发布错误, 错误信息: ' + err.msg, 3)
           })
       } else {
         editArticle(data)
           .then(() => {
-            Toast.success("编辑成功", 1)
+            Toast.success('编辑成功', 1)
           })
           .catch(err => {
             console.log(err)
-            Toast.fail("发布错误, 错误信息: " + err.msg, 3)
+            Toast.fail('发布错误, 错误信息: ' + err.msg, 3)
           })
       }
     } catch (err) {

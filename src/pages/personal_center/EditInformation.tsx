@@ -1,23 +1,22 @@
-import { BASE_URL } from "@/config/api"
-import * as userAction from "@/redux/actions/user"
-import { AppState } from "@/redux/stores/store"
-import pathMap from "@/routes/pathMap"
-import api from "@/services/api"
-import { GENDER_ZH, setAdeptSymptomIdList, setProfile, TECHNICAL_TITLE_ZH } from "@/services/doctor"
-import { TextareaItem, Toast } from "@ant-design/react-native"
-import hospitalApi from "@api/hospital"
-import userApi, { DoctorInfo } from "@api/user"
-import sColor from "@styles/color"
-import gImg from "@utils/img"
-import gStyle from "@utils/style"
-import React, { Component } from "react"
-import { Image, PixelRatio, RefreshControl, ScrollView, Text, View } from "react-native"
-import { TouchableOpacity } from "react-native-gesture-handler"
-import { connect } from "react-redux"
-import { Dispatch } from "redux"
-import { Overwrite } from "utility-types"
-import { Picture } from "../advisory/Chat"
-import { getPicCdnUrl } from "@/utils/utils"
+import * as userAction from '@/redux/actions/user'
+import { AppState } from '@/redux/stores/store'
+import pathMap from '@/routes/pathMap'
+import api from '@/services/api'
+import { GENDER_ZH, setAdeptSymptomIdList, setProfile, TECHNICAL_TITLE_ZH } from '@/services/doctor'
+import { getPicCdnUrl } from '@/utils/utils'
+import { TextareaItem, Toast } from '@ant-design/react-native'
+import hospitalApi from '@api/hospital'
+import userApi, { DoctorInfo } from '@api/user'
+import sColor from '@styles/color'
+import gImg from '@utils/img'
+import gStyle from '@utils/style'
+import React, { Component } from 'react'
+import { Image, PixelRatio, RefreshControl, ScrollView, Text, View } from 'react-native'
+import { TouchableOpacity } from 'react-native-gesture-handler'
+import { connect } from 'react-redux'
+import { Dispatch } from 'redux'
+import { Overwrite } from 'utility-types'
+import { Picture } from '../advisory/Chat'
 
 const style = gStyle.personalCenter.editInformation
 const global = gStyle.global
@@ -95,7 +94,7 @@ export default class Index extends Component<
 > {
   static navigationOptions = () => {
     return {
-      title: "编辑资料",
+      title: '编辑资料',
       headerStyle: {
         backgroundColor: sColor.white,
         height: 45,
@@ -106,10 +105,10 @@ export default class Index extends Component<
       headerTintColor: sColor.color333,
       headerTitleStyle: {
         flex: 1,
-        alignItems: "center",
-        justifyContent: "center",
+        alignItems: 'center',
+        justifyContent: 'center',
         fontSize: 14,
-        textAlign: "center",
+        textAlign: 'center',
       },
       headerRight: <Text />,
     }
@@ -127,13 +126,13 @@ export default class Index extends Component<
       isEditProfile: false,
       info: {
         id: 0,
-        name: "",
+        name: '',
         gender: 0,
-        profile: "暂无简介",
+        profile: '暂无简介',
         avatar: {
           id: 0,
-          title: "",
-          url: "",
+          title: '',
+          url: '',
         },
       },
       doctorInfo: {
@@ -141,19 +140,19 @@ export default class Index extends Component<
         technicalTitle: 0,
         departmentId: 0,
         adeptSymptomIdList: [],
-        provinceCid: "",
-        countyCid: "",
-        profile: "",
+        provinceCid: '',
+        countyCid: '',
+        profile: '',
         hospitalId: 0,
         hasRealNameAuth: false,
         patientCount: 0,
         prescriptionCount: 0,
         uid: 0,
       },
-      departmentName: "",
+      departmentName: '',
       adeptSymptomIdMapList: [],
       regionCidMapAreaName: {},
-      hospitalName: "",
+      hospitalName: '',
       adeptSymptomIdList: [],
     }
   }
@@ -185,7 +184,7 @@ export default class Index extends Component<
         limit: -1,
         filter: {},
       })
-      let hospitalName = "未知"
+      let hospitalName = '未知'
       for (let v of hospitalList) {
         if (v.id === data.doctorInfo.hospitalId) {
           hospitalName = v.name
@@ -262,7 +261,7 @@ export default class Index extends Component<
         this.setState({ refreshing: false })
       })
       .catch(err => {
-        Toast.fail("刷新失败,错误信息: " + err.msg)
+        Toast.fail('刷新失败,错误信息: ' + err.msg)
       })
   }
   submitAdeptSymptomIdList = async () => {
@@ -273,10 +272,10 @@ export default class Index extends Component<
     }
     try {
       await setAdeptSymptomIdList({ adeptSymptomIdList })
-      Toast.success("擅长疾病设置成功", 2)
+      Toast.success('擅长疾病设置成功', 2)
     } catch (err) {
       console.log(err)
-      Toast.fail("擅长疾病设置失败, 错误原因: " + err.msg, 3)
+      Toast.fail('擅长疾病设置失败, 错误原因: ' + err.msg, 3)
     }
   }
   editProfile = async () => {
@@ -285,10 +284,10 @@ export default class Index extends Component<
     })
     try {
       await setProfile({ profile: this.state.doctorInfo.profile })
-      Toast.success("我的简介设置成功", 1)
+      Toast.success('我的简介设置成功', 1)
     } catch (err) {
       console.log(err)
-      Toast.fail("我的简介设置失败, 错误信息: " + err.msg, 3)
+      Toast.fail('我的简介设置失败, 错误信息: ' + err.msg, 3)
     }
   }
   render() {
@@ -310,7 +309,8 @@ export default class Index extends Component<
               refreshing={this.state.refreshing}
               // onRefresh={this.onRefresh}
             />
-          }>
+          }
+        >
           <View style={style.header}>
             <View style={[style.headerInfo, global.flex, global.alignItemsCenter]}>
               <View style={style.headerInfoAvatar}>
@@ -318,35 +318,32 @@ export default class Index extends Component<
                   style={style.headerInfoImg}
                   source={
                     this.state.info.avatar.url
-                      ? { uri: getPicCdnUrl(this.state.info.avatar.url, "avatar") }
+                      ? { uri: getPicCdnUrl(this.state.info.avatar.url, 'avatar') }
                       : gImg.common.defaultAvatar
                   }
                 />
               </View>
               <View style={style.headerInfoName}>
-                <Text style={[style.headerInfoTitle, global.fontSize16]}>
-                  {this.state.info.name}
-                </Text>
+                <Text style={[style.headerInfoTitle, global.fontSize16]}>{this.state.info.name}</Text>
                 <Text style={[style.headerInfoDetail, global.fontSize14]}>
                   {TECHNICAL_TITLE_ZH[this.state.doctorInfo.technicalTitle]}
-                  {"  "}
+                  {'  '}
                   {GENDER_ZH[this.state.info.gender]}
                 </Text>
               </View>
               <TouchableOpacity
                 onPress={() => this.props.navigation.push(pathMap.CustomerService)}
-                style={style.headerInfoCustomerFa}>
+                style={style.headerInfoCustomerFa}
+              >
                 <Text style={[style.headerInfoCustomer, global.fontSize12]}>联系客服修改</Text>
               </TouchableOpacity>
             </View>
             <View style={style.headerDescription}>
+              <Text style={[style.headerDepartment, global.fontSize14]}>擅长科室: {this.state.departmentName}</Text>
               <Text style={[style.headerDepartment, global.fontSize14]}>
-                擅长科室: {this.state.departmentName}
-              </Text>
-              <Text style={[style.headerDepartment, global.fontSize14]}>
-                第一职业机构{"  "}
+                第一职业机构{'  '}
                 {this.state.regionCidMapAreaName[parseInt(this.state.doctorInfo.provinceCid)]}
-                {"  "}
+                {'  '}
                 {this.state.hospitalName}
               </Text>
             </View>
@@ -359,12 +356,12 @@ export default class Index extends Component<
                   this.setState({
                     isEditAdeptSymptomIdList: true,
                   })
-                }}>
+                }}
+              >
                 <Text style={[style.departmentEdit, global.fontSize14]}>编辑</Text>
               </TouchableOpacity>
             </View>
-            <View
-              style={[style.departmentList, global.flex, global.alignItemsCenter, global.flexWrap]}>
+            <View style={[style.departmentList, global.flex, global.alignItemsCenter, global.flexWrap]}>
               {this.state.adeptSymptomIdList.map((v1: adeptSymptomIdItem, k1: number) => {
                 return (
                   <Text key={k1} style={[style.departmentItem, global.fontSize14]}>
@@ -375,26 +372,19 @@ export default class Index extends Component<
             </View>
           </View>
           <View style={style.profile}>
-            <View
-              style={[
-                style.profileTitle,
-                global.flex,
-                global.alignItemsCenter,
-                global.justifyContentSpaceBetween,
-              ]}>
+            <View style={[style.profileTitle, global.flex, global.alignItemsCenter, global.justifyContentSpaceBetween]}>
               <Text style={[style.profileTheme, global.fontSize16]}>我的简介</Text>
               <TouchableOpacity
                 onPress={() => {
                   this.setState({
                     isEditProfile: true,
                   })
-                }}>
+                }}
+              >
                 <Text style={[style.profileEdit, global.fontSize14]}>编辑</Text>
               </TouchableOpacity>
             </View>
-            <Text style={[style.profileDetail, global.fontSize14]}>
-              {this.state.doctorInfo.profile}
-            </Text>
+            <Text style={[style.profileDetail, global.fontSize14]}>{this.state.doctorInfo.profile}</Text>
           </View>
           {/* 编辑个人简介 */}
           <View style={this.state.isEditProfile ? style.editProfile : global.hidden}>
@@ -406,7 +396,7 @@ export default class Index extends Component<
               <TextareaItem
                 rows={6}
                 count={10000}
-                placeholder="请输入简介"
+                placeholder='请输入简介'
                 value={this.state.doctorInfo.profile}
                 onChange={profile => {
                   if (profile) {
@@ -431,31 +421,23 @@ export default class Index extends Component<
           </TouchableOpacity>
         </View> */}
         {/* 擅长 */}
-        <ScrollView
-          style={this.state.isEditAdeptSymptomIdList ? style.selectDepartment : global.hidden}>
+        <ScrollView style={this.state.isEditAdeptSymptomIdList ? style.selectDepartment : global.hidden}>
           <TouchableOpacity
             onPress={() => {
               this.setState({
                 isEditAdeptSymptomIdList: false,
               })
               this.submitAdeptSymptomIdList()
-            }}>
+            }}
+          >
             <Text style={[style.closeDepartment, global.fontSize14]}>完成</Text>
           </TouchableOpacity>
           <View style={[style.selectDepartmentTitle, global.flex, global.alignItemsCenter]}>
             <View style={style.selectDepartmentIcon} />
-            <Text style={[style.selectDepartmentTheme, global.fontSize16]}>
-              请选择擅长治疗的疾病
-            </Text>
+            <Text style={[style.selectDepartmentTheme, global.fontSize16]}>请选择擅长治疗的疾病</Text>
             {/* <Text style={[style.selectDepartmentDetail, global.fontSize14]}>(最多选10个)</Text> */}
           </View>
-          <View
-            style={[
-              style.selectDepartmentList,
-              global.flex,
-              global.alignItemsCenter,
-              global.flexWrap,
-            ]}>
+          <View style={[style.selectDepartmentList, global.flex, global.alignItemsCenter, global.flexWrap]}>
             {this.state.adeptSymptomIdMapList.map((v: adeptSymptomIdMapItem, k: number) => {
               return v.symptomList.map((v1: symptomItem, k1: number) => {
                 return (
@@ -481,14 +463,14 @@ export default class Index extends Component<
                         adeptSymptomIdMapList,
                         adeptSymptomIdList,
                       })
-                    }}>
+                    }}
+                  >
                     <Text
                       style={[
-                        v1.isChecked
-                          ? style.selectDepartmentItemActive
-                          : style.selectDepartmentItem,
+                        v1.isChecked ? style.selectDepartmentItemActive : style.selectDepartmentItem,
                         global.fontSize14,
-                      ]}>
+                      ]}
+                    >
                       {v1.name}
                     </Text>
                   </TouchableOpacity>

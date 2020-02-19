@@ -1,13 +1,13 @@
-import * as userAction from "@/redux/actions/user"
-import { AppState } from "@/redux/stores/store"
-import pathMap from "@/routes/pathMap"
-import storage from "@/utils/storage"
-import { Icon, Toast } from "@ant-design/react-native"
-import api from "@api/api"
-import gStyle from "@utils/style"
-import React, { Component } from "react"
-import gImg from "@utils/img"
-import userApi from "@api/user"
+import * as userAction from '@/redux/actions/user'
+import { AppState } from '@/redux/stores/store'
+import pathMap from '@/routes/pathMap'
+import storage from '@/utils/storage'
+import { Icon, Toast } from '@ant-design/react-native'
+import api from '@api/api'
+import gStyle from '@utils/style'
+import React, { Component } from 'react'
+import gImg from '@utils/img'
+import userApi from '@api/user'
 import {
   RefreshControl,
   ScrollView,
@@ -18,14 +18,14 @@ import {
   Platform,
   DeviceEventEmitter,
   EmitterSubscription,
-} from "react-native"
-import { connect } from "react-redux"
-import { Dispatch } from "redux"
-import { NavigationScreenProp } from "react-navigation"
+} from 'react-native'
+import { connect } from 'react-redux'
+import { Dispatch } from 'redux'
+import { StackNavigationProp } from '@react-navigation/stack'
 const style = gStyle.personalCenter.personalCenterIndex
 const global = gStyle.global
 interface Props {
-  navigation: NavigationScreenProp<any>
+  navigation: StackNavigationProp<any>
 }
 interface State {
   hasLoad: boolean
@@ -66,19 +66,19 @@ export default class Index extends Component<
     super(props)
     this.functionList = [
       {
-        name: "账户",
+        name: '账户',
         link: pathMap.Account,
       },
       {
-        name: "编辑资料",
+        name: '编辑资料',
         link: pathMap.EditInformation,
       },
       {
-        name: "修改密码",
+        name: '修改密码',
         link: pathMap.ChangePwd,
       },
       {
-        name: "患者不可见",
+        name: '患者不可见',
         link: pathMap.InvisiblePatients,
       },
       // {
@@ -86,28 +86,28 @@ export default class Index extends Component<
       //   link: pathMap.InviteDoctors,
       // },
       {
-        name: "我的邀请",
+        name: '我的邀请',
         link: pathMap.MyInvite,
-       },
+      },
       {
-        name: "关于我们",
+        name: '关于我们',
         link: pathMap.About,
       },
       {
-        name: "联系客服",
+        name: '联系客服',
         link: pathMap.CustomerService,
       },
       {
-        name: "医生注册协议",
+        name: '医生注册协议',
         link: pathMap.RegisterAgreement,
       },
       {
-        name: "法律声明与隐私政策",
+        name: '法律声明与隐私政策',
         link: pathMap.LawAgreement,
       },
       {
-        name: "退出登录",
-        link: "",
+        name: '退出登录',
+        link: '',
       },
     ]
     this.state = this.getInitState()
@@ -118,13 +118,13 @@ export default class Index extends Component<
       hasRealNameAuth: false,
       refreshing: false,
       version: {
-        current: "1.0.0",
-        new: "",
+        current: '1.0.0',
+        new: '',
       },
     }
   }
   componentDidMount() {
-    this.subscription = DeviceEventEmitter.addListener(pathMap.PersonalCenter + "Reload", _ => {
+    this.subscription = DeviceEventEmitter.addListener(pathMap.PersonalCenter + 'Reload', _ => {
       this.init()
     })
     this.init()
@@ -144,8 +144,8 @@ export default class Index extends Component<
         data: { doctorInfo },
       } = await userApi.getPersonalInfo()
       let version = {
-        current: Platform.Version + "",
-        new: "1.0.1",
+        current: String(Platform.Version),
+        new: '1.0.1',
       }
       this.setState({
         hasLoad: true,
@@ -163,31 +163,31 @@ export default class Index extends Component<
         this.setState({ refreshing: false })
       })
       .catch(err => {
-        Toast.fail("刷新失败,错误信息: " + err.msg)
+        Toast.fail('刷新失败,错误信息: ' + err.msg)
       })
   }
   logout = async () => {
     const { navigation } = this.props
-    Toast.loading("正在退出", 1)
+    Toast.loading('正在退出', 1)
     try {
       await Promise.all([api.logout(), new Promise(s => setTimeout(s, 300))])
-      await storage.remove("session")
+      await storage.remove('session')
       this.props.login({
         uid: 0,
-        name: "未命名",
+        name: '未命名',
         avatar: {
           id: 0,
-          title: "",
-          url: "",
+          title: '',
+          url: '',
         },
       })
       navigation.navigate(pathMap.Login)
-      DeviceEventEmitter.emit(pathMap.PersonalCenter + "Reload", null)
-      DeviceEventEmitter.emit("wsReload", null)
+      DeviceEventEmitter.emit(pathMap.PersonalCenter + 'Reload', null)
+      DeviceEventEmitter.emit('wsReload', null)
     } catch (err) {
       console.log(err)
-      Toast.info("退出失败,错误信息: " + err.msg, 2)
-      DeviceEventEmitter.emit(pathMap.PersonalCenter + "Reload", null)
+      Toast.info('退出失败,错误信息: ' + err.msg, 2)
+      DeviceEventEmitter.emit(pathMap.PersonalCenter + 'Reload', null)
     }
   }
   render() {
@@ -204,38 +204,31 @@ export default class Index extends Component<
       <>
         <ScrollView
           style={style.main}
-          refreshControl={
-            <RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh} />
-          }>
+          refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh} />}
+        >
           <View style={style.separationModule} />
           <View style={style.list}>
             {this.functionList.map((v: any, k: number) => {
-              if (v.name === "账户") {
+              if (v.name === '账户') {
                 return (
                   <View key={k}>
                     <TouchableOpacity
                       onPress={() => {
                         if (!this.state.hasRealNameAuth) {
-                          return Toast.info("您未认证完成", 1)
+                          return Toast.info('您未认证完成', 1)
                         }
                         this.props.navigation.push(v.link)
                       }}
-                      style={[
-                        style.item,
-                        global.flex,
-                        global.justifyContentSpaceBetween,
-                        global.alignItemsCenter,
-                      ]}>
-                      <Text style={[style.title, global.fontStyle, global.fontSize15]}>
-                        {v.name}
-                      </Text>
-                      <Icon style={[style.icon, global.fontSize14]} name="right" />
+                      style={[style.item, global.flex, global.justifyContentSpaceBetween, global.alignItemsCenter]}
+                    >
+                      <Text style={[style.title, global.fontStyle, global.fontSize15]}>{v.name}</Text>
+                      <Icon style={[style.icon, global.fontSize14]} name='right' />
                     </TouchableOpacity>
                     <View style={style.separationModule} />
                   </View>
                 )
               }
-              if (v.name === "退出登录") {
+              if (v.name === '退出登录') {
                 return (
                   <View key={k}>
                     <View style={style.separationModule} />
@@ -244,15 +237,9 @@ export default class Index extends Component<
                         // this.props.navigation.navigate(pathMap.RealNameAuth)
                         this.logout()
                       }}
-                      style={[
-                        style.item,
-                        global.flex,
-                        global.justifyContentCenter,
-                        global.alignItemsCenter,
-                      ]}>
-                      <Text style={[style.logout, global.fontStyle, global.fontSize15]}>
-                        {v.name}
-                      </Text>
+                      style={[style.item, global.flex, global.justifyContentCenter, global.alignItemsCenter]}
+                    >
+                      <Text style={[style.logout, global.fontStyle, global.fontSize15]}>{v.name}</Text>
                     </TouchableOpacity>
                   </View>
                 )
@@ -260,20 +247,16 @@ export default class Index extends Component<
               return (
                 <TouchableOpacity
                   onPress={() => {
-                    if (v.name === "编辑资料" || v.name === "患者不可见" || v.name === "邀请医生") {
+                    if (v.name === '编辑资料' || v.name === '患者不可见' || v.name === '邀请医生') {
                       if (!this.state.hasRealNameAuth) {
-                        return Toast.info("您未认证完成", 1)
+                        return Toast.info('您未认证完成', 1)
                       }
                     }
                     this.props.navigation.push(v.link)
                   }}
                   key={k}
-                  style={[
-                    style.item,
-                    global.flex,
-                    global.justifyContentSpaceBetween,
-                    global.alignItemsCenter,
-                  ]}>
+                  style={[style.item, global.flex, global.justifyContentSpaceBetween, global.alignItemsCenter]}
+                >
                   <Text style={[style.title, global.fontStyle, global.fontSize15]}>{v.name}</Text>
                 </TouchableOpacity>
               )

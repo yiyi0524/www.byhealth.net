@@ -1,29 +1,29 @@
-import { StyleSheet, PixelRatio } from "react-native"
-import sColor from "@styles/color"
-import { windowWidth } from "@api/api"
-import { windowHeight } from "@/utils/utils"
+import { StyleSheet, PixelRatio } from 'react-native'
+import sColor from '@styles/color'
+import { windowWidth } from '@api/api'
+import { windowHeight } from '@/utils/utils'
 export default StyleSheet.create({
   loading: {
     width: windowWidth,
     height: windowHeight,
     backgroundColor: sColor.white,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
     flex: 1,
   },
   loadingTitle: {
-    textAlign: "center",
-    justifyContent: "center",
+    textAlign: 'center',
+    justifyContent: 'center',
   },
   loadingPic: {
-    width: "100%",
-    overflow: "hidden",
-    justifyContent: "center",
-    alignItems: "center",
+    width: '100%',
+    overflow: 'hidden',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   loadingImg: {
     width: 300,
-    resizeMode: "contain",
+    resizeMode: 'contain',
   },
   main: {
     backgroundColor: sColor.white,
@@ -44,12 +44,12 @@ export default StyleSheet.create({
   },
   searchTitle: {
     color: sColor.color888,
-    width: "100%",
-    position: "relative",
+    width: '100%',
+    position: 'relative',
   },
   searchMode: {
     height: 45,
-    position: "absolute",
+    position: 'absolute',
     left: 0,
     right: 0,
     zIndex: 100,
@@ -71,24 +71,24 @@ export default StyleSheet.create({
     width: 30,
     height: 30,
     marginRight: 5,
-    overflow: "hidden",
+    overflow: 'hidden',
   },
   groupImg: {
     width: 30,
     height: 30,
-    resizeMode: "contain",
+    resizeMode: 'contain',
   },
   communicationItemPicture: {
     width: 45,
     height: 45,
     marginRight: 15,
     borderRadius: 100,
-    overflow: "hidden",
+    overflow: 'hidden',
   },
   communicationItemPic: {
     width: 45,
     height: 45,
-    resizeMode: "contain",
+    resizeMode: 'contain',
   },
   groupTitle: {
     color: sColor.color666,
@@ -130,12 +130,12 @@ export default StyleSheet.create({
     marginRight: 2,
     width: 15,
     height: 15,
-    overflow: "hidden",
+    overflow: 'hidden',
   },
   genderIcon: {
     width: 15,
     height: 15,
-    resizeMode: "contain",
+    resizeMode: 'contain',
   },
   firstConsultTime: {
     color: sColor.color888,

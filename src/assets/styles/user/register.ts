@@ -1,13 +1,13 @@
-import { StyleSheet, PixelRatio } from "react-native"
-import sColor from "@styles/color"
-import { windowHeight } from "@api/api"
+import { StyleSheet, PixelRatio } from 'react-native'
+import sColor from '@styles/color'
+import { windowHeight } from '@api/api'
 export default StyleSheet.create({
   main: {
     backgroundColor: sColor.white,
     margin: 0,
     padding: 0,
     flex: 1,
-    position: "relative",
+    position: 'relative',
   },
   content: {
     flex: 1,
@@ -30,12 +30,12 @@ export default StyleSheet.create({
     color: sColor.mainBlack,
   },
   logo: {
-    alignItems: "center",
+    alignItems: 'center',
   },
   logoImg: {
     width: 160,
     height: 40,
-    resizeMode: "contain",
+    resizeMode: 'contain',
     marginTop: 20,
   },
   form: {
@@ -44,8 +44,8 @@ export default StyleSheet.create({
   },
   formItem: {
     height: 55,
-    position: "relative",
-    justifyContent: "center",
+    position: 'relative',
+    justifyContent: 'center',
   },
   hospital: {},
   hospitalTitle: {
@@ -55,7 +55,7 @@ export default StyleSheet.create({
     color: sColor.color666,
   },
   getVerificationCodeBtn: {
-    position: "absolute",
+    position: 'absolute',
     right: 10,
   },
   verificationCode: {
@@ -63,7 +63,7 @@ export default StyleSheet.create({
     height: 30,
     backgroundColor: sColor.colorCcc,
     color: sColor.white,
-    textAlign: "center",
+    textAlign: 'center',
     lineHeight: 30,
     borderRadius: 5,
   },
@@ -111,12 +111,12 @@ export default StyleSheet.create({
     backgroundColor: sColor.mainRed,
     borderRadius: 5,
     lineHeight: 50,
-    textAlign: "center",
+    textAlign: 'center',
   },
   hospitalSelect: {
-    position: "absolute",
+    position: 'absolute',
     top: 50,
-    width: "100%",
+    width: '100%',
     backgroundColor: sColor.white,
     height: windowHeight,
     borderTopWidth: 1 / PixelRatio.get(),
@@ -129,7 +129,7 @@ export default StyleSheet.create({
   hospitalAdd: {
     height: 55,
     paddingBottom: 8,
-    position: "relative",
+    position: 'relative',
   },
   hospitalSearch: {
     borderRadius: 20,
@@ -146,11 +146,11 @@ export default StyleSheet.create({
     marginLeft: 15,
   },
   close: {
-    textAlign: "right",
+    textAlign: 'right',
     color: sColor.color666,
   },
   hospitalList: {
-    position: "relative",
+    position: 'relative',
   },
   hospitalItem: {
     height: 50,

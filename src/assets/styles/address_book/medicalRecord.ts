@@ -1,29 +1,29 @@
-import { StyleSheet, PixelRatio } from "react-native"
-import sColor from "@styles/color"
-import { windowWidth } from "@api/api"
-import { windowHeight } from "@/utils/utils"
+import { StyleSheet, PixelRatio } from 'react-native'
+import sColor from '@styles/color'
+import { windowWidth } from '@api/api'
+import { windowHeight } from '@/utils/utils'
 export default StyleSheet.create({
   loading: {
     width: windowWidth,
     height: windowHeight,
     backgroundColor: sColor.white,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
     flex: 1,
   },
   loadingTitle: {
-    textAlign: "center",
-    justifyContent: "center",
+    textAlign: 'center',
+    justifyContent: 'center',
   },
   loadingPic: {
-    width: "100%",
-    overflow: "hidden",
-    justifyContent: "center",
-    alignItems: "center",
+    width: '100%',
+    overflow: 'hidden',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   loadingImg: {
     width: 300,
-    resizeMode: "contain",
+    resizeMode: 'contain',
   },
   detail: {
     flex: 1,
@@ -37,7 +37,7 @@ export default StyleSheet.create({
   doctorInfo: {
     height: 45,
     lineHeight: 45,
-    textAlign: "center",
+    textAlign: 'center',
     color: sColor.white,
     backgroundColor: sColor.mainRed,
   },
@@ -50,13 +50,13 @@ export default StyleSheet.create({
     borderWidth: 1 / PixelRatio.get(),
     borderColor: sColor.colorEee,
     borderRadius: 100,
-    overflow: "hidden",
+    overflow: 'hidden',
     marginRight: 15,
   },
   avatar: {
     width: 50,
     height: 50,
-    resizeMode: "contain",
+    resizeMode: 'contain',
   },
   patientName: {
     color: sColor.mainBlack,
@@ -71,7 +71,7 @@ export default StyleSheet.create({
   },
   diagnosisTitle: {
     color: sColor.mainBlack,
-    fontWeight: "500",
+    fontWeight: '500',
     marginBottom: 10,
   },
   diagnosisDetail: {
@@ -83,7 +83,7 @@ export default StyleSheet.create({
   },
   drugCategoryTitle: {
     color: sColor.mainBlack,
-    fontWeight: "500",
+    fontWeight: '500',
   },
   drugList: {},
   drugItem: {
@@ -103,7 +103,7 @@ export default StyleSheet.create({
   },
   costTheme: {
     color: sColor.mainBlack,
-    fontWeight: "500",
+    fontWeight: '500',
   },
   costItem: {
     marginTop: 8,

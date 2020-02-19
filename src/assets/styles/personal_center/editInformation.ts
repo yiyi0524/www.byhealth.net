@@ -1,29 +1,29 @@
-import { windowHeight } from "@/utils/utils"
-import { windowWidth } from "@api/api"
-import sColor from "@styles/color"
-import { PixelRatio, StyleSheet } from "react-native"
+import { windowHeight } from '@/utils/utils'
+import { windowWidth } from '@api/api'
+import sColor from '@styles/color'
+import { PixelRatio, StyleSheet } from 'react-native'
 export default StyleSheet.create({
   loading: {
     width: windowWidth,
     height: windowHeight,
     backgroundColor: sColor.white,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
     flex: 1,
   },
   loadingTitle: {
-    textAlign: "center",
-    justifyContent: "center",
+    textAlign: 'center',
+    justifyContent: 'center',
   },
   loadingPic: {
-    width: "100%",
-    overflow: "hidden",
-    justifyContent: "center",
-    alignItems: "center",
+    width: '100%',
+    overflow: 'hidden',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   loadingImg: {
     width: 300,
-    resizeMode: "contain",
+    resizeMode: 'contain',
   },
   edit: {
     flex: 1,
@@ -41,13 +41,13 @@ export default StyleSheet.create({
     width: 50,
     height: 50,
     borderRadius: 100,
-    overflow: "hidden",
+    overflow: 'hidden',
     backgroundColor: sColor.white,
   },
   headerInfoImg: {
     width: 50,
     height: 50,
-    resizeMode: "contain",
+    resizeMode: 'contain',
   },
   headerInfoName: {
     marginLeft: 15,
@@ -55,7 +55,7 @@ export default StyleSheet.create({
   },
   headerInfoTitle: {
     color: sColor.white,
-    fontWeight: "500",
+    fontWeight: '500',
     marginBottom: 5,
   },
   headerInfoDetail: {
@@ -140,13 +140,13 @@ export default StyleSheet.create({
   view: {
     height: 45,
     lineHeight: 45,
-    textAlign: "center",
+    textAlign: 'center',
     color: sColor.white,
     backgroundColor: sColor.mainRed,
     borderRadius: 5,
   },
   selectDepartment: {
-    position: "absolute",
+    position: 'absolute',
     top: 0,
     right: 0,
     left: 0,
@@ -156,7 +156,7 @@ export default StyleSheet.create({
   closeDepartment: {
     height: 45,
     lineHeight: 45,
-    textAlign: "center",
+    textAlign: 'center',
     color: sColor.white,
     backgroundColor: sColor.color666,
   },
@@ -212,7 +212,7 @@ export default StyleSheet.create({
     marginBottom: 15,
   },
   editProfile: {
-    position: "absolute",
+    position: 'absolute',
     top: 0,
     left: 0,
     right: 0,
@@ -226,7 +226,7 @@ export default StyleSheet.create({
   editProfileBtn: {
     height: 45,
     lineHeight: 45,
-    textAlign: "center",
+    textAlign: 'center',
     backgroundColor: sColor.mainRed,
     color: sColor.white,
     marginTop: 30,

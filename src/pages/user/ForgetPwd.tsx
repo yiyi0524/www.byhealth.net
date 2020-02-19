@@ -1,13 +1,13 @@
-import global from "@/assets/styles/global"
-import * as userAction from "@/redux/actions/user"
-import { AppState } from "@/redux/stores/store"
-import { Icon, InputItem, Toast } from "@ant-design/react-native"
-import api from "@api/api"
-import gStyle from "@utils/style"
-import React, { Component } from "react"
-import { Text, TouchableOpacity, View } from "react-native"
-import { connect } from "react-redux"
-import { Dispatch } from "redux"
+import global from '@/assets/styles/global'
+import * as userAction from '@/redux/actions/user'
+import { AppState } from '@/redux/stores/store'
+import { Icon, InputItem, Toast } from '@ant-design/react-native'
+import api from '@api/api'
+import gStyle from '@utils/style'
+import React, { Component } from 'react'
+import { Text, TouchableOpacity, View } from 'react-native'
+import { connect } from 'react-redux'
+import { Dispatch } from 'redux'
 const style = gStyle.user.forgetPwd
 interface Props {
   navigation: any
@@ -50,39 +50,39 @@ export default class ForgetPwd extends Component<
   tabs: TabsItem[] = []
   constructor(props: any) {
     super(props)
-    this.tabs = [{ title: "验证码登录" }, { title: "密码登录" }]
+    this.tabs = [{ title: '验证码登录' }, { title: '密码登录' }]
     this.state = this.getInitState()
   }
   getInitState = (): State => {
     return {
-      phone: "",
+      phone: '',
       saveInformation: false,
       sendVerificationCode: false,
-      verificationCode: "",
-      pwd: "",
-      confirmPwd: "",
-      verificationCodeMsg: "获取验证码",
-      verificationCodeUuid: "",
+      verificationCode: '',
+      pwd: '',
+      confirmPwd: '',
+      verificationCodeMsg: '获取验证码',
+      verificationCodeUuid: '',
     }
   }
   getVerificationCode = () => {
-    if (this.state.phone === "") {
-      return Toast.fail("请输入手机号码", 1)
+    if (this.state.phone === '') {
+      return Toast.fail('请输入手机号码', 1)
     }
     if (!/^1[3456789]\d{9}$/.test(this.state.phone)) {
-      return Toast.fail("请输入正确的手机号码", 1)
+      return Toast.fail('请输入正确的手机号码', 1)
     }
-    api
-      .getLoginPhoneVerifyCode({ phone: this.state.phone })
-      .then(json => {
-        Toast.info("发送成功", 1)
+    api.
+      getLoginPhoneVerifyCode({ phone: this.state.phone }).
+      then(json => {
+        Toast.info('发送成功', 1)
         let timeout = 60
         this.setState({
-          verificationCodeMsg: timeout-- + "秒后重新发送",
+          verificationCodeMsg: timeout-- + '秒后重新发送',
         })
         let timer = setInterval(_ => {
           this.setState({
-            verificationCodeMsg: timeout-- + "秒后重新发送",
+            verificationCodeMsg: timeout-- + '秒后重新发送',
           })
         }, 1000)
         this.setState({
@@ -91,32 +91,32 @@ export default class ForgetPwd extends Component<
         setTimeout(_ => {
           clearInterval(timer)
           this.setState({
-            verificationCodeMsg: "获取验证码",
+            verificationCodeMsg: '获取验证码',
           })
         }, timeout * 1000)
-      })
-      .catch(err => {
-        Toast.info("发送失败 错误信息: " + err.msg, 1)
+      }).
+      catch(err => {
+        Toast.info('发送失败 错误信息: ' + err.msg, 1)
       })
   }
   submit = () => {
-    if (this.state.phone === "") {
-      return Toast.fail("请输入手机号码", 2)
+    if (this.state.phone === '') {
+      return Toast.fail('请输入手机号码', 2)
     }
     if (!/^1[3456789]\d{9}$/.test(this.state.phone)) {
-      return Toast.fail("请输入正确的手机号码", 1)
+      return Toast.fail('请输入正确的手机号码', 1)
     }
-    if (this.state.verificationCodeUuid === "") {
-      return Toast.fail("请获取验证码", 2)
+    if (this.state.verificationCodeUuid === '') {
+      return Toast.fail('请获取验证码', 2)
     }
-    if (this.state.verificationCode === "") {
-      return Toast.fail("请输入验证码", 2)
+    if (this.state.verificationCode === '') {
+      return Toast.fail('请输入验证码', 2)
     }
-    if (this.state.pwd === "") {
-      return Toast.fail("请输入6位以上新密码", 2)
+    if (this.state.pwd === '') {
+      return Toast.fail('请输入6位以上新密码', 2)
     }
     if (this.state.pwd !== this.state.confirmPwd) {
-      return Toast.fail("两次密码不一致", 2)
+      return Toast.fail('两次密码不一致', 2)
     }
     console.log({
       phone: this.state.phone,
@@ -142,15 +142,15 @@ export default class ForgetPwd extends Component<
     let pwd = this.state.pwd,
       confirePwd = this.state.confirmPwd
     if (pwd !== confirePwd) {
-      Toast.fail("两次密码不一致", 2)
+      Toast.fail('两次密码不一致', 2)
     }
   }
   verificationPhone = () => {
-    if (this.state.phone === "") {
-      return Toast.fail("手机号码不能为空", 1)
+    if (this.state.phone === '') {
+      return Toast.fail('手机号码不能为空', 1)
     }
     if (!/^1[3456789]\d{9}$/.test(this.state.phone)) {
-      return Toast.fail("手机号码格式不正确", 1)
+      return Toast.fail('手机号码格式不正确', 1)
     }
     try {
       // let isExitPhone = api.checkedPhoneIsExit({ phone: this.state.phone })
@@ -164,13 +164,7 @@ export default class ForgetPwd extends Component<
   render() {
     return (
       <View style={style.main}>
-        <View
-          style={[
-            style.header,
-            global.flex,
-            global.justifyContentSpaceBetween,
-            global.alignItemsCenter,
-          ]}>
+        <View style={[style.header, global.flex, global.justifyContentSpaceBetween, global.alignItemsCenter]}>
           <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
             <Icon name="left" style={[style.headerLeft, global.fontSize16]} />
           </TouchableOpacity>

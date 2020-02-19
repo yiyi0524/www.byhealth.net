@@ -1,22 +1,22 @@
-import * as userAction from "@/redux/actions/user"
-import { AppState } from "@/redux/stores/store"
-import pathMap from "@/routes/pathMap"
-import doctor, { ALLOW_SEARCH_ME } from "@/services/doctor"
-import { Switch, Toast } from "@ant-design/react-native"
-import sColor from "@styles/color"
-import gImg from "@utils/img"
-import gStyle from "@utils/style"
-import React, { Component } from "react"
-import { DeviceEventEmitter, Image, PixelRatio, RefreshControl, Text, View } from "react-native"
-import { ScrollView } from "react-native-gesture-handler"
-import { NavigationScreenProp } from "react-navigation"
-import { connect } from "react-redux"
-import { Dispatch } from "redux"
+import * as userAction from '@/redux/actions/user'
+import { AppState } from '@/redux/stores/store'
+import pathMap from '@/routes/pathMap'
+import doctor, { ALLOW_SEARCH_ME } from '@/services/doctor'
+import { Switch, Toast } from '@ant-design/react-native'
+import sColor from '@styles/color'
+import gImg from '@utils/img'
+import gStyle from '@utils/style'
+import React, { Component } from 'react'
+import { DeviceEventEmitter, Image, PixelRatio, RefreshControl, Text, View } from 'react-native'
+import { ScrollView } from 'react-native-gesture-handler'
+import { StackNavigationProp } from '@react-navigation/stack'
+import { connect } from 'react-redux'
+import { Dispatch } from 'redux'
 const style = gStyle.index.ServiceSettings
 const global = gStyle.global
 
 interface Props {
-  navigation: NavigationScreenProp<State>
+  navigation: StackNavigationProp<any>
 }
 interface State {
   hasLoad: boolean
@@ -38,16 +38,13 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
   }
 }
 // @ts-ignore
-@connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)
+@connect(mapStateToProps, mapDispatchToProps)
 export default class DiagnosisSettings extends Component<
   Props & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
   State
 > {
   static navigationOptions = () => ({
-    title: "服务设置",
+    title: '服务设置',
     headerStyle: {
       backgroundColor: sColor.white,
       height: 50,
@@ -59,10 +56,10 @@ export default class DiagnosisSettings extends Component<
     headerTintColor: sColor.color333,
     headerTitleStyle: {
       flex: 1,
-      alignItems: "center",
-      justifyContent: "center",
+      alignItems: 'center',
+      justifyContent: 'center',
       fontSize: 14,
-      textAlign: "center",
+      textAlign: 'center',
     },
     headerRight: <Text />,
   })
@@ -96,7 +93,7 @@ export default class DiagnosisSettings extends Component<
         this.setState({ refreshing: false })
       })
       .catch(err => {
-        Toast.fail("刷新失败,错误信息: " + err.msg)
+        Toast.fail('刷新失败,错误信息: ' + err.msg)
       })
   }
   render() {
@@ -113,38 +110,23 @@ export default class DiagnosisSettings extends Component<
       <>
         <ScrollView
           style={style.main}
-          refreshControl={
-            <RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh} />
-          }>
+          refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh} />}
+        >
           <View style={style.explain}>
-            <View
-              style={[
-                style.header,
-                global.flex,
-                global.alignItemsCenter,
-                global.justifyContentSpaceBetween,
-              ]}>
+            <View style={[style.header, global.flex, global.alignItemsCenter, global.justifyContentSpaceBetween]}>
               <View style={[global.flex, global.alignItemsCenter]}>
                 <Text style={[style.headerTitle, global.fontSize14]}>在平台搜不到我</Text>
               </View>
-              <Switch
-                checked={this.state.allowSearch === ALLOW_SEARCH_ME.FALSE}
-                onChange={this.changeAllowNoSearch}
-              />
+              <Switch checked={this.state.allowSearch === ALLOW_SEARCH_ME.FALSE} onChange={this.changeAllowNoSearch} />
             </View>
-            <Text style={[style.detail, global.fontSize12]}>
-              开启后, 医生对外不可见, 患者只可通过扫码找到医生
-            </Text>
+            <Text style={[style.detail, global.fontSize12]}>开启后, 医生对外不可见, 患者只可通过扫码找到医生</Text>
           </View>
         </ScrollView>
       </>
     )
   }
   changeAllowNoSearch = () => {
-    let allowSearch =
-      this.state.allowSearch === ALLOW_SEARCH_ME.FALSE
-        ? ALLOW_SEARCH_ME.TRUE
-        : ALLOW_SEARCH_ME.FALSE
+    let allowSearch = this.state.allowSearch === ALLOW_SEARCH_ME.FALSE ? ALLOW_SEARCH_ME.TRUE : ALLOW_SEARCH_ME.FALSE
     this.setState({
       allowSearch,
     })
@@ -152,11 +134,11 @@ export default class DiagnosisSettings extends Component<
       .setServiceSettings({ allowSearch })
       .then(async () => {
         await this.init()
-        DeviceEventEmitter.emit(pathMap.Home + "Reload")
-        Toast.success("设置成功", 1)
+        DeviceEventEmitter.emit(pathMap.Home + 'Reload')
+        Toast.success('设置成功', 1)
       })
       .catch(err => {
-        Toast.fail("设置失败, 错误信息: " + err.msg, 3)
+        Toast.fail('设置失败, 错误信息: ' + err.msg, 3)
         console.log(err)
       })
   }

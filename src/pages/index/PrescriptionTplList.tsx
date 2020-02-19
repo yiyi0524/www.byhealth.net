@@ -1,32 +1,24 @@
-import * as userAction from "@/redux/actions/user"
-import { AppState } from "@/redux/stores/store"
-import pathMap from "@/routes/pathMap"
-import doctor, { PrescriptionTpl } from "@/services/doctor"
-import { TYPE } from "@/utils/constant"
-import { Toast, SwipeAction } from "@ant-design/react-native"
-import sColor from "@styles/color"
-import gImg from "@utils/img"
-import gStyle from "@utils/style"
-import React, { Component, ReactChild } from "react"
-import {
-  DeviceEventEmitter,
-  EmitterSubscription,
-  Image,
-  PixelRatio,
-  RefreshControl,
-  Text,
-  View,
-} from "react-native"
-import { ScrollView, TouchableOpacity } from "react-native-gesture-handler"
-import { NavigationScreenProp } from "react-navigation"
-import { connect } from "react-redux"
-import { Dispatch } from "redux"
-import Empty from "@/components/Empty"
-import { SwipeActionProps } from "@ant-design/react-native/lib/swipe-action"
+import * as userAction from '@/redux/actions/user'
+import { AppState } from '@/redux/stores/store'
+import pathMap from '@/routes/pathMap'
+import doctor, { PrescriptionTpl } from '@/services/doctor'
+import { TYPE } from '@/utils/constant'
+import { Toast, SwipeAction } from '@ant-design/react-native'
+import sColor from '@styles/color'
+import gImg from '@utils/img'
+import gStyle from '@utils/style'
+import React, { Component, ReactChild } from 'react'
+import { DeviceEventEmitter, EmitterSubscription, Image, PixelRatio, RefreshControl, Text, View } from 'react-native'
+import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler'
+import { StackNavigationProp } from '@react-navigation/stack'
+import { connect } from 'react-redux'
+import { Dispatch } from 'redux'
+import Empty from '@/components/Empty'
+import { SwipeActionProps } from '@ant-design/react-native/lib/swipe-action'
 const style = gStyle.index.PrescriptionTplList
 const global = gStyle.global
 interface Props {
-  navigation: NavigationScreenProp<State>
+  navigation: StackNavigationProp<any>
 }
 interface State {
   hasLoad: boolean
@@ -54,20 +46,21 @@ export default class PrescriptionTplList extends Component<
   Props & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
   State
 > {
-  static navigationOptions = ({ navigation }: { navigation: NavigationScreenProp<State> }) => {
-    let title = "处方模板"
+  static navigationOptions = ({ navigation }: { navigation: StackNavigationProp<any> }) => {
+    let title = '处方模板'
     let headerRight: ReactChild | null = null
     if (navigation.state.params) {
-      title = navigation.state.params.title + "模板"
+      title = navigation.state.params.title + '模板'
       headerRight = (
         <TouchableOpacity
-          style={navigation.getParam("id") ? {} : { display: "none" }}
+          style={navigation.getParam('id') ? {} : { display: 'none' }}
           onPress={() => {
             navigation.push(pathMap.AddPrescriptionTpl, {
-              id: navigation.getParam("id"),
-              title: navigation.getParam("title"),
+              id: navigation.getParam('id'),
+              title: navigation.getParam('title'),
             })
-          }}>
+          }}
+        >
           <Text style={[style.headerRight, global.fontSize14, global.fontStyle]}>新建</Text>
         </TouchableOpacity>
       )
@@ -84,10 +77,10 @@ export default class PrescriptionTplList extends Component<
       headerTintColor: sColor.color333,
       headerTitleStyle: {
         flex: 1,
-        alignItems: "center",
-        justifyContent: "center",
+        alignItems: 'center',
+        justifyContent: 'center',
         fontSize: 14,
-        textAlign: "center",
+        textAlign: 'center',
       },
       headerRight,
     }
@@ -103,17 +96,14 @@ export default class PrescriptionTplList extends Component<
       hasLoad: false,
       refreshing: false,
       categoryId: 0,
-      categoryName: "",
+      categoryName: '',
       prescriptionTplList: [],
     }
   }
   componentDidMount() {
-    this.subscription = DeviceEventEmitter.addListener(
-      pathMap.PrescriptionTplList + "Reload",
-      _ => {
-        this.init()
-      },
-    )
+    this.subscription = DeviceEventEmitter.addListener(pathMap.PrescriptionTplList + 'Reload', _ => {
+      this.init()
+    })
     this.init()
   }
   componentWillUnmount() {
@@ -123,8 +113,8 @@ export default class PrescriptionTplList extends Component<
   }
   init = async () => {
     try {
-      let categoryId = this.props.navigation.getParam("id"),
-        categoryName = this.props.navigation.getParam("title")
+      let categoryId = this.props.navigation.getParam('id'),
+        categoryName = this.props.navigation.getParam('title')
       let {
         data: { list: prescriptionTplList },
       } = await doctor.listPrescriptionTpl({
@@ -154,16 +144,16 @@ export default class PrescriptionTplList extends Component<
         this.setState({ refreshing: false })
       })
       .catch(err => {
-        Toast.fail("刷新失败,错误信息: " + err.msg)
+        Toast.fail('刷新失败,错误信息: ' + err.msg)
       })
   }
   deletePrescriptionTpl = async (id: number) => {
     try {
       await doctor.deletePrescriptionTpl({ id })
-      Toast.success("删除成功", 2)
-      DeviceEventEmitter.emit(pathMap.PrescriptionTplList + "Reload", null)
+      Toast.success('删除成功', 2)
+      DeviceEventEmitter.emit(pathMap.PrescriptionTplList + 'Reload', null)
     } catch (err) {
-      Toast.fail("删除失败, 错误信息: " + err.msg, 3)
+      Toast.fail('删除失败, 错误信息: ' + err.msg, 3)
     }
   }
   render() {
@@ -180,48 +170,47 @@ export default class PrescriptionTplList extends Component<
       <>
         <ScrollView
           style={style.main}
-          refreshControl={
-            <RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh} />
-          }>
+          refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh} />}
+        >
           <View style={style.prescriptionList}>
             {this.state.prescriptionTplList.length === 0 ? (
               <View>
                 <Empty />
-                <Text style={{ textAlign: "center", fontSize: 14, color: "#888" }}>暂无模板</Text>
+                <Text style={{ textAlign: 'center', fontSize: 14, color: '#888' }}>暂无模板</Text>
               </View>
             ) : null}
             {this.state.prescriptionTplList.map((prescription, k) => {
-              let drugStr = ""
+              let drugStr = ''
               for (let v of prescription.drugList) {
-                drugStr += v.detail.name + "、"
+                drugStr += v.detail.name + '、'
               }
-              drugStr = drugStr.substr(0, drugStr.lastIndexOf("、"))
-              let rightOpt: SwipeActionProps["right"] = prescription.isSystemTpl
+              drugStr = drugStr.substr(0, drugStr.lastIndexOf('、'))
+              let rightOpt: SwipeActionProps['right'] = prescription.isSystemTpl
                 ? [
                     {
-                      text: "开方",
+                      text: '开方',
                       onPress: () => {
                         this.props.navigation.push(pathMap.SquareRoot, {
-                          mode: "wx",
+                          mode: 'wx',
                           prescription: prescription,
                         })
                       },
-                      style: { backgroundColor: "blue", color: "white" },
+                      style: { backgroundColor: 'blue', color: 'white' },
                     },
                   ]
                 : [
                     {
-                      text: "开方",
+                      text: '开方',
                       onPress: () => {
                         this.props.navigation.push(pathMap.SquareRoot, {
-                          mode: "wx",
+                          mode: 'wx',
                           prescription: prescription,
                         })
                       },
-                      style: { backgroundColor: "blue", color: "white" },
+                      style: { backgroundColor: 'blue', color: 'white' },
                     },
                     {
-                      text: "编辑",
+                      text: '编辑',
                       onPress: () => {
                         this.props.navigation.push(pathMap.EditPrescriptionTpl, {
                           id: prescription.id,
@@ -230,12 +219,12 @@ export default class PrescriptionTplList extends Component<
                           categoryName: this.state.categoryName,
                         })
                       },
-                      style: { backgroundColor: "orange", color: "white" },
+                      style: { backgroundColor: 'orange', color: 'white' },
                     },
                     {
-                      text: "删除",
+                      text: '删除',
                       onPress: () => this.deletePrescriptionTpl(prescription.id),
-                      style: { backgroundColor: "red", color: "white" },
+                      style: { backgroundColor: 'red', color: 'white' },
                     },
                   ]
               return (
@@ -243,10 +232,9 @@ export default class PrescriptionTplList extends Component<
                   key={k}
                   autoClose
                   // disabled={prescription.isSystemTpl}
-                  style={{ backgroundColor: "transparent", marginTop: 8 }}
+                  style={{ backgroundColor: 'transparent', marginTop: 8 }}
                   right={rightOpt}
-                  onOpen={() => {}}
-                  onClose={() => {}}>
+                >
                   <View style={style.prescriptionItem}>
                     <View
                       style={[
@@ -254,7 +242,8 @@ export default class PrescriptionTplList extends Component<
                         global.flex,
                         global.alignItemsCenter,
                         global.justifyContentSpaceBetween,
-                      ]}>
+                      ]}
+                    >
                       <Text style={[style.prescriptionTitle, global.fontSize14]} numberOfLines={1}>
                         {prescription.name}
                       </Text>
@@ -263,9 +252,7 @@ export default class PrescriptionTplList extends Component<
                           {prescription.ctime.substr(0, 10)}
                         </Text>
                         {prescription.isSystemTpl && (
-                          <Text style={[{ color: "red", marginTop: 10 }, global.fontSize12]}>
-                            经典方
-                          </Text>
+                          <Text style={[{ color: 'red', marginTop: 10 }, global.fontSize12]}>经典方</Text>
                         )}
                       </View>
                     </View>

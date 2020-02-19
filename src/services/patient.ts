@@ -1,11 +1,11 @@
-import { communicationItem } from "@/pages/address_book/Index"
-import { MedicalRecord } from "@/pages/address_book/PatientDetail"
-import { Picture } from "@/pages/advisory/Chat"
-import { bget, GetListParam } from "./api"
-import { PrescriptionDrugCategory } from "@/pages/advisory/SquareRoot"
+import { communicationItem } from '@/pages/address_book/Index'
+import { MedicalRecord } from '@/pages/address_book/PatientDetail'
+import { Picture } from '@/pages/advisory/Chat'
+import { bget, GetListParam } from './api'
+import { PrescriptionDrugCategory } from '@/pages/advisory/SquareRoot'
 export async function getAddressBoolPatientList({ page = -1, limit = -1, filter }: GetListParam) {
   return bget<{ list: communicationItem[] }>({
-    url: "api/getAddressBoolPatientList",
+    url: 'api/getAddressBoolPatientList',
     query: {
       page,
       limit,
@@ -18,7 +18,7 @@ export async function getAddressBoolPatientList({ page = -1, limit = -1, filter 
  */
 export function getPatientInfo({ uid }: { uid: number }) {
   return bget({
-    url: "api/getPatientInfo",
+    url: 'api/getPatientInfo',
     query: {
       uid,
     },
@@ -92,15 +92,9 @@ export interface option {
 /**
  *  获取问诊单详情
  */
-export async function getInquirySheet({
-  patientUid,
-  consultationId,
-}: {
-  patientUid: number
-  consultationId: number
-}) {
+export async function getInquirySheet({ patientUid, consultationId }: { patientUid: number; consultationId: number }) {
   return bget<{ detail: inquirySheet }>({
-    url: "patientApi/getAppInquirySheet",
+    url: 'patientApi/getAppInquirySheet',
     query: {
       patientUid,
       consultationId,
@@ -131,15 +125,9 @@ export interface medicalRecord {
 /**
  *  获取病历详情
  */
-export async function getMedicalRecord({
-  prescriptionId,
-  patientUid,
-}: {
-  prescriptionId: number
-  patientUid: number
-}) {
+export async function getMedicalRecord({ prescriptionId, patientUid }: { prescriptionId: number; patientUid: number }) {
   return bget<{ detail: medicalRecord }>({
-    url: "patientApi/getMedicalRecord",
+    url: 'patientApi/getMedicalRecord',
     query: {
       prescriptionId,
       patientUid,
@@ -151,7 +139,7 @@ export async function getMedicalRecord({
  */
 export async function listMedicalRecord({ page = -1, limit = -1, filter }: GetListParam) {
   return bget<{ list: MedicalRecord[] }>({
-    url: "patient/listMedicalRecord",
+    url: 'patient/listMedicalRecord',
     query: {
       page,
       limit,
@@ -164,7 +152,7 @@ export async function listMedicalRecord({ page = -1, limit = -1, filter }: GetLi
  */
 export async function inquirySheet({ consultationId }: { consultationId: number }) {
   return bget<{ detail: InquirySheet }>({
-    url: "patient/inquirySheet",
+    url: 'patient/inquirySheet',
     query: {
       consultationId,
     },
@@ -175,7 +163,7 @@ export async function inquirySheet({ consultationId }: { consultationId: number 
  */
 export async function getLastPrescriptionInfo({ patientUid }: { patientUid: number }) {
   return bget<{ detail: PrescriptionDrugCategory[] | null }>({
-    url: "api/getLastPrescriptionInfo",
+    url: 'api/getLastPrescriptionInfo',
     query: {
       patientUid,
     },

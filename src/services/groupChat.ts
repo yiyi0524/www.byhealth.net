@@ -1,19 +1,18 @@
-import { Picture } from "@/pages/advisory/Chat"
-import { Assign } from "utility-types"
-import { bget, bpost, GetListParam } from "./api"
+import { Picture } from '@/pages/advisory/Chat'
+import { bget, bpost, GetListParam } from './api'
 
 export const TAB = {
   GROUP_CHAT: 0x0,
   MY_GROUP_CHAT: 0x1,
 }
 export const TAB_ZH = {
-  [TAB.GROUP_CHAT]: "精选群聊",
-  [TAB.MY_GROUP_CHAT]: "我加入的",
+  [TAB.GROUP_CHAT]: '精选群聊',
+  [TAB.MY_GROUP_CHAT]: '我加入的',
 }
 export const STATUS = {
   //是否加入 0 :未加入 1:加入
-  notJoined: "notJoined",
-  joined: "joined",
+  notJoined: 'notJoined',
+  joined: 'joined',
 }
 //文章类型
 export const ArticleType = {
@@ -27,7 +26,7 @@ export interface GroupChat {
   pic: Picture
   name: string
   userList: GroupChatMember[]
-  applyList: Omit<GroupChatMember, "isAdmin">[]
+  applyList: Omit<GroupChatMember, 'isAdmin'>[]
   description: string //群简介
   ctime: string
 }
@@ -69,7 +68,7 @@ export interface Article {
  */
 export function listGroupChat(query: GetListParam) {
   return bget<{ list: GroupChat[] }>({
-    url: "chatGroup/list",
+    url: 'chatGroup/list',
     query,
   })
 }
@@ -78,7 +77,7 @@ export function listGroupChat(query: GetListParam) {
  */
 export function joinGroupChat(data: { id: number }) {
   return bpost({
-    url: "chatGroup/applyJoin",
+    url: 'chatGroup/applyJoin',
     data,
   })
 }
@@ -88,7 +87,7 @@ export function joinGroupChat(data: { id: number }) {
  */
 export function delGroupChatmember(data: { groupId: number; ids: number[] }) {
   return bpost({
-    url: "chatGroup/delMember",
+    url: 'chatGroup/delMember',
     data: {
       id: data.groupId,
       doctorIds: data.ids,
@@ -100,21 +99,16 @@ export function delGroupChatmember(data: { groupId: number; ids: number[] }) {
  */
 export function addArticle(data: { title: string; content: string; picIdList: number[] }) {
   return bpost<{ id: number }>({
-    url: "chatGroup/addArticle",
+    url: 'chatGroup/addArticle',
     data,
   })
 }
 /**
  *  编辑文章
  */
-export function editArticle(data: {
-  id: number
-  title: string
-  content: string
-  picIdList: number[]
-}) {
+export function editArticle(data: { id: number; title: string; content: string; picIdList: number[] }) {
   return bpost({
-    url: "chatGroup/editArticle",
+    url: 'chatGroup/editArticle',
     data,
   })
 }
@@ -133,7 +127,7 @@ export function editArticle(data: {
  */
 export function listArticle(query: GetListParam) {
   return bget<{ list: Article[] }>({
-    url: "chatGroup/listArticle",
+    url: 'chatGroup/listArticle',
     query,
   })
 }
@@ -142,7 +136,7 @@ export function listArticle(query: GetListParam) {
  */
 export function getArticle(query: { id: number }) {
   return bget<{ detail: Article }>({
-    url: "chatGroup/detailArticle",
+    url: 'chatGroup/detailArticle',
     query,
   })
 }
@@ -151,7 +145,7 @@ export function getArticle(query: { id: number }) {
  */
 export function rejectJoin(data: { id: number; groupId: number }) {
   return bpost({
-    url: "chatGroup/denyJoin",
+    url: 'chatGroup/denyJoin',
     data: {
       id: data.groupId,
       doctorIds: [data.id],
@@ -163,7 +157,7 @@ export function rejectJoin(data: { id: number; groupId: number }) {
  */
 export function agreeJoin(data: { id: number; groupId: number }) {
   return bpost({
-    url: "chatGroup/allowJoin",
+    url: 'chatGroup/allowJoin',
     data: {
       id: data.groupId,
       doctorIds: [data.id],
@@ -175,7 +169,7 @@ export function agreeJoin(data: { id: number; groupId: number }) {
  */
 export function delArticle(data: { id: number }) {
   return bpost<{ detail: Article }>({
-    url: "chatGroup/delArticle",
+    url: 'chatGroup/delArticle',
     data: {
       idArr: [data.id],
     },

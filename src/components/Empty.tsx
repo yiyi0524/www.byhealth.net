@@ -1,6 +1,6 @@
-import React, { Component } from "react"
-import { StyleSheet, View, Image } from "react-native"
-import gImg from "@utils/img"
+import React, { Component } from 'react'
+import { StyleSheet, View, Image } from 'react-native'
+import gImg from '@utils/img'
 
 interface Props {}
 interface State {}
@@ -15,12 +15,12 @@ export default class Empty extends Component<Props, State> {
 }
 const styles = StyleSheet.create({
   main: {
-    backgroundColor: "#f2f2f2",
-    alignItems: "center",
+    backgroundColor: '#f2f2f2',
+    alignItems: 'center',
     flex: 1,
   },
   img: {
     width: 80,
-    resizeMode: "contain",
+    resizeMode: 'contain',
   },
 })

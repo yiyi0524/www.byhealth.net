@@ -1,31 +1,32 @@
-import { Platform, Dimensions, NativeModules, Text, TextInput } from "react-native"
-import { BASE_URL, CDN_BASE_URL } from "@/config/api"
-
+import { Platform, Dimensions, NativeModules, Text, TextInput } from 'react-native'
+import { BASE_URL, CDN_BASE_URL } from '@/config/api'
+const notFound = -1
+const zeroPos = 0
 const os = Platform.OS
-export const isAndroid = os === "android"
-export const isIos = os === "ios"
-export const windowWidth = Dimensions.get("window").width
-export const windowHeight = Dimensions.get("window").height
-export type OssStyle = "avatar"
+export const isAndroid = os === 'android'
+export const isIos = os === 'ios'
+export const windowWidth = Dimensions.get('window').width
+export const windowHeight = Dimensions.get('window').height
+export type OssStyle = 'avatar'
 export const styleMapOssStyle: Record<OssStyle, string> = {
-  avatar: "avatar",
+  avatar: 'avatar',
 }
 /**
  * 获取图片的完整url
  */
 export function getPicFullUrl(url: string): string {
-  return url.indexOf("http") === 0 ? url : BASE_URL + url
+  return url.indexOf('http') === zeroPos ? url : BASE_URL + url
 }
 /**
  * 获取图片的cdn url
  */
 export function getPicCdnUrl(url: string, style: OssStyle | null = null): string {
-  let styleQuery = ""
+  let styleQuery = ''
   if (style) {
-    styleQuery = "?x-oss-process=style/" + styleMapOssStyle[style]
+    styleQuery = '?x-oss-process=style/' + styleMapOssStyle[style]
   }
   // avatar
-  return url.indexOf("http") === 0 || url.indexOf("blob:http") === 0
+  return url.indexOf('http') === zeroPos || url.indexOf('blob:http') === zeroPos
     ? url + styleQuery
     : CDN_BASE_URL + url + styleQuery
 }
@@ -47,11 +48,11 @@ export function isDebugMode() {
   try {
     const { scriptURL } = NativeModules.SourceCode
     return (
-      (scriptURL as string).indexOf("dev=true") !== -1 ||
-      (scriptURL as string).indexOf("http://localhost") === 0
+      (scriptURL as string).indexOf('dev=true') !== notFound ||
+      (scriptURL as string).indexOf('http://localhost') === zeroPos
     )
   } catch (e) {
-    console.log("buffge: ", e)
+    console.log('buffge: ', e)
     return false
   }
 }

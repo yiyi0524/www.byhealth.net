@@ -1,29 +1,29 @@
-import { windowHeight } from "@/utils/utils"
-import { windowWidth } from "@api/api"
-import sColor from "@styles/color"
-import { StyleSheet } from "react-native"
+import { windowHeight } from '@/utils/utils'
+import { windowWidth } from '@api/api'
+import sColor from '@styles/color'
+import { StyleSheet } from 'react-native'
 export default StyleSheet.create({
   loading: {
     width: windowWidth,
     height: windowHeight,
     backgroundColor: sColor.white,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
     flex: 1,
   },
   loadingTitle: {
-    textAlign: "center",
-    justifyContent: "center",
+    textAlign: 'center',
+    justifyContent: 'center',
   },
   loadingPic: {
-    width: "100%",
-    overflow: "hidden",
-    justifyContent: "center",
-    alignItems: "center",
+    width: '100%',
+    overflow: 'hidden',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   loadingImg: {
     width: 300,
-    resizeMode: "contain",
+    resizeMode: 'contain',
   },
   invitePatient: {
     flex: 1,
@@ -38,7 +38,7 @@ export default StyleSheet.create({
   },
   invite: {
     marginTop: 30,
-    alignItems: "center",
+    alignItems: 'center',
   },
   title: {
     color: sColor.mainBlack,
@@ -54,21 +54,21 @@ export default StyleSheet.create({
   qrCode: {
     width: 150,
     height: 150,
-    resizeMode: "contain",
-    alignItems: "center",
+    resizeMode: 'contain',
+    alignItems: 'center',
   },
   logo: {
     padding: 15,
-    alignItems: "center",
+    alignItems: 'center',
     backgroundColor: sColor.mainBgColor,
     flex: 1,
-    width: "100%",
+    width: '100%',
     marginTop: 15,
     marginBottom: 15,
   },
   logoImg: {
     width: 150,
-    resizeMode: "contain",
+    resizeMode: 'contain',
     marginBottom: 8,
   },
   share: {
@@ -83,6 +83,6 @@ export default StyleSheet.create({
     lineHeight: 45,
     borderRadius: 5,
     backgroundColor: sColor.mainRed,
-    textAlign: "center",
+    textAlign: 'center',
   },
 })

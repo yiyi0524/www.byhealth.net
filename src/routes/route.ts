@@ -1,31 +1,52 @@
-import { Platform } from "react-native"
-import bottomNav from "./bottomNav"
-import { StackNavigatorConfig, NavigationRouteConfigMap } from "react-navigation"
-import Login from "@pages/user/Login"
-import Register from "@pages/user/Register"
-import ForgetPwd from "@pages/user/ForgetPwd"
-const config: [NavigationRouteConfigMap, StackNavigatorConfig] = [
-  {
+import bottomNav from './bottomNav'
+import { StackNavigationOptions } from '@react-navigation/stack'
+import { InitialState } from '@react-navigation/routers'
+import Login from '@pages/user/Login'
+import Register from '@pages/user/Register'
+import ForgetPwd from '@pages/user/ForgetPwd'
+import { RouteConfig } from '@react-navigation/native'
+import { StackCardMode, StackHeaderMode } from '@react-navigation/stack/lib/typescript/src/types'
+type ParamList = {
+  [key: string]: undefined
+}
+type AnyRouteName = any
+type AnyScreenOptions = any
+const config: {
+  screens: {
+    [key: string]: RouteConfig<ParamList, AnyRouteName, AnyScreenOptions>
+  }
+  initState?: InitialState
+  stackNavConfig: {
+    initialRouteName: string
+    mode?: StackCardMode
+    headerMode?: StackHeaderMode
+    navigationOptions?: StackNavigationOptions
+  }
+} = {
+  screens: {
     Index: {
-      screen: bottomNav,
+      name: 'Index',
+      component: bottomNav,
     },
     Login: {
-      screen: Login,
+      name: 'Login',
+      component: Login,
     },
     Register: {
-      screen: Register,
+      name: 'Register',
+      component: Register,
     },
     ForgetPwd: {
-      screen: ForgetPwd,
+      name: 'ForgetPwd',
+      component: ForgetPwd,
     },
   },
-  {
-    initialRouteName: "Index",
-    headerMode: "none",
-    mode: Platform.OS === "ios" ? "modal" : "card",
+  stackNavConfig: {
+    headerMode: 'none',
+    initialRouteName: 'Index',
     navigationOptions: {
       headerTitleAllowFontScaling: false,
     },
   },
-]
+}
 export default config

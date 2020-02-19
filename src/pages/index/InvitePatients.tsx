@@ -1,24 +1,24 @@
-import { BASE_URL } from "@/config/api"
-import * as userAction from "@/redux/actions/user"
-import { AppState } from "@/redux/stores/store"
-import { getMyInvitePatientQrCode, TECHNICAL_TITLE_ZH } from "@/services/doctor"
-import { Toast } from "@ant-design/react-native"
-import userApi from "@api/user"
-import sColor from "@styles/color"
-import gImg from "@utils/img"
-import gStyle from "@utils/style"
-import React, { Component } from "react"
-import { Image, PixelRatio, RefreshControl, Text, View } from "react-native"
-import { ScrollView, TouchableOpacity } from "react-native-gesture-handler"
-import QRCode from "react-native-qrcode-svg"
-import { NavigationScreenProp } from "react-navigation"
-import { connect } from "react-redux"
-import { Dispatch } from "redux"
+import { BASE_URL } from '@/config/api'
+import * as userAction from '@/redux/actions/user'
+import { AppState } from '@/redux/stores/store'
+import { getMyInvitePatientQrCode, TECHNICAL_TITLE_ZH } from '@/services/doctor'
+import { Toast } from '@ant-design/react-native'
+import userApi from '@api/user'
+import sColor from '@styles/color'
+import gImg from '@utils/img'
+import gStyle from '@utils/style'
+import React, { Component } from 'react'
+import { Image, PixelRatio, RefreshControl, Text, View } from 'react-native'
+import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler'
+import QRCode from 'react-native-qrcode-svg'
+import { StackNavigationProp } from '@react-navigation/stack'
+import { connect } from 'react-redux'
+import { Dispatch } from 'redux'
 const style = gStyle.index.InvitePatients
 const global = gStyle.global
 interface NavParams {
   navigatePress: () => void
-  mode: "delete" | "done"
+  mode: 'delete' | 'done'
 }
 interface Props {
   navigation: NavigationScreenProp<State, NavParams>
@@ -51,12 +51,8 @@ export default class InvitePatients extends Component<
   Props & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
   State
 > {
-  static navigationOptions = ({
-    navigation,
-  }: {
-    navigation: NavigationScreenProp<State, NavParams>
-  }) => ({
-    title: "二维码名片",
+  static navigationOptions = ({ navigation }: { navigation: NavigationScreenProp<State, NavParams> }) => ({
+    title: '二维码名片',
     headerStyle: {
       backgroundColor: sColor.white,
       height: 50,
@@ -68,16 +64,17 @@ export default class InvitePatients extends Component<
     headerTintColor: sColor.color333,
     headerTitleStyle: {
       flex: 1,
-      alignItems: "center",
-      justifyContent: "center",
+      alignItems: 'center',
+      justifyContent: 'center',
       fontSize: 14,
-      textAlign: "center",
+      textAlign: 'center',
     },
     headerRight: (
       <TouchableOpacity
         onPress={() => {
           navigation.state.params!.navigatePress()
-        }}>
+        }}
+      >
         {/* <Text style={[style.headerRight, global.fontSize14]}>保存</Text> */}
       </TouchableOpacity>
     ),
@@ -92,8 +89,8 @@ export default class InvitePatients extends Component<
       refreshing: false,
       doctorId: 0,
       technicalTitle: 0,
-      name: "",
-      inviteUrl: BASE_URL + "/doctor",
+      name: '',
+      inviteUrl: BASE_URL + '/doctor',
     }
   }
   async componentDidMount() {
@@ -109,7 +106,7 @@ export default class InvitePatients extends Component<
    *       微信扫描上方二维码, 随时复诊
    */
   saveBusinessCard = () => {
-    Toast.info("保存成功", 1)
+    Toast.info('保存成功', 1)
   }
   init = async () => {
     let getPersonalInfoPromise = userApi.getPersonalInfo(),
@@ -133,11 +130,11 @@ export default class InvitePatients extends Component<
         this.setState({ refreshing: false })
       })
       .catch(err => {
-        Toast.fail("刷新失败,错误信息: " + err.msg)
+        Toast.fail('刷新失败,错误信息: ' + err.msg)
       })
   }
   shareBusinessCard = async () => {
-    Toast.info("分享", 1)
+    Toast.info('分享', 1)
   }
   render() {
     if (!this.state.hasLoad) {
@@ -153,24 +150,19 @@ export default class InvitePatients extends Component<
       <View style={style.invitePatient}>
         <ScrollView
           style={style.main}
-          refreshControl={
-            <RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh} />
-          }>
+          refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh} />}
+        >
           <View style={style.invite}>
             <Text style={[style.title, global.fontSize16]}>{this.state.name}</Text>
-            <Text style={[style.detail, global.fontSize12]}>
-              {TECHNICAL_TITLE_ZH[this.state.technicalTitle]}
-            </Text>
+            <Text style={[style.detail, global.fontSize12]}>{TECHNICAL_TITLE_ZH[this.state.technicalTitle]}</Text>
             <Text style={[style.detail, global.fontSize14]}>在家随时找我</Text>
             <Text style={[style.title, global.fontSize24]}>复诊调方</Text>
             <View style={style.qrCode}>
-              <QRCode value={this.state.inviteUrl} logoSize={120} logoBackgroundColor="#252525" />
+              <QRCode value={this.state.inviteUrl} logoSize={120} logoBackgroundColor='#252525' />
             </View>
             <Text style={[style.detail, global.fontSize12]}>微信扫描上方我的二维码</Text>
             <Text style={[style.detail, global.fontSize12]}>关注 | 博一健康管理 | 公众号</Text>
-            <Text style={[style.detail, global.fontSize12]}>
-              即可随时在微信与我沟通, 在家找我复诊、调理
-            </Text>
+            <Text style={[style.detail, global.fontSize12]}>即可随时在微信与我沟通, 在家找我复诊、调理</Text>
             <View style={style.logo}>
               <Image style={style.logoImg} source={gImg.common.logo} />
               <Text style={[style.detail, global.fontSize12]}>医生的个人线上医馆</Text>

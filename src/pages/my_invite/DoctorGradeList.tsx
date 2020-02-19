@@ -1,22 +1,19 @@
-import pathMap from "@/routes/pathMap"
-import {
-  FirstLevelDoctorChildOrderInfo,
-  listFirstLevelDoctorChildOrderInfo,
-} from "@/services/myInvite"
-import { Icon } from "@ant-design/react-native"
-import sColor from "@styles/color"
-import global from "@styles/global"
-import gImg from "@utils/img"
-import gSass from "@utils/style"
-import moment from "moment"
-import React, { Component } from "react"
-import { Image, PixelRatio, Text, View } from "react-native"
-import { ScrollView, TouchableOpacity } from "react-native-gesture-handler"
-import { NavigationScreenProp } from "react-navigation"
-import Empty from "@/components/Empty"
+import pathMap from '@/routes/pathMap'
+import { FirstLevelDoctorChildOrderInfo, listFirstLevelDoctorChildOrderInfo } from '@/services/myInvite'
+import { Icon } from '@ant-design/react-native'
+import sColor from '@styles/color'
+import global from '@styles/global'
+import gImg from '@utils/img'
+import gSass from '@utils/style'
+import moment from 'moment'
+import React, { Component } from 'react'
+import { Image, PixelRatio, Text, View } from 'react-native'
+import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler'
+import { StackNavigationProp } from '@react-navigation/stack'
+import Empty from '@/components/Empty'
 const style = gSass.myInvite.myInviteDoctorGradeList
 interface Props {
-  navigation: NavigationScreenProp<State>
+  navigation: StackNavigationProp<any>
 }
 interface State {
   hasLoad: boolean
@@ -29,7 +26,7 @@ interface State {
 
 export default class DoctorGradeList extends Component<Props, State> {
   static navigationOptions = () => ({
-    title: "邀请的医生",
+    title: '邀请的医生',
     headerStyle: {
       backgroundColor: sColor.white,
       height: 50,
@@ -41,15 +38,13 @@ export default class DoctorGradeList extends Component<Props, State> {
     headerTintColor: sColor.color333,
     headerTitleStyle: {
       flex: 1,
-      alignItems: "center",
-      justifyContent: "center",
+      alignItems: 'center',
+      justifyContent: 'center',
       fontSize: 14,
-      textAlign: "center",
+      textAlign: 'center',
     },
     headerRight: (
-      <TouchableOpacity>
-        {/* <Text style={[style.headerRight, global.fontSize14]}>保存</Text> */}
-      </TouchableOpacity>
+      <TouchableOpacity>{/* <Text style={[style.headerRight, global.fontSize14]}>保存</Text> */}</TouchableOpacity>
     ),
   })
   constructor(props: any) {
@@ -59,18 +54,18 @@ export default class DoctorGradeList extends Component<Props, State> {
   getInitState = (props: Props): State => {
     let level = 0,
       doctorId = 0,
-      doctorName = ""
+      doctorName = ''
     if (props.navigation.state.params) {
       level = props.navigation.state.params.level || 0
       doctorId = props.navigation.state.params.doctorId || 0
-      doctorName = props.navigation.state.params.doctorName || ""
+      doctorName = props.navigation.state.params.doctorName || ''
     }
     return {
       level,
       doctorId,
       doctorName,
       hasLoad: false,
-      date: moment().format("YYYY-MM"),
+      date: moment().format('YYYY-MM'),
       list: [],
     }
   }
@@ -81,8 +76,8 @@ export default class DoctorGradeList extends Component<Props, State> {
     let { date, doctorId, level } = this.state
     try {
       let listFirstLevelDoctorChildOrderInfoTask = listFirstLevelDoctorChildOrderInfo({
-        year: parseInt(moment(date).format("YYYY")),
-        month: parseInt(moment(date).format("M")),
+        year: parseInt(moment(date).format('YYYY')),
+        month: parseInt(moment(date).format('M')),
         doctorId,
         level,
       })
@@ -100,8 +95,8 @@ export default class DoctorGradeList extends Component<Props, State> {
   prevMonth = () => {
     let { date } = this.state
     date = moment(date)
-      .subtract(1, "month")
-      .format("YYYY-MM")
+      .subtract(1, 'month')
+      .format('YYYY-MM')
     this.setState(
       {
         date,
@@ -112,9 +107,9 @@ export default class DoctorGradeList extends Component<Props, State> {
   nextMonth = () => {
     let { date } = this.state
     date = moment(date)
-      .add(1, "month")
-      .format("YYYY-MM")
-    let currDate = moment().format("YYYY-MM")
+      .add(1, 'month')
+      .format('YYYY-MM')
+    let currDate = moment().format('YYYY-MM')
     if (date > currDate) {
       return false
     }
@@ -142,24 +137,16 @@ export default class DoctorGradeList extends Component<Props, State> {
           <View style={style.header}>
             <View style={[style.year, global.flex, global.aCenter]}>
               <TouchableOpacity style={[style.iconPar]} onPress={this.prevMonth}>
-                <Icon style={[style.icon, style.iconLeft]} name="left"></Icon>
+                <Icon style={[style.icon, style.iconLeft]} name='left' />
               </TouchableOpacity>
-              <Text style={style.time}>{moment(date).format("YYYY年MM月")}</Text>
+              <Text style={style.time}>{moment(date).format('YYYY年MM月')}</Text>
               <TouchableOpacity style={style.iconPar} onPress={this.nextMonth}>
-                <Icon style={style.icon} name="right"></Icon>
+                <Icon style={style.icon} name='right' />
               </TouchableOpacity>
             </View>
-            <View
-              style={[
-                style.theme,
-                style.themeHeight,
-                global.flex,
-                global.aCenter,
-                global.jBetween,
-              ]}>
+            <View style={[style.theme, style.themeHeight, global.flex, global.aCenter, global.jBetween]}>
               <Text style={style.themeTitle}>
-                {doctorName}医生 ({" "}
-                {level === 1 ? "一级" : level === 2 ? "二级" : level === 3 ? "三级" : "四级"} )
+                {doctorName}医生 ( {level === 1 ? '一级' : level === 2 ? '二级' : level === 3 ? '三级' : '四级'} )
               </Text>
               <View style={[global.flex, global.aCenter]}>
                 <Text style={style.themeCount}>邀请数</Text>
@@ -172,14 +159,15 @@ export default class DoctorGradeList extends Component<Props, State> {
               return (
                 <TouchableOpacity
                   style={style.item}
-                  key={"item" + idx}
+                  key={'item' + idx}
                   onPress={() => {
                     this.props.navigation.push(pathMap.Order, {
                       doctorId: item.doctorId,
                       date,
                       doctorName: item.doctorName,
                     })
-                  }}>
+                  }}
+                >
                   <Text style={style.title}>{item.doctorName}医生</Text>
                   <View style={[style.desc, global.flex, global.aCenter, global.jBetween]}>
                     <View style={[global.flex, global.aCenter]}>
@@ -188,9 +176,7 @@ export default class DoctorGradeList extends Component<Props, State> {
                     </View>
                     <View style={[style.money, global.flex, global.aCenter]}>
                       <Text style={style.moneyLabel}>交易金额 (元)</Text>
-                      <Text style={style.moneyNum}>
-                        ￥{parseFloat((item.moneyCount / 100).toFixed(0))}
-                      </Text>
+                      <Text style={style.moneyNum}>￥{parseFloat((item.moneyCount / 100).toFixed(0))}</Text>
                     </View>
                   </View>
                 </TouchableOpacity>

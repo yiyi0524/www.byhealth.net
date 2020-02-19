@@ -1,29 +1,29 @@
-import { windowHeight } from "@/utils/utils"
-import { windowWidth } from "@api/api"
-import sColor from "@styles/color"
-import { StyleSheet, PixelRatio } from "react-native"
+import { windowHeight } from '@/utils/utils'
+import { windowWidth } from '@api/api'
+import sColor from '@styles/color'
+import { StyleSheet, PixelRatio } from 'react-native'
 export default StyleSheet.create({
   loading: {
     width: windowWidth,
     height: windowHeight,
     backgroundColor: sColor.white,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
     flex: 1,
   },
   loadingTitle: {
-    textAlign: "center",
-    justifyContent: "center",
+    textAlign: 'center',
+    justifyContent: 'center',
   },
   loadingPic: {
-    width: "100%",
-    overflow: "hidden",
-    justifyContent: "center",
-    alignItems: "center",
+    width: '100%',
+    overflow: 'hidden',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   loadingImg: {
     width: 300,
-    resizeMode: "contain",
+    resizeMode: 'contain',
   },
   main: {
     flex: 0.9,
@@ -48,7 +48,7 @@ export default StyleSheet.create({
   addPrescriptionTplDetail: {
     flex: 1,
     fontSize: 14,
-    color: "#666",
+    color: '#666',
     marginLeft: 20,
   },
   input: {
@@ -109,7 +109,7 @@ export default StyleSheet.create({
     marginRight: 15,
     height: 45,
     lineHeight: 45,
-    textAlign: "center",
+    textAlign: 'center',
     color: sColor.white,
     backgroundColor: sColor.mainRed,
     borderRadius: 5,
@@ -123,7 +123,7 @@ export default StyleSheet.create({
   },
   drugItemRightTitle: {
     color: sColor.color333,
-    textAlign: "right",
+    textAlign: 'right',
     marginBottom: 8,
   },
   drugMarginBottom: {
@@ -131,7 +131,7 @@ export default StyleSheet.create({
   },
   empty: {
     fontSize: 14,
-    textAlign: "center",
+    textAlign: 'center',
     color: sColor.color888,
     marginTop: 8,
   },

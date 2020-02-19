@@ -1,17 +1,17 @@
-import global from "@/assets/styles/global"
-import pathMap from "@/routes/pathMap"
-import { Article, ArticleType, listArticle, delArticle } from "@/services/groupChat"
-import { TYPE } from "@/utils/constant"
-import { Icon, InputItem, Modal, Toast } from "@ant-design/react-native"
-import gSass from "@utils/style"
-import React, { Component } from "react"
-import { FlatList, Text, TouchableOpacity, View } from "react-native"
-import { NavigationScreenProp } from "react-navigation"
-import { connect } from "react-redux"
-import { AppState } from "@/redux/stores/store"
+import global from '@/assets/styles/global'
+import pathMap from '@/routes/pathMap'
+import { Article, ArticleType, listArticle, delArticle } from '@/services/groupChat'
+import { TYPE } from '@/utils/constant'
+import { Icon, InputItem, Modal, Toast } from '@ant-design/react-native'
+import gSass from '@utils/style'
+import React, { Component } from 'react'
+import { FlatList, Text, TouchableOpacity, View } from 'react-native'
+import { StackNavigationProp } from '@react-navigation/stack'
+import { connect } from 'react-redux'
+import { AppState } from '@/redux/stores/store'
 const style = gSass.groupChat.articleList
 interface Props {
-  navigation: NavigationScreenProp<State>
+  navigation: StackNavigationProp<any>
 }
 interface State {
   page: number
@@ -37,24 +37,24 @@ export default class ArticleList extends Component<Props & DefaultProps, State> 
   static defaultProps: DefaultProps
   static navigationOptions = () => {
     return {
-      title: "文章列表",
+      title: '文章列表',
       headerStyle: {
-        backgroundColor: "#fff",
+        backgroundColor: '#fff',
         height: 45,
         elevation: 0,
-        borderColor: "#E3E3E3",
+        borderColor: '#E3E3E3',
       },
-      headerTintColor: "#333",
+      headerTintColor: '#333',
       headerTitleStyle: {
         flex: 1,
-        alignItems: "center",
-        justifyContent: "center",
+        alignItems: 'center',
+        justifyContent: 'center',
         fontSize: 14,
-        textAlign: "center",
+        textAlign: 'center',
       },
       headerRight: (
         <TouchableOpacity>
-          <Text></Text>
+          <Text />
         </TouchableOpacity>
       ),
     }
@@ -69,11 +69,11 @@ export default class ArticleList extends Component<Props & DefaultProps, State> 
       limit: -1,
       count: 0,
       type: ArticleType.all,
-      search: "",
+      search: '',
       filter: {
         search: {
           condition: TYPE.eqString,
-          val: "",
+          val: '',
         },
       },
       list: [],
@@ -81,17 +81,17 @@ export default class ArticleList extends Component<Props & DefaultProps, State> 
   }
   sendArticle = (id: number) => {
     let article = this.state.list.find(v => v.id === id)
-    let sendArticle = this.props.navigation.getParam("sendArticle")
+    let sendArticle = this.props.navigation.getParam('sendArticle')
     sendArticle(article)
     this.props.navigation.goBack()
   }
   delArticle = (id: number) => {
     delArticle({ id })
       .then(() => {
-        Toast.success("删除成功", 1, this.init)
+        Toast.success('删除成功', 1, this.init)
       })
       .catch(err => {
-        Toast.success("删除失败, 错误信息: " + err.msg, 3)
+        Toast.success('删除失败, 错误信息: ' + err.msg, 3)
         console.log(err)
       })
   }
@@ -104,26 +104,27 @@ export default class ArticleList extends Component<Props & DefaultProps, State> 
         onPress={() => {
           Modal.operation([
             {
-              text: "发送",
+              text: '发送',
               onPress: () => this.sendArticle(item.id),
             },
             {
-              text: "查看",
+              text: '查看',
               onPress: () => {
                 this.props.navigation.push(pathMap.ArticleDetail, { id: item.id })
               },
             },
             {
-              text: "删除",
+              text: '删除',
               onPress: () => this.delArticle(item.id),
             },
           ])
-        }}>
+        }}
+      >
         <View style={[style.titlePar, global.flex, global.aCenter]}>
           <Text style={style.title} numberOfLines={1}>
             {item.title}
           </Text>
-          <Icon style={style.icon} name="right" />
+          <Icon style={style.icon} name='right' />
         </View>
         <Text style={style.desc} numberOfLines={1}>
           {item.content}
@@ -187,43 +188,40 @@ export default class ArticleList extends Component<Props & DefaultProps, State> 
         <View style={style.search}>
           <InputItem
             style={style.input}
-            placeholder="请输入文章名称"
+            placeholder='请输入文章名称'
             value={search}
             last
             clear
             labelNumber={2}
-            onChange={search => {
+            onChange={editSearch => {
               let { filter } = this.state
               filter.search = {
                 condition: TYPE.eqString,
-                val: search,
+                val: editSearch,
               }
               this.setState(
                 {
-                  search,
+                  search: editSearch,
                   filter,
                 },
                 () => this.listArticle(1),
               )
-            }}>
-            <Icon style={style.searchIcon} name="search" />
+            }}
+          >
+            <Icon style={style.searchIcon} name='search' />
           </InputItem>
         </View>
         <View style={[style.theme, global.flex, global.aCenter]}>
           <TouchableOpacity onPress={() => this.changeType(ArticleType.all)}>
             <View style={[style.themeTitlePar, global.flex, global.aCenter]}>
-              <View style={[style.themeIcon, !isPersonal ? style.themeIconActive : null]}></View>
-              <Text style={[style.themeTitle, !isPersonal ? style.themeTitleActive : null]}>
-                学术文章
-              </Text>
+              <View style={[style.themeIcon, !isPersonal ? style.themeIconActive : null]} />
+              <Text style={[style.themeTitle, !isPersonal ? style.themeTitleActive : null]}>学术文章</Text>
             </View>
           </TouchableOpacity>
           <TouchableOpacity onPress={() => this.changeType(ArticleType.personal)}>
             <View style={[style.themeTitlePar, global.flex, global.aCenter]}>
-              <View style={[style.themeIcon, isPersonal ? style.themeIconActive : null]}></View>
-              <Text style={[style.themeTitle, isPersonal ? style.themeTitleActive : null]}>
-                我的发布
-              </Text>
+              <View style={[style.themeIcon, isPersonal ? style.themeIconActive : null]} />
+              <Text style={[style.themeTitle, isPersonal ? style.themeTitleActive : null]}>我的发布</Text>
             </View>
           </TouchableOpacity>
         </View>
@@ -238,11 +236,10 @@ export default class ArticleList extends Component<Props & DefaultProps, State> 
           style={style.list}
           data={list}
           extraData={this.state}
-          keyExtractor={item => item.id + "list"}
+          keyExtractor={item => item.id + 'list'}
           renderItem={this.renderItem}
           ListHeaderComponent={this.ListHeaderComponent}
           onEndReachedThreshold={0.1}
-          onEndReached={() => {}}
         />
       </View>
     )

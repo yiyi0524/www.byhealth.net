@@ -1,27 +1,19 @@
-import * as userAction from "@/redux/actions/user"
-import { AppState } from "@/redux/stores/store"
-import api from "@/services/api"
-import { InputItem, Toast } from "@ant-design/react-native"
-import sColor from "@styles/color"
-import gImg from "@utils/img"
-import gStyle from "@utils/style"
-import React, { Component } from "react"
-import {
-  Image,
-  PixelRatio,
-  RefreshControl,
-  ScrollView,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native"
-import { NavigationScreenProp } from "react-navigation"
-import { connect } from "react-redux"
-import { Dispatch } from "redux"
+import * as userAction from '@/redux/actions/user'
+import { AppState } from '@/redux/stores/store'
+import api from '@/services/api'
+import { InputItem, Toast } from '@ant-design/react-native'
+import sColor from '@styles/color'
+import gImg from '@utils/img'
+import gStyle from '@utils/style'
+import React, { Component } from 'react'
+import { Image, PixelRatio, RefreshControl, ScrollView, Text, TouchableOpacity, View } from 'react-native'
+import { StackNavigationProp } from '@react-navigation/stack'
+import { connect } from 'react-redux'
+import { Dispatch } from 'redux'
 const style = gStyle.personalCenter.changePwd
 const global = gStyle.global
 interface Props {
-  navigation: NavigationScreenProp<State>
+  navigation: StackNavigationProp<any>
 }
 interface State {
   hasLoad: boolean
@@ -44,17 +36,14 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
     },
   }
 }
-@connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)
+@connect(mapStateToProps, mapDispatchToProps)
 export default class ChangePwd extends Component<
   Props & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
   State
 > {
   static navigationOptions = () => {
     return {
-      title: "重新设置密码",
+      title: '重新设置密码',
       headerStyle: {
         backgroundColor: sColor.white,
         height: 45,
@@ -65,10 +54,10 @@ export default class ChangePwd extends Component<
       headerTintColor: sColor.color333,
       headerTitleStyle: {
         flex: 1,
-        alignItems: "center",
-        justifyContent: "center",
+        alignItems: 'center',
+        justifyContent: 'center',
         fontSize: 14,
-        textAlign: "center",
+        textAlign: 'center',
       },
       headerRight: <Text />,
     }
@@ -81,9 +70,9 @@ export default class ChangePwd extends Component<
     return {
       hasLoad: true,
       refreshing: false,
-      oriPwd: "",
-      newPwd: "",
-      rePwd: "",
+      oriPwd: '',
+      newPwd: '',
+      rePwd: '',
     }
   }
   componentDidMount() {
@@ -101,27 +90,27 @@ export default class ChangePwd extends Component<
         this.setState({ refreshing: false })
       })
       .catch(err => {
-        Toast.fail("刷新失败,错误信息: " + err.msg)
+        Toast.fail('刷新失败,错误信息: ' + err.msg)
       })
   }
 
   comfirePwd = () => {
     if (this.state.newPwd !== this.state.rePwd) {
-      Toast.fail("两次密码不一致", 3)
+      Toast.fail('两次密码不一致', 3)
     }
   }
   submit = () => {
-    if (this.state.oriPwd === "") {
-      return Toast.info("请输入原密码", 3)
+    if (this.state.oriPwd === '') {
+      return Toast.info('请输入原密码', 3)
     }
-    if (this.state.newPwd === "") {
-      return Toast.info("请输入新密码", 3)
+    if (this.state.newPwd === '') {
+      return Toast.info('请输入新密码', 3)
     }
-    if (this.state.rePwd === "") {
-      return Toast.info("再次输入密码", 3)
+    if (this.state.rePwd === '') {
+      return Toast.info('再次输入密码', 3)
     }
     if (this.state.rePwd !== this.state.newPwd) {
-      return Toast.info("两次密码不一致", 3)
+      return Toast.info('两次密码不一致', 3)
     }
     let oriPwd = this.state.oriPwd,
       newPwd = this.state.newPwd,
@@ -129,12 +118,12 @@ export default class ChangePwd extends Component<
     api
       .modifyPwdWithOriPwd({ oriPwd, newPwd, rePwd })
       .then(() => {
-        Toast.success("修改成功", 1, () => {
+        Toast.success('修改成功', 1, () => {
           this.setState(this.getInitState())
         })
       })
       .catch(err => {
-        Toast.fail("修改失败, 错误信息: " + err.msg, 3)
+        Toast.fail('修改失败, 错误信息: ' + err.msg, 3)
       })
   }
   render() {
@@ -150,17 +139,16 @@ export default class ChangePwd extends Component<
     return (
       <ScrollView
         style={style.main}
-        keyboardShouldPersistTaps="always"
-        refreshControl={
-          <RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh} />
-        }>
+        keyboardShouldPersistTaps='always'
+        refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh} />}
+      >
         <View style={style.list}>
           <View style={style.item}>
             <InputItem
               clear
               value={this.state.oriPwd}
-              placeholder="原密码"
-              type="password"
+              placeholder='原密码'
+              type='password'
               style={style.input}
               onChange={oriPwd => {
                 this.setState({
@@ -173,8 +161,8 @@ export default class ChangePwd extends Component<
             <InputItem
               clear
               value={this.state.newPwd}
-              placeholder="6位以上新密码"
-              type="password"
+              placeholder='6位以上新密码'
+              type='password'
               style={style.input}
               onChange={newPwd => {
                 this.setState({
@@ -187,8 +175,8 @@ export default class ChangePwd extends Component<
             <InputItem
               clear
               value={this.state.rePwd}
-              placeholder="再次输入密码"
-              type="password"
+              placeholder='再次输入密码'
+              type='password'
               style={style.input}
               onChange={rePwd => {
                 this.setState({

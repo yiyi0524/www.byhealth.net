@@ -1,8 +1,8 @@
-import { bget, GetListParam } from "./api"
+import { bget, GetListParam } from './api'
 
 export async function getList({ page = -1, limit = -1, filter = {} }: GetListParam) {
   return bget({
-    url: "/hospital/getList",
+    url: '/hospital/getList',
     query: {
       page,
       limit,
@@ -12,7 +12,7 @@ export async function getList({ page = -1, limit = -1, filter = {} }: GetListPar
 }
 export async function getDepartmentList({ page = -1, limit = -1, filter = {} }: GetListParam) {
   return bget({
-    url: "/hospital/getDepartmentList",
+    url: '/hospital/getDepartmentList',
     query: {
       page,
       limit,
@@ -22,7 +22,7 @@ export async function getDepartmentList({ page = -1, limit = -1, filter = {} }: 
 }
 export async function getAllSymptomList({ page = -1, limit = -1, filter = {} }: GetListParam) {
   return bget({
-    url: "/hospital/getAllSymptomList",
+    url: '/hospital/getAllSymptomList',
     query: {
       page,
       limit,
@@ -32,7 +32,7 @@ export async function getAllSymptomList({ page = -1, limit = -1, filter = {} }: 
 }
 export async function getDrugCategoryList({ page = -1, limit = -1, filter = {} }: GetListParam) {
   return bget({
-    url: "/hospital/getDrugCategoryList",
+    url: '/hospital/getDrugCategoryList',
     query: {
       page,
       limit,
@@ -42,7 +42,7 @@ export async function getDrugCategoryList({ page = -1, limit = -1, filter = {} }
 }
 export async function getDrugList({ page = -1, limit = -1, filter = {} }: GetListParam) {
   return bget({
-    url: "/hospital/getDrugList",
+    url: '/hospital/getDrugList',
     query: {
       page,
       limit,

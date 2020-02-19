@@ -1,25 +1,21 @@
-import * as userAction from "@/redux/actions/user"
-import { AppState } from "@/redux/stores/store"
-import { GENDER_ZH } from "@/services/doctor"
-import hospital from "@/services/hospital"
-import patient, { medicalRecord } from "@/services/patient"
-import { getPicCdnUrl } from "@/utils/utils"
-import { Toast } from "@ant-design/react-native"
-import sColor from "@styles/color"
-import gImg from "@utils/img"
-import gStyle from "@utils/style"
-import moment from "moment"
-import React, { Component } from "react"
-import { Image, PixelRatio, RefreshControl, ScrollView, Text, View } from "react-native"
-import { TouchableOpacity } from "react-native-gesture-handler"
-import { NavigationScreenProp } from "react-navigation"
-import { connect } from "react-redux"
-import { Dispatch } from "redux"
-import {
-  ORAL_CHINESE_DRUG_ID,
-  EXTERN_CHINESE_DRUG_ID,
-  TOPICAL_CHINESE_DRUG_ID,
-} from "@/services/drug"
+import * as userAction from '@/redux/actions/user'
+import { AppState } from '@/redux/stores/store'
+import { GENDER_ZH } from '@/services/doctor'
+import hospital from '@/services/hospital'
+import patient, { medicalRecord } from '@/services/patient'
+import { getPicCdnUrl } from '@/utils/utils'
+import { Toast } from '@ant-design/react-native'
+import sColor from '@styles/color'
+import gImg from '@utils/img'
+import gStyle from '@utils/style'
+import moment from 'moment'
+import React, { Component } from 'react'
+import { Image, PixelRatio, RefreshControl, ScrollView, Text, View } from 'react-native'
+import { TouchableOpacity } from 'react-native-gesture-handler'
+import { StackNavigationProp } from '@react-navigation/stack'
+import { connect } from 'react-redux'
+import { Dispatch } from 'redux'
+import { ORAL_CHINESE_DRUG_ID, EXTERN_CHINESE_DRUG_ID, TOPICAL_CHINESE_DRUG_ID } from '@/services/drug'
 const style = gStyle.addressBook.MedicalRecord
 const global = gStyle.global
 
@@ -48,7 +44,7 @@ interface drugCategory {
   child: drugCategory[]
 }
 interface Props {
-  navigation: NavigationScreenProp<State>
+  navigation: StackNavigationProp<any>
 }
 interface State {
   hasLoad: boolean
@@ -66,7 +62,7 @@ export default class InquirySheet extends Component<
   State
 > {
   static navigationOptions = () => ({
-    title: "查看病历",
+    title: '查看病历',
     headerStyle: {
       backgroundColor: sColor.white,
       height: 50,
@@ -78,10 +74,10 @@ export default class InquirySheet extends Component<
     headerTintColor: sColor.color333,
     headerTitleStyle: {
       flex: 1,
-      alignItems: "center",
-      justifyContent: "center",
+      alignItems: 'center',
+      justifyContent: 'center',
       fontSize: 14,
-      textAlign: "center",
+      textAlign: 'center',
     },
     headerRight: <TouchableOpacity />,
   })
@@ -93,27 +89,27 @@ export default class InquirySheet extends Component<
     return {
       hasLoad: false,
       refreshing: false,
-      prescriptionId: this.props.navigation.getParam("prescriptionId") || 0,
-      patientUid: this.props.navigation.getParam("patientUid") || 0,
+      prescriptionId: this.props.navigation.getParam('prescriptionId') || 0,
+      patientUid: this.props.navigation.getParam('patientUid') || 0,
       detail: {
         doctor: {
-          name: "",
+          name: '',
         },
         patient: {
-          name: "",
+          name: '',
           avatar: {
             id: 0,
-            title: "",
-            url: "",
+            title: '',
+            url: '',
           },
           gender: 0,
           yearAge: 0,
           monthAge: 0,
         },
-        discrimination: "", //辨病
-        syndromeDifferentiation: "", //辨证
+        discrimination: '', //辨病
+        syndromeDifferentiation: '', //辨证
         drugList: [],
-        time: "",
+        time: '',
         cost: {
           drugCost: 0,
           doctorServiceCost: 0,
@@ -158,7 +154,7 @@ export default class InquirySheet extends Component<
         this.setState({ refreshing: false })
       })
       .catch(err => {
-        Toast.fail("刷新失败,错误信息: " + err.msg)
+        Toast.fail('刷新失败,错误信息: ' + err.msg)
       })
   }
 
@@ -177,13 +173,12 @@ export default class InquirySheet extends Component<
       <View style={style.detail}>
         <ScrollView
           style={style.main}
-          refreshControl={
-            <RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh} />
-          }>
+          refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh} />}
+        >
           <View style={style.header}>
             <Text style={[style.doctorInfo, global.fontSize14]}>
-              {moment(detail.time).format("YYYY" + "年" + "MM" + "月" + "DD" + "日" + " HH:mm")}{" "}
-              {detail.doctor.name}医生
+              {moment(detail.time).format('YYYY年MM月DD日 HH:mm')} {detail.doctor.name}
+              医生
             </Text>
             <View style={[style.patient, global.flex, global.alignItemsCenter]}>
               <View style={style.avatarFa}>
@@ -191,19 +186,17 @@ export default class InquirySheet extends Component<
                   style={style.avatar}
                   source={
                     detail.patient.avatar.url
-                      ? { uri: getPicCdnUrl(detail.patient.avatar.url, "avatar") }
+                      ? { uri: getPicCdnUrl(detail.patient.avatar.url, 'avatar') }
                       : gImg.common.defaultAvatar
                   }
                 />
               </View>
               <Text style={[style.patientName, global.fontSize14]}>{detail.patient.name}</Text>
-              <Text style={[style.patientTitle, global.fontSize14]}>
-                {GENDER_ZH[detail.patient.gender]}
-              </Text>
+              <Text style={[style.patientTitle, global.fontSize14]}>{GENDER_ZH[detail.patient.gender]}</Text>
               <Text style={[style.patientTitle, global.fontSize14]}>
                 {detail.patient.yearAge >= 3
-                  ? detail.patient.yearAge + "岁"
-                  : detail.patient.yearAge + "岁" + detail.patient.monthAge + "月"}
+                  ? detail.patient.yearAge + '岁'
+                  : detail.patient.yearAge + '岁' + detail.patient.monthAge + '月'}
               </Text>
             </View>
           </View>
@@ -217,7 +210,7 @@ export default class InquirySheet extends Component<
             <Text style={[style.diagnosisTitle, global.fontSize15]}>[ 治疗 ]</Text>
             <View style={style.drug}>
               {detail.drugList.map((v, k) => {
-                let categoryName = ""
+                let categoryName = ''
                 for (let category of this.state.drugCategoryList) {
                   if (category.id === v.categoryId) {
                     categoryName = category.name
@@ -240,16 +233,10 @@ export default class InquirySheet extends Component<
                       <Text style={[style.drugCategoryTitle, global.fontSize14]}>
                         {categoryName} 共{v.list.length}味
                       </Text>
-                      <View
-                        style={[
-                          style.drugList,
-                          global.flex,
-                          global.alignItemsCenter,
-                          global.flexWrap,
-                        ]}>
+                      <View style={[style.drugList, global.flex, global.alignItemsCenter, global.flexWrap]}>
                         {v.list.map((v1, k1) => {
-                          let drugName = "",
-                            unit = ""
+                          let drugName = '',
+                            unit = ''
                           for (let drug of this.state.drugList) {
                             if (drug.id === v1.id) {
                               drugName = drug.name
@@ -265,114 +252,72 @@ export default class InquirySheet extends Component<
                           )
                         })}
                       </View>
-                      <View
-                        style={[style.dose, global.flex, global.alignItemsCenter, global.flexWrap]}>
+                      <View style={[style.dose, global.flex, global.alignItemsCenter, global.flexWrap]}>
                         <Text style={[style.doseTitle, global.fontSize14]}>共计</Text>
-                        <Text style={[style.doseDetail, global.fontSize14]}>
-                          {v.doseCount || 0}
-                        </Text>
+                        <Text style={[style.doseDetail, global.fontSize14]}>{v.doseCount || 0}</Text>
                         <Text style={[style.doseTitle, global.fontSize14]}>剂</Text>
                         <Text style={[style.doseTitle, global.fontSize14]}>, 每日</Text>
-                        <Text style={[style.doseDetail, global.fontSize14]}>
-                          {v.dailyDose || 0}
-                        </Text>
+                        <Text style={[style.doseDetail, global.fontSize14]}>{v.dailyDose || 0}</Text>
                         <Text style={[style.doseTitle, global.fontSize14]}>剂, 一剂分</Text>
-                        <Text style={[style.doseDetail, global.fontSize14]}>
-                          {v.everyDoseUseCount || 0}
-                        </Text>
+                        <Text style={[style.doseDetail, global.fontSize14]}>{v.everyDoseUseCount || 0}</Text>
                         <Text style={[style.doseTitle, global.fontSize14]}>次使用</Text>
                       </View>
                     </View>
                   )
-                } else {
-                  return (
-                    <View style={style.drugCategory} key={k}>
-                      <Text style={[style.drugCategoryTitle, global.fontSize14]}>
-                        {categoryName} 共{v.list.length}味
-                      </Text>
-                      <View style={[style.drugList, { marginLeft: 15 }]}>
-                        {v.list.map((v1, k1) => {
-                          let drugName = "",
-                            unit = ""
-                          for (let drug of this.state.drugList) {
-                            if (drug.id === v1.id) {
-                              drugName = drug.name
-                              unit = drug.unit
-                            }
-                          }
-                          return (
-                            <View style={style.drugItem} key={k1}>
-                              <Text style={[style.drugName, global.fontSize14]}>
-                                {drugName}: {v1.count}
-                                {unit}
-                              </Text>
-                              <Text style={[style.drugDetail, global.fontSize14]}>
-                                用法用量: {v1.usage}
-                              </Text>
-                            </View>
-                          )
-                        })}
-                      </View>
-                    </View>
-                  )
                 }
+                return (
+                  <View style={style.drugCategory} key={k}>
+                    <Text style={[style.drugCategoryTitle, global.fontSize14]}>
+                      {categoryName} 共{v.list.length}味
+                    </Text>
+                    <View style={[style.drugList, { marginLeft: 15 }]}>
+                      {v.list.map((v1, k1) => {
+                        let drugName = '',
+                          unit = ''
+                        for (let drug of this.state.drugList) {
+                          if (drug.id === v1.id) {
+                            drugName = drug.name
+                            unit = drug.unit
+                          }
+                        }
+                        return (
+                          <View style={style.drugItem} key={k1}>
+                            <Text style={[style.drugName, global.fontSize14]}>
+                              {drugName}: {v1.count}
+                              {unit}
+                            </Text>
+                            <Text style={[style.drugDetail, global.fontSize14]}>用法用量: {v1.usage}</Text>
+                          </View>
+                        )
+                      })}
+                    </View>
+                  </View>
+                )
               })}
             </View>
           </View>
           <View style={style.cost}>
             <Text style={[style.costTheme, global.fontSize15]}>[ 费用明细 ]</Text>
-            <View
-              style={[
-                style.costItem,
-                global.flex,
-                global.alignItemsCenter,
-                global.justifyContentSpaceBetween,
-              ]}>
+            <View style={[style.costItem, global.flex, global.alignItemsCenter, global.justifyContentSpaceBetween]}>
               <Text style={[style.costTitle, global.fontSize14]}>药费</Text>
-              <Text style={[style.costTitle, global.fontSize14]}>
-                ¥ {(detail.cost.drugCost / 100).toFixed(2)}
-              </Text>
+              <Text style={[style.costTitle, global.fontSize14]}>¥ {(detail.cost.drugCost / 100).toFixed(2)}</Text>
             </View>
-            <View
-              style={[
-                style.costItem,
-                global.flex,
-                global.alignItemsCenter,
-                global.justifyContentSpaceBetween,
-              ]}>
+            <View style={[style.costItem, global.flex, global.alignItemsCenter, global.justifyContentSpaceBetween]}>
               <Text style={[style.costTitle, global.fontSize14]}>诊后管理费</Text>
               <Text style={[style.costTitle, global.fontSize14]}>
                 ¥ {(detail.cost.doctorServiceCost / 100).toFixed(2)}
               </Text>
             </View>
-            <View
-              style={[
-                style.costItem,
-                global.flex,
-                global.alignItemsCenter,
-                global.justifyContentSpaceBetween,
-              ]}>
+            <View style={[style.costItem, global.flex, global.alignItemsCenter, global.justifyContentSpaceBetween]}>
               <Text style={[style.costTitle, global.fontSize14]}>邮费</Text>
-              <Text style={[style.costTitle, global.fontSize14]}>
-                ¥ {(detail.cost.expressCost / 100).toFixed(2)}
-              </Text>
+              <Text style={[style.costTitle, global.fontSize14]}>¥ {(detail.cost.expressCost / 100).toFixed(2)}</Text>
             </View>
-            <View
-              style={[
-                style.costItem,
-                global.flex,
-                global.alignItemsCenter,
-                global.justifyContentSpaceBetween,
-              ]}>
+            <View style={[style.costItem, global.flex, global.alignItemsCenter, global.justifyContentSpaceBetween]}>
               <Text style={[style.costTitle, global.fontSize14]}>
                 总计<Text style={[style.costDetail, global.fontSize12]}>(不含代煎)</Text>
               </Text>
               <Text style={[style.costTitle, global.fontSize14]}>
-                ¥{" "}
-                {(
-                  (detail.cost.drugCost + detail.cost.doctorServiceCost + detail.cost.expressCost) /
-                  100
-                ).toFixed(2)}
+                ¥ {((detail.cost.drugCost + detail.cost.doctorServiceCost + detail.cost.expressCost) / 100).toFixed(2)}
               </Text>
             </View>
           </View>

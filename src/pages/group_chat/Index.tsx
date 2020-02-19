@@ -1,21 +1,21 @@
-import global from "@/assets/styles/global"
-import Empty from "@/components/Empty"
-import { AppState } from "@/redux/stores/store"
-import pathMap from "@/routes/pathMap"
-import { GroupChat, joinGroupChat, listGroupChat, STATUS, TAB, TAB_ZH } from "@/services/groupChat"
-import { getPersonalInfo } from "@/services/user"
-import { TYPE } from "@/utils/constant"
-import { getPicCdnUrl } from "@/utils/utils"
-import { Icon, InputItem, Modal, Toast, Badge } from "@ant-design/react-native"
-import gImg from "@utils/img"
-import gSass from "@utils/style"
-import moment from "moment"
-import React, { Component } from "react"
-import { Image, RefreshControl, ScrollView, Text, View } from "react-native"
-import { TouchableOpacity } from "react-native-gesture-handler"
-import { NavigationScreenProp } from "react-navigation"
-import { connect } from "react-redux"
-import { Picture } from "../advisory/Chat"
+import global from '@/assets/styles/global'
+import Empty from '@/components/Empty'
+import { AppState } from '@/redux/stores/store'
+import pathMap from '@/routes/pathMap'
+import { GroupChat, joinGroupChat, listGroupChat, STATUS, TAB, TAB_ZH } from '@/services/groupChat'
+import { getPersonalInfo } from '@/services/user'
+import { TYPE } from '@/utils/constant'
+import { getPicCdnUrl } from '@/utils/utils'
+import { Icon, InputItem, Modal, Toast, Badge } from '@ant-design/react-native'
+import gImg from '@utils/img'
+import gSass from '@utils/style'
+import moment from 'moment'
+import React, { Component } from 'react'
+import { Image, RefreshControl, ScrollView, Text, View } from 'react-native'
+import { TouchableOpacity } from 'react-native-gesture-handler'
+import { StackNavigationProp } from '@react-navigation/stack'
+import { connect } from 'react-redux'
+import { Picture } from '../advisory/Chat'
 const style = gSass.groupChat.index
 
 interface Props {
@@ -62,17 +62,17 @@ export default class Index extends Component<Props & DefaultProps, State> {
       currentPage: TAB.MY_GROUP_CHAT,
       hasRealNameAuth: false,
       groupChatId: 0,
-      groupChatName: "",
-      groupChatDesc: "",
+      groupChatName: '',
+      groupChatDesc: '',
       groupChatPic: {
         id: 0,
-        url: "",
-        title: "",
+        url: '',
+        title: '',
       },
       page: -1,
       limit: -1,
       filter: {},
-      search: "",
+      search: '',
       list: [],
     }
   }
@@ -125,7 +125,7 @@ export default class Index extends Component<Props & DefaultProps, State> {
       let {
         data: { list },
       } = await listGroupChatTask
-      console.log("群聊列表", list)
+      console.log('群聊列表', list)
       this.setState({
         list,
       })
@@ -140,7 +140,7 @@ export default class Index extends Component<Props & DefaultProps, State> {
         this.setState({ refreshing: false })
       })
       .catch(err => {
-        Toast.fail("刷新失败,错误信息: " + err.msg)
+        Toast.fail('刷新失败,错误信息: ' + err.msg)
       })
   }
   render() {
@@ -158,27 +158,21 @@ export default class Index extends Component<Props & DefaultProps, State> {
       <View style={style.main}>
         <View style={[style.tabs, global.flex, global.jCenter]}>
           <TouchableOpacity style={[style.tabChild]} onPress={() => this.changeTab(0)}>
-            <Text
-              style={[style.tabChildTitle, currentPage === TAB.GROUP_CHAT ? style.active : null]}>
+            <Text style={[style.tabChildTitle, currentPage === TAB.GROUP_CHAT ? style.active : null]}>
               {TAB_ZH[TAB.GROUP_CHAT]}
             </Text>
           </TouchableOpacity>
           <TouchableOpacity style={[style.tabChild]} onPress={() => this.changeTab(1)}>
-            <Text
-              style={[
-                style.tabChildTitle,
-                currentPage === TAB.MY_GROUP_CHAT ? style.active : null,
-              ]}>
+            <Text style={[style.tabChildTitle, currentPage === TAB.MY_GROUP_CHAT ? style.active : null]}>
               {TAB_ZH[TAB.MY_GROUP_CHAT]}
             </Text>
           </TouchableOpacity>
         </View>
         <ScrollView
-          keyboardShouldPersistTaps="always"
+          keyboardShouldPersistTaps='always'
           style={style.tab}
-          refreshControl={
-            <RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh} />
-          }>
+          refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh} />}
+        >
           {this.groupChat()}
         </ScrollView>
       </View>
@@ -204,18 +198,19 @@ export default class Index extends Component<Props & DefaultProps, State> {
             global.flex,
             global.aCenter,
             global.jCenter,
-          ]}>
-          <Icon style={style.searchIcon} size="sm" name="search" />
+          ]}
+        >
+          <Icon style={style.searchIcon} size='sm' name='search' />
           <View style={style.searchInputPar}>
             <InputItem
               clear
               last
               style={style.searchInput}
               value={search}
-              onChange={search => {
+              onChange={editSearch => {
                 this.setState(
                   {
-                    search,
+                    search: editSearch,
                   },
                   this.listGroupChat,
                 )
@@ -227,10 +222,9 @@ export default class Index extends Component<Props & DefaultProps, State> {
         <View style={style.list}>
           {list.length > 0 ? (
             list.map((group, k) => {
-              let ctime = group.ctime ? this.getTime(group.ctime) : ""
+              let ctime = group.ctime ? this.getTime(group.ctime) : ''
               let isJoined = group.userList.filter(user => user.uid === this.props.uid).length > 0
-              let isApplyJoined =
-                !isJoined && group.applyList.filter(user => user.uid === this.props.uid).length > 0
+              let isApplyJoined = !isJoined && group.applyList.filter(user => user.uid === this.props.uid).length > 0
               return (
                 <TouchableOpacity
                   style={[style.item, global.flex, global.aCenter]}
@@ -240,19 +234,19 @@ export default class Index extends Component<Props & DefaultProps, State> {
                       return
                     }
                     if (!hasRealNameAuth) {
-                      Toast.fail("请先实名认证", 1)
+                      Toast.fail('请先实名认证', 1)
                       return
                     }
                     this.joinOrDetail(group.id, group.name, group.description, group.pic, isJoined)
-                  }}>
+                  }}
+                >
                   <View style={style.avatarPar}>
                     <Image
                       style={style.avatar}
                       source={
-                        group.pic.url
-                          ? { uri: getPicCdnUrl(group.pic.url, "avatar") }
-                          : gImg.common.defaultAvatar
-                      }></Image>
+                        group.pic.url ? { uri: getPicCdnUrl(group.pic.url, 'avatar') } : gImg.common.defaultAvatar
+                      }
+                    />
                     {/* <Image style={style.avatar} source={gImg.common.defaultAvatar}></Image> */}
                   </View>
                   <View style={style.info}>
@@ -268,8 +262,7 @@ export default class Index extends Component<Props & DefaultProps, State> {
                         </View>
                       ) : (
                         <View style={[global.flex, global.aCenter]}>
-                          {group.id in unReadGroupMsgCountRecord &&
-                          unReadGroupMsgCountRecord[group.id] > 0 ? (
+                          {group.id in unReadGroupMsgCountRecord && unReadGroupMsgCountRecord[group.id] > 0 ? (
                             <Badge
                               style={{ marginLeft: 20, marginRight: 20 }}
                               text={unReadGroupMsgCountRecord[group.id]}
@@ -285,7 +278,7 @@ export default class Index extends Component<Props & DefaultProps, State> {
                       </Text>
                       {currentPage === TAB.MY_GROUP_CHAT && v.msgCount && v.msgCount !== 0 ? (
                         <Text style={[style.tags]}>{v.msgCount > 10 ? "..." : v.msgCount}</Text>
-                      ) : null} 
+                      ) : null}
                     </View>*/}
                   </View>
                 </TouchableOpacity>
@@ -302,11 +295,10 @@ export default class Index extends Component<Props & DefaultProps, State> {
           maskClosable
           onClose={() => {
             this.setState({ isJoinGroupChat: false })
-          }}>
+          }}
+        >
           <View style={style.picPar}>
-            <Image
-              style={style.pic}
-              source={{ uri: getPicCdnUrl(this.state.groupChatPic.url, "avatar") }}></Image>
+            <Image style={style.pic} source={{ uri: getPicCdnUrl(this.state.groupChatPic.url, 'avatar') }} />
           </View>
           <View style={style.groupTitlePar}>
             <Text style={style.groupTitle} numberOfLines={1}>
@@ -331,31 +323,31 @@ export default class Index extends Component<Props & DefaultProps, State> {
   //获取时间
   getTime = (time: string) => {
     let { currentPage } = this.state
-    let ctime = "",
+    let ctime = '',
       currentTime = moment().dayOfYear()
     if (currentPage === TAB.MY_GROUP_CHAT && time) {
       let day: number = currentTime - moment(time).dayOfYear()
       if (day > 2) {
         ctime = time.substr(0, 10)
       } else if (day === 2) {
-        ctime = "前天"
+        ctime = '前天'
       } else if (day === 1) {
-        ctime = "昨天"
+        ctime = '昨天'
       } else if (day < 1) {
         let minute: number = moment().minute() - moment(time).minute()
         if (minute > 10) {
           let hour: number = parseInt(time.substr(11, 2))
           if (hour <= 12) {
-            ctime = "上午" + time.substr(11, 5)
+            ctime = '上午' + time.substr(11, 5)
           } else {
             let amHour = hour - 12
-            ctime = "下午" + amHour + time.substr(13, 3)
+            ctime = '下午' + amHour + time.substr(13, 3)
           }
         } else {
           if (minute <= 10 && minute > 5) {
-            ctime = minute + "分钟前"
+            ctime = minute + '分钟前'
           } else {
-            ctime = "刚刚"
+            ctime = '刚刚'
           }
         }
       }
@@ -380,7 +372,7 @@ export default class Index extends Component<Props & DefaultProps, State> {
       })
     } else {
       this.props.navigation.push(pathMap.AdvisoryChat, {
-        mode: "chatGroup",
+        mode: 'chatGroup',
         groupId: groupChatId,
         groupName: groupChatName,
       })
@@ -390,15 +382,15 @@ export default class Index extends Component<Props & DefaultProps, State> {
   joinGroup = () => {
     let { groupChatId: id, hasRealNameAuth } = this.state
     if (!hasRealNameAuth) {
-      Toast.fail("申请失败 请先实名认证", 1)
+      Toast.fail('申请失败 请先实名认证', 1)
       return
     }
     joinGroupChat({ id })
       .then(() => {
-        Toast.success("申请成功", 1, this.onRefresh)
+        Toast.success('申请成功', 1, this.onRefresh)
       })
       .catch((err: any) => {
-        Toast.fail("申请失败, 错误信息: " + err.msg, 3)
+        Toast.fail('申请失败, 错误信息: ' + err.msg, 3)
         console.log(err)
       })
   }

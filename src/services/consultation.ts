@@ -1,5 +1,5 @@
-import { Picture } from "@/pages/advisory/Chat"
-import { bget, bpost } from "./api"
+import { Picture } from '@/pages/advisory/Chat'
+import { bget, bpost } from './api'
 // import { JsonRes } from "jsbdk"
 interface PostInquiry {
   patient: {
@@ -23,13 +23,13 @@ export interface Msg {
  */
 export async function getPostInquiry(query: { doctorPatientId: number }) {
   return bget<PostInquiry>({
-    url: "api/getPostInquiry",
+    url: 'api/getPostInquiry',
     query,
   })
 }
 export function sendPostInquiryMsg(data: { id: number; msg: string }) {
   return bpost({
-    url: "api/sendPostInquiryMsg",
+    url: 'api/sendPostInquiryMsg',
     data,
   })
 }

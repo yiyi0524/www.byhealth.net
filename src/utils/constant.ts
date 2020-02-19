@@ -20,23 +20,23 @@ export const TYPE = {
   neqString: 0xd,
 }
 export const TYPE_ZH = {
-  [TYPE.undefined]: "未定义",
+  [TYPE.undefined]: '未定义',
   //数值比较
-  [TYPE.eq]: "等于",
-  [TYPE.lt]: "小于",
-  [TYPE.gt]: "大于",
-  [TYPE.neq]: "不等于",
-  [TYPE.betweenValue]: "在什么值之间",
+  [TYPE.eq]: '等于',
+  [TYPE.lt]: '小于',
+  [TYPE.gt]: '大于',
+  [TYPE.neq]: '不等于',
+  [TYPE.betweenValue]: '在什么值之间',
   //字符串比较
-  [TYPE.eqString]: "等于",
-  [TYPE.like]: "包含",
-  [TYPE.notLike]: "不包含",
+  [TYPE.eqString]: '等于',
+  [TYPE.like]: '包含',
+  [TYPE.notLike]: '不包含',
   //日期
-  [TYPE.before]: "在什么日期之前",
-  [TYPE.after]: "在什么日期之后",
-  [TYPE.betweenTime]: "在什么日期之间",
+  [TYPE.before]: '在什么日期之前',
+  [TYPE.after]: '在什么日期之后',
+  [TYPE.betweenTime]: '在什么日期之间',
   //数组
-  [TYPE.in]: "在数组中",
-  [TYPE.notIn]: "不在数组中",
-  [TYPE.neqString]: "不等于",
+  [TYPE.in]: '在数组中',
+  [TYPE.notIn]: '不在数组中',
+  [TYPE.neqString]: '不等于',
 }

@@ -1,13 +1,13 @@
-import { bget, GetListParam } from "./api"
-import { Picture } from "@/pages/advisory/Chat"
-import { Drug as PopularDrug } from "@pages/advisory/SquareRoot"
+import { bget, GetListParam } from './api'
+import { Picture } from '@/pages/advisory/Chat'
+import { Drug as PopularDrug } from '@pages/advisory/SquareRoot'
 export const TYPE = {
   chinese: 0x0,
   western: 0x1,
 }
 export const TYPE_ZH = {
-  [TYPE.chinese]: "中药",
-  [TYPE.western]: "西药",
+  [TYPE.chinese]: '中药',
+  [TYPE.western]: '西药',
 }
 // 内服中药id
 export const ORAL_CHINESE_DRUG_ID = 1
@@ -53,7 +53,7 @@ export interface Drug {
 }
 export async function getDetail(query: { id: number }) {
   return bget<{ detail: Drug }>({
-    url: "/user/drug/detail",
+    url: '/user/drug/detail',
     query,
   })
 }
@@ -67,7 +67,7 @@ export async function getDetail(query: { id: number }) {
  */
 export async function listPopularDrug(query: GetListParam) {
   return bget<{ list: PopularDrug[] }>({
-    url: "hospital/listPopularDrug",
+    url: 'hospital/listPopularDrug',
     query,
   })
 }

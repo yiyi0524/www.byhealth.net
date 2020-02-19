@@ -1,6 +1,6 @@
-import { StyleSheet, PixelRatio } from "react-native"
-import sColor from "@styles/color"
-import { windowHeight } from "@api/api"
+import { StyleSheet, PixelRatio } from 'react-native'
+import sColor from '@styles/color'
+import { windowHeight } from '@api/api'
 export default StyleSheet.create({
   main: {
     backgroundColor: sColor.white,
@@ -22,8 +22,8 @@ export default StyleSheet.create({
     height: windowHeight,
   },
   tabBarUnderlineStyle: {
-    width: "30%",
-    marginLeft: "7%",
+    width: '30%',
+    marginLeft: '7%',
     backgroundColor: sColor.mainRed,
   },
   inputList: {
@@ -31,16 +31,16 @@ export default StyleSheet.create({
     marginRight: 15,
   },
   inputItem: {
-    position: "relative",
+    position: 'relative',
     height: 55,
-    justifyContent: "center",
+    justifyContent: 'center',
   },
   input: {
     fontSize: 14,
     color: sColor.color888,
   },
   verificationBtn: {
-    position: "absolute",
+    position: 'absolute',
     top: 8,
     right: 5,
   },
@@ -50,7 +50,7 @@ export default StyleSheet.create({
     lineHeight: 30,
     backgroundColor: sColor.colorCcc,
     color: sColor.white,
-    textAlign: "center",
+    textAlign: 'center',
     borderRadius: 5,
   },
   register: {
@@ -61,7 +61,7 @@ export default StyleSheet.create({
   registerTitle: {
     height: 45,
     lineHeight: 45,
-    textAlign: "right",
+    textAlign: 'right',
     color: sColor.color888,
   },
   subBtn: {
@@ -73,7 +73,7 @@ export default StyleSheet.create({
     height: 45,
     backgroundColor: sColor.mainRed,
     lineHeight: 45,
-    textAlign: "center",
+    textAlign: 'center',
     borderRadius: 5,
     color: sColor.white,
   },
@@ -82,7 +82,7 @@ export default StyleSheet.create({
     height: 30,
     lineHeight: 30,
     color: sColor.color888,
-    textAlign: "center",
+    textAlign: 'center',
     borderRadius: 5,
   },
   savePwd: {

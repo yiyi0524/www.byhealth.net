@@ -1,29 +1,29 @@
-import { StyleSheet, PixelRatio } from "react-native"
-import sColor from "@styles/color"
-import { windowWidth } from "@api/api"
-import { windowHeight } from "@/utils/utils"
+import { StyleSheet, PixelRatio } from 'react-native'
+import sColor from '@styles/color'
+import { windowWidth } from '@api/api'
+import { windowHeight } from '@/utils/utils'
 export default StyleSheet.create({
   loading: {
     width: windowWidth,
     height: windowHeight,
     backgroundColor: sColor.white,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
     flex: 1,
   },
   loadingTitle: {
-    textAlign: "center",
-    justifyContent: "center",
+    textAlign: 'center',
+    justifyContent: 'center',
   },
   loadingPic: {
-    width: "100%",
-    overflow: "hidden",
-    justifyContent: "center",
-    alignItems: "center",
+    width: '100%',
+    overflow: 'hidden',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   loadingImg: {
     width: 300,
-    resizeMode: "contain",
+    resizeMode: 'contain',
   },
   detail: {
     flex: 1,
@@ -40,12 +40,12 @@ export default StyleSheet.create({
     width: 50,
     height: 50,
     borderRadius: 100,
-    overflow: "hidden",
+    overflow: 'hidden',
   },
   headerPic: {
     width: 50,
     height: 50,
-    resizeMode: "cover",
+    resizeMode: 'cover',
   },
   headerDescription: {
     marginLeft: 10,
@@ -100,7 +100,7 @@ export default StyleSheet.create({
   physicalQualityItemDetail: {
     color: sColor.color333,
     marginTop: 5,
-    fontWeight: "500",
+    fontWeight: '500',
   },
   physicalQualityItemLine: {
     height: 20,
@@ -114,7 +114,7 @@ export default StyleSheet.create({
     backgroundColor: sColor.white,
   },
   medicalHistoryItem: {
-    flexWrap: "wrap",
+    flexWrap: 'wrap',
     borderBottomWidth: 1 / PixelRatio.get(),
     borderBottomColor: sColor.colorDdd,
   },
@@ -150,24 +150,24 @@ export default StyleSheet.create({
   medicalRecordImg: {
     width: 70,
     height: 70,
-    resizeMode: "cover",
+    resizeMode: 'cover',
     marginRight: 8,
     marginBottom: 8,
   },
   showMode: {
-    position: "absolute",
+    position: 'absolute',
     flex: 1,
     backgroundColor: sColor.color333,
     top: 0,
     left: 0,
     right: 0,
     bottom: 0,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
     width: windowWidth,
   },
   showImgPar: {
-    position: "relative",
+    position: 'relative',
     top: 15,
     width: windowWidth,
     height: windowHeight,
@@ -175,7 +175,7 @@ export default StyleSheet.create({
   showImg: {
     width: 350,
     height: 350,
-    resizeMode: "contain",
+    resizeMode: 'contain',
   },
   medicalRecordList: {
     marginBottom: 8,
@@ -211,12 +211,12 @@ export default StyleSheet.create({
     marginBottom: 8,
   },
   medicalRecordItemTitle: {
-    fontWeight: "500",
+    fontWeight: '500',
     color: sColor.color333,
     marginBottom: 10,
   },
   medicalRecordItemSecondTitle: {
-    fontWeight: "500",
+    fontWeight: '500',
     color: sColor.color333,
     marginBottom: 10,
     marginTop: 5,
@@ -232,7 +232,7 @@ export default StyleSheet.create({
   },
   medicalRecordItemDoctorDiagnosisTitle: {
     color: sColor.color333,
-    fontWeight: "500",
+    fontWeight: '500',
     marginRight: 10,
   },
   medicalRecordItemDoctorDiagnosisDetail: {
@@ -244,7 +244,7 @@ export default StyleSheet.create({
     color: sColor.color999,
     height: 45,
     lineHeight: 45,
-    textAlign: "center",
+    textAlign: 'center',
   },
   medicalRecordItemReadMoreIcon: {
     color: sColor.color999,
@@ -264,7 +264,7 @@ export default StyleSheet.create({
     backgroundColor: sColor.mainRed,
     color: sColor.white,
     borderRadius: 5,
-    textAlign: "center",
+    textAlign: 'center',
     lineHeight: 40,
   },
   //开方列表
@@ -279,16 +279,16 @@ export default StyleSheet.create({
   },
   squareRootItemTime: {
     color: sColor.mainBlack,
-    fontWeight: "500",
+    fontWeight: '500',
   },
   squareRootItemTheme: {
     color: sColor.color333,
-    fontWeight: "500",
+    fontWeight: '500',
     marginBottom: 10,
   },
   squareRootItemTitle: {
     color: sColor.color333,
-    fontWeight: "500",
+    fontWeight: '500',
   },
   squareRootItemTitleFa: {
     marginTop: 8,
@@ -343,17 +343,17 @@ export default StyleSheet.create({
   },
   close: {
     padding: 15,
-    position: "absolute",
+    position: 'absolute',
     top: 15,
     right: 15,
     zIndex: 10,
   },
   closeIcon: {
-    color: "#fff",
+    color: '#fff',
     fontSize: 20,
-    textAlign: "center",
+    textAlign: 'center',
     borderWidth: 2,
-    borderColor: "#fff",
+    borderColor: '#fff',
     width: 30,
     height: 30,
     borderRadius: 100,

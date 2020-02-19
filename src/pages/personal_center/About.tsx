@@ -1,10 +1,10 @@
-import * as userAction from "@/redux/actions/user"
-import { AppState } from "@/redux/stores/store"
-import { Icon, Toast } from "@ant-design/react-native"
-import sColor from "@styles/color"
-import gImg from "@utils/img"
-import gStyle from "@utils/style"
-import React, { Component } from "react"
+import * as userAction from '@/redux/actions/user'
+import { AppState } from '@/redux/stores/store'
+import { Icon, Toast } from '@ant-design/react-native'
+import sColor from '@styles/color'
+import gImg from '@utils/img'
+import gStyle from '@utils/style'
+import React, { Component } from 'react'
 import {
   Image,
   PixelRatio,
@@ -15,13 +15,13 @@ import {
   View,
   Alert,
   Linking,
-} from "react-native"
-import DeviceInfo from "react-native-device-info"
-import { connect } from "react-redux"
-import { Dispatch } from "redux"
-import pathMap from "@/routes/pathMap"
-import { isDebugMode } from "@/utils/utils"
-import { checkUpdate } from "@/services/api"
+} from 'react-native'
+import DeviceInfo from 'react-native-device-info'
+import { connect } from 'react-redux'
+import { Dispatch } from 'redux'
+import pathMap from '@/routes/pathMap'
+import { isDebugMode } from '@/utils/utils'
+import { checkUpdate } from '@/services/api'
 const style = gStyle.personalCenter.about
 const global = gStyle.global
 interface Props {
@@ -57,7 +57,7 @@ export default class About extends Component<
 > {
   static navigationOptions = () => {
     return {
-      title: "关于我们",
+      title: '关于我们',
       headerStyle: {
         backgroundColor: sColor.white,
         height: 45,
@@ -68,10 +68,10 @@ export default class About extends Component<
       headerTintColor: sColor.color333,
       headerTitleStyle: {
         flex: 1,
-        alignItems: "center",
-        justifyContent: "center",
+        alignItems: 'center',
+        justifyContent: 'center',
         fontSize: 14,
-        textAlign: "center",
+        textAlign: 'center',
       },
       headerRight: <Text />,
     }
@@ -84,7 +84,7 @@ export default class About extends Component<
     return {
       hasLoad: false,
       refreshing: false,
-      version: "",
+      version: '',
     }
   }
   componentDidMount() {
@@ -99,40 +99,39 @@ export default class About extends Component<
   }
   onRefresh = () => {
     this.setState({ refreshing: true })
-    Promise.all([this.init(), new Promise(s => setTimeout(s, 500))])
-      .then(_ => {
+    Promise.all([this.init(), new Promise(s => setTimeout(s, 500))]).
+      then(_ => {
         this.setState({ refreshing: false })
-      })
-      .catch(err => {
-        Toast.fail("刷新失败,错误信息: " + err.msg)
+      }).
+      catch(err => {
+        Toast.fail('刷新失败,错误信息: ' + err.msg)
       })
   }
   checkedVersion = () => {
     if (!isDebugMode()) {
-      checkUpdate()
-        .then(json => {
+      checkUpdate().
+        then(json => {
           const {
             data: { updateUrl, needUpdate },
           } = json
           if (needUpdate) {
             Alert.alert(
-              "更新提示",
-              "有新的版本 是否更新?",
+              '更新提示',
+              '有新的版本 是否更新?',
               [
-                { text: "取消", style: "cancel" },
+                { text: '取消', style: 'cancel' },
                 {
-                  text: "确定",
-                  onPress: () =>
-                    Linking.openURL(updateUrl).catch(err => console.error("打开url 失败", err)),
+                  text: '确定',
+                  onPress: () => Linking.openURL(updateUrl).catch(err => console.error('打开url 失败', err)),
                 },
               ],
               { cancelable: false },
             )
           } else {
-            Toast.success("当前已是最新版本!", 1)
+            Toast.success('当前已是最新版本!', 1)
           }
-        })
-        .catch(e => {
+        }).
+        catch(e => {
           console.log(e)
         })
     }
@@ -151,9 +150,8 @@ export default class About extends Component<
       <View style={style.about}>
         <ScrollView
           style={style.main}
-          refreshControl={
-            <RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh} />
-          }>
+          refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh} />}
+        >
           <View style={style.header}>
             <View style={style.headerImgFa}>
               <Image style={style.headerImg} source={gImg.common.logo} />
@@ -164,13 +162,7 @@ export default class About extends Component<
           {/* <TouchableOpacity onPress={this.checkedVersion}>
             <Text style={[style.checkedVersion, global.fontSize14]}>检测更新</Text>
           </TouchableOpacity> */}
-          <View
-            style={[
-              style.weixin,
-              global.flex,
-              global.alignItemsCenter,
-              global.justifyContentCenter,
-            ]}>
+          <View style={[style.weixin, global.flex, global.alignItemsCenter, global.justifyContentCenter]}>
             <Icon style={style.weixinLogo} name="wechat" />
             <Text style={[style.weixinTitle, global.fontSize14]}>微信公众号: 博一健康管理</Text>
           </View>
@@ -179,13 +171,15 @@ export default class About extends Component<
           <TouchableOpacity
             onPress={() => {
               this.props.navigation.push(pathMap.RegisterAgreement)
-            }}>
+            }}
+          >
             <Text style={[style.agreement, global.fontSize14]}>医生注册协议</Text>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => {
               this.props.navigation.push(pathMap.LawAgreement)
-            }}>
+            }}
+          >
             <Text style={[style.agreement, global.fontSize14]}>法律申明与隐私政策</Text>
           </TouchableOpacity>
           <Text style={[style.footer, global.fontSize12]}>©2019 博一健康</Text>

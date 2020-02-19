@@ -1,23 +1,23 @@
-import global from "@/assets/styles/global"
-import sColor from "@styles/color"
-import gImg from "@utils/img"
-import gSass from "@utils/style"
-import React, { Component } from "react"
-import { Image, Text, TouchableOpacity, View } from "react-native"
-import { ScrollView } from "react-native-gesture-handler"
-import { NavigationScreenProp } from "react-navigation"
-import pathMap from "@/routes/pathMap"
-import doctorApi, { UPLOAD_PRESCRIPTION_STATUS } from "@api/doctor"
-import moment from "moment"
+import global from '@/assets/styles/global'
+import sColor from '@styles/color'
+import gImg from '@utils/img'
+import gSass from '@utils/style'
+import React, { Component } from 'react'
+import { Image, Text, TouchableOpacity, View } from 'react-native'
+import { ScrollView } from 'react-native-gesture-handler'
+import { StackNavigationProp } from '@react-navigation/stack'
+import pathMap from '@/routes/pathMap'
+import doctorApi, { UPLOAD_PRESCRIPTION_STATUS } from '@api/doctor'
+import moment from 'moment'
 const style = gSass.index.uploadPrescriptionList
 interface Prescription {
   id: number
   name: string
-  status: "cancelOrder" | "hasSend" | "waitSend"
+  status: 'cancelOrder' | 'hasSend' | 'waitSend'
   ctime: string
 }
 interface Props {
-  navigation: NavigationScreenProp<State>
+  navigation: StackNavigationProp<any>
 }
 interface State {
   hasLoad: boolean
@@ -28,7 +28,7 @@ type DefaultProps = {}
 export default class UploadPrescriptionList extends Component<Props & DefaultProps, State> {
   static defaultProps: DefaultProps
   static navigationOptions = () => ({
-    title: "处方列表",
+    title: '处方列表',
     headerStyle: {
       backgroundColor: sColor.white,
       height: 45,
@@ -38,10 +38,10 @@ export default class UploadPrescriptionList extends Component<Props & DefaultPro
     headerTintColor: sColor.color333,
     headerTitleStyle: {
       flex: 1,
-      alignItems: "center",
-      justifyContent: "center",
+      alignItems: 'center',
+      justifyContent: 'center',
       fontSize: 14,
-      textAlign: "center",
+      textAlign: 'center',
     },
     headerRight: <Text />,
   })
@@ -84,29 +84,26 @@ export default class UploadPrescriptionList extends Component<Props & DefaultPro
       )
     }
     return (
-      <ScrollView style={style.main} keyboardShouldPersistTaps="handled">
+      <ScrollView style={style.main} keyboardShouldPersistTaps='handled'>
         <View style={style.list}>
           {prescriptionList.map((v, k) => {
             return (
               <TouchableOpacity
                 key={k}
-                style={[
-                  style.item,
-                  global.flex,
-                  global.alignItemsCenter,
-                  global.justifyContentSpaceBetween,
-                ]}
+                style={[style.item, global.flex, global.alignItemsCenter, global.justifyContentSpaceBetween]}
                 onPress={() => {
                   this.props.navigation.push(pathMap.UploadPrescriptionDetail, { id: v.id })
-                }}>
-                <Text style={style.name}>{v.name || "未命名"}</Text>
-                <Text style={style.ctime}>{moment(v.ctime).format("YYYY-MM-DD")}</Text>
+                }}
+              >
+                <Text style={style.name}>{v.name || '未命名'}</Text>
+                <Text style={style.ctime}>{moment(v.ctime).format('YYYY-MM-DD')}</Text>
                 <Text
                   style={[
                     style.shipping,
                     v.status === UPLOAD_PRESCRIPTION_STATUS.cancelOrder && style.wait,
                     v.status === UPLOAD_PRESCRIPTION_STATUS.hasSend && style.success,
-                  ]}>
+                  ]}
+                >
                   {UPLOAD_PRESCRIPTION_STATUS[v.status]}
                 </Text>
               </TouchableOpacity>

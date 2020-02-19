@@ -1,19 +1,19 @@
-import sColor from "@styles/color"
-import global from "@styles/global"
-import gImg from "@utils/img"
-import gSass from "@utils/style"
-import React, { Component } from "react"
-import { Image, PixelRatio, Text, View } from "react-native"
-import { ScrollView, TouchableOpacity } from "react-native-gesture-handler"
-import pathMap from "@/routes/pathMap"
-import { NavigationScreenProp } from "react-navigation"
-import { Icon } from "@ant-design/react-native"
-import moment from "moment"
-import { InviteDoctorChildInfo, listInviteDoctorChildInfo } from "@/services/myInvite"
-import Empty from "@/components/Empty"
+import sColor from '@styles/color'
+import global from '@styles/global'
+import gImg from '@utils/img'
+import gSass from '@utils/style'
+import React, { Component } from 'react'
+import { Image, PixelRatio, Text, View } from 'react-native'
+import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler'
+import pathMap from '@/routes/pathMap'
+import { StackNavigationProp } from '@react-navigation/stack'
+import { Icon } from '@ant-design/react-native'
+import moment from 'moment'
+import { InviteDoctorChildInfo, listInviteDoctorChildInfo } from '@/services/myInvite'
+import Empty from '@/components/Empty'
 const style = gSass.myInvite.myInviteDoctorList
 interface Props {
-  navigation: NavigationScreenProp<State>
+  navigation: StackNavigationProp<any>
 }
 interface State {
   hasLoad: boolean
@@ -24,7 +24,7 @@ interface State {
 
 export default class OrderCount extends Component<Props, State> {
   static navigationOptions = () => ({
-    title: "订单量",
+    title: '订单量',
     headerStyle: {
       backgroundColor: sColor.white,
       height: 50,
@@ -36,15 +36,13 @@ export default class OrderCount extends Component<Props, State> {
     headerTintColor: sColor.color333,
     headerTitleStyle: {
       flex: 1,
-      alignItems: "center",
-      justifyContent: "center",
+      alignItems: 'center',
+      justifyContent: 'center',
       fontSize: 14,
-      textAlign: "center",
+      textAlign: 'center',
     },
     headerRight: (
-      <TouchableOpacity>
-        {/* <Text style={[style.headerRight, global.fontSize14]}>保存</Text> */}
-      </TouchableOpacity>
+      <TouchableOpacity>{/* <Text style={[style.headerRight, global.fontSize14]}>保存</Text> */}</TouchableOpacity>
     ),
   })
   constructor(props: any) {
@@ -55,7 +53,7 @@ export default class OrderCount extends Component<Props, State> {
     return {
       hasLoad: false,
       total: 0,
-      date: moment().format("YYYY-MM"),
+      date: moment().format('YYYY-MM'),
       list: [],
     }
   }
@@ -67,8 +65,8 @@ export default class OrderCount extends Component<Props, State> {
       let { date } = this.state,
         total = 0
       let listInviteDoctorChildInfoTask = listInviteDoctorChildInfo({
-        year: parseInt(moment(date).format("YYYY")),
-        month: parseInt(moment(date).format("M")),
+        year: parseInt(moment(date).format('YYYY')),
+        month: parseInt(moment(date).format('M')),
       })
       let {
         data: { list },
@@ -90,8 +88,8 @@ export default class OrderCount extends Component<Props, State> {
   prevMonth = () => {
     let { date } = this.state
     date = moment(date)
-      .subtract(1, "month")
-      .format("YYYY-MM")
+      .subtract(1, 'month')
+      .format('YYYY-MM')
     this.setState(
       {
         date,
@@ -102,9 +100,9 @@ export default class OrderCount extends Component<Props, State> {
   nextMonth = () => {
     let { date } = this.state
     date = moment(date)
-      .add(1, "month")
-      .format("YYYY-MM")
-    let currDate = moment().format("YYYY-MM")
+      .add(1, 'month')
+      .format('YYYY-MM')
+    let currDate = moment().format('YYYY-MM')
     if (date > currDate) {
       return false
     }
@@ -132,21 +130,14 @@ export default class OrderCount extends Component<Props, State> {
           <View style={style.header}>
             <View style={[style.year, global.flex, global.aCenter]}>
               <TouchableOpacity style={[style.iconPar]} onPress={this.prevMonth}>
-                <Icon style={[style.icon, style.iconLeft]} name="left"></Icon>
+                <Icon style={[style.icon, style.iconLeft]} name='left' />
               </TouchableOpacity>
-              <Text style={style.time}>{moment(date).format("YYYY年MM月")}</Text>
+              <Text style={style.time}>{moment(date).format('YYYY年MM月')}</Text>
               <TouchableOpacity style={style.iconPar} onPress={this.nextMonth}>
-                <Icon style={style.icon} name="right"></Icon>
+                <Icon style={style.icon} name='right' />
               </TouchableOpacity>
             </View>
-            <View
-              style={[
-                style.theme,
-                style.themeHeight,
-                global.flex,
-                global.aCenter,
-                global.jBetween,
-              ]}>
+            <View style={[style.theme, style.themeHeight, global.flex, global.aCenter, global.jBetween]}>
               <Text style={style.themeTitle}>我邀请的订单</Text>
               <View style={[global.flex, global.aCenter]}>
                 <Text style={style.themeCount}>订单总数</Text>
@@ -155,8 +146,7 @@ export default class OrderCount extends Component<Props, State> {
             </View>
           </View>
           <View style={style.list}>
-            <View
-              style={[style.item, style.itemGray, global.flex, global.aCenter, global.jBetween]}>
+            <View style={[style.item, style.itemGray, global.flex, global.aCenter, global.jBetween]}>
               <View style={style.title}>
                 <Text style={style.desc}>医师</Text>
               </View>
@@ -173,10 +163,11 @@ export default class OrderCount extends Component<Props, State> {
                     global.flex,
                     global.aCenter,
                     global.jBetween,
-                  ]}>
+                  ]}
+                >
                   <View style={style.title}>
                     <Text style={style.desc}>
-                      {item.name + " "}
+                      {item.name + ' '}
                       {item.orderCount}
                     </Text>
                   </View>
@@ -188,7 +179,8 @@ export default class OrderCount extends Component<Props, State> {
                         level: 1,
                         doctorName: item.name,
                       })
-                    }}>
+                    }}
+                  >
                     {item.firstLevelOrderCount}
                   </Text>
                   <Text
@@ -199,7 +191,8 @@ export default class OrderCount extends Component<Props, State> {
                         level: 2,
                         doctorName: item.name,
                       })
-                    }}>
+                    }}
+                  >
                     {item.secondLevelOrderCount}
                   </Text>
                   <Text
@@ -210,7 +203,8 @@ export default class OrderCount extends Component<Props, State> {
                         level: 3,
                         doctorName: item.name,
                       })
-                    }}>
+                    }}
+                  >
                     {item.thirdLevelOrderCount}
                   </Text>
                 </View>

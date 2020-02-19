@@ -1,39 +1,27 @@
-import DashLine from "@/components/DashLine"
-import * as userAction from "@/redux/actions/user"
-import { AppState } from "@/redux/stores/store"
-import pathMap from "@/routes/pathMap"
-import { windowWidth } from "@/services/api"
-import doctor, { PrescriptionTpl } from "@/services/doctor"
-import hospital from "@/services/hospital"
-import { Icon, InputItem, Toast } from "@ant-design/react-native"
-import sColor from "@styles/color"
-import gImg from "@utils/img"
-import gStyle from "@utils/style"
-import React, { Component } from "react"
-import {
-  DeviceEventEmitter,
-  EmitterSubscription,
-  Image,
-  PixelRatio,
-  RefreshControl,
-  Text,
-  View,
-} from "react-native"
-import { ScrollView, TouchableOpacity } from "react-native-gesture-handler"
-import { NavigationScreenProp } from "react-navigation"
-import { connect } from "react-redux"
-import { Dispatch } from "redux"
-import { CategoryItem } from "../advisory/DrugSelect"
-import { PrescriptionDrugCategory } from "../advisory/SquareRoot"
-import {
-  ORAL_CHINESE_DRUG_ID,
-  TOPICAL_CHINESE_DRUG_ID,
-  EXTERN_CHINESE_DRUG_ID,
-} from "@/services/drug"
+import DashLine from '@/components/DashLine'
+import * as userAction from '@/redux/actions/user'
+import { AppState } from '@/redux/stores/store'
+import pathMap from '@/routes/pathMap'
+import { windowWidth } from '@/services/api'
+import doctor, { PrescriptionTpl } from '@/services/doctor'
+import hospital from '@/services/hospital'
+import { Icon, InputItem, Toast } from '@ant-design/react-native'
+import sColor from '@styles/color'
+import gImg from '@utils/img'
+import gStyle from '@utils/style'
+import React, { Component } from 'react'
+import { DeviceEventEmitter, EmitterSubscription, Image, PixelRatio, RefreshControl, Text, View } from 'react-native'
+import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler'
+import { StackNavigationProp } from '@react-navigation/stack'
+import { connect } from 'react-redux'
+import { Dispatch } from 'redux'
+import { CategoryItem } from '../advisory/DrugSelect'
+import { PrescriptionDrugCategory } from '../advisory/SquareRoot'
+import { ORAL_CHINESE_DRUG_ID, TOPICAL_CHINESE_DRUG_ID, EXTERN_CHINESE_DRUG_ID } from '@/services/drug'
 const style = gStyle.index.EditPrescriptionTpl
 const global = gStyle.global
 interface Props {
-  navigation: NavigationScreenProp<State>
+  navigation: StackNavigationProp<any>
 }
 interface State {
   hasLoad: boolean
@@ -61,18 +49,15 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
   }
 }
 //@ts-ignore
-@connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)
+@connect(mapStateToProps, mapDispatchToProps)
 export default class EditPrescriptionTpl extends Component<
   Props & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
   State
 > {
-  static navigationOptions = ({ navigation }: { navigation: NavigationScreenProp<State> }) => {
-    let title = ""
+  static navigationOptions = ({ navigation }: { navigation: StackNavigationProp<any> }) => {
+    let title = ''
     if (navigation.state.params) {
-      title = navigation.state.params.title + "模板"
+      title = navigation.state.params.title + '模板'
     }
     return {
       title,
@@ -87,10 +72,10 @@ export default class EditPrescriptionTpl extends Component<
       headerTintColor: sColor.color333,
       headerTitleStyle: {
         flex: 1,
-        alignItems: "center",
-        justifyContent: "center",
+        alignItems: 'center',
+        justifyContent: 'center',
         fontSize: 14,
-        textAlign: "center",
+        textAlign: 'center',
       },
       headerRight: <TouchableOpacity />,
     }
@@ -106,13 +91,13 @@ export default class EditPrescriptionTpl extends Component<
       refreshing: false,
       id: 0,
       categoryId: 0,
-      categoryName: "",
+      categoryName: '',
       detail: {
         id: 0,
         categoryId: 0,
-        name: "",
-        advice: "",
-        ctime: "",
+        name: '',
+        advice: '',
+        ctime: '',
         drugList: [],
         dailyDose: 0,
         doseCount: 0,
@@ -124,7 +109,7 @@ export default class EditPrescriptionTpl extends Component<
   }
   componentDidMount() {
     this.listener = DeviceEventEmitter.addListener(
-      pathMap.EditPrescriptionTpl + "Reload",
+      pathMap.EditPrescriptionTpl + 'Reload',
       (prescriptionDrugCategoryList: PrescriptionDrugCategory[]) => {
         let { detail } = this.state
         detail.drugList = prescriptionDrugCategoryList[0].drugList
@@ -150,9 +135,9 @@ export default class EditPrescriptionTpl extends Component<
         limit: -1,
         filter: {},
       })
-      let id = this.props.navigation.getParam("id"),
-        categoryId = this.props.navigation.getParam("categoryId"),
-        categoryName = this.props.navigation.getParam("categoryName")
+      let id = this.props.navigation.getParam('id'),
+        categoryId = this.props.navigation.getParam('categoryId'),
+        categoryName = this.props.navigation.getParam('categoryName')
       let {
         data: { detail },
       } = await doctor.getPrescriptionTpl({ id })
@@ -175,27 +160,19 @@ export default class EditPrescriptionTpl extends Component<
         this.setState({ refreshing: false })
       })
       .catch(err => {
-        Toast.fail("刷新失败,错误信息: " + err.msg)
+        Toast.fail('刷新失败,错误信息: ' + err.msg)
       })
   }
   editPrescriptionTpl = async () => {
-    const {
-      advice,
-      id,
-      drugList,
-      name,
-      dailyDose,
-      doseCount,
-      everyDoseUseCount,
-    } = this.state.detail
-    if (name === "") {
-      return Toast.info("请输入模板名称", 2)
+    const { advice, id, drugList, name, dailyDose, doseCount, everyDoseUseCount } = this.state.detail
+    if (name === '') {
+      return Toast.info('请输入模板名称', 2)
     }
     if (drugList.length === 0) {
-      return Toast.info("请选择药材", 2)
+      return Toast.info('请选择药材', 2)
     }
-    if (advice === "") {
-      return Toast.info("请输入医嘱", 2)
+    if (advice === '') {
+      return Toast.info('请输入医嘱', 2)
     }
     if (
       this.state.categoryId === ORAL_CHINESE_DRUG_ID ||
@@ -203,16 +180,16 @@ export default class EditPrescriptionTpl extends Component<
       this.state.categoryId === TOPICAL_CHINESE_DRUG_ID
     ) {
       if (doseCount === 0) {
-        return Toast.info("请输入药剂总数", 2)
+        return Toast.info('请输入药剂总数', 2)
       }
       if (dailyDose === 0) {
-        return Toast.info("请输入每日药剂数", 2)
+        return Toast.info('请输入每日药剂数', 2)
       }
       if (everyDoseUseCount === 0) {
-        return Toast.info("请输入每剂使用次数", 2)
+        return Toast.info('请输入每剂使用次数', 2)
       }
       if (dailyDose > doseCount) {
-        return Toast.info("每日剂量数不能大于总剂量数", 1)
+        return Toast.info('每日剂量数不能大于总剂量数', 1)
       }
     }
     try {
@@ -225,12 +202,12 @@ export default class EditPrescriptionTpl extends Component<
         doseCount,
         everyDoseUseCount,
       })
-      Toast.success("修改成功", 1)
-      DeviceEventEmitter.emit(pathMap.PrescriptionTplList + "Reload", null)
+      Toast.success('修改成功', 1)
+      DeviceEventEmitter.emit(pathMap.PrescriptionTplList + 'Reload', null)
       this.props.navigation.goBack()
     } catch (err) {
       console.log(err)
-      Toast.fail("修改失败, 错误原因: " + err.msg, 3)
+      Toast.fail('修改失败, 错误原因: ' + err.msg, 3)
     }
   }
   render() {
@@ -247,22 +224,20 @@ export default class EditPrescriptionTpl extends Component<
     return (
       <>
         <ScrollView
-          keyboardShouldPersistTaps="always"
+          keyboardShouldPersistTaps='always'
           style={style.main}
-          refreshControl={
-            <RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh} />
-          }>
+          refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh} />}
+        >
           <View style={style.addPrescriptionTpl}>
             <View style={[style.addPrescriptionTplHeader, global.flex, global.alignItemsCenter]}>
               <Text style={[style.addPrescriptionTplHeaderTitle, global.fontSize14]}>模板名称</Text>
               <View style={style.addPrescriptionTplHeaderInput}>
                 <InputItem
                   style={style.input}
-                  placeholder="请输入模板名称"
+                  placeholder='请输入模板名称'
                   clear
                   value={this.state.detail.name}
                   onChange={val => {
-                    let { detail } = this.state
                     detail.name = val
                     this.setState({
                       detail,
@@ -273,33 +248,22 @@ export default class EditPrescriptionTpl extends Component<
             </View>
             <View style={style.drugCategoryList}>
               <View
-                style={[
-                  style.drugCategoryTitle,
-                  global.flex,
-                  global.alignItemsCenter,
-                  global.justifyContentCenter,
-                ]}>
+                style={[style.drugCategoryTitle, global.flex, global.alignItemsCenter, global.justifyContentCenter]}
+              >
                 <View style={style.spot} />
                 <Text style={[style.drugCategoryTheme, global.fontSize16]}>开方</Text>
                 <View style={style.spot} />
               </View>
-              <DashLine width={windowWidth - 30} backgroundColor={"#ddd"} len={45} />
+              <DashLine width={windowWidth - 30} backgroundColor={'#ddd'} len={45} />
               {categoryId === ORAL_CHINESE_DRUG_ID ||
               categoryId === TOPICAL_CHINESE_DRUG_ID ||
               categoryId === EXTERN_CHINESE_DRUG_ID ? (
                 <View style={style.drugCategoryItem}>
                   <Text style={[style.drugCategoryName, global.fontSize15]}>{categoryName}</Text>
-                  <View
-                    style={[style.drugList, global.flex, global.alignItemsCenter, global.flexWrap]}>
+                  <View style={[style.drugList, global.flex, global.alignItemsCenter, global.flexWrap]}>
                     {detail.drugList.map((drugInfo, k) => {
                       return (
-                        <Text
-                          key={k}
-                          style={[
-                            style.drugName,
-                            global.fontSize14,
-                            style.traditionalChineseMedicine,
-                          ]}>
+                        <Text key={k} style={[style.drugName, global.fontSize14, style.traditionalChineseMedicine]}>
                           {drugInfo.detail.name} {drugInfo.count} * {drugInfo.detail.unit}
                         </Text>
                       )
@@ -312,20 +276,15 @@ export default class EditPrescriptionTpl extends Component<
                       <View style={style.doseInputFather}>
                         <InputItem
                           last
-                          type="number"
+                          type='number'
                           style={style.doseInput}
-                          placeholder="0"
-                          value={
-                            this.state.detail.doseCount === 0
-                              ? ""
-                              : this.state.detail.doseCount + ""
-                          }
+                          placeholder='0'
+                          value={this.state.detail.doseCount === 0 ? '' : String(this.state.detail.doseCount)}
                           onChange={val => {
                             let doseCount: number = parseInt(val)
                             if (isNaN(doseCount)) {
                               doseCount = 0
                             }
-                            let { detail } = this.state
                             detail.doseCount = doseCount
                             this.setState({
                               detail,
@@ -338,20 +297,15 @@ export default class EditPrescriptionTpl extends Component<
                       <View style={style.doseInputFather}>
                         <InputItem
                           last
-                          type="number"
+                          type='number'
                           style={style.doseInput}
-                          placeholder="0"
-                          value={
-                            this.state.detail.dailyDose === 0
-                              ? ""
-                              : this.state.detail.dailyDose + ""
-                          }
+                          placeholder='0'
+                          value={this.state.detail.dailyDose === 0 ? '' : String(this.state.detail.dailyDose)}
                           onChange={val => {
                             let dailyDose: number | string = parseInt(val)
                             if (isNaN(dailyDose)) {
                               dailyDose = 0
                             }
-                            let { detail } = this.state
                             detail.dailyDose = dailyDose
                             this.setState({
                               detail,
@@ -366,20 +320,17 @@ export default class EditPrescriptionTpl extends Component<
                       <View style={style.doseInputFather}>
                         <InputItem
                           last
-                          type="number"
+                          type='number'
                           style={style.doseInput}
-                          placeholder="0"
+                          placeholder='0'
                           value={
-                            this.state.detail.everyDoseUseCount === 0
-                              ? ""
-                              : this.state.detail.everyDoseUseCount + ""
+                            this.state.detail.everyDoseUseCount === 0 ? '' : String(this.state.detail.everyDoseUseCount)
                           }
                           onChange={val => {
                             let everyDoseUseCount: number | string = parseInt(val)
                             if (isNaN(everyDoseUseCount)) {
                               everyDoseUseCount = 0
                             }
-                            let { detail } = this.state
                             detail.everyDoseUseCount = everyDoseUseCount
                             this.setState({
                               detail,
@@ -399,24 +350,13 @@ export default class EditPrescriptionTpl extends Component<
                     {detail.drugList.map((drugInfo, k) => {
                       return (
                         <View style={style.drugItem} key={k}>
-                          <View
-                            style={[
-                              global.flex,
-                              global.alignItemsCenter,
-                              global.justifyContentSpaceBetween,
-                            ]}>
+                          <View style={[global.flex, global.alignItemsCenter, global.justifyContentSpaceBetween]}>
                             <View style={style.drugItemLeft}>
-                              <Text
-                                style={[
-                                  style.drugTitle,
-                                  style.drugMarginBottom,
-                                  global.fontSize14,
-                                ]}>
+                              <Text style={[style.drugTitle, style.drugMarginBottom, global.fontSize14]}>
                                 {drugInfo.detail.name}
                               </Text>
-                              <Text
-                                style={[style.drugName, style.drugMarginBottom, global.fontSize12]}>
-                                {drugInfo.detail.standard || "暂无规格"}
+                              <Text style={[style.drugName, style.drugMarginBottom, global.fontSize12]}>
+                                {drugInfo.detail.standard || '暂无规格'}
                               </Text>
                             </View>
                             <View style={style.drugItemRight}>
@@ -430,7 +370,7 @@ export default class EditPrescriptionTpl extends Component<
                             </View>
                           </View>
                           <Text style={[style.drugName, global.fontSize12]}>
-                            {drugInfo.detail.manufacturer || "暂无厂商信息"}
+                            {drugInfo.detail.manufacturer || '暂无厂商信息'}
                           </Text>
                         </View>
                       )
@@ -452,9 +392,10 @@ export default class EditPrescriptionTpl extends Component<
                       },
                     ],
                   })
-                }}>
+                }}
+              >
                 <View style={[global.flex, global.alignItemsCenter]}>
-                  <Icon name="form" style={[style.editDrug, global.fontSize14]} />
+                  <Icon name='form' style={[style.editDrug, global.fontSize14]} />
                   <Text style={[style.editDrug, global.fontSize14]}>编辑药材</Text>
                 </View>
               </TouchableOpacity>
@@ -464,11 +405,10 @@ export default class EditPrescriptionTpl extends Component<
               <View style={style.addPrescriptionTplHeaderInput}>
                 <InputItem
                   style={style.input}
-                  placeholder="请输入医嘱"
+                  placeholder='请输入医嘱'
                   clear
                   value={this.state.detail.advice}
                   onChange={val => {
-                    let { detail } = this.state
                     detail.advice = val
                     this.setState({
                       detail,

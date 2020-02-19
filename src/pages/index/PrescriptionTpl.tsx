@@ -1,30 +1,22 @@
-import * as userAction from "@/redux/actions/user"
-import { AppState } from "@/redux/stores/store"
-import pathMap from "@/routes/pathMap"
-import hospital from "@/services/hospital"
-import { Icon, Toast } from "@ant-design/react-native"
-import sColor from "@styles/color"
-import gImg from "@utils/img"
-import gStyle from "@utils/style"
-import React, { Component } from "react"
-import {
-  DeviceEventEmitter,
-  EmitterSubscription,
-  Image,
-  PixelRatio,
-  RefreshControl,
-  Text,
-  View,
-} from "react-native"
-import { ScrollView, TouchableOpacity } from "react-native-gesture-handler"
-import { connect } from "react-redux"
-import { Dispatch } from "redux"
-import { CategoryItem } from "../advisory/DrugSelect"
-import { NavigationScreenProp } from "react-navigation"
+import * as userAction from '@/redux/actions/user'
+import { AppState } from '@/redux/stores/store'
+import pathMap from '@/routes/pathMap'
+import hospital from '@/services/hospital'
+import { Icon, Toast } from '@ant-design/react-native'
+import sColor from '@styles/color'
+import gImg from '@utils/img'
+import gStyle from '@utils/style'
+import React, { Component } from 'react'
+import { DeviceEventEmitter, EmitterSubscription, Image, PixelRatio, RefreshControl, Text, View } from 'react-native'
+import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler'
+import { connect } from 'react-redux'
+import { Dispatch } from 'redux'
+import { CategoryItem } from '../advisory/DrugSelect'
+import { StackNavigationProp } from '@react-navigation/stack'
 const style = gStyle.index.PrescriptionTpl
 const global = gStyle.global
 interface Props {
-  navigation: NavigationScreenProp<State>
+  navigation: StackNavigationProp<any>
 }
 interface State {
   hasLoad: boolean
@@ -52,7 +44,7 @@ export default class PrescriptionTpl extends Component<
   State
 > {
   static navigationOptions = () => ({
-    title: "选择处方模板类型",
+    title: '选择处方模板类型',
     headerStyle: {
       backgroundColor: sColor.white,
       height: 50,
@@ -64,10 +56,10 @@ export default class PrescriptionTpl extends Component<
     headerTintColor: sColor.color333,
     headerTitleStyle: {
       flex: 1,
-      alignItems: "center",
-      justifyContent: "center",
+      alignItems: 'center',
+      justifyContent: 'center',
       fontSize: 14,
-      textAlign: "center",
+      textAlign: 'center',
     },
     headerRight: <TouchableOpacity />,
   })
@@ -85,7 +77,7 @@ export default class PrescriptionTpl extends Component<
     }
   }
   componentDidMount() {
-    this.subscription = DeviceEventEmitter.addListener(pathMap.SittingHospital + "Reload", _ => {
+    this.subscription = DeviceEventEmitter.addListener(pathMap.SittingHospital + 'Reload', _ => {
       this.init()
     })
     this.init()
@@ -115,7 +107,7 @@ export default class PrescriptionTpl extends Component<
         this.setState({ refreshing: false })
       })
       .catch(err => {
-        Toast.fail("刷新失败,错误信息: " + err.msg)
+        Toast.fail('刷新失败,错误信息: ' + err.msg)
       })
   }
 
@@ -133,9 +125,8 @@ export default class PrescriptionTpl extends Component<
       <>
         <ScrollView
           style={style.main}
-          refreshControl={
-            <RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh} />
-          }>
+          refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh} />}
+        >
           <View style={style.categoryList}>
             {this.state.categoryList.map((category, k) => {
               return (
@@ -146,16 +137,18 @@ export default class PrescriptionTpl extends Component<
                       id: category.id,
                       title: category.name,
                     })
-                  }>
+                  }
+                >
                   <View
                     style={[
                       style.categoryItem,
                       global.flex,
                       global.alignItemsCenter,
                       global.justifyContentSpaceBetween,
-                    ]}>
+                    ]}
+                  >
                     <Text style={[style.categoryTitle, global.fontSize15]}>{category.name}</Text>
-                    <Icon name="right" style={[style.contegoryIcon, global.fontSize14]} />
+                    <Icon name='right' style={[style.contegoryIcon, global.fontSize14]} />
                   </View>
                 </TouchableOpacity>
               )

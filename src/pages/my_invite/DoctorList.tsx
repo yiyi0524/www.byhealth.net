@@ -1,18 +1,18 @@
-import sColor from "@styles/color"
-import global from "@styles/global"
-import gImg from "@utils/img"
-import gSass from "@utils/style"
-import React, { Component } from "react"
-import { Image, PixelRatio, Text, View, TouchableOpacity } from "react-native"
-import { ScrollView } from "react-native-gesture-handler"
-import pathMap from "@/routes/pathMap"
-import { NavigationScreenProp } from "react-navigation"
-import { InviteDoctorChildInfo, listInviteDoctorChildInfo } from "@/services/myInvite"
-import moment from "moment"
-import Empty from "@/components/Empty"
+import sColor from '@styles/color'
+import global from '@styles/global'
+import gImg from '@utils/img'
+import gSass from '@utils/style'
+import React, { Component } from 'react'
+import { Image, PixelRatio, Text, View, TouchableOpacity } from 'react-native'
+import { ScrollView } from 'react-native-gesture-handler'
+import pathMap from '@/routes/pathMap'
+import { StackNavigationProp } from '@react-navigation/stack'
+import { InviteDoctorChildInfo, listInviteDoctorChildInfo } from '@/services/myInvite'
+import moment from 'moment'
+import Empty from '@/components/Empty'
 const style = gSass.myInvite.myInviteDoctorList
 interface Props {
-  navigation: NavigationScreenProp<State>
+  navigation: StackNavigationProp<any>
 }
 interface State {
   hasLoad: boolean
@@ -21,7 +21,7 @@ interface State {
 
 export default class DoctorList extends Component<Props, State> {
   static navigationOptions = () => ({
-    title: "邀请的医师",
+    title: '邀请的医师',
     headerStyle: {
       backgroundColor: sColor.white,
       height: 50,
@@ -33,15 +33,13 @@ export default class DoctorList extends Component<Props, State> {
     headerTintColor: sColor.color333,
     headerTitleStyle: {
       flex: 1,
-      alignItems: "center",
-      justifyContent: "center",
+      alignItems: 'center',
+      justifyContent: 'center',
       fontSize: 14,
-      textAlign: "center",
+      textAlign: 'center',
     },
     headerRight: (
-      <TouchableOpacity>
-        {/* <Text style={[style.headerRight, global.fontSize14]}>保存</Text> */}
-      </TouchableOpacity>
+      <TouchableOpacity>{/* <Text style={[style.headerRight, global.fontSize14]}>保存</Text> */}</TouchableOpacity>
     ),
   })
   constructor(props: any) {
@@ -60,8 +58,8 @@ export default class DoctorList extends Component<Props, State> {
   init = async () => {
     try {
       let listInviteDoctorChildInfoTask = listInviteDoctorChildInfo({
-        year: parseInt(moment().format("YYYY")),
-        month: parseInt(moment().format("M")),
+        year: parseInt(moment().format('YYYY')),
+        month: parseInt(moment().format('M')),
       })
       let {
         data: { list },
@@ -97,8 +95,7 @@ export default class DoctorList extends Component<Props, State> {
             </View>
           </View>
           <View style={style.list}>
-            <View
-              style={[style.item, style.itemGray, global.flex, global.aCenter, global.jBetween]}>
+            <View style={[style.item, style.itemGray, global.flex, global.aCenter, global.jBetween]}>
               <View style={style.title}>
                 <Text style={style.desc}>医师</Text>
               </View>
@@ -116,7 +113,8 @@ export default class DoctorList extends Component<Props, State> {
                     global.aCenter,
                     global.jBetween,
                   ]}
-                  key={"item" + idx}>
+                  key={'item' + idx}
+                >
                   <View style={style.title}>
                     <Text style={style.desc}>{item.name}医师</Text>
                   </View>
@@ -128,7 +126,8 @@ export default class DoctorList extends Component<Props, State> {
                         level: 1,
                         doctorName: item.name,
                       })
-                    }}>
+                    }}
+                  >
                     {item.firstLevelDoctorCount}
                   </Text>
                   <Text
@@ -139,7 +138,8 @@ export default class DoctorList extends Component<Props, State> {
                         level: 2,
                         doctorName: item.name,
                       })
-                    }}>
+                    }}
+                  >
                     {item.secondLevelDoctorCount}
                   </Text>
                   <Text
@@ -150,7 +150,8 @@ export default class DoctorList extends Component<Props, State> {
                         level: 3,
                         doctorName: item.name,
                       })
-                    }}>
+                    }}
+                  >
                     {item.thirdLevelDoctorCount}
                   </Text>
                 </View>

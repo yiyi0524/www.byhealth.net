@@ -1,19 +1,18 @@
-import React, { Component } from "react"
-import { ScrollView } from "react-native-gesture-handler"
-import sColor from "@styles/color"
-import { Text, View, Image, TouchableOpacity, Linking } from "react-native"
-import gImg from "@utils/img"
-import gSass from "@utils/style"
-import global from "@/assets/styles/global"
-import { InputItem, ImagePicker, Portal, Toast, Icon, TextareaItem } from "@ant-design/react-native"
-import RnImagePicker from "react-native-image-picker"
-import { uploadImg } from "@/services/api"
-import { getPicCdnUrl } from "@/utils/utils"
-import imgPickerOpt from "@config/imgPickerOpt"
-import doctorApi from "@api/doctor"
-import { NavigationScreenProp } from "react-navigation"
-import pathMap from "@/routes/pathMap"
-import { Picture } from "../advisory/Chat"
+import global from '@/assets/styles/global'
+import pathMap from '@/routes/pathMap'
+import { uploadImg } from '@/services/api'
+import { Icon, ImagePicker, InputItem, Portal, TextareaItem, Toast } from '@ant-design/react-native'
+import doctorApi from '@api/doctor'
+import imgPickerOpt from '@config/imgPickerOpt'
+import sColor from '@styles/color'
+import gImg from '@utils/img'
+import gSass from '@utils/style'
+import React, { Component } from 'react'
+import { Image, Linking, Text, TouchableOpacity, View } from 'react-native'
+import { ScrollView } from 'react-native-gesture-handler'
+import RnImagePicker from 'react-native-image-picker'
+import { StackNavigationProp } from '@react-navigation/stack'
+import { Picture } from '../advisory/Chat'
 const style = gSass.index.uploadPrescription
 interface Props {}
 interface State {
@@ -28,8 +27,8 @@ type DefaultProps = {}
 
 export default class UploadPrescription extends Component<Props & DefaultProps, State> {
   static defaultProps: DefaultProps
-  static navigationOptions = ({ navigation }: { navigation: NavigationScreenProp<State> }) => ({
-    title: "代客下单",
+  static navigationOptions = ({ navigation }: { navigation: StackNavigationProp<any> }) => ({
+    title: '代客下单',
     headerStyle: {
       backgroundColor: sColor.white,
       height: 45,
@@ -39,17 +38,18 @@ export default class UploadPrescription extends Component<Props & DefaultProps, 
     headerTintColor: sColor.color333,
     headerTitleStyle: {
       flex: 1,
-      alignItems: "center",
-      justifyContent: "center",
+      alignItems: 'center',
+      justifyContent: 'center',
       fontSize: 14,
-      textAlign: "center",
+      textAlign: 'center',
     },
     headerRight: (
       <TouchableOpacity
         style={style.headerRight}
         onPress={() => {
           navigation.push(pathMap.UploadPrescriptionList)
-        }}>
+        }}
+      >
         <Text style={style.headerTitle}>历史记录</Text>
       </TouchableOpacity>
     ),
@@ -62,9 +62,9 @@ export default class UploadPrescription extends Component<Props & DefaultProps, 
     return {
       hasLoad: false,
       isShowImg: false,
-      name: "",
-      advice: "",
-      serviceMoney: "",
+      name: '',
+      advice: '',
+      serviceMoney: '',
       prescriptionPicList: [],
     }
   }
@@ -77,7 +77,7 @@ export default class UploadPrescription extends Component<Props & DefaultProps, 
     })
   }
   prescriptionPicChange = async (prescriptionPicList: Array<any>, operationType: string) => {
-    if (operationType === "remove") {
+    if (operationType === 'remove') {
       this.setState({
         prescriptionPicList,
       })
@@ -92,7 +92,7 @@ export default class UploadPrescription extends Component<Props & DefaultProps, 
     //   return Toast.info("请填写诊后管理费", 1)
     // }
     if (prescriptionPicList.length === 0) {
-      return Toast.info("请上传处方", 1)
+      return Toast.info('请上传处方', 1)
     }
     let data = {
       name,
@@ -103,15 +103,15 @@ export default class UploadPrescription extends Component<Props & DefaultProps, 
     doctorApi
       .uploadPrescription(data)
       .then(() => {
-        Toast.success("上传成功", 1, () => {
+        Toast.success('上传成功', 1, () => {
           this.setState({
-            serviceMoney: "",
+            serviceMoney: '',
             prescriptionPicList: [],
           })
         })
       })
       .catch(err => {
-        Toast.fail("上传失败, 错误信息: " + err.msg, 3)
+        Toast.fail('上传失败, 错误信息: ' + err.msg, 3)
       })
   }
   render() {
@@ -126,7 +126,7 @@ export default class UploadPrescription extends Component<Props & DefaultProps, 
       )
     }
     return (
-      <ScrollView style={style.main} keyboardShouldPersistTaps="handled">
+      <ScrollView style={style.main} keyboardShouldPersistTaps='handled'>
         <View style={style.tips}>
           <Text style={style.tipsTitle}>
             说明: 请将【处方信息】 及【患者的地址信息】拍照上传, 会有工作人员与患者联系确认订单。
@@ -144,7 +144,7 @@ export default class UploadPrescription extends Component<Props & DefaultProps, 
               <InputItem
                 style={style.input}
                 value={name}
-                placeholder="请输入患者姓名"
+                placeholder='请输入患者姓名'
                 last
                 clear
                 onChange={val => {
@@ -161,20 +161,20 @@ export default class UploadPrescription extends Component<Props & DefaultProps, 
             </View>
             <View style={style.detail}>
               <InputItem
-                type="number"
+                type='number'
                 style={style.input}
                 value={serviceMoney}
-                placeholder="请输入诊后管理费"
+                placeholder='请输入诊后管理费'
                 last
                 clear
-                extra="元"
+                extra='元'
                 onChange={val => {
-                  let serviceMoney: number | string = parseFloat(val)
-                  if (isNaN(serviceMoney)) {
-                    serviceMoney = ""
+                  let editServiceMoney: number | string = parseFloat(val)
+                  if (isNaN(editServiceMoney)) {
+                    editServiceMoney = ''
                   }
                   this.setState({
-                    serviceMoney: serviceMoney + "",
+                    serviceMoney: String(editServiceMoney),
                   })
                 }}
               />
@@ -188,13 +188,13 @@ export default class UploadPrescription extends Component<Props & DefaultProps, 
               <TextareaItem
                 style={[style.input, { paddingTop: 13, paddingLeft: 20 }]}
                 value={advice}
-                placeholder="请输入医嘱"
+                placeholder='请输入医嘱'
                 last
                 clear
                 autoHeight
                 onChange={val => {
                   this.setState({
-                    advice: val + "",
+                    advice: String(val),
                   })
                 }}
               />
@@ -209,12 +209,12 @@ export default class UploadPrescription extends Component<Props & DefaultProps, 
                 files={prescriptionPicList}
                 onAddImageClick={() => {
                   RnImagePicker.showImagePicker(imgPickerOpt, resp => {
-                    const uploadingImgKey = Toast.loading("上传图片中", 0, () => {}, true)
+                    const uploadingImgKey = Toast.loading('上传图片中', 0, undefined, true)
                     if (resp.didCancel) {
                       Portal.remove(uploadingImgKey)
                     } else if (resp.error) {
                       Portal.remove(uploadingImgKey)
-                      return Toast.info("您禁止了拍摄照片和录制视频权限, 请到设置中心打开", 3)
+                      return Toast.info('您禁止了拍摄照片和录制视频权限, 请到设置中心打开', 3)
                     } else {
                       uploadImg({ url: resp.uri })
                         .then(json => {
@@ -224,15 +224,14 @@ export default class UploadPrescription extends Component<Props & DefaultProps, 
                             url: resp.uri,
                             picId,
                             id: picId,
-                            title: "",
+                            title: '',
                           }
-                          let { prescriptionPicList } = this.state
                           prescriptionPicList.push(img)
                           this.setState({ prescriptionPicList })
                         })
                         .catch(e => {
                           Portal.remove(uploadingImgKey)
-                          Toast.fail("上传图片, 错误信息: " + e)
+                          Toast.fail('上传图片, 错误信息: ' + e)
                         })
                     }
                   })
@@ -247,7 +246,8 @@ export default class UploadPrescription extends Component<Props & DefaultProps, 
                   this.setState({
                     isShowImg: true,
                   })
-                }}>
+                }}
+              >
                 <Image style={style.img} source={gImg.home.prescriptionExample} />
               </TouchableOpacity>
             </View>
@@ -263,16 +263,12 @@ export default class UploadPrescription extends Component<Props & DefaultProps, 
           </View>
         </View>
         <TouchableOpacity
-          style={[
-            style.servicePhone,
-            global.flex,
-            global.alignItemsCenter,
-            global.justifyContentCenter,
-          ]}
+          style={[style.servicePhone, global.flex, global.alignItemsCenter, global.justifyContentCenter]}
           onPress={() => {
-            Linking.openURL("tel:4000566629")
-          }}>
-          <Icon style={style.icon} name="customer-service" />
+            Linking.openURL('tel:4000566629')
+          }}
+        >
+          <Icon style={style.icon} name='customer-service' />
           <Text style={style.phoneTitle}>客服热线: </Text>
           <Text style={style.phone}>4000566629</Text>
         </TouchableOpacity>
@@ -283,11 +279,9 @@ export default class UploadPrescription extends Component<Props & DefaultProps, 
             this.setState({
               isShowImg: false,
             })
-          }}>
-          <Image
-            style={isShowImg ? style.imgShow : global.hidden}
-            source={gImg.home.prescriptionExample}
-          />
+          }}
+        >
+          <Image style={isShowImg ? style.imgShow : global.hidden} source={gImg.home.prescriptionExample} />
         </TouchableOpacity>
       </ScrollView>
     )

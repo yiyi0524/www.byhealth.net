@@ -1,29 +1,29 @@
-import { windowHeight } from "@/utils/utils"
-import { windowWidth } from "@api/api"
-import sColor from "@styles/color"
-import { StyleSheet } from "react-native"
+import { windowHeight } from '@/utils/utils'
+import { windowWidth } from '@api/api'
+import sColor from '@styles/color'
+import { StyleSheet } from 'react-native'
 export default StyleSheet.create({
   loading: {
     width: windowWidth,
     height: windowHeight,
     backgroundColor: sColor.white,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
     flex: 1,
   },
   loadingTitle: {
-    textAlign: "center",
-    justifyContent: "center",
+    textAlign: 'center',
+    justifyContent: 'center',
   },
   loadingPic: {
-    width: "100%",
-    overflow: "hidden",
-    justifyContent: "center",
-    alignItems: "center",
+    width: '100%',
+    overflow: 'hidden',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   loadingImg: {
     width: 300,
-    resizeMode: "contain",
+    resizeMode: 'contain',
   },
   about: {
     flex: 1,
@@ -34,7 +34,7 @@ export default StyleSheet.create({
     height: windowHeight,
   },
   header: {
-    alignItems: "center",
+    alignItems: 'center',
     backgroundColor: sColor.white,
     paddingTop: 30,
     paddingBottom: 30,
@@ -43,12 +43,12 @@ export default StyleSheet.create({
     width: 50,
     height: 50,
     marginBottom: 10,
-    overflow: "hidden",
+    overflow: 'hidden',
   },
   headerImg: {
     width: 50,
     height: 50,
-    resizeMode: "contain",
+    resizeMode: 'contain',
   },
   headerTitle: {
     color: sColor.color333,
@@ -84,13 +84,13 @@ export default StyleSheet.create({
     paddingBottom: 10,
   },
   agreement: {
-    textAlign: "center",
+    textAlign: 'center',
     color: sColor.mainRed,
     marginBottom: 8,
   },
   footer: {
     color: sColor.color999,
-    textAlign: "center",
+    textAlign: 'center',
     marginTop: 15,
   },
 })

@@ -1,30 +1,22 @@
-import * as userAction from "@/redux/actions/user"
-import { AppState } from "@/redux/stores/store"
-import pathMap from "@/routes/pathMap"
-import { getPicCdnUrl } from "@/utils/utils"
-import { Toast } from "@ant-design/react-native"
-import doctor, { GENDER } from "@api/doctor"
-import sColor from "@styles/color"
-import gImg from "@utils/img"
-import gStyle from "@utils/style"
-import React, { Component } from "react"
-import {
-  Image,
-  PixelRatio,
-  RefreshControl,
-  ScrollView,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native"
-import { NavigationScreenProp } from "react-navigation"
-import { connect } from "react-redux"
-import { Dispatch } from "redux"
-import { Picture } from "../advisory/Chat"
+import * as userAction from '@/redux/actions/user'
+import { AppState } from '@/redux/stores/store'
+import pathMap from '@/routes/pathMap'
+import { getPicCdnUrl } from '@/utils/utils'
+import { Toast } from '@ant-design/react-native'
+import doctor, { GENDER } from '@api/doctor'
+import sColor from '@styles/color'
+import gImg from '@utils/img'
+import gStyle from '@utils/style'
+import React, { Component } from 'react'
+import { Image, PixelRatio, RefreshControl, ScrollView, Text, TouchableOpacity, View } from 'react-native'
+import { StackNavigationProp } from '@react-navigation/stack'
+import { connect } from 'react-redux'
+import { Dispatch } from 'redux'
+import { Picture } from '../advisory/Chat'
 const style = gStyle.addressBook.AddressBookGroupDetail
 const global = gStyle.global
 interface Props {
-  navigation: NavigationScreenProp<State>
+  navigation: StackNavigationProp<any>
 }
 export interface patientItem {
   id?: number
@@ -64,7 +56,7 @@ export default class Index extends Component<
   Props & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
   State
 > {
-  static navigationOptions = ({ navigation }: { navigation: NavigationScreenProp<State> }) => ({
+  static navigationOptions = ({ navigation }: { navigation: StackNavigationProp<any> }) => ({
     title: navigation.state.params!.title,
     headerStyle: {
       backgroundColor: sColor.white,
@@ -77,10 +69,10 @@ export default class Index extends Component<
     headerTintColor: sColor.color333,
     headerTitleStyle: {
       flex: 1,
-      alignItems: "center",
-      justifyContent: "center",
+      alignItems: 'center',
+      justifyContent: 'center',
       fontSize: 14,
-      textAlign: "center",
+      textAlign: 'center',
     },
     headerRight: (
       <TouchableOpacity
@@ -88,7 +80,8 @@ export default class Index extends Component<
           // navigation.push(pathMap.AddressBookGroupManage, {
           //   id: navigation.state.params.id
           // });
-        }}>
+        }}
+      >
         <Text style={[style.headerTitleLeft, global.fontSize14, global.fontStyle]}>管理</Text>
       </TouchableOpacity>
     ),
@@ -102,7 +95,7 @@ export default class Index extends Component<
       hasLoad: false,
       refreshing: false,
       groupId: 0,
-      groupName: "",
+      groupName: '',
       patientList: [],
       patientIdList: [],
       selectPatientList: [],
@@ -112,7 +105,7 @@ export default class Index extends Component<
     this.init()
   }
   init = async () => {
-    let groupId = this.props.navigation.getParam("id")
+    let groupId = this.props.navigation.getParam('id')
     this.setState({
       groupId,
     })
@@ -138,7 +131,7 @@ export default class Index extends Component<
         this.setState({ refreshing: false })
       })
       .catch(err => {
-        Toast.fail("刷新失败,错误信息: " + err.msg)
+        Toast.fail('刷新失败,错误信息: ' + err.msg)
       })
   }
   render() {
@@ -149,9 +142,8 @@ export default class Index extends Component<
       <>
         <ScrollView
           style={style.main}
-          refreshControl={
-            <RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh} />
-          }>
+          refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh} />}
+        >
           <View style={style.patientList}>
             {this.state.patientList.map((v: patientItem, k: number) => {
               return (
@@ -164,19 +156,17 @@ export default class Index extends Component<
                       title: v.name,
                       patientUid: v.uid,
                     })
-                  }>
+                  }
+                >
                   <View style={style.patientItemAvatar}>
                     <Image
                       style={style.patientAvatar}
                       source={
-                        v.avatar.url !== ""
-                          ? { uri: getPicCdnUrl(v.avatar.url, "avatar") }
-                          : gImg.common.defaultAvatar
+                        v.avatar.url !== '' ? { uri: getPicCdnUrl(v.avatar.url, 'avatar') } : gImg.common.defaultAvatar
                       }
                     />
                   </View>
-                  <View
-                    style={[style.patientItemDescription, global.flex, global.alignItemsCenter]}>
+                  <View style={[style.patientItemDescription, global.flex, global.alignItemsCenter]}>
                     <Text style={style.patientName}>{v.name}</Text>
                     <View style={[style.patientDescription, global.flex, global.alignItemsCenter]}>
                       <Image
@@ -190,7 +180,7 @@ export default class Index extends Component<
                         }
                       />
                       <Text style={[style.patientAge, global.fontSize12, global.fontStyle]}>
-                        {v.year_age}岁{v.month_age !== 0 ? v.month_age + "月" : null}
+                        {v.year_age}岁{v.month_age !== 0 ? v.month_age + '月' : null}
                       </Text>
                     </View>
                   </View>

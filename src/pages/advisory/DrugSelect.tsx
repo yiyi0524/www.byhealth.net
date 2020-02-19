@@ -1,12 +1,12 @@
-import global from "@/assets/styles/global"
-import pathMap from "@/routes/pathMap"
-import hospital from "@/services/hospital"
-import { TYPE } from "@/utils/constant"
-import { Icon, InputItem, Toast, List } from "@ant-design/react-native"
-import sColor from "@styles/color"
-import gImg from "@utils/img"
-import gStyle from "@utils/style"
-import React, { Component } from "react"
+import global from '@/assets/styles/global'
+import pathMap from '@/routes/pathMap'
+import hospital from '@/services/hospital'
+import { TYPE } from '@/utils/constant'
+import { Icon, InputItem, Toast, List } from '@ant-design/react-native'
+import sColor from '@styles/color'
+import gImg from '@utils/img'
+import gStyle from '@utils/style'
+import React, { Component } from 'react'
 import {
   DeviceEventEmitter,
   Image,
@@ -18,10 +18,10 @@ import {
   Text,
   TouchableOpacity,
   View,
-} from "react-native"
-import { NavigationScreenProp } from "react-navigation"
-import { Drug, PrescriptionDrugCategory } from "./SquareRoot"
-import { listPopularDrug } from "@/services/drug"
+} from 'react-native'
+import { StackNavigationProp } from '@react-navigation/stack'
+import { Drug, PrescriptionDrugCategory } from './SquareRoot'
+import { listPopularDrug } from '@/services/drug'
 const style = gStyle.advisory.DrugSelect
 export interface CategoryItem {
   id: number
@@ -75,7 +75,7 @@ export default class DrugSelect extends Component<Props, State> {
       }
     >
   }) => {
-    let title = "选择药材"
+    let title = '选择药材'
     // let params = navigation.state.params as Params
     let { params } = navigation.state
     if (!params) {
@@ -98,10 +98,10 @@ export default class DrugSelect extends Component<Props, State> {
       headerTintColor: sColor.color333,
       headerTitleStyle: {
         flex: 1,
-        alignItems: "center",
-        justifyContent: "center",
+        alignItems: 'center',
+        justifyContent: 'center',
         fontSize: 14,
-        textAlign: "center",
+        textAlign: 'center',
       },
       headerLeft: (
         <TouchableOpacity
@@ -117,14 +117,12 @@ export default class DrugSelect extends Component<Props, State> {
                 }
               }
             }
-            DeviceEventEmitter.emit(pathMap.SquareRoot + "Reload", prescriptionDrugCategoryList)
-            DeviceEventEmitter.emit(
-              pathMap.AddPrescriptionTpl + "Reload",
-              prescriptionDrugCategoryList,
-            )
+            DeviceEventEmitter.emit(pathMap.SquareRoot + 'Reload', prescriptionDrugCategoryList)
+            DeviceEventEmitter.emit(pathMap.AddPrescriptionTpl + 'Reload', prescriptionDrugCategoryList)
             navigation.goBack()
-          }}>
-          <Icon style={[style.headerLeft, global.fontSize16]} name="left" />
+          }}
+        >
+          <Icon style={[style.headerLeft, global.fontSize16]} name='left' />
         </TouchableOpacity>
       ),
       headerRight: (
@@ -139,17 +137,12 @@ export default class DrugSelect extends Component<Props, State> {
                 }
               }
             }
-            DeviceEventEmitter.emit(pathMap.SquareRoot + "Reload", prescriptionDrugCategoryList)
-            DeviceEventEmitter.emit(
-              pathMap.AddPrescriptionTpl + "Reload",
-              prescriptionDrugCategoryList,
-            )
-            DeviceEventEmitter.emit(
-              pathMap.EditPrescriptionTpl + "Reload",
-              prescriptionDrugCategoryList,
-            )
+            DeviceEventEmitter.emit(pathMap.SquareRoot + 'Reload', prescriptionDrugCategoryList)
+            DeviceEventEmitter.emit(pathMap.AddPrescriptionTpl + 'Reload', prescriptionDrugCategoryList)
+            DeviceEventEmitter.emit(pathMap.EditPrescriptionTpl + 'Reload', prescriptionDrugCategoryList)
             navigation.goBack()
-          }}>
+          }}
+        >
           <Text style={[global.fontSize16, { color: sColor.mainRed, paddingRight: 15 }]}>完成</Text>
         </TouchableOpacity>
       ),
@@ -167,12 +160,12 @@ export default class DrugSelect extends Component<Props, State> {
     return {
       hasLoad: false,
       refreshing: false,
-      chatKey: "",
+      chatKey: '',
       currDrugId: 0,
       page: -1,
       limit: -1,
       filter: {},
-      search: "",
+      search: '',
       prescriptionDrugCategoryList,
       matchDrugList: [],
       popularDrugList: [],
@@ -185,7 +178,7 @@ export default class DrugSelect extends Component<Props, State> {
     })
   }
   init = async () => {
-    let activeId = this.props.navigation.getParam("activeId")
+    let activeId = this.props.navigation.getParam('activeId')
     let {
       data: { list: popularDrugList },
     } = await listPopularDrug({
@@ -224,7 +217,7 @@ export default class DrugSelect extends Component<Props, State> {
         this.setState({ refreshing: false })
       })
       .catch(err => {
-        Toast.fail("刷新失败,错误信息: " + err.msg)
+        Toast.fail('刷新失败,错误信息: ' + err.msg)
       })
   }
   search = async (val: string) => {
@@ -268,34 +261,26 @@ export default class DrugSelect extends Component<Props, State> {
     const drugCategoryId = this.props.navigation.state.params!.activeId
     return (
       <KeyboardAvoidingView
-        enabled={Platform.OS !== "android"}
-        behavior="padding"
+        enabled={Platform.OS !== 'android'}
+        behavior='padding'
         style={{ flex: 1 }}
-        keyboardVerticalOffset={70}>
+        keyboardVerticalOffset={70}
+      >
         <ScrollView
           // keyboardShouldPersistTaps="always"
           style={style.main}
-          refreshControl={
-            <RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh} />
-          }>
-          <View
-            style={[
-              style.header,
-              global.flex,
-              global.alignItemsCenter,
-              global.justifyContentSpaceBetween,
-            ]}>
+          refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh} />}
+        >
+          <View style={[style.header, global.flex, global.alignItemsCenter, global.justifyContentSpaceBetween]}>
             <TouchableOpacity
               disabled={isInSession !== true}
               onPress={() => {
                 this.props.navigation.navigate(pathMap.AdvisoryChat)
-              }}>
+              }}
+            >
               <Text
-                style={[
-                  style.headerItem,
-                  global.fontSize14,
-                  isInSession !== true ? style.headerItemDisabled : null,
-                ]}>
+                style={[style.headerItem, global.fontSize14, isInSession !== true ? style.headerItemDisabled : null]}
+              >
                 回到对话
               </Text>
             </TouchableOpacity>
@@ -303,28 +288,25 @@ export default class DrugSelect extends Component<Props, State> {
             <TouchableOpacity
               onPress={() => {
                 let prescriptionDrugCategoryList = this.state.prescriptionDrugCategoryList
-                prescriptionDrugCategoryList = prescriptionDrugCategoryList.filter(
-                  v => v.id !== drugCategoryId,
-                )
+                prescriptionDrugCategoryList = prescriptionDrugCategoryList.filter(v => v.id !== drugCategoryId)
                 this.props.navigation.setParams({
                   prescriptionDrugCategoryList,
                 })
                 this.setState({
                   prescriptionDrugCategoryList,
                 })
-              }}>
+              }}
+            >
               <Text style={[style.headerItem, global.fontSize14]}>清空处方</Text>
             </TouchableOpacity>
             <View style={style.headerLine} />
             <TouchableOpacity>
-              <Text style={[style.headerItem, style.headerItemDisabled, global.fontSize14]}>
-                看问诊单
-              </Text>
+              <Text style={[style.headerItem, style.headerItemDisabled, global.fontSize14]}>看问诊单</Text>
             </TouchableOpacity>
           </View>
           <View style={style.list}>
             {/* 当前已经选择的药品信息 */}
-            <View style={this.state.search === "" ? style.drugList : global.hidden}>
+            <View style={this.state.search === '' ? style.drugList : global.hidden}>
               {this.state.prescriptionDrugCategoryList.map((category, k) => {
                 if (category.id !== drugCategoryId) {
                   return false
@@ -333,7 +315,8 @@ export default class DrugSelect extends Component<Props, State> {
                   setTimeout(() => {
                     if (this.state.currDrugId === drugInfo.id) {
                       try {
-                        this.refs["input" + drugInfo.id].focus()
+                        // eslint-disable-next-line react/no-string-refs
+                        this.refs['input' + drugInfo.id].focus()
                       } catch (e) {
                         console.log(e)
                       }
@@ -341,24 +324,21 @@ export default class DrugSelect extends Component<Props, State> {
                   }, 500)
                   return (
                     <View
-                      key={k + "-" + k2}
-                      style={[
-                        style.item,
-                        global.flex,
-                        global.justifyContentSpaceBetween,
-                        global.alignItemsCenter,
-                      ]}>
+                      key={k + '-' + k2}
+                      style={[style.item, global.flex, global.justifyContentSpaceBetween, global.alignItemsCenter]}
+                    >
                       <TouchableOpacity
                         onPress={() => {
                           let { prescriptionDrugCategoryList } = this.state
-                          prescriptionDrugCategoryList[k].drugList = prescriptionDrugCategoryList[
-                            k
-                          ].drugList.filter(currDrugInfo => currDrugInfo.id !== drugInfo.id)
+                          prescriptionDrugCategoryList[k].drugList = prescriptionDrugCategoryList[k].drugList.filter(
+                            currDrugInfo => currDrugInfo.id !== drugInfo.id,
+                          )
                           this.setState({
                             prescriptionDrugCategoryList,
                           })
-                        }}>
-                        <Icon style={[style.itemIcon, global.fontSize22]} name="minus-circle" />
+                        }}
+                      >
+                        <Icon style={[style.itemIcon, global.fontSize22]} name='minus-circle' />
                       </TouchableOpacity>
                       <View style={style.itemCenter}>
                         <View
@@ -367,7 +347,8 @@ export default class DrugSelect extends Component<Props, State> {
                             global.flex,
                             global.alignItemsCenter,
                             global.justifyContentSpaceBetween,
-                          ]}>
+                          ]}
+                        >
                           <TouchableOpacity
                             style={style.itemCenterTitlePar}
                             onPress={() => {
@@ -375,10 +356,9 @@ export default class DrugSelect extends Component<Props, State> {
                                 id: drugInfo.detail.id,
                                 name: drugInfo.detail.name,
                               })
-                            }}>
-                            <Text
-                              style={[style.itemCenterTitle, global.fontSize14]}
-                              numberOfLines={1}>
+                            }}
+                          >
+                            <Text style={[style.itemCenterTitle, global.fontSize14]} numberOfLines={1}>
                               {drugInfo.detail.name}
                             </Text>
                           </TouchableOpacity>
@@ -388,7 +368,8 @@ export default class DrugSelect extends Component<Props, State> {
                               global.flex,
                               global.alignItemsCenter,
                               global.justifyContentSpaceBetween,
-                            ]}>
+                            ]}
+                          >
                             <TouchableOpacity
                               onPress={() => {
                                 let { prescriptionDrugCategoryList } = this.state
@@ -398,29 +379,30 @@ export default class DrugSelect extends Component<Props, State> {
                                 this.setState({
                                   prescriptionDrugCategoryList,
                                 })
-                              }}>
+                              }}
+                            >
                               <Text style={[style.btn, global.fontSize18]}>-</Text>
                             </TouchableOpacity>
                             <View
                               style={{
                                 width: 60,
-                              }}>
+                              }}
+                            >
                               <InputItem
                                 last
-                                ref={"input" + drugInfo.id}
-                                type="number"
-                                placeholder="0"
+                                ref={'input' + drugInfo.id}
+                                type='number'
+                                placeholder='0'
                                 style={[style.count, global.fontSize14]}
-                                value={drugInfo.count === 0 ? "" : drugInfo.count + ""}
+                                value={drugInfo.count === 0 ? '' : String(drugInfo.count)}
                                 onChange={val => {
                                   let { prescriptionDrugCategoryList } = this.state
                                   if (val) {
                                     let count = parseInt(val)
                                     if (!isNaN(count)) {
-                                      prescriptionDrugCategoryList[k].drugList[k2].count =
-                                        count === 0 ? 1 : count
+                                      prescriptionDrugCategoryList[k].drugList[k2].count = count === 0 ? 1 : count
                                     }
-                                  } else if (val === "") {
+                                  } else if (val === '') {
                                     prescriptionDrugCategoryList[k].drugList[k2].count = 0
                                   }
                                   this.setState({
@@ -433,7 +415,7 @@ export default class DrugSelect extends Component<Props, State> {
                                   })
                                   let { prescriptionDrugCategoryList } = this.state
 
-                                  if (evt === "") {
+                                  if (evt === '') {
                                     prescriptionDrugCategoryList[k].drugList[k2].count = 0
                                   }
                                   this.setState({
@@ -449,13 +431,13 @@ export default class DrugSelect extends Component<Props, State> {
                                 this.setState({
                                   prescriptionDrugCategoryList,
                                 })
-                              }}>
+                              }}
+                            >
                               <Text style={[style.btn, global.fontSize18]}>+</Text>
                             </TouchableOpacity>
                           </View>
                         </View>
-                        <View
-                          style={[style.itemCenterDetail, global.flex, global.alignItemsCenter]}>
+                        <View style={[style.itemCenterDetail, global.flex, global.alignItemsCenter]}>
                           <Text style={[style.itemCenterDetailTitle, global.fontSize12]}>
                             {drugInfo.detail.price / 1000}元/{drugInfo.detail.unit}
                           </Text>
@@ -464,9 +446,7 @@ export default class DrugSelect extends Component<Props, State> {
                             {drugInfo.detail.standard}
                           </Text>
                         </View>
-                        <Text
-                          style={[style.itemCenterDetailCompany, global.fontSize12]}
-                          numberOfLines={1}>
+                        <Text style={[style.itemCenterDetailCompany, global.fontSize12]} numberOfLines={1}>
                           {drugInfo.detail.manufacturer}
                         </Text>
                       </View>
@@ -478,14 +458,13 @@ export default class DrugSelect extends Component<Props, State> {
             <List>
               <InputItem
                 style={style.input}
-                placeholder="请输入药材名称"
+                placeholder='请输入药材名称'
                 value={this.state.search}
                 onChange={this.search}
               />
             </List>
-            <View style={this.state.search === "" ? style.popularDrug : global.hidden}>
-              <View
-                style={[style.popularDrugList, global.flex, global.alignItemsCenter, global.wrap]}>
+            <View style={this.state.search === '' ? style.popularDrug : global.hidden}>
+              <View style={[style.popularDrugList, global.flex, global.alignItemsCenter, global.wrap]}>
                 {this.state.popularDrugList.map((drug, k) => {
                   return (
                     <TouchableOpacity
@@ -502,7 +481,7 @@ export default class DrugSelect extends Component<Props, State> {
                               for (let drugInfo of category.drugList) {
                                 if (drugInfo.id === drug.id) {
                                   drugInfo.count++
-                                  throw new Error("当前药品已存在,数量加1,中断")
+                                  throw new Error('当前药品已存在,数量加1,中断')
                                 }
                               }
                             }
@@ -530,21 +509,24 @@ export default class DrugSelect extends Component<Props, State> {
                               }
                             }
                           }
-                        } catch (e) {}
+                        } catch (e) {
+                          console.log(e)
+                        }
                         this.setState({
                           prescriptionDrugCategoryList,
                           matchDrugList: [],
-                          search: "",
+                          search: '',
                           currDrugId: drug.id,
                         })
-                      }}>
+                      }}
+                    >
                       <Text style={style.drugItemTitle}>{drug.name}</Text>
                     </TouchableOpacity>
                   )
                 })}
               </View>
             </View>
-            <View style={this.state.search !== "" ? style.drugList : global.hidden}>
+            <View style={this.state.search !== '' ? style.drugList : global.hidden}>
               {/* 当前匹配的药品列表 */}
               {this.state.matchDrugList.map((drug, k) => {
                 return (
@@ -561,7 +543,7 @@ export default class DrugSelect extends Component<Props, State> {
                             for (let drugInfo of category.drugList) {
                               if (drugInfo.id === drug.id) {
                                 drugInfo.count++
-                                throw new Error("当前药品已存在,数量加1,中断")
+                                throw new Error('当前药品已存在,数量加1,中断')
                               }
                             }
                           }
@@ -589,14 +571,17 @@ export default class DrugSelect extends Component<Props, State> {
                             }
                           }
                         }
-                      } catch (e) {}
+                      } catch (e) {
+                        console.log(e)
+                      }
                       this.setState({
                         prescriptionDrugCategoryList,
                         matchDrugList: [],
-                        search: "",
+                        search: '',
                         currDrugId: drug.id,
                       })
-                    }}>
+                    }}
+                  >
                     <View style={style.drugItem}>
                       <Text style={[style.drugTitle, global.fontSize14]} numberOfLines={1}>
                         {drug.name}
@@ -606,13 +591,9 @@ export default class DrugSelect extends Component<Props, State> {
                           {drug.price / 1000}元/{drug.unit}
                         </Text>
                         <View style={style.littleSpot} />
-                        <Text style={[style.drugDescription, global.fontSize12]}>
-                          {drug.standard}
-                        </Text>
+                        <Text style={[style.drugDescription, global.fontSize12]}>{drug.standard}</Text>
                       </View>
-                      <Text style={[style.drugCompany, global.fontSize12]}>
-                        {drug.manufacturer}
-                      </Text>
+                      <Text style={[style.drugCompany, global.fontSize12]}>{drug.manufacturer}</Text>
                     </View>
                   </TouchableOpacity>
                 )
@@ -629,6 +610,6 @@ export default class DrugSelect extends Component<Props, State> {
         return v.name
       }
     }
-    return ""
+    return ''
   }
 }

@@ -1,24 +1,24 @@
-import global from "@/assets/styles/global"
-import { AppState } from "@/redux/stores/store"
-import pathMap from "@/routes/pathMap"
-import { delGroupChatmember, GroupChatMember, listGroupChat } from "@/services/groupChat"
-import { TYPE } from "@/utils/constant"
-import { getPicFullUrl } from "@/utils/utils"
-import { Icon, Toast } from "@ant-design/react-native"
-import gImg from "@utils/img"
-import gSass from "@utils/style"
-import React, { Component } from "react"
-import { Image, Text, TouchableOpacity, View } from "react-native"
-import { NavigationScreenProp, ScrollView } from "react-navigation"
-import { connect } from "react-redux"
-import { Assign } from "utility-types"
+import global from '@/assets/styles/global'
+import { AppState } from '@/redux/stores/store'
+import pathMap from '@/routes/pathMap'
+import { delGroupChatmember, GroupChatMember, listGroupChat } from '@/services/groupChat'
+import { TYPE } from '@/utils/constant'
+import { getPicFullUrl } from '@/utils/utils'
+import { Icon, Toast } from '@ant-design/react-native'
+import gImg from '@utils/img'
+import gSass from '@utils/style'
+import React, { Component } from 'react'
+import { Image, Text, TouchableOpacity, View } from 'react-native'
+import { NavigationScreenProp, ScrollView } from 'react-navigation'
+import { connect } from 'react-redux'
+import { Assign } from 'utility-types'
 const style = gSass.groupChat.detail
 
 interface NavParams {
   groupId: number
   groupName: string
   navigatePress: () => void
-  mode: "delete" | "done"
+  mode: 'delete' | 'done'
   isAdmin: boolean
 }
 
@@ -31,7 +31,7 @@ interface State {
   groupId: number //群聊id
   groupName: string //群聊名称
   delMemberIds: number[] //删除列表
-  applyMemberList: Omit<GroupChatMember, "isAdmin">[]
+  applyMemberList: Omit<GroupChatMember, 'isAdmin'>[]
   memberList: Assign<GroupChatMember, { active: boolean }>[]
 }
 type DefaultProps = {} & ReturnType<typeof mapStateToProps>
@@ -46,43 +46,40 @@ const mapStateToProps = (state: AppState) => {
 @connect(mapStateToProps)
 export default class Detail extends Component<Props & DefaultProps, State> {
   static defaultProps: DefaultProps
-  static navigationOptions = ({
-    navigation,
-  }: {
-    navigation: NavigationScreenProp<State, NavParams>
-  }) => {
-    let title = ""
+  static navigationOptions = ({ navigation }: { navigation: NavigationScreenProp<State, NavParams> }) => {
+    let title = ''
     if (navigation.state.params) {
       title = navigation.state.params.groupName
     }
-    const isAdmin = navigation.getParam("isAdmin") || false
+    const isAdmin = navigation.getParam('isAdmin') || false
     return {
       title,
       headerStyle: {
-        backgroundColor: "#fff",
+        backgroundColor: '#fff',
         height: 45,
         elevation: 0,
-        borderColor: "#E3E3E3",
+        borderColor: '#E3E3E3',
       },
-      headerTintColor: "#333",
+      headerTintColor: '#333',
       headerTitleStyle: {
         flex: 1,
-        alignItems: "center",
-        justifyContent: "center",
+        alignItems: 'center',
+        justifyContent: 'center',
         fontSize: 14,
-        textAlign: "center",
+        textAlign: 'center',
       },
       headerRight: isAdmin ? (
         <TouchableOpacity
           onPress={() => {
-            let oriMode = navigation.getParam("mode")
+            let oriMode = navigation.getParam('mode')
             navigation.setParams({
-              mode: oriMode === "done" ? "delete" : "done",
+              mode: oriMode === 'done' ? 'delete' : 'done',
             })
             navigation.state.params!.navigatePress()
-          }}>
+          }}
+        >
           <Text style={style.icon}>
-            {navigation.state.params && navigation.state.params!.mode === "done" ? "选择" : "删除"}
+            {navigation.state.params && navigation.state.params!.mode === 'done' ? '选择' : '删除'}
           </Text>
         </TouchableOpacity>
       ) : (
@@ -96,7 +93,7 @@ export default class Detail extends Component<Props & DefaultProps, State> {
   }
   getInitState = (props: Props): State => {
     let groupId = 0,
-      groupName = ""
+      groupName = ''
     if (props.navigation.state.params) {
       groupId = props.navigation.state.params!.groupId
       groupName = props.navigation.state.params!.groupName
@@ -114,7 +111,7 @@ export default class Detail extends Component<Props & DefaultProps, State> {
   componentDidMount() {
     this.init()
     this.props.navigation.setParams({
-      mode: "done",
+      mode: 'done',
       navigatePress: this.editMsg,
     })
   }
@@ -139,10 +136,10 @@ export default class Detail extends Component<Props & DefaultProps, State> {
     if (delMemberIds.length > 0) {
       delGroupChatmember({ groupId, ids: delMemberIds })
         .then(() => {
-          Toast.success("删除成功", 1, this.init)
+          Toast.success('删除成功', 1, this.init)
         })
         .catch(err => {
-          Toast.success("删除失败,错误信息: " + err.msg, 3)
+          Toast.success('删除失败,错误信息: ' + err.msg, 3)
           console.log(err)
         })
     }
@@ -165,11 +162,12 @@ export default class Detail extends Component<Props & DefaultProps, State> {
       let { uid } = this.props
       for (let v of list) {
         if (v.id === groupId) {
+          // eslint-disable-next-line no-shadow
           memberList = v.userList.map((v: any) => {
             v.active = false
             return v
           })
-          isAdmin = !!v.userList.find(v => v.uid === uid && v.isAdmin)
+          isAdmin = Boolean(v.userList.find(user => user.uid === uid && user.isAdmin))
           applyMemberList = v.applyList
         }
       }
@@ -191,7 +189,8 @@ export default class Detail extends Component<Props & DefaultProps, State> {
           {isAdmin && applyMemberList.length > 0 ? (
             <TouchableOpacity
               style={[style.applyList, global.flex, global.aCenter, global.jBetween]}
-              onPress={this.applyJoinMember}>
+              onPress={this.applyJoinMember}
+            >
               <View style={[style.applyImg, global.flex, global.aCenter]}>
                 {applyMemberList.map((member, k) => {
                   return (
@@ -199,10 +198,9 @@ export default class Detail extends Component<Props & DefaultProps, State> {
                       <Image
                         style={[style.applyAvatar]}
                         source={
-                          member.avatar.url
-                            ? { uri: getPicFullUrl(member.avatar.url) }
-                            : gImg.common.defaultAvatar
-                        }></Image>
+                          member.avatar.url ? { uri: getPicFullUrl(member.avatar.url) } : gImg.common.defaultAvatar
+                        }
+                      />
                     </View>
                   )
                 })}
@@ -210,7 +208,7 @@ export default class Detail extends Component<Props & DefaultProps, State> {
               <View style={style.applyCountPar}>
                 <Text style={style.applyCount}>{applyMemberList.length}条加入申请</Text>
               </View>
-              <Icon style={style.applyIcon} name="right"></Icon>
+              <Icon style={style.applyIcon} name='right' />
             </TouchableOpacity>
           ) : null}
           <View style={style.list}>
@@ -220,7 +218,7 @@ export default class Detail extends Component<Props & DefaultProps, State> {
                     <TouchableOpacity
                       activeOpacity={isSelectMember ? 0.3 : 1}
                       onPress={() => {
-                        let { memberList, delMemberIds, isSelectMember } = this.state
+                        let { delMemberIds } = this.state
                         if (isSelectMember) {
                           if (!member.isAdmin) {
                             memberList[k].active = !memberList[k].active
@@ -240,7 +238,8 @@ export default class Detail extends Component<Props & DefaultProps, State> {
                         }
                       }}
                       style={[style.item, global.flex, global.aCenter]}
-                      key={k}>
+                      key={k}
+                    >
                       {isAdmin && isSelectMember ? (
                         <View>
                           {member.active ? (
@@ -248,7 +247,7 @@ export default class Detail extends Component<Props & DefaultProps, State> {
                               <Text style={style.selectTitle}>√</Text>
                             </View>
                           ) : (
-                            <View style={[style.select]}></View>
+                            <View style={[style.select]} />
                           )}
                         </View>
                       ) : null}
@@ -257,10 +256,9 @@ export default class Detail extends Component<Props & DefaultProps, State> {
                         <Image
                           style={style.avatar}
                           source={
-                            member.avatar.url
-                              ? { uri: getPicFullUrl(member.avatar.url) }
-                              : gImg.common.defaultAvatar
-                          }></Image>
+                            member.avatar.url ? { uri: getPicFullUrl(member.avatar.url) } : gImg.common.defaultAvatar
+                          }
+                        />
                       </View>
                       <Text style={style.name} numberOfLines={1}>
                         {member.nick}

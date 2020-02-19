@@ -1,4 +1,4 @@
-package net.byhealth.boyi;
+package net.byhealth.boyi.wxapi;
 
 import android.app.Activity;
 import android.os.Bundle;

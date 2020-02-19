@@ -1,30 +1,30 @@
-import sColor from "@styles/color"
-import { StyleSheet } from "react-native"
+import sColor from '@styles/color'
+import { StyleSheet } from 'react-native'
 export default StyleSheet.create({
   main: {
     flex: 1,
-    position: "relative",
+    position: 'relative',
   },
   tips: {
-    textAlign: "center",
+    textAlign: 'center',
     paddingTop: 30,
   },
   slider: {
     height: 210,
   },
   item: {
-    width: "100%",
+    width: '100%',
   },
   img: {
-    width: "100%",
+    width: '100%',
     height: 210,
-    resizeMode: "cover",
+    resizeMode: 'cover',
   },
   dotPar: {
-    position: "absolute",
+    position: 'absolute',
     top: 170,
     left: 15,
-    backgroundColor: "#999",
+    backgroundColor: '#999',
     borderRadius: 15,
     padding: 2,
     paddingLeft: 8,
@@ -32,25 +32,25 @@ export default StyleSheet.create({
   },
   dot: {
     fontSize: 16,
-    color: "#fff",
+    color: '#fff',
   },
   article: {
     padding: 15,
   },
   title: {
     fontSize: 16,
-    color: "#333",
+    color: '#333',
   },
   content: {
     fontSize: 14,
-    color: "#666",
+    color: '#666',
     marginTop: 15,
     marginBottom: 25,
   },
   time: {},
   viewCount: {
     fontSize: 12,
-    color: "#999",
+    color: '#999',
   },
   rightTitle: {
     paddingRight: 15,

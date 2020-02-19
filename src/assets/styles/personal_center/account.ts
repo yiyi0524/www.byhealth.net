@@ -1,29 +1,29 @@
-import { windowHeight } from "@/utils/utils"
-import { windowWidth } from "@api/api"
-import sColor from "@styles/color"
-import { PixelRatio, StyleSheet } from "react-native"
+import { windowHeight } from '@/utils/utils'
+import { windowWidth } from '@api/api'
+import sColor from '@styles/color'
+import { PixelRatio, StyleSheet } from 'react-native'
 export default StyleSheet.create({
   loading: {
     width: windowWidth,
     height: windowHeight,
     backgroundColor: sColor.white,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
     flex: 1,
   },
   loadingTitle: {
-    textAlign: "center",
-    justifyContent: "center",
+    textAlign: 'center',
+    justifyContent: 'center',
   },
   loadingPic: {
-    width: "100%",
-    overflow: "hidden",
-    justifyContent: "center",
-    alignItems: "center",
+    width: '100%',
+    overflow: 'hidden',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   loadingImg: {
     width: 300,
-    resizeMode: "contain",
+    resizeMode: 'contain',
   },
   main: {
     backgroundColor: sColor.mainBgColor,
@@ -39,7 +39,7 @@ export default StyleSheet.create({
   headerDescription: {
     color: sColor.whiteOpa7,
     marginBottom: 8,
-    textAlign: "center",
+    textAlign: 'center',
   },
   headerCenter: {
     marginTop: 5,
@@ -78,7 +78,7 @@ export default StyleSheet.create({
     marginRight: 15,
     backgroundColor: sColor.white,
     borderRadius: 15,
-    overflow: "hidden",
+    overflow: 'hidden',
   },
   addBankTitle: {
     padding: 30,
@@ -95,7 +95,7 @@ export default StyleSheet.create({
     backgroundColor: sColor.lightGreen,
     height: 40,
     lineHeight: 40,
-    textAlign: "center",
+    textAlign: 'center',
   },
   bankDescription: {
     marginTop: 15,
@@ -114,27 +114,27 @@ export default StyleSheet.create({
     marginTop: 15,
   },
   recordItem: {
-    backgroundColor: "#fff",
+    backgroundColor: '#fff',
     height: 50,
     borderBottomWidth: 1,
-    borderBottomColor: "#ddd",
+    borderBottomColor: '#ddd',
     paddingLeft: 15,
     paddingRight: 15,
   },
   recordTitle: {
     fontSize: 15,
-    color: "#666",
+    color: '#666',
     height: 40,
-    textAlign: "center",
+    textAlign: 'center',
     lineHeight: 40,
   },
   recordName: {
     fontSize: 14,
-    color: "#666",
+    color: '#666',
   },
   recordMoney: {
     fontSize: 14,
-    color: "#888",
+    color: '#888',
   },
   recordSuccess: {
     fontSize: 14,
@@ -146,6 +146,6 @@ export default StyleSheet.create({
   },
   recordRime: {
     fontSize: 12,
-    color: "#888",
+    color: '#888',
   },
 })

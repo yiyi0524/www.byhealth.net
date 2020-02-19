@@ -1,26 +1,26 @@
-import Empty from "@/components/Empty"
-import * as userAction from "@/redux/actions/user"
-import { AppState } from "@/redux/stores/store"
-import pathMap from "@/routes/pathMap"
-import doctor from "@/services/doctor"
-import { Toast, SwipeAction } from "@ant-design/react-native"
-import sColor from "@styles/color"
-import gImg from "@utils/img"
-import gStyle from "@utils/style"
-import React, { Component } from "react"
-import { DeviceEventEmitter, Image, PixelRatio, RefreshControl, Text, View } from "react-native"
-import { ScrollView, TouchableOpacity } from "react-native-gesture-handler"
-import { NavigationScreenProp } from "react-navigation"
-import { connect } from "react-redux"
-import { Dispatch } from "redux"
-import { PrescriptionDrugInfo } from "./SquareRoot"
-import { PrescriptionDrugCategory } from "./SquareRoot"
-import { getDrugCategoryList } from "@/services/hospital"
-import { CategoryItem } from "./DrugSelect"
+import Empty from '@/components/Empty'
+import * as userAction from '@/redux/actions/user'
+import { AppState } from '@/redux/stores/store'
+import pathMap from '@/routes/pathMap'
+import doctor from '@/services/doctor'
+import { Toast, SwipeAction } from '@ant-design/react-native'
+import sColor from '@styles/color'
+import gImg from '@utils/img'
+import gStyle from '@utils/style'
+import React, { Component } from 'react'
+import { DeviceEventEmitter, Image, PixelRatio, RefreshControl, Text, View } from 'react-native'
+import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler'
+import { StackNavigationProp } from '@react-navigation/stack'
+import { connect } from 'react-redux'
+import { Dispatch } from 'redux'
+import { PrescriptionDrugInfo } from './SquareRoot'
+import { PrescriptionDrugCategory } from './SquareRoot'
+import { getDrugCategoryList } from '@/services/hospital'
+import { CategoryItem } from './DrugSelect'
 const style = gStyle.advisory.SelectPrescriptionTplList
 const global = gStyle.global
 interface Props {
-  navigation: NavigationScreenProp<State>
+  navigation: StackNavigationProp<any>
 }
 interface State {
   hasLoad: boolean
@@ -60,7 +60,7 @@ export default class PrescriptionTplList extends Component<
 > {
   static navigationOptions = () => {
     return {
-      title: "模板信息",
+      title: '模板信息',
       headerStyle: {
         backgroundColor: sColor.white,
         height: 45,
@@ -71,10 +71,10 @@ export default class PrescriptionTplList extends Component<
       headerTintColor: sColor.color333,
       headerTitleStyle: {
         flex: 1,
-        alignItems: "center",
-        justifyContent: "center",
+        alignItems: 'center',
+        justifyContent: 'center',
         fontSize: 14,
-        textAlign: "center",
+        textAlign: 'center',
       },
       headerRight: <TouchableOpacity />,
     }
@@ -127,7 +127,7 @@ export default class PrescriptionTplList extends Component<
         this.setState({ refreshing: false })
       })
       .catch(err => {
-        Toast.fail("刷新失败,错误信息: " + err.msg)
+        Toast.fail('刷新失败,错误信息: ' + err.msg)
       })
   }
   selectPrescriptionTpl = (prescription: PrescriptionTpl) => {
@@ -159,7 +159,7 @@ export default class PrescriptionTplList extends Component<
         everyDoseUseCount: prescription.everyDoseUseCount,
       })
     }
-    DeviceEventEmitter.emit(pathMap.SquareRoot + "Reload", prescriptionDrugCategoryList)
+    DeviceEventEmitter.emit(pathMap.SquareRoot + 'Reload', prescriptionDrugCategoryList)
     this.props.navigation.goBack()
   }
   render() {
@@ -176,38 +176,36 @@ export default class PrescriptionTplList extends Component<
       <>
         <ScrollView
           style={style.main}
-          refreshControl={
-            <RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh} />
-          }>
+          refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh} />}
+        >
           <View style={style.prescriptionList}>
             {this.state.prescriptionTplList.length === 0 ? (
               <View>
                 <Empty />
-                <Text style={{ textAlign: "center", fontSize: 14, color: "#888" }}>暂无模板</Text>
+                <Text style={{ textAlign: 'center', fontSize: 14, color: '#888' }}>暂无模板</Text>
               </View>
             ) : null}
             {this.state.prescriptionTplList.map((prescription, k) => {
-              let drugStr = ""
+              let drugStr = ''
               for (let drugInfo of prescription.drugList) {
-                drugStr += drugInfo.detail.name + "、"
+                drugStr += drugInfo.detail.name + '、'
               }
-              drugStr = drugStr.substr(0, drugStr.lastIndexOf("、"))
+              drugStr = drugStr.substr(0, drugStr.lastIndexOf('、'))
               return (
                 <SwipeAction
                   key={k}
                   autoClose
-                  style={{ backgroundColor: "transparent", marginTop: 8 }}
+                  style={{ backgroundColor: 'transparent', marginTop: 8 }}
                   right={[
                     {
-                      text: "开方",
+                      text: '开方',
                       onPress: () => {
                         this.selectPrescriptionTpl(prescription)
                       },
-                      style: { backgroundColor: "blue", color: "white" },
+                      style: { backgroundColor: 'blue', color: 'white' },
                     },
                   ]}
-                  onOpen={() => {}}
-                  onClose={() => {}}>
+                >
                   <View style={style.prescriptionItem}>
                     <View
                       style={[
@@ -215,7 +213,8 @@ export default class PrescriptionTplList extends Component<
                         global.flex,
                         global.alignItemsCenter,
                         global.justifyContentSpaceBetween,
-                      ]}>
+                      ]}
+                    >
                       <Text style={[style.prescriptionTitle, global.fontSize14]} numberOfLines={1}>
                         {prescription.name}
                       </Text>

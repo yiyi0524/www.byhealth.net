@@ -1,5 +1,5 @@
-import AsyncStorage from "@react-native-community/async-storage"
-import moment from "moment"
+import AsyncStorage from '@react-native-community/async-storage'
+import moment from 'moment'
 const ALL_TIME = -1
 const setSingle = Symbol()
 const getSingle = Symbol()
@@ -7,12 +7,10 @@ const setMulti = Symbol()
 const getMulti = Symbol()
 export default {
   set: async function(k: string, v: any, expire = ALL_TIME) {
-    return typeof arguments[0] === "string"
-      ? await this[setSingle](k, v, expire)
-      : await this[setMulti](k)
+    return typeof arguments[0] === 'string' ? this[setSingle](k, v, expire) : this[setMulti](k)
   },
   get: async function(k: string) {
-    return typeof k === "string" ? await this[getSingle](k) : await this[getMulti](k)
+    return typeof k === 'string' ? this[getSingle](k) : this[getMulti](k)
   },
   [setSingle]: async function(k: string, v: any, expire = ALL_TIME) {
     const data = {
@@ -22,11 +20,11 @@ export default {
     if (data.expire !== ALL_TIME) {
       // @ts-ignore
       data.expire = moment()
-        .add(data.expire, "s")
-        .format("YYYY-MM-DD HH:mm:ss")
+        .add(data.expire, 's')
+        .format('YYYY-MM-DD HH:mm:ss')
     }
 
-    return await AsyncStorage.setItem(k, JSON.stringify(data))
+    return AsyncStorage.setItem(k, JSON.stringify(data))
   },
   [getSingle]: async function(k: string) {
     let data, realData, now
@@ -62,12 +60,12 @@ export default {
       }
       if (data.expire !== ALL_TIME) {
         data.expire = moment()
-          .add(data.expire, "s")
-          .format("YYYY-MM-DD HH:mm:ss")
+          .add(data.expire, 's')
+          .format('YYYY-MM-DD HH:mm:ss')
       }
       dataArr.push([k, JSON.stringify(data)])
     }
-    return await AsyncStorage.multiSet(dataArr)
+    return AsyncStorage.multiSet(dataArr)
   },
   [getMulti]: async function(arr: any) {
     let dataArr = []
@@ -92,12 +90,12 @@ export default {
     return (await this.get(k)) !== null
   },
   remove: async function(k: string) {
-    return await AsyncStorage.removeItem(k)
+    return AsyncStorage.removeItem(k)
   },
   clear: async function() {
-    return await AsyncStorage.clear()
+    return AsyncStorage.clear()
   },
   getAllKeys: async function() {
-    return await AsyncStorage.getAllKeys()
+    return AsyncStorage.getAllKeys()
   },
 }

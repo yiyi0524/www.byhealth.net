@@ -1,15 +1,15 @@
-import * as userAction from "@/redux/actions/user"
-import { AppState } from "@/redux/stores/store"
-import pathMap from "@/routes/pathMap"
-import api from "@/services/api"
-import doctor from "@/services/doctor"
-import hospital from "@/services/hospital"
-import { TYPE } from "@/utils/constant"
-import { Icon, InputItem, Picker, Toast } from "@ant-design/react-native"
-import sColor from "@styles/color"
-import gImg from "@utils/img"
-import gStyle from "@utils/style"
-import React, { Component } from "react"
+import * as userAction from '@/redux/actions/user'
+import { AppState } from '@/redux/stores/store'
+import pathMap from '@/routes/pathMap'
+import api from '@/services/api'
+import doctor from '@/services/doctor'
+import hospital from '@/services/hospital'
+import { TYPE } from '@/utils/constant'
+import { Icon, InputItem, Picker, Toast } from '@ant-design/react-native'
+import sColor from '@styles/color'
+import gImg from '@utils/img'
+import gStyle from '@utils/style'
+import React, { Component } from 'react'
 import {
   DeviceEventEmitter,
   Image,
@@ -19,10 +19,10 @@ import {
   Text,
   TouchableOpacity,
   View,
-} from "react-native"
-import { NavigationScreenProp } from "react-navigation"
-import { connect } from "react-redux"
-import { Dispatch } from "redux"
+} from 'react-native'
+import { StackNavigationProp } from '@react-navigation/stack'
+import { connect } from 'react-redux'
+import { Dispatch } from 'redux'
 const style = gStyle.index.EditSittingHospital
 const global = gStyle.global
 interface NavParams {
@@ -40,7 +40,7 @@ interface hospital {
   hidden: boolean
 }
 interface Props {
-  navigation: NavigationScreenProp<State>
+  navigation: StackNavigationProp<any>
 }
 interface State {
   hasLoad: boolean
@@ -72,20 +72,13 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
     },
   }
 }
-@connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)
+@connect(mapStateToProps, mapDispatchToProps)
 export default class DiagnosisSettings extends Component<
   Props & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
   State
 > {
-  static navigationOptions = ({
-    navigation,
-  }: {
-    navigation: NavigationScreenProp<State, NavParams>
-  }) => ({
-    title: "医疗机构信息",
+  static navigationOptions = ({ navigation }: { navigation: NavigationScreenProp<State, NavParams> }) => ({
+    title: '医疗机构信息',
     headerStyle: {
       backgroundColor: sColor.white,
       height: 50,
@@ -97,16 +90,17 @@ export default class DiagnosisSettings extends Component<
     headerTintColor: sColor.color333,
     headerTitleStyle: {
       flex: 1,
-      alignItems: "center",
-      justifyContent: "center",
+      alignItems: 'center',
+      justifyContent: 'center',
       fontSize: 14,
-      textAlign: "center",
+      textAlign: 'center',
     },
     headerRight: (
       <TouchableOpacity
         onPress={() => {
           navigation.state.params!.navigatePress()
-        }}>
+        }}
+      >
         <Text style={[style.headerRight, global.fontSize14]}>保存</Text>
       </TouchableOpacity>
     ),
@@ -120,10 +114,10 @@ export default class DiagnosisSettings extends Component<
       hasLoad: false,
       refreshing: false,
       isSelectHospital: false,
-      sittingHospitalId: this.props.navigation.getParam("id"),
+      sittingHospitalId: this.props.navigation.getParam('id'),
       hospitalId: 0,
-      hospitalName: "",
-      detail: "",
+      hospitalName: '',
+      detail: '',
       page: -1,
       limit: -1,
       filter: {},
@@ -199,15 +193,15 @@ export default class DiagnosisSettings extends Component<
   editSittingHospital = async () => {
     try {
       if (this.state.cityInfo.length === 0) {
-        return Toast.fail("请选择地区", 3)
+        return Toast.fail('请选择地区', 3)
       }
-      if (this.state.hospitalName === "") {
+      if (this.state.hospitalName === '') {
         if (this.state.hospitalId === 0) {
-          return Toast.fail("请输入医疗机构名称", 3)
+          return Toast.fail('请输入医疗机构名称', 3)
         }
       }
-      if (this.state.detail === "") {
-        return Toast.fail("请输入您的地址", 3)
+      if (this.state.detail === '') {
+        return Toast.fail('请输入您的地址', 3)
       }
       doctor
         .editSittingHospital({
@@ -218,14 +212,14 @@ export default class DiagnosisSettings extends Component<
           detail: this.state.detail,
         })
         .then(() => {
-          Toast.success("修改成功", 2)
-          DeviceEventEmitter.emit(pathMap.SittingHospital + "Reload", null)
-          DeviceEventEmitter.emit(pathMap.SittingHospitalList + "Reload", null)
-          DeviceEventEmitter.emit(pathMap.Calendar + "Reload", null)
+          Toast.success('修改成功', 2)
+          DeviceEventEmitter.emit(pathMap.SittingHospital + 'Reload', null)
+          DeviceEventEmitter.emit(pathMap.SittingHospitalList + 'Reload', null)
+          DeviceEventEmitter.emit(pathMap.Calendar + 'Reload', null)
           this.props.navigation.goBack()
         })
     } catch (err) {
-      Toast.fail("修改失败, 错误信息: " + err.msg, 3)
+      Toast.fail('修改失败, 错误信息: ' + err.msg, 3)
       console.log(err)
     }
   }
@@ -236,7 +230,7 @@ export default class DiagnosisSettings extends Component<
         this.setState({ refreshing: false })
       })
       .catch(err => {
-        Toast.fail("刷新失败,错误信息: " + err.msg)
+        Toast.fail('刷新失败,错误信息: ' + err.msg)
       })
   }
   chooseCityId = async (cityInfo: any) => {
@@ -261,7 +255,7 @@ export default class DiagnosisSettings extends Component<
       }
       this.setState({
         hospitalList,
-        hospitalName: "",
+        hospitalName: '',
         hospitalId: 0,
       })
     } catch (err) {
@@ -281,11 +275,10 @@ export default class DiagnosisSettings extends Component<
     return (
       <>
         <ScrollView
-          keyboardShouldPersistTaps="always"
+          keyboardShouldPersistTaps='always'
           style={style.main}
-          refreshControl={
-            <RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh} />
-          }>
+          refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh} />}
+        >
           <View style={style.list}>
             <View style={style.item}>
               <Text style={[style.title, global.fontSize14]}>地区信息</Text>
@@ -294,15 +287,16 @@ export default class DiagnosisSettings extends Component<
                   data={this.state.region}
                   cols={3}
                   value={this.state.cityInfo}
-                  onChange={val => this.chooseCityId(val)}>
+                  onChange={val => this.chooseCityId(val)}
+                >
                   <TouchableOpacity>
                     <View style={[global.flex, global.alignItemsCenter]}>
                       <Text style={[style.pickerItem, global.fontStyle, global.fontSize14]}>
                         {this.state.cityInfo.length === 0
-                          ? "请选择"
+                          ? '请选择'
                           : this.state.regionCidMapAreaName[this.state.cityInfo[2]]}
                       </Text>
-                      <Icon name="right" style={[style.pickerIcon, global.fontSize16]} />
+                      <Icon name='right' style={[style.pickerIcon, global.fontSize16]} />
                     </View>
                   </TouchableOpacity>
                 </Picker>
@@ -314,18 +308,18 @@ export default class DiagnosisSettings extends Component<
                 style={style.input}
                 onPress={() => {
                   if (this.state.cityInfo.length === 0) {
-                    return Toast.info("请选择地区", 2)
-                  } else {
-                    this.setState({
-                      isSelectHospital: true,
-                    })
+                    return Toast.info('请选择地区', 2)
                   }
-                }}>
+                  this.setState({
+                    isSelectHospital: true,
+                  })
+                }}
+              >
                 <View style={[global.flex, global.alignItemsCenter]}>
                   <Text style={[style.name, global.fontSize14]}>
-                    {this.state.hospitalName ? this.state.hospitalName : "请输入医疗机构名称"}
+                    {this.state.hospitalName ? this.state.hospitalName : '请输入医疗机构名称'}
                   </Text>
-                  <Icon name="right" style={[style.pickerIcon, global.fontSize14]} />
+                  <Icon name='right' style={[style.pickerIcon, global.fontSize14]} />
                 </View>
               </TouchableOpacity>
             </View>
@@ -343,8 +337,8 @@ export default class DiagnosisSettings extends Component<
                       detail,
                     })
                   }}
-                  extra={<Icon name="right" style={[style.icon, global.fontSize14]} />}
-                  placeholder="请输入您的地址"
+                  extra={<Icon name='right' style={[style.icon, global.fontSize14]} />}
+                  placeholder='请输入您的地址'
                 />
               </View>
             </View>
@@ -355,10 +349,11 @@ export default class DiagnosisSettings extends Component<
             onPress={() => {
               this.setState({
                 isSelectHospital: false,
-                hospitalName: "",
+                hospitalName: '',
                 hospitalId: 0,
               })
-            }}>
+            }}
+          >
             <Text style={[style.close, global.fontSize14]}>关闭</Text>
           </TouchableOpacity>
           <ScrollView style={style.hospitalCenter}>
@@ -366,14 +361,15 @@ export default class DiagnosisSettings extends Component<
               style={style.search}
               last
               value={this.state.hospitalName}
-              placeholder="请输入医疗机构名称"
-              extra={<Icon name="search" />}
+              placeholder='请输入医疗机构名称'
+              extra={<Icon name='search' />}
               onChange={hospitalName => {
                 this.setState({
                   hospitalName,
                 })
                 let hospitalList = this.state.hospitalList
-                if (hospitalName !== "") {
+                if (hospitalName !== '') {
+                  // eslint-disable-next-line no-shadow
                   for (let hospital of hospitalList) {
                     hospital.hidden = hospital.name.indexOf(hospitalName) < 0
                   }
@@ -389,29 +385,20 @@ export default class DiagnosisSettings extends Component<
               }}
             />
             <TouchableOpacity
-              style={[this.state.hospitalName !== "" ? null : global.hidden]}
+              style={[this.state.hospitalName !== '' ? null : global.hidden]}
               onPress={() => {
-                if (this.state.hospitalName === "") {
+                if (this.state.hospitalName === '') {
                   return
                 }
                 this.setState({
                   isSelectHospital: false,
                   hospitalId: 0,
                 })
-              }}>
-              <View
-                style={[
-                  style.addHospital,
-                  global.flex,
-                  global.alignItemsCenter,
-                  global.justifyContentCenter,
-                ]}>
-                <Text style={[style.addHospitalBtn, global.fontSize14, global.fontStyle]}>
-                  添加
-                </Text>
-                <Text
-                  numberOfLines={1}
-                  style={[style.addHospitalName, global.fontSize14, global.fontStyle]}>
+              }}
+            >
+              <View style={[style.addHospital, global.flex, global.alignItemsCenter, global.justifyContentCenter]}>
+                <Text style={[style.addHospitalBtn, global.fontSize14, global.fontStyle]}>添加</Text>
+                <Text numberOfLines={1} style={[style.addHospitalName, global.fontSize14, global.fontStyle]}>
                   {this.state.hospitalName}
                 </Text>
               </View>
@@ -430,7 +417,8 @@ export default class DiagnosisSettings extends Component<
                         isSelectHospital: false,
                       })
                     }}
-                    key={k}>
+                    key={k}
+                  >
                     <Text style={[style.hospitalItem, global.fontSize14]}>{v.name}</Text>
                   </TouchableOpacity>
                 )

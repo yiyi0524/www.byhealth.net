@@ -1,18 +1,18 @@
-import global from "@/assets/styles/global"
-import { PrescriptionDrugCategory } from "@/pages/advisory/SquareRoot"
-import pathMap from "@/routes/pathMap"
-import { windowHeight, windowWidth } from "@/services/api"
-import { Icon } from "@ant-design/react-native"
-import sColor from "@styles/color"
-import React, { Component } from "react"
-import { PixelRatio, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native"
-import { NavigationScreenProp } from "react-navigation"
+import global from '@/assets/styles/global'
+import { PrescriptionDrugCategory } from '@/pages/advisory/SquareRoot'
+import pathMap from '@/routes/pathMap'
+import { windowWidth } from '@/services/api'
+import { Icon } from '@ant-design/react-native'
+import sColor from '@styles/color'
+import React, { Component } from 'react'
+import { PixelRatio, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { StackNavigationProp } from '@react-navigation/stack'
 export interface CategoryItem {
   id: number
   name: string
 }
 interface Props {
-  navigation: NavigationScreenProp<State>
+  navigation: StackNavigationProp<any>
   categoryList: CategoryItem[]
   activeId: number
   isInSession?: boolean
@@ -36,7 +36,7 @@ export default class Pharmacy extends Component<Props, State> {
     return (
       <View style={styles.main}>
         <TouchableOpacity onPress={this.props.closeChooseCategory}>
-          <Icon style={styles.close} name="close" />
+          <Icon style={styles.close} name='close' />
         </TouchableOpacity>
         <Text style={[styles.theme, global.fontSize14]}>请选择药品分类</Text>
         <ScrollView>
@@ -65,7 +65,8 @@ export default class Pharmacy extends Component<Props, State> {
                         prescriptionDrugCategoryList,
                       })
                       await this.props.closeChooseCategory()
-                    }}>
+                    }}
+                  >
                     <Text style={[styles.title, global.fontSize14]} key={category.id}>
                       {category.name}
                     </Text>
@@ -73,7 +74,7 @@ export default class Pharmacy extends Component<Props, State> {
                 )
               })}
               <View style={styles.item}>
-                <Text style={[styles.title, global.fontSize14]}></Text>
+                <Text style={[styles.title, global.fontSize14]} />
               </View>
             </View>
           </View>
@@ -100,7 +101,7 @@ const styles = StyleSheet.create({
   theme: {
     height: 50,
     lineHeight: 50,
-    textAlign: "center",
+    textAlign: 'center',
     color: sColor.color333,
     borderBottomWidth: 1 / PixelRatio.get(),
     borderBottomColor: sColor.colorDdd,
@@ -117,15 +118,15 @@ const styles = StyleSheet.create({
   },
   item: {
     height: 50,
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
     borderBottomWidth: 1 / PixelRatio.get(),
     borderBottomColor: sColor.colorEee,
   },
   itemActive: {
     height: 50,
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
     backgroundColor: sColor.white,
   },
   title: {
