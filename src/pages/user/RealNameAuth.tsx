@@ -428,9 +428,13 @@ export default class RealNameAuth extends Component<
     if (this.state.idCardNo === '') {
       return Toast.fail('请输入身份证号码', 3)
     }
-    if (!api.idCardIDChecked(this.state.idCardNo)) {
-      return Toast.fail('身份证格式不正确', 3)
+    // eslint-disable-next-line prefer-named-capture-group
+    if (!/(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/.test(this.state.idCardNo)) {
+      Toast.fail('身份证号码位数不正确', 3)
     }
+    // if (!api.idCardIDChecked(this.state.idCardNo)) {
+    //   return Toast.fail('身份证格式不正确', 3)
+    // }
     if (this.state.gender[0] === 0) {
       return Toast.fail('请选择性别', 3)
     }
@@ -718,8 +722,15 @@ export default class RealNameAuth extends Component<
                     this.setState({ idCardNo })
                   }}
                   onBlur={(idCardNo: any) => {
-                    if (!api.idCardIDChecked(idCardNo)) {
-                      Toast.fail('身份证不正确', 3)
+                    if (!idCardNo) {
+                      return false
+                    }
+                    // if (!api.idCardIDChecked(idCardNo)) {
+                    //   Toast.fail('身份证不正确', 3)
+                    // }
+                    // eslint-disable-next-line prefer-named-capture-group
+                    if (!/(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/.test(idCardNo)) {
+                      Toast.fail('身份证号码位数不正确', 3)
                     }
                   }}
                 />

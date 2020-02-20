@@ -140,6 +140,10 @@ export default class Account extends Component<
     if (idCardNo === '') {
       return Toast.fail('请填写身份证号码', 3)
     }
+    // eslint-disable-next-line prefer-named-capture-group
+    if (!/(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/.test(idCardNo)) {
+      Toast.fail('身份证号码位数不正确', 3)
+    }
     // if (!api.idCardIDChecked(idCardNo)) {
     //   Toast.fail('身份证号码不正确', 3)
     // }
@@ -217,8 +221,15 @@ export default class Account extends Component<
                     })
                   }}
                   onBlur={(idCardNo: any) => {
-                    if (!api.idCardIDChecked(idCardNo)) {
-                      Toast.fail('身份证不正确', 3)
+                    if (!idCardNo) {
+                      return false
+                    }
+                    // if (!api.idCardIDChecked(idCardNo)) {
+                    //   Toast.fail('身份证不正确', 3)
+                    // }
+                    // eslint-disable-next-line prefer-named-capture-group
+                    if (!/(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/.test(idCardNo)) {
+                      Toast.fail('身份证号码位数不正确', 3)
                     }
                   }}
                   placeholder='持卡人身份证号码'
@@ -334,8 +345,15 @@ export default class Account extends Component<
                     })
                   }}
                   onBlur={(idCardNo: any) => {
-                    if (!api.idCardIDChecked(idCardNo)) {
-                      Toast.fail('身份证不正确', 3)
+                    if (!idCardNo) {
+                      return false
+                    }
+                    // if (!api.idCardIDChecked(idCardNo)) {
+                    //   Toast.fail('身份证不正确', 3)
+                    // }
+                    // eslint-disable-next-line prefer-named-capture-group
+                    if (!/(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/.test(idCardNo)) {
+                      Toast.fail('身份证号码位数不正确', 3)
                     }
                   }}
                   placeholder='持卡人身份证号码'
