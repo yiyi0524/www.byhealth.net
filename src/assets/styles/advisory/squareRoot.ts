@@ -236,8 +236,16 @@ export default StyleSheet.create({
   dose: {
     height: 50,
   },
-  doseTitle: {
+  gram: {
+    marginTop: 5,
+    marginBottom: 8,
+  },
+  gramDesc: {
     color: sColor.color666,
+  },
+  doseTitle: {
+    color: sColor.color333,
+    fontSize: 14,
   },
   doseInputFather: {
     width: 100,

@@ -8,7 +8,7 @@ import { EXTERN_CHINESE_DRUG_ID, ORAL_CHINESE_DRUG_ID, TOPICAL_CHINESE_DRUG_ID }
 import { getLastPrescriptionInfo, getPatientInfo } from '@/services/patient'
 import { getPersonalInfo } from '@/services/user'
 import { getPicCdnUrl } from '@/utils/utils'
-import { Icon, ImagePicker, InputItem, TextareaItem, Toast } from '@ant-design/react-native'
+import { Icon, ImagePicker, InputItem, TextareaItem, Toast, Picker, List } from '@ant-design/react-native'
 import hospital from '@api/hospital'
 import DashLine from '@components/DashLine'
 import Pharmacy, { CategoryItem } from '@components/Pharmacy'
@@ -93,6 +93,9 @@ interface State {
   }
   prescriptionDrugCategoryList: PrescriptionDrugCategory[]
   patientName: string
+  yearAge: number
+  monthAge: number
+  gender: number
 }
 /**
  * 处方中某个药品分类的药品集合
@@ -296,6 +299,9 @@ export default class SquareRoot extends Component<
       advice: '',
       prescriptionDrugCategoryList,
       patientName: '',
+      gender: 0,
+      monthAge: 0,
+      yearAge: 0,
     }
   }
   async componentDidMount() {
@@ -525,6 +531,9 @@ export default class SquareRoot extends Component<
       drugServiceMoney,
       mode,
       phone,
+      gender,
+      monthAge,
+      yearAge,
     } = this.state
     let drugMoney = 0
     for (let prescriptionDrugCategory of prescriptionDrugCategoryList) {
@@ -599,22 +608,78 @@ export default class SquareRoot extends Component<
                 )}
               </View>
               {(mode === 'wx' || mode === 'phone') && (
-                <View style={[style.diagnosisItem, global.flex, global.alignItemsCenter]}>
-                  <Text style={[style.diagnosisItemTitle, global.fontSize14]}>姓名</Text>
-                  <View style={style.diagnosisItemInput}>
-                    <InputItem
-                      style={style.input}
-                      value={this.state.patientName}
-                      onChange={editPatientName => {
-                        if (editPatientName || editPatientName === '') {
-                          this.setState({
-                            patientName: editPatientName,
-                          })
-                        }
-                      }}
-                    />
+                <>
+                  <View style={[style.diagnosisItem, global.flex, global.alignItemsCenter]}>
+                    <Text style={[style.diagnosisItemTitle, global.fontSize14]}>姓名</Text>
+                    <View style={style.diagnosisItemInput}>
+                      <InputItem
+                        style={style.input}
+                        value={this.state.patientName}
+                        onChange={editPatientName => {
+                          if (editPatientName || editPatientName === '') {
+                            this.setState({
+                              patientName: editPatientName,
+                            })
+                          }
+                        }}
+                      />
+                    </View>
                   </View>
-                </View>
+                  <View style={[style.diagnosisItem, global.flex, global.alignItemsCenter]}>
+                    <Text style={[style.diagnosisItemTitle, global.fontSize14]}>年龄</Text>
+                    <View style={style.diagnosisItemInput}>
+                      <InputItem
+                        style={style.input}
+                        value={String(yearAge)}
+                        onChange={val => {
+                          let age: number = parseInt(val)
+                          if (isNaN(age)) {
+                            age = 0
+                          }
+                          this.setState({
+                            yearAge: age,
+                          })
+                        }}
+                      />
+                      <Text>岁</Text>
+                    </View>
+                    <View style={style.diagnosisItemInput}>
+                      <InputItem
+                        style={style.input}
+                        value={String(monthAge)}
+                        onChange={val => {
+                          let age: number = parseInt(val)
+                          if (isNaN(age)) {
+                            age = 0
+                          }
+                          this.setState({
+                            monthAge: age,
+                          })
+                        }}
+                      />
+                      <Text>月</Text>
+                    </View>
+                  </View>
+                  <View style={[style.diagnosisItem, global.flex, global.alignItemsCenter]}>
+                    <Text style={[style.diagnosisItemTitle, global.fontSize14]}>性别</Text>
+                    <View style={style.diagnosisItemInput}>
+                      <Picker
+                        style={style.input}
+                        data={[
+                          { value: 0, label: '男' },
+                          { value: 0, label: '女' },
+                        ]}
+                        cols={1}
+                        value={[gender]}
+                        onChange={val => {
+                          this.setState({ gender: val ? (val[0] as number) : 0 })
+                        }}
+                      >
+                        <List.Item arrow='horizontal'>{gender === 0 ? '男' : '女'}</List.Item>
+                      </Picker>
+                    </View>
+                  </View>
+                </>
               )}
               {mode === 'wx' && (
                 <View style={[style.diagnosisItem, global.flex, global.alignItemsCenter]}>
@@ -687,17 +752,19 @@ export default class SquareRoot extends Component<
                   />
                 </View>
               </View>
-              <View style={style.diagnosisPic}>
-                <Text style={[style.diagnosisPicTitle, global.fontSize14]}>实体医疗机构病历</Text>
-                <View style={style.diagnosisItemImg}>
-                  <ImagePicker
-                    onChange={this.handleFileChange}
-                    files={this.state.medicalRecordPicList}
-                    // selectable={this.state.medicalRecordPicList.length < 9}
-                    selectable={false}
-                  />
+              {mode !== 'phone' && mode !== 'wx' && (
+                <View style={style.diagnosisPic}>
+                  <Text style={[style.diagnosisPicTitle, global.fontSize14]}>实体医疗机构病历</Text>
+                  <View style={style.diagnosisItemImg}>
+                    <ImagePicker
+                      onChange={this.handleFileChange}
+                      files={this.state.medicalRecordPicList}
+                      // selectable={this.state.medicalRecordPicList.length < 9}
+                      selectable={false}
+                    />
+                  </View>
                 </View>
-              </View>
+              )}
             </View>
             {/* 开方 */}
             <View style={style.diagnosis}>
@@ -730,6 +797,10 @@ export default class SquareRoot extends Component<
                   <Text style={[style.empty, global.fontSize14]}>暂无</Text>
                 ) : null}
                 {this.state.prescriptionDrugCategoryList.map((category, k) => {
+                  let gram = 0
+                  for (let item of category.drugList) {
+                    gram += item.count
+                  }
                   if (
                     category.id === ORAL_CHINESE_DRUG_ID ||
                     category.id === TOPICAL_CHINESE_DRUG_ID ||
@@ -744,7 +815,9 @@ export default class SquareRoot extends Component<
                           style.traditionalChineseMedicine,
                         ]}
                       >
-                        <Text style={[style.drug, global.fontSize16]}>{category.name}</Text>
+                        <Text style={[style.drug, global.fontSize16]}>
+                          {category.name} ({category.drugList.length}味)
+                        </Text>
                         <View style={[style.chooseDrugList, global.flex, global.alignItemsCenter, global.flexWrap]}>
                           {category.drugList.map((drugInfo, k1) => {
                             return (
@@ -758,6 +831,11 @@ export default class SquareRoot extends Component<
                               </View>
                             )
                           })}
+                        </View>
+                        <View style={[style.gram, global.flex, global.alignItemsCenter, global.justifyContentEnd]}>
+                          <Text style={style.gramDesc}>
+                            单剂 {gram} 克, 总计 {category.doseCount ? gram * category.doseCount : 0} 克
+                          </Text>
                         </View>
                         {/* 药剂和用法用量 */}
                         <View>
@@ -850,7 +928,9 @@ export default class SquareRoot extends Component<
                   /* 西药 */
                   return (
                     <View style={category.drugList.length !== 0 ? style.chooseCategoryItem : global.hidden} key={k}>
-                      <Text style={[style.drug, global.fontSize16]}>{category.name}</Text>
+                      <Text style={[style.drug, global.fontSize16]}>
+                        {category.name} ({category.drugList.length}味)
+                      </Text>
                       <View style={style.chooseDrugList}>
                         {category.drugList.map((drugInfo, k1) => {
                           return (
@@ -1088,6 +1168,7 @@ export default class SquareRoot extends Component<
   /**
    * 发送处方给用户
    */
+  // eslint-disable-next-line complexity
   sendPrescriptionToUser = () => {
     const {
       mode,
@@ -1102,14 +1183,12 @@ export default class SquareRoot extends Component<
       isSaveToTpl,
       tplName,
       patientName: name,
+      monthAge,
+      yearAge,
+      gender,
       // drugServiceMoney,
     } = this.state
-    // if (discrimination === "") {
-    //   return Toast.info("请输入辨病", 3)
-    // }
-    // if (syndromeDifferentiation === "") {
-    //   return Toast.info("请输入辨证", 3)
-    // }
+
     if (prescriptionDrugCategoryList.length === 0) {
       return Toast.info('请选择药材', 3)
     }
@@ -1146,10 +1225,21 @@ export default class SquareRoot extends Component<
       patientUid,
       syndromeDifferentiation,
       drugCategoryList: prescriptionDrugCategoryList,
+      gender,
+      monthAge,
+      yearAge,
     }
     if (mode === 'phone' || mode === 'wx') {
+      if (yearAge === 0) {
+        if (monthAge === 0) {
+          return Toast.info('请输入年龄', 3)
+        }
+      }
       args.phone = phone
       args.patientName = name
+      args.gender = gender
+      args.yearAge = yearAge
+      args.monthAge = monthAge
     }
     if (serviceMoney !== '') {
       args.serviceMoney = parseFloat(serviceMoney) * 100

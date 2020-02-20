@@ -385,6 +385,9 @@ export interface AddPrescriptionParam {
   syndromeDifferentiation: string
   advice: string
   drugCategoryList: PrescriptionDrugCategory[]
+  gender?: number
+  yearAge?: number
+  monthAge?: number
 }
 /**
  * 添加处方

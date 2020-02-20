@@ -140,9 +140,9 @@ export default class Account extends Component<
     if (idCardNo === '') {
       return Toast.fail('请填写身份证号码', 3)
     }
-    if (!api.idCardIDChecked(idCardNo)) {
-      Toast.fail('身份证号码不正确', 3)
-    }
+    // if (!api.idCardIDChecked(idCardNo)) {
+    //   Toast.fail('身份证号码不正确', 3)
+    // }
     if (bankName === '') {
       Toast.fail('请填写银行名称', 3)
     }
