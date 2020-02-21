@@ -65,7 +65,7 @@ import Test from '@pages/Test'
 import gImg from '@utils/img'
 import React from 'react'
 import { Image, StyleSheet, View } from 'react-native'
-import { createBottomTabNavigator, BottomTabNavigationProp } from '@react-navigation/bottom-tabs'
+import { createBottomTabNavigator, BottomTabNavigationOptions } from '@react-navigation/bottom-tabs'
 import { createStackNavigator } from '@react-navigation/stack'
 import pathMap from './pathMap'
 import AdvisoryTabbar from './AdvisoryTabbar'
@@ -98,14 +98,14 @@ const style = StyleSheet.create({
     justifyContent: 'center',
   },
 })
-const Tab = createBottomTabNavigator()
 type ParamList = {
   [key: string]: undefined
 }
+const Tab = createBottomTabNavigator<ParamList>()
+
 const bottomTabConf: {
   screens: {
-    // [key: string]: RouteConfig<ParamList, any, any>
-    [key: string]: BottomTabNavigationProp<ParamList, any>
+    [key: string]: RouteConfig<ParamList, any, BottomTabNavigationOptions>
   }
   conf: any
 } = {
