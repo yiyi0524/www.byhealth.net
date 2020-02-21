@@ -2,6 +2,7 @@ import global from '@/assets/styles/global'
 import DashLine from '@/components/DashLine'
 import * as wsAction from '@/redux/actions/ws'
 import { AppState } from '@/redux/stores/store'
+import { AllScreenParam } from '@/routes/bottomNav'
 import pathMap from '@/routes/pathMap'
 import api, { getRegion, getThumbUrl, uploadAudio, uploadImg, windowHeight } from '@/services/api'
 import { clearPatientUnreadMsgCount, closeInquiry, GENDER_ZH } from '@/services/doctor'
@@ -13,10 +14,11 @@ import userApi, { getUserWxInfo } from '@api/user'
 import wsMsgApi from '@api/wsMsg'
 import imgPickerOpt from '@config/imgPickerOpt'
 import { Msg } from '@pages/Ws'
+import { RouteProp } from '@react-navigation/native'
+import { StackNavigationProp } from '@react-navigation/stack'
 import sColor from '@styles/color'
 import Buff from '@utils/Buff'
 import gStyle from '@utils/style'
-import Hyperlink from 'react-native-hyperlink'
 import React, { Component } from 'react'
 import {
   AppState as RnAppState,
@@ -28,15 +30,15 @@ import {
   ImageSourcePropType,
   KeyboardAvoidingView,
   PermissionsAndroid,
-  PixelRatio,
   Platform,
   RefreshControl,
+  ScrollView,
   Text,
   View,
-  ScrollView,
 } from 'react-native'
 import { AudioRecorder, AudioUtils } from 'react-native-audio'
 import { TouchableOpacity } from 'react-native-gesture-handler'
+import Hyperlink from 'react-native-hyperlink'
 import ImageZoom from 'react-native-image-pan-zoom'
 import RnImagePicker from 'react-native-image-picker'
 import Permissions from 'react-native-permissions'
@@ -44,13 +46,13 @@ import Sound from 'react-native-sound'
 import { connect } from 'react-redux'
 import { Dispatch } from 'redux'
 import { Overwrite } from 'utility-types'
-import { StackNavigationProp } from '@react-navigation/stack'
+
 const style = gStyle.advisory.advisoryChat
 const audioPath = AudioUtils.DocumentDirectoryPath + '/tempAudio.aac'
 export type ChatMode = 'text' | 'audio'
 interface Props {
   navigation: StackNavigationProp<any>
-  route: any
+  route: RouteProp<AllScreenParam, 'AdvisoryChat'>
 }
 const emoji: string[] = [
   '😀',
@@ -314,57 +316,6 @@ export default class Chat extends Component<
   Props & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
   State
 > {
-  static navigationOptions = ({ navigation, route }: { navigation: StackNavigationProp<any>; route: any }) => {
-    let title = ''
-    let { groupId, groupName } = route.params
-    let isScanUserMode = false
-    if (route.params) {
-      title = route.params.patientName || groupName
-      isScanUserMode = route.params.mode === 'scanUser'
-    }
-    groupId = groupId || 0
-    return {
-      title,
-      headerStyle: {
-        backgroundColor: sColor.white,
-        height: 45,
-        elevation: 0,
-        borderBottomWidth: 1 / PixelRatio.get(),
-        borderBottomColor: sColor.colorEee,
-      },
-      headerTintColor: sColor.color333,
-      headerTitleStyle: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-        fontSize: 14,
-        textAlign: 'center',
-      },
-      headerRight: isScanUserMode ? null : groupId > 0 ? (
-        <TouchableOpacity
-          onPress={() => {
-            navigation.push(pathMap.GroupChatDetail, {
-              groupId,
-              groupName,
-            })
-          }}
-        >
-          <Icon style={[style.headerRight, global.fontSize18]} name='menu' />
-        </TouchableOpacity>
-      ) : (
-        <TouchableOpacity
-          onPress={() => {
-            navigation.push(pathMap.AdvisoryMedicalRecord, {
-              patientUid: route.params.patientUid,
-              consultationId: route.params.consultationId,
-            })
-          }}
-        >
-          <Text style={[style.headerRight, global.fontSize14, global.fontStyle]}>病历</Text>
-        </TouchableOpacity>
-      ),
-    }
-  }
   bottomNavList: bottomNavItem[] = [
     {
       icon: gImg.advisory.picture,
@@ -386,18 +337,18 @@ export default class Chat extends Component<
     this.state = this.getInitState()
   }
   getInitState = (): State => {
-    let mode = this.props.route.param.mode || 'common'
+    let mode = this.props.route.params.mode || 'common'
     let patientUid = 0
     let groupId = 0
     let groupName = ''
     let openid = ''
     if (mode === 'common') {
-      patientUid = this.props.route.param.patientUid
+      patientUid = this.props.route.params!.patientUid || 0
     } else if (mode === 'scanUser') {
-      openid = this.props.route.param.openid
+      openid = this.props.route.params!.openid || ''
     } else if (mode === 'chatGroup') {
-      groupId = this.props.route.param.groupId
-      groupName = this.props.route.param.groupName
+      groupId = this.props.route.params!.groupId || 0
+      groupName = this.props.route.params!.groupName || ''
     }
     return {
       openid,
@@ -2166,8 +2117,8 @@ export default class Chat extends Component<
     this.setState({
       sendMsg: '',
     })
-    if (this.myScroll && this.state.shouldScrollToEnd) {
-      this.myScroll.scrollToEnd()
+    if (this.myScroll.current && this.state.shouldScrollToEnd) {
+      this.myScroll.current.scrollToEnd()
       this.setState({
         shouldScrollToEnd: false,
       })

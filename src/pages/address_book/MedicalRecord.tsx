@@ -1,21 +1,21 @@
 import * as userAction from '@/redux/actions/user'
 import { AppState } from '@/redux/stores/store'
+import { AllScreenParam } from '@/routes/bottomNav'
 import { GENDER_ZH } from '@/services/doctor'
+import { EXTERN_CHINESE_DRUG_ID, ORAL_CHINESE_DRUG_ID, TOPICAL_CHINESE_DRUG_ID } from '@/services/drug'
 import hospital from '@/services/hospital'
 import patient, { medicalRecord } from '@/services/patient'
 import { getPicCdnUrl } from '@/utils/utils'
 import { Toast } from '@ant-design/react-native'
-import sColor from '@styles/color'
+import { RouteProp } from '@react-navigation/native'
+import { StackNavigationProp } from '@react-navigation/stack'
 import gImg from '@utils/img'
 import gStyle from '@utils/style'
 import moment from 'moment'
 import React, { Component } from 'react'
-import { Image, PixelRatio, RefreshControl, ScrollView, Text, View } from 'react-native'
-import { TouchableOpacity } from 'react-native-gesture-handler'
-import { StackNavigationProp } from '@react-navigation/stack'
+import { Image, RefreshControl, ScrollView, Text, View } from 'react-native'
 import { connect } from 'react-redux'
 import { Dispatch } from 'redux'
-import { ORAL_CHINESE_DRUG_ID, EXTERN_CHINESE_DRUG_ID, TOPICAL_CHINESE_DRUG_ID } from '@/services/drug'
 const style = gStyle.addressBook.MedicalRecord
 const global = gStyle.global
 
@@ -45,6 +45,7 @@ interface drugCategory {
 }
 interface Props {
   navigation: StackNavigationProp<any>
+  route: RouteProp<AllScreenParam, 'MedicalRecord'>
 }
 interface State {
   hasLoad: boolean
@@ -61,26 +62,6 @@ export default class InquirySheet extends Component<
   Props & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
   State
 > {
-  static navigationOptions = () => ({
-    title: '查看病历',
-    headerStyle: {
-      backgroundColor: sColor.white,
-      height: 50,
-      elevation: 0,
-      color: sColor.mainBlack,
-      borderBottomWidth: 1 / PixelRatio.get(),
-      borderBottomColor: sColor.colorEee,
-    },
-    headerTintColor: sColor.color333,
-    headerTitleStyle: {
-      flex: 1,
-      alignItems: 'center',
-      justifyContent: 'center',
-      fontSize: 14,
-      textAlign: 'center',
-    },
-    headerRight: <TouchableOpacity />,
-  })
   constructor(props: any) {
     super(props)
     this.state = this.getInitState()
@@ -89,8 +70,8 @@ export default class InquirySheet extends Component<
     return {
       hasLoad: false,
       refreshing: false,
-      prescriptionId: this.props.navigation.getParam('prescriptionId') || 0,
-      patientUid: this.props.navigation.getParam('patientUid') || 0,
+      prescriptionId: this.props.route.params.prescriptionId,
+      patientUid: this.props.route.params.patientUid,
       detail: {
         doctor: {
           name: '',

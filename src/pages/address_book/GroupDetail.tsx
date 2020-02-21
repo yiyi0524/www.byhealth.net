@@ -1,15 +1,16 @@
 import * as userAction from '@/redux/actions/user'
 import { AppState } from '@/redux/stores/store'
+import { AllScreenParam } from '@/routes/bottomNav'
 import pathMap from '@/routes/pathMap'
 import { getPicCdnUrl } from '@/utils/utils'
 import { Toast } from '@ant-design/react-native'
 import doctor, { GENDER } from '@api/doctor'
-import sColor from '@styles/color'
+import { RouteProp } from '@react-navigation/native'
+import { StackNavigationProp } from '@react-navigation/stack'
 import gImg from '@utils/img'
 import gStyle from '@utils/style'
 import React, { Component } from 'react'
-import { Image, PixelRatio, RefreshControl, ScrollView, Text, TouchableOpacity, View } from 'react-native'
-import { StackNavigationProp } from '@react-navigation/stack'
+import { Image, RefreshControl, ScrollView, Text, TouchableOpacity, View } from 'react-native'
 import { connect } from 'react-redux'
 import { Dispatch } from 'redux'
 import { Picture } from '../advisory/Chat'
@@ -17,6 +18,7 @@ const style = gStyle.addressBook.AddressBookGroupDetail
 const global = gStyle.global
 interface Props {
   navigation: StackNavigationProp<any>
+  route: RouteProp<AllScreenParam, 'AddressBookGroupDetail'>
 }
 export interface patientItem {
   id?: number
@@ -56,36 +58,6 @@ export default class Index extends Component<
   Props & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
   State
 > {
-  static navigationOptions = ({ navigation }: { navigation: StackNavigationProp<any> }) => ({
-    title: navigation.state.params!.title,
-    headerStyle: {
-      backgroundColor: sColor.white,
-      height: 50,
-      elevation: 0,
-      color: sColor.mainBlack,
-      borderBottomWidth: 1 / PixelRatio.get(),
-      borderBottomColor: sColor.colorEee,
-    },
-    headerTintColor: sColor.color333,
-    headerTitleStyle: {
-      flex: 1,
-      alignItems: 'center',
-      justifyContent: 'center',
-      fontSize: 14,
-      textAlign: 'center',
-    },
-    headerRight: (
-      <TouchableOpacity
-        onPress={() => {
-          // navigation.push(pathMap.AddressBookGroupManage, {
-          //   id: navigation.state.params.id
-          // });
-        }}
-      >
-        <Text style={[style.headerTitleLeft, global.fontSize14, global.fontStyle]}>管理</Text>
-      </TouchableOpacity>
-    ),
-  })
   constructor(props: any) {
     super(props)
     this.state = this.getInitState()
@@ -105,7 +77,7 @@ export default class Index extends Component<
     this.init()
   }
   init = async () => {
-    let groupId = this.props.navigation.getParam('id')
+    let groupId = this.props.route.params.id
     this.setState({
       groupId,
     })

@@ -23,10 +23,14 @@ import {
 import { connect } from 'react-redux'
 import { Dispatch } from 'redux'
 import { Assign } from 'utility-types'
+import { RouteProp } from '@react-navigation/native'
+import { StackNavigationProp } from '@react-navigation/stack'
+import { AllScreenParam } from '@/routes/bottomNav'
 const style = gStyle.addressBook.AddressBookIndex
 const global = gStyle.global
 interface Props {
-  navigation: any
+  navigation: StackNavigationProp<any>
+  route: RouteProp<AllScreenParam, 'AddressBookIndex'>
 }
 export interface communicationItem {
   id: number
@@ -66,10 +70,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
   }
 }
 //@ts-ignore
-@connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)
+@connect(mapStateToProps, mapDispatchToProps)
 export default class Index extends Component<
   Props & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
   State
@@ -89,9 +90,7 @@ export default class Index extends Component<
     }
   }
   componentDidMount() {
-    this.subscription = DeviceEventEmitter.addListener(pathMap.AddressBookIndex + 'Reload', () => {
-      this.init()
-    })
+    this.subscription = DeviceEventEmitter.addListener(pathMap.AddressBookIndex + 'Reload', this.init)
     this.init()
   }
   componentWillUnmount() {
@@ -122,11 +121,11 @@ export default class Index extends Component<
   }
   onRefresh = () => {
     this.setState({ refreshing: true })
-    Promise.all([this.init(), new Promise(s => setTimeout(s, 500))]).
-      then(_ => {
+    Promise.all([this.init(), new Promise(s => setTimeout(s, 500))])
+      .then(_ => {
         this.setState({ refreshing: false })
-      }).
-      catch(err => {
+      })
+      .catch(err => {
         Toast.fail('刷新失败,错误信息: ' + err.msg)
       })
   }
@@ -144,7 +143,7 @@ export default class Index extends Component<
     return (
       <>
         <ScrollView
-          keyboardShouldPersistTaps="always"
+          keyboardShouldPersistTaps='always'
           style={style.main}
           refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh} />}
         >
@@ -184,9 +183,9 @@ export default class Index extends Component<
                       communicationList,
                     })
                   }}
-                  placeholder="搜索患者"
+                  placeholder='搜索患者'
                 >
-                  <Icon name="search" style={[style.searchIcon, global.fontSize20]} />
+                  <Icon name='search' style={[style.searchIcon, global.fontSize20]} />
                 </InputItem>
               </View>
             </View>
@@ -207,7 +206,7 @@ export default class Index extends Component<
               </View>
               <Text style={[style.groupTitle, global.fontSize14, global.fontStyle]}>患者分组</Text>
             </View>
-            <Icon name="right" style={[style.groupIcon, global.fontSize14]} />
+            <Icon name='right' style={[style.groupIcon, global.fontSize14]} />
           </TouchableOpacity>
           <View style={style.separationModule} />
           <View style={style.communicationList}>

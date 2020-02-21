@@ -3,24 +3,26 @@ import { AppState } from '@/redux/stores/store'
 import pathMap from '@/routes/pathMap'
 import doctor from '@/services/doctor'
 import { Icon, Modal, Toast } from '@ant-design/react-native'
-import sColor from '@styles/color'
+import { StackNavigationProp } from '@react-navigation/stack'
 import gImg from '@utils/img'
 import gStyle from '@utils/style'
 import React, { Component } from 'react'
 // prettier-ignore
-import { Image, PixelRatio, RefreshControl, ScrollView, Text, TouchableOpacity, View } from 'react-native';
-import { StackNavigationProp } from '@react-navigation/stack'
+import { Image, RefreshControl, ScrollView, Text, TouchableOpacity, View } from 'react-native'
 import { connect } from 'react-redux'
 import { Dispatch } from 'redux'
 import { Picture } from '../advisory/Chat'
+import { AllScreenParam } from '@routes/bottomNav'
+import { RouteProp } from '@react-navigation/native'
 const style = gStyle.addressBook.AddressBookGroup
 const global = gStyle.global
-interface NavParams {
+export interface NavParams {
   navigatePress: () => void
   mode: 'delete' | 'done'
 }
 interface Props {
   navigation: StackNavigationProp<any>
+  route: RouteProp<AllScreenParam, 'AddressBookGroup'>
 }
 export interface patientGroupItem {
   id: number
@@ -63,40 +65,6 @@ export default class Index extends Component<
   Props & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
   State
 > {
-  static navigationOptions = ({ navigation }: { navigation: StackNavigationProp<any> }) => ({
-    title: '患者分组',
-    headerStyle: {
-      backgroundColor: sColor.white,
-      height: 50,
-      elevation: 0,
-      color: sColor.mainBlack,
-      borderBottomWidth: 1 / PixelRatio.get(),
-      borderBottomColor: sColor.colorEee,
-    },
-    headerTintColor: sColor.color333,
-    headerTitleStyle: {
-      flex: 1,
-      alignItems: 'center',
-      justifyContent: 'center',
-      fontSize: 14,
-      textAlign: 'center',
-    },
-    headerRight: (
-      <TouchableOpacity
-        onPress={() => {
-          let oriMode = navigation.getParam('mode')
-          navigation.setParams({
-            mode: oriMode === 'done' ? 'delete' : 'done',
-          })
-          navigation.state.params!.navigatePress()
-        }}
-      >
-        <Text style={[style.headerTitleLeft, global.fontSize14, global.fontStyle]}>
-          {navigation.state.params && navigation.state.params!.mode === 'done' ? '删除' : '完成'}
-        </Text>
-      </TouchableOpacity>
-    ),
-  })
   constructor(props: any) {
     super(props)
     this.state = this.getInitState()
@@ -111,7 +79,7 @@ export default class Index extends Component<
   }
   componentDidMount() {
     this.props.navigation.setParams({
-      mode: 'done',
+      // mode: 'done',
       navigatePress: this.changeMode,
     })
     this.init()

@@ -1,29 +1,18 @@
 import global from '@/assets/styles/global'
+import { AllScreenParam } from '@/routes/bottomNav'
 import pathMap from '@/routes/pathMap'
 import doctor, { QuickReply, QUICK_REPLY_TYPE, QUICK_REPLY_TYPE_ZH } from '@/services/doctor'
 import { Icon, TextareaItem, Toast } from '@ant-design/react-native'
-import sColor from '@styles/color'
+import { RouteProp } from '@react-navigation/native'
+import { StackNavigationProp } from '@react-navigation/stack'
 import gImg from '@utils/img'
 import gStyle from '@utils/style'
 import React, { Component } from 'react'
-import {
-  DeviceEventEmitter,
-  Image,
-  PixelRatio,
-  RefreshControl,
-  ScrollView,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native'
-import { StackNavigationProp } from '@react-navigation/stack'
+import { DeviceEventEmitter, Image, RefreshControl, ScrollView, Text, TouchableOpacity, View } from 'react-native'
 const style = gStyle.advisory.QuickReply
-interface NavParams {
-  navigatePress: () => void
-  mode: 'delete' | 'done'
-}
 interface Props {
-  navigation: StackNavigationProp<any>
+  navigation: StackNavigationProp<AllScreenParam, 'QuickReply'>
+  route: RouteProp<AllScreenParam, 'QuickReply'>
   msg: string
 }
 interface State {
@@ -40,41 +29,6 @@ interface State {
 }
 
 export default class QuickReplyScreen extends Component<Props, State> {
-  static navigationOptions = ({ navigation }: { navigation: NavigationScreenProp<State, NavParams> }) => {
-    return {
-      title: '快捷回复',
-      headerStyle: {
-        backgroundColor: sColor.white,
-        height: 50,
-        elevation: 0,
-        borderBottomWidth: 1 / PixelRatio.get(),
-        borderBottomColor: sColor.colorEee,
-      },
-      headerTintColor: sColor.color333,
-      headerTitleStyle: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-        fontSize: 14,
-        textAlign: 'center',
-      },
-      headerRight: (
-        <TouchableOpacity
-          onPress={() => {
-            let oriMode = navigation.getParam('mode')
-            navigation.setParams({
-              mode: oriMode === 'done' ? 'delete' : 'done',
-            })
-            navigation.state.params!.navigatePress()
-          }}
-        >
-          <Text style={style.headerRight}>
-            {navigation.state.params && navigation.state.params!.mode === 'done' ? '编辑' : '完成'}
-          </Text>
-        </TouchableOpacity>
-      ),
-    }
-  }
   constructor(props: any) {
     super(props)
     this.state = this.getInitState()

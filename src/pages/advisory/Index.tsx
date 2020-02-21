@@ -22,7 +22,9 @@ import {
   View,
 } from 'react-native'
 import { StackNavigationProp } from '@react-navigation/stack'
+import { RouteProp } from '@react-navigation/native'
 import { connect } from 'react-redux'
+import { AllScreenParam } from '@/routes/bottomNav'
 import { Dispatch } from 'redux'
 import { Picture, MsgType } from './Chat'
 const style = gStyle.advisory.advisoryIndex
@@ -44,7 +46,8 @@ export interface ConsultationItem {
   avatar: Picture
 }
 interface Props {
-  navigation: StackNavigationProp<any>
+  navigation: StackNavigationProp<AllScreenParam, 'AdvisoryIndex'>
+  route: RouteProp<AllScreenParam, 'AdvisoryIndex'>
 }
 interface State {
   hasLoad: boolean
@@ -92,9 +95,7 @@ export default class Index extends Component<
   }
   componentDidMount() {
     this.init()
-    this.subscription = DeviceEventEmitter.addListener(pathMap.AdvisoryIndex + 'Reload', _ => {
-      this.init()
-    })
+    this.subscription = DeviceEventEmitter.addListener(pathMap.AdvisoryIndex + 'Reload', this.init)
     this.bgUpdateTimer = setInterval(this.bgUpdate, 5000)
   }
   componentWillUnmount() {
@@ -110,7 +111,7 @@ export default class Index extends Component<
     try {
       let isLogin = await api.isLogin()
       if (!isLogin) {
-        this.props.navigation.navigate(pathMap.Login)
+        this.props.navigation.navigate('Login')
         return
       }
       Buff.clearNotifications()
@@ -149,7 +150,7 @@ export default class Index extends Component<
     try {
       let isLogin = await api.isLogin()
       if (!isLogin) {
-        this.props.navigation.navigate(pathMap.Login)
+        this.props.navigation.navigate('Login')
         return
       }
       Buff.clearNotifications()
@@ -274,7 +275,8 @@ export default class Index extends Component<
                     globalStyle.alignItemsCenter,
                   ]}
                   onPress={() =>
-                    this.props.navigation.push(pathMap.AdvisoryChat, {
+                    this.props.navigation.push('AdvisoryChat', {
+                      mode: 'common',
                       patientUid: consultation.patientUid,
                       patientName: consultation.name,
                       consultationId: consultation.id,
@@ -423,7 +425,7 @@ export default class Index extends Component<
     )
   }
   chatWithWxScanUser = (openid: string, nick: string) => {
-    this.props.navigation.push(pathMap.AdvisoryChat, {
+    this.props.navigation.push('AdvisoryChat', {
       mode: 'scanUser',
       openid,
       patientName: nick,

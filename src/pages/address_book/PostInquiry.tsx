@@ -1,18 +1,20 @@
 import * as userAction from '@/redux/actions/user'
 import { AppState } from '@/redux/stores/store'
+import { AllScreenParam } from '@/routes/bottomNav'
 import consultation, { Msg } from '@/services/consultation'
 import { getPicCdnUrl } from '@/utils/utils'
 import { Toast } from '@ant-design/react-native'
 import TextAreaItem from '@ant-design/react-native/lib/textarea-item'
-import sColor from '@styles/color'
+import { RouteProp } from '@react-navigation/native'
+import { StackNavigationProp } from '@react-navigation/stack'
 import gImg from '@utils/img'
 import gStyle from '@utils/style'
 import React, { Component } from 'react'
-import { Image, KeyboardAvoidingView, PixelRatio, Platform, RefreshControl, ScrollView, Text, View } from 'react-native'
+import { Image, KeyboardAvoidingView, Platform, RefreshControl, ScrollView, Text, View } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
-import { StackNavigationProp } from '@react-navigation/stack'
 import { connect } from 'react-redux'
 import { Dispatch } from 'redux'
+
 const style = gStyle.addressBook.postInquiry
 const global = gStyle.global
 
@@ -32,6 +34,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
 }
 interface Props {
   navigation: StackNavigationProp<any>
+  route: RouteProp<AllScreenParam, 'PostInquiry'>
 }
 interface State {
   hasLoad: boolean
@@ -47,26 +50,6 @@ export default class PatientDetail extends Component<
   Props & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
   State
 > {
-  static navigationOptions = () => ({
-    title: '诊后咨询',
-    headerStyle: {
-      backgroundColor: sColor.white,
-      height: 50,
-      elevation: 0,
-      color: sColor.mainBlack,
-      borderBottomWidth: 1 / PixelRatio.get(),
-      borderBottomColor: sColor.colorEee,
-    },
-    headerTintColor: sColor.color333,
-    headerTitleStyle: {
-      flex: 1,
-      alignItems: 'center',
-      justifyContent: 'center',
-      fontSize: 14,
-      textAlign: 'center',
-    },
-    headerRight: <TouchableOpacity />,
-  })
   constructor(props: any) {
     super(props)
     this.state = this.getInitState()
@@ -76,7 +59,7 @@ export default class PatientDetail extends Component<
       hasLoad: false,
       refreshing: false,
       canSendMsg: true,
-      id: this.props.navigation.getParam('id') || 0,
+      id: this.props.route.params.id,
       msg: '',
       list: [],
     }
@@ -190,14 +173,7 @@ export default class PatientDetail extends Component<
                     if (isParent) {
                       return (
                         <View style={[global.flex, style.item]} key={k}>
-                          <TouchableOpacity
-                          // onPress={() =>
-                          //   this.props.navigation.push(pathMap.AdvisoryMedicalRecord, {
-                          //     patientUid: v.aa,
-                          //     consultationId: navigation.getParam("consultationId"),
-                          //   })
-                          // }
-                          >
+                          <TouchableOpacity>
                             <View style={style.avatarPar}>
                               <Image
                                 style={style.avatar}

@@ -1,26 +1,27 @@
 import Empty from '@/components/Empty'
 import * as userAction from '@/redux/actions/user'
 import { AppState } from '@/redux/stores/store'
+import { AllScreenParam } from '@/routes/bottomNav'
 import pathMap from '@/routes/pathMap'
 import doctor from '@/services/doctor'
-import { Toast, SwipeAction } from '@ant-design/react-native'
-import sColor from '@styles/color'
+import { getDrugCategoryList } from '@/services/hospital'
+import { SwipeAction, Toast } from '@ant-design/react-native'
+import { RouteProp } from '@react-navigation/native'
+import { StackNavigationProp } from '@react-navigation/stack'
 import gImg from '@utils/img'
 import gStyle from '@utils/style'
 import React, { Component } from 'react'
-import { DeviceEventEmitter, Image, PixelRatio, RefreshControl, Text, View } from 'react-native'
-import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler'
-import { StackNavigationProp } from '@react-navigation/stack'
+import { DeviceEventEmitter, Image, RefreshControl, Text, View } from 'react-native'
+import { ScrollView } from 'react-native-gesture-handler'
 import { connect } from 'react-redux'
 import { Dispatch } from 'redux'
-import { PrescriptionDrugInfo } from './SquareRoot'
-import { PrescriptionDrugCategory } from './SquareRoot'
-import { getDrugCategoryList } from '@/services/hospital'
 import { CategoryItem } from './DrugSelect'
+import { PrescriptionDrugCategory, PrescriptionDrugInfo } from './SquareRoot'
 const style = gStyle.advisory.SelectPrescriptionTplList
 const global = gStyle.global
 interface Props {
-  navigation: StackNavigationProp<any>
+  navigation: StackNavigationProp<AllScreenParam, 'PrescriptionTplList'>
+  route: RouteProp<AllScreenParam, 'PrescriptionTplList'>
 }
 interface State {
   hasLoad: boolean
@@ -58,27 +59,6 @@ export default class PrescriptionTplList extends Component<
   Props & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
   State
 > {
-  static navigationOptions = () => {
-    return {
-      title: '模板信息',
-      headerStyle: {
-        backgroundColor: sColor.white,
-        height: 45,
-        elevation: 0,
-        borderBottomWidth: 1 / PixelRatio.get(),
-        borderBottomColor: sColor.colorEee,
-      },
-      headerTintColor: sColor.color333,
-      headerTitleStyle: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-        fontSize: 14,
-        textAlign: 'center',
-      },
-      headerRight: <TouchableOpacity />,
-    }
-  }
   constructor(props: any) {
     super(props)
 

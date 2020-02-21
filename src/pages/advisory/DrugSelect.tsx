@@ -1,17 +1,18 @@
 import global from '@/assets/styles/global'
+import { AllScreenParam } from '@/routes/bottomNav'
 import pathMap from '@/routes/pathMap'
+import { listPopularDrug } from '@/services/drug'
 import hospital from '@/services/hospital'
 import { TYPE } from '@/utils/constant'
-import { Icon, InputItem, Toast, List } from '@ant-design/react-native'
-import sColor from '@styles/color'
+import { Icon, InputItem, List, Toast } from '@ant-design/react-native'
+import { RouteProp } from '@react-navigation/native'
+import { StackNavigationProp } from '@react-navigation/stack'
 import gImg from '@utils/img'
 import gStyle from '@utils/style'
 import React, { Component } from 'react'
 import {
-  DeviceEventEmitter,
   Image,
   KeyboardAvoidingView,
-  PixelRatio,
   Platform,
   RefreshControl,
   ScrollView,
@@ -19,24 +20,15 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native'
-import { StackNavigationProp } from '@react-navigation/stack'
 import { Drug, PrescriptionDrugCategory } from './SquareRoot'
-import { listPopularDrug } from '@/services/drug'
 const style = gStyle.advisory.DrugSelect
 export interface CategoryItem {
   id: number
   name: string
 }
 interface Props {
-  navigation: NavigationScreenProp<
-    State,
-    {
-      isInSession: boolean
-      categoryList: CategoryItem[]
-      activeId: number
-      prescriptionDrugCategoryList: PrescriptionDrugCategory[]
-    }
-  >
+  navigation: StackNavigationProp<any>
+  route: RouteProp<AllScreenParam, 'DrugSelect'>
 }
 interface State {
   hasLoad: boolean
@@ -54,108 +46,16 @@ interface State {
   popularDrugList: Drug[]
   search: string
 }
-// interface Params {
-//   activeId: number
-//   categoryList: CategoryItem[]
-//   activeDrugList: activeDrugItem[]
-//   chooseDrugList: (id: number, count: number) => void
-// }
 export default class DrugSelect extends Component<Props, State> {
   refs: any
-  static navigationOptions = ({
-    navigation,
-  }: {
-    navigation: NavigationScreenProp<
-      State,
-      {
-        isInSession?: boolean
-        categoryList: CategoryItem[]
-        activeId: number
-        prescriptionDrugCategoryList: PrescriptionDrugCategory[]
-      }
-    >
-  }) => {
-    let title = '选择药材'
-    // let params = navigation.state.params as Params
-    let { params } = navigation.state
-    if (!params) {
-      return
-    }
-    for (let v of params.categoryList) {
-      if (v.id === params.activeId) {
-        title = v.name
-      }
-    }
-    return {
-      title,
-      headerStyle: {
-        backgroundColor: sColor.white,
-        height: 45,
-        elevation: 0,
-        borderBottomWidth: 1 / PixelRatio.get(),
-        borderBottomColor: sColor.colorEee,
-      },
-      headerTintColor: sColor.color333,
-      headerTitleStyle: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-        fontSize: 14,
-        textAlign: 'center',
-      },
-      headerLeft: (
-        <TouchableOpacity
-          onPress={() => {
-            if (!params) {
-              return
-            }
-            let prescriptionDrugCategoryList = params.prescriptionDrugCategoryList
-            for (let drugCategory of prescriptionDrugCategoryList) {
-              for (let drug of drugCategory.drugList) {
-                if (drug.count <= 0) {
-                  return Toast.fail(`请填写${drug.detail.name}药品的数量`)
-                }
-              }
-            }
-            DeviceEventEmitter.emit(pathMap.SquareRoot + 'Reload', prescriptionDrugCategoryList)
-            DeviceEventEmitter.emit(pathMap.AddPrescriptionTpl + 'Reload', prescriptionDrugCategoryList)
-            navigation.goBack()
-          }}
-        >
-          <Icon style={[style.headerLeft, global.fontSize16]} name='left' />
-        </TouchableOpacity>
-      ),
-      headerRight: (
-        <TouchableOpacity
-          onPress={() => {
-            let prescriptionDrugCategoryList = navigation.state.params!.prescriptionDrugCategoryList
-            console.log(prescriptionDrugCategoryList)
-            for (let drugCategory of prescriptionDrugCategoryList) {
-              for (let drug of drugCategory.drugList) {
-                if (drug.count <= 0) {
-                  return Toast.fail(`请填写${drug.detail.name}药品的数量`, 2)
-                }
-              }
-            }
-            DeviceEventEmitter.emit(pathMap.SquareRoot + 'Reload', prescriptionDrugCategoryList)
-            DeviceEventEmitter.emit(pathMap.AddPrescriptionTpl + 'Reload', prescriptionDrugCategoryList)
-            DeviceEventEmitter.emit(pathMap.EditPrescriptionTpl + 'Reload', prescriptionDrugCategoryList)
-            navigation.goBack()
-          }}
-        >
-          <Text style={[global.fontSize16, { color: sColor.mainRed, paddingRight: 15 }]}>完成</Text>
-        </TouchableOpacity>
-      ),
-    }
-  }
   constructor(props: any) {
     super(props)
     this.state = this.getInitState(props)
   }
   getInitState = (props: Props): State => {
     let prescriptionDrugCategoryList: PrescriptionDrugCategory[] = []
-    if (props.navigation.state.params) {
-      prescriptionDrugCategoryList = props.navigation.state.params.prescriptionDrugCategoryList
+    if (props.route.params.prescriptionDrugCategoryList) {
+      prescriptionDrugCategoryList = props.route.params.prescriptionDrugCategoryList
     }
     return {
       hasLoad: false,
@@ -178,7 +78,7 @@ export default class DrugSelect extends Component<Props, State> {
     })
   }
   init = async () => {
-    let activeId = this.props.navigation.getParam('activeId')
+    let activeId = this.props.route.params.activeId
     let {
       data: { list: popularDrugList },
     } = await listPopularDrug({
@@ -235,7 +135,7 @@ export default class DrugSelect extends Component<Props, State> {
         },
         category: {
           condition: TYPE.eq,
-          val: this.props.navigation.state.params!.activeId || 0,
+          val: this.props.route.params.activeId,
         },
       }
       let matchDrugList = await this.getDrugList(-1, -1, filter)
@@ -257,8 +157,8 @@ export default class DrugSelect extends Component<Props, State> {
         </View>
       )
     }
-    const isInSession = this.props.navigation.state.params!.isInSession
-    const drugCategoryId = this.props.navigation.state.params!.activeId
+    const isInSession = this.props.route.params.isInSession
+    const drugCategoryId = this.props.route.params.activeId
     return (
       <KeyboardAvoidingView
         enabled={Platform.OS !== 'android'}
@@ -472,7 +372,7 @@ export default class DrugSelect extends Component<Props, State> {
                       key={k}
                       onPress={() => {
                         let { prescriptionDrugCategoryList } = this.state
-                        let currCategoryId = this.props.navigation.state.params!.activeId
+                        let currCategoryId = this.props.route.params.activeId
                         try {
                           let hasCategory = false
                           for (let category of prescriptionDrugCategoryList) {
@@ -534,7 +434,7 @@ export default class DrugSelect extends Component<Props, State> {
                     key={k}
                     onPress={() => {
                       let { prescriptionDrugCategoryList } = this.state
-                      let currCategoryId = this.props.navigation.state.params!.activeId
+                      let currCategoryId = this.props.route.params.activeId
                       try {
                         let hasCategory = false
                         for (let category of prescriptionDrugCategoryList) {
@@ -605,7 +505,7 @@ export default class DrugSelect extends Component<Props, State> {
     )
   }
   getCategoryName = (id: number): string => {
-    for (let v of this.props.navigation.state.params!.categoryList) {
+    for (let v of this.props.route.params.categoryList) {
       if (v.id === id) {
         return v.name
       }

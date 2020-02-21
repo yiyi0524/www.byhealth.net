@@ -1,5 +1,6 @@
 import * as userAction from '@/redux/actions/user'
 import { AppState } from '@/redux/stores/store'
+import { AllScreenParam } from '@/routes/bottomNav'
 import pathMap from '@/routes/pathMap'
 import api, { getThumbUrl } from '@/services/api'
 import doctor, { GENDER, GENDER_ZH } from '@/services/doctor'
@@ -8,15 +9,15 @@ import { getPicCdnUrl, getPicFullUrl } from '@/utils/utils'
 import { Icon, Modal, Toast } from '@ant-design/react-native'
 import { IconNames } from '@ant-design/react-native/lib/icon'
 import patientApi, { Drug, InquirySheet } from '@api/patient'
-import sColor from '@styles/color'
+import { RouteProp } from '@react-navigation/native'
+import { StackNavigationProp } from '@react-navigation/stack'
 import gImg from '@utils/img'
 import gStyle from '@utils/style'
 import moment from 'moment'
 import React, { Component } from 'react'
-import { DeviceEventEmitter, Image, PixelRatio, RefreshControl, ScrollView, Text, View } from 'react-native'
+import { DeviceEventEmitter, Image, RefreshControl, ScrollView, Text, View } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import ImageViewer from 'react-native-image-zoom-viewer'
-import { StackNavigationProp } from '@react-navigation/stack'
 import { connect } from 'react-redux'
 import { Dispatch } from 'redux'
 import { imagesViewer, Picture } from '../advisory/Chat'
@@ -79,7 +80,8 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
   }
 }
 interface Props {
-  navigation: StackNavigationProp<any>
+  navigation: StackNavigationProp<AllScreenParam, 'AdvisoryMedicalRecord'>
+  route: RouteProp<AllScreenParam, 'AdvisoryMedicalRecord'>
 }
 interface State {
   hasLoad: boolean
@@ -109,30 +111,10 @@ export interface Region {
 }
 // @ts-ignore
 @connect(mapStateToProps, mapDispatchToProps)
-export default class PatientDetail extends Component<
+export default class AdvisoryMedicalRecord extends Component<
   Props & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
   State
 > {
-  static navigationOptions = () => ({
-    title: '病历',
-    headerStyle: {
-      backgroundColor: sColor.white,
-      height: 50,
-      elevation: 0,
-      color: sColor.mainBlack,
-      borderBottomWidth: 1 / PixelRatio.get(),
-      borderBottomColor: sColor.colorEee,
-    },
-    headerTintColor: sColor.color333,
-    headerTitleStyle: {
-      flex: 1,
-      alignItems: 'center',
-      justifyContent: 'center',
-      fontSize: 14,
-      textAlign: 'center',
-    },
-    headerRight: <TouchableOpacity />,
-  })
   constructor(props: any) {
     super(props)
     this.state = this.getInitState()
@@ -151,8 +133,8 @@ export default class PatientDetail extends Component<
           // height: windowHeight,
         },
       ],
-      uid: this.props.navigation.getParam('patientUid'),
-      consultationId: this.props.navigation.getParam('consultationId'),
+      uid: this.props.route.params.patientUid,
+      consultationId: this.props.route.params.consultationId,
       region: [],
       patientInfo: {
         name: '',
@@ -646,7 +628,7 @@ export default class PatientDetail extends Component<
                   </View>
                   <TouchableOpacity
                     onPress={() => {
-                      this.props.navigation.push(pathMap.InquirySheet, {
+                      this.props.navigation.push('InquirySheet', {
                         patientUid: this.state.uid,
                         consultationId: v.consultation.id,
                       })
@@ -685,7 +667,7 @@ export default class PatientDetail extends Component<
                   </View>
                   <TouchableOpacity
                     onPress={() =>
-                      this.props.navigation.push(pathMap.MedicalRecord, {
+                      this.props.navigation.push('MedicalRecord', {
                         prescriptionId: v.squareRoot.id,
                         patientUid: this.state.uid,
                       })
@@ -711,7 +693,7 @@ export default class PatientDetail extends Component<
         <View style={[style.bottomBtn, global.flex, global.alignItemsCenter, global.justifyContentSpaceBetween]}>
           <TouchableOpacity
             onPress={() => {
-              this.props.navigation.navigate(pathMap.AdvisoryChat, {
+              this.props.navigation.navigate('AdvisoryChat', {
                 patientName: this.state.patientInfo.name,
                 patientUid: this.state.uid,
               })
@@ -719,9 +701,7 @@ export default class PatientDetail extends Component<
           >
             <Text style={[style.bottomTitle, global.fontSize14, global.fontStyle]}>进入对话</Text>
           </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => this.props.navigation.push(pathMap.SquareRoot, { patientUid: this.state.uid })}
-          >
+          <TouchableOpacity onPress={() => this.props.navigation.push('SquareRoot', { patientUid: this.state.uid })}>
             <Text style={[style.bottomTitle, global.fontSize14, global.fontStyle]}>开方</Text>
           </TouchableOpacity>
         </View>

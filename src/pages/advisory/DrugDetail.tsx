@@ -1,17 +1,18 @@
+import { AllScreenParam } from '@/routes/bottomNav'
+import { getPicFullUrl } from '@/utils/utils'
 import { Toast } from '@ant-design/react-native'
 import drugApi, { Drug, TYPE } from '@api/drug'
-import sColor from '@styles/color'
+import { RouteProp } from '@react-navigation/native'
+import { StackNavigationProp } from '@react-navigation/stack'
 import gImg from '@utils/img'
 import gStyle from '@utils/style'
 import React, { Component } from 'react'
-import { Image, PixelRatio, RefreshControl, ScrollView, Text, View } from 'react-native'
-import { TouchableOpacity } from 'react-native-gesture-handler'
-import { StackNavigationProp } from '@react-navigation/stack'
-import { getPicFullUrl } from '@/utils/utils'
+import { Image, RefreshControl, ScrollView, Text, View } from 'react-native'
 const style = gStyle.advisory.DrugDetail
 const global = gStyle.global
 interface Props {
   navigation: StackNavigationProp<any>
+  route: RouteProp<AllScreenParam, 'DrugDetail'>
 }
 interface State {
   hasLoad: boolean
@@ -20,26 +21,6 @@ interface State {
 }
 
 export default class DrugDetail extends Component<Props, State> {
-  static navigationOptions = ({ navigation }: { navigation: StackNavigationProp<any> }) => ({
-    title: navigation.getParam('name') || '药品详情',
-    headerStyle: {
-      backgroundColor: sColor.white,
-      height: 50,
-      elevation: 0,
-      color: sColor.mainBlack,
-      borderBottomWidth: 1 / PixelRatio.get(),
-      borderBottomColor: sColor.colorEee,
-    },
-    headerTintColor: sColor.color333,
-    headerTitleStyle: {
-      flex: 1,
-      alignItems: 'center',
-      justifyContent: 'center',
-      fontSize: 14,
-      textAlign: 'center',
-    },
-    headerRight: <TouchableOpacity />,
-  })
   constructor(props: any) {
     super(props)
     this.state = this.getInitState()
@@ -73,7 +54,7 @@ export default class DrugDetail extends Component<Props, State> {
     }
   }
   init = async () => {
-    let id = this.props.navigation.getParam('id')
+    let id = this.props.route.params.id
     try {
       let {
         data: { detail },
