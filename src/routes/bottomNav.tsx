@@ -448,7 +448,6 @@ export default () => {
     <Stack.Navigator initialRouteName='Root' headerMode='none'>
       {Object.keys(stacksOverTabsConfig).map(screenName => {
         const props = stacksOverTabsConfig[screenName as keyof AllScreenParam]
-        console.log('1: ', screenName, props)
         // @ts-ignore
         return <Stack.Screen key={screenName} name={screenName} {...props} />
       })}

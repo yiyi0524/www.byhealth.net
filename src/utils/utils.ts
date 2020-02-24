@@ -1,5 +1,5 @@
-import { Platform, Dimensions, NativeModules, Text, TextInput } from 'react-native'
-import { BASE_URL, CDN_BASE_URL } from '@/config/api'
+import { CDN_BASE_URL } from '@/config/api'
+import { Dimensions, NativeModules, Platform, Text, TextInput } from 'react-native'
 const notFound = -1
 const zeroPos = 0
 const os = Platform.OS
@@ -15,7 +15,7 @@ export const styleMapOssStyle: Record<OssStyle, string> = {
  * 获取图片的完整url
  */
 export function getPicFullUrl(url: string): string {
-  return url.indexOf('http') === zeroPos ? url : BASE_URL + url
+  return getPicCdnUrl(url)
 }
 /**
  * 获取图片的cdn url
