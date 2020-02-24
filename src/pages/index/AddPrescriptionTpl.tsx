@@ -1,19 +1,20 @@
 import DashLine from '@/components/DashLine'
 import * as userAction from '@/redux/actions/user'
 import { AppState } from '@/redux/stores/store'
+import { AllScreenParam } from '@/routes/bottomNav'
 import pathMap from '@/routes/pathMap'
 import { windowWidth } from '@/services/api'
 import doctor from '@/services/doctor'
-import { ORAL_CHINESE_DRUG_ID, TOPICAL_CHINESE_DRUG_ID, EXTERN_CHINESE_DRUG_ID } from '@/services/drug'
+import { EXTERN_CHINESE_DRUG_ID, ORAL_CHINESE_DRUG_ID, TOPICAL_CHINESE_DRUG_ID } from '@/services/drug'
 import hospital from '@/services/hospital'
 import { Icon, InputItem, Toast } from '@ant-design/react-native'
-import sColor from '@styles/color'
+import { RouteProp } from '@react-navigation/native'
+import { StackNavigationProp } from '@react-navigation/stack'
 import gImg from '@utils/img'
 import gStyle from '@utils/style'
 import React, { Component } from 'react'
-import { DeviceEventEmitter, EmitterSubscription, Image, PixelRatio, RefreshControl, Text, View } from 'react-native'
+import { DeviceEventEmitter, EmitterSubscription, Image, RefreshControl, Text, View } from 'react-native'
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler'
-import { StackNavigationProp } from '@react-navigation/stack'
 import { connect } from 'react-redux'
 import { Dispatch } from 'redux'
 import { CategoryItem } from '../advisory/DrugSelect'
@@ -21,7 +22,8 @@ import { PrescriptionDrugCategory, PrescriptionDrugInfo } from '../advisory/Squa
 const style = gStyle.index.AddPrescriptionTpl
 const global = gStyle.global
 interface Props {
-  navigation: StackNavigationProp<any>
+  navigation: StackNavigationProp<AllScreenParam, 'AddPrescriptionTpl'>
+  route: RouteProp<AllScreenParam, 'AddPrescriptionTpl'>
 }
 interface State {
   hasLoad: boolean
@@ -60,33 +62,6 @@ export default class AddPrescriptionTpl extends Component<
   Props & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
   State
 > {
-  static navigationOptions = ({ navigation }: { navigation: StackNavigationProp<any> }) => {
-    console.log(navigation.state.params)
-    let title = ''
-    if (navigation.state.params) {
-      title = navigation.state.params.title + '模板'
-    }
-    return {
-      title,
-      headerStyle: {
-        backgroundColor: sColor.white,
-        height: 50,
-        elevation: 0,
-        color: sColor.mainBlack,
-        borderBottomWidth: 1 / PixelRatio.get(),
-        borderBottomColor: sColor.colorEee,
-      },
-      headerTintColor: sColor.color333,
-      headerTitleStyle: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-        fontSize: 14,
-        textAlign: 'center',
-      },
-      headerRight: <TouchableOpacity />,
-    }
-  }
   listener?: EmitterSubscription
   constructor(props: any) {
     super(props)
@@ -140,7 +115,7 @@ export default class AddPrescriptionTpl extends Component<
         limit: -1,
         filter: {},
       })
-      let categoryId = this.props.navigation.getParam('id')
+      let { id: categoryId } = this.props.route.params
       let categoryName = categoryList.filter((v: any) => v.id === categoryId)[0].name
       this.setState({
         hasLoad: true,
@@ -400,9 +375,10 @@ export default class AddPrescriptionTpl extends Component<
 
               <TouchableOpacity
                 onPress={() => {
-                  this.props.navigation.push(pathMap.DrugSelect, {
+                  this.props.navigation.push('DrugSelect', {
                     categoryList: this.state.categoryList,
                     activeId: this.state.categoryId,
+                    isInSession: true,
                     prescriptionDrugCategoryList: [
                       {
                         id: categoryId,

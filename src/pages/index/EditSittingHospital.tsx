@@ -1,33 +1,23 @@
 import * as userAction from '@/redux/actions/user'
 import { AppState } from '@/redux/stores/store'
+import { AllScreenParam } from '@/routes/bottomNav'
 import pathMap from '@/routes/pathMap'
 import api from '@/services/api'
 import doctor from '@/services/doctor'
 import hospital from '@/services/hospital'
 import { TYPE } from '@/utils/constant'
 import { Icon, InputItem, Picker, Toast } from '@ant-design/react-native'
-import sColor from '@styles/color'
+import { RouteProp } from '@react-navigation/native'
+import { StackNavigationProp } from '@react-navigation/stack'
 import gImg from '@utils/img'
 import gStyle from '@utils/style'
 import React, { Component } from 'react'
-import {
-  DeviceEventEmitter,
-  Image,
-  PixelRatio,
-  RefreshControl,
-  ScrollView,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native'
-import { StackNavigationProp } from '@react-navigation/stack'
+import { DeviceEventEmitter, Image, RefreshControl, ScrollView, Text, TouchableOpacity, View } from 'react-native'
 import { connect } from 'react-redux'
 import { Dispatch } from 'redux'
 const style = gStyle.index.EditSittingHospital
 const global = gStyle.global
-interface NavParams {
-  navigatePress: () => void
-}
+
 interface RegionCidMapAreaName extends Record<string, string> {}
 interface CityItem {
   value: string
@@ -40,7 +30,8 @@ interface hospital {
   hidden: boolean
 }
 interface Props {
-  navigation: StackNavigationProp<any>
+  navigation: StackNavigationProp<AllScreenParam, 'EditSittingHospital'>
+  route: RouteProp<AllScreenParam, 'EditSittingHospital'>
 }
 interface State {
   hasLoad: boolean
@@ -77,34 +68,6 @@ export default class DiagnosisSettings extends Component<
   Props & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
   State
 > {
-  static navigationOptions = ({ navigation }: { navigation: NavigationScreenProp<State, NavParams> }) => ({
-    title: '医疗机构信息',
-    headerStyle: {
-      backgroundColor: sColor.white,
-      height: 50,
-      elevation: 0,
-      color: sColor.mainBlack,
-      borderBottomWidth: 1 / PixelRatio.get(),
-      borderBottomColor: sColor.colorEee,
-    },
-    headerTintColor: sColor.color333,
-    headerTitleStyle: {
-      flex: 1,
-      alignItems: 'center',
-      justifyContent: 'center',
-      fontSize: 14,
-      textAlign: 'center',
-    },
-    headerRight: (
-      <TouchableOpacity
-        onPress={() => {
-          navigation.state.params!.navigatePress()
-        }}
-      >
-        <Text style={[style.headerRight, global.fontSize14]}>保存</Text>
-      </TouchableOpacity>
-    ),
-  })
   constructor(props: any) {
     super(props)
     this.state = this.getInitState()
@@ -114,7 +77,7 @@ export default class DiagnosisSettings extends Component<
       hasLoad: false,
       refreshing: false,
       isSelectHospital: false,
-      sittingHospitalId: this.props.navigation.getParam('id'),
+      sittingHospitalId: this.props.route.params.id,
       hospitalId: 0,
       hospitalName: '',
       detail: '',

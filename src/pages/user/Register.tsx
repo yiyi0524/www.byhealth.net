@@ -1,23 +1,24 @@
 import global from '@/assets/styles/global'
 import * as userAction from '@/redux/actions/user'
 import { AppState } from '@/redux/stores/store'
-import { Icon, InputItem, Picker, Toast } from '@ant-design/react-native'
+import { AllScreenParam } from '@/routes/bottomNav'
+import { Checkbox, Icon, InputItem, Picker, Toast } from '@ant-design/react-native'
 import api, { registerParam, TYPE } from '@api/api'
 import hospitalApi from '@api/hospital'
-import pathMap from '@routes/pathMap'
+import { RouteProp } from '@react-navigation/native'
+import { StackNavigationProp } from '@react-navigation/stack'
+import gColor from '@styles/color'
 import gImg from '@utils/img'
 import gStyle from '@utils/style'
-import gColor from '@styles/color'
 import React, { Component } from 'react'
-import { Checkbox } from '@ant-design/react-native'
-import { Image, ScrollView, Text, TouchableOpacity, View, Platform, KeyboardAvoidingView } from 'react-native'
+import { Image, KeyboardAvoidingView, Platform, ScrollView, Text, TouchableOpacity, View } from 'react-native'
 import { connect } from 'react-redux'
 import { Dispatch } from 'redux'
-import { StackNavigationProp } from '@react-navigation/stack'
 const AgreeItem = Checkbox.AgreeItem
 const style = gStyle.user.register
 interface Props {
-  navigation: StackNavigationProp<any>
+  navigation: StackNavigationProp<AllScreenParam, 'Register'>
+  route: RouteProp<AllScreenParam, 'Register'>
 }
 interface State {
   hasAgreeAgreement: boolean
@@ -248,7 +249,7 @@ export default class Register extends Component<
     try {
       await api.register(param)
       Toast.success('注册成功', 2, () => {
-        this.props.navigation.navigate(pathMap.Login)
+        this.props.navigation.navigate('Login')
       })
     } catch (err) {
       console.log(err)
@@ -269,7 +270,7 @@ export default class Register extends Component<
             keyboardShouldPersistTaps='handled'
           >
             <View style={[style.header, global.flex, global.justifyContentSpaceBetween, global.alignItemsCenter]}>
-              <TouchableOpacity style={style.headerLeft} onPress={() => this.props.navigation.navigate(pathMap.Login)}>
+              <TouchableOpacity style={style.headerLeft} onPress={() => this.props.navigation.navigate('Login')}>
                 <Text style={[style.headerLeftTitle, global.fontStyle, global.fontSize14]}>关闭</Text>
               </TouchableOpacity>
               <Text style={[style.headerTitle, global.fontStyle, global.fontSize14]}>注册</Text>
@@ -452,7 +453,7 @@ export default class Register extends Component<
                     marginBottom: 5,
                   }}
                   onPress={() => {
-                    this.props.navigation.navigate(pathMap.RegisterAgreement)
+                    this.props.navigation.navigate('RegisterAgreement')
                   }}
                 >
                   <Text style={[style.agreementName, global.fontStyle, global.fontSize14]}>医生注册协议</Text>
@@ -463,7 +464,7 @@ export default class Register extends Component<
                     marginBottom: 5,
                   }}
                   onPress={() => {
-                    this.props.navigation.navigate(pathMap.LawAgreement)
+                    this.props.navigation.navigate('LawAgreement')
                   }}
                 >
                   <Text style={[style.agreementName, global.fontStyle, global.fontSize14]}>法律声明与隐私政策</Text>

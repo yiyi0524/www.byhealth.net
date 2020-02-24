@@ -6,7 +6,8 @@ import React, { Component } from 'react'
 import { TouchableOpacity, View, Text, NativeEventSubscription, BackHandler } from 'react-native'
 import { InputItem, Checkbox, Toast } from '@ant-design/react-native'
 import pathMap from '@routes/pathMap'
-// import { LocalStorage as storage } from "jsbdk";
+import { AllScreenParam } from '@/routes/bottomNav'
+import { RouteProp } from '@react-navigation/native'
 import { connect } from 'react-redux'
 import { Dispatch } from 'redux'
 import global from '@/assets/styles/global'
@@ -17,7 +18,8 @@ import { StackNavigationProp } from '@react-navigation/stack'
 
 const style = gStyle.user.login
 interface Props {
-  navigation: StackNavigationProp<any>
+  navigation: StackNavigationProp<AllScreenParam, 'Login'>
+  route: RouteProp<AllScreenParam, 'Login'>
 }
 interface State {
   saveInformation: boolean
@@ -52,9 +54,6 @@ export default class Login extends Component<
   State
 > {
   loginStatus?: NativeEventSubscription
-  static navigationOptions = {
-    title: 'buffge Login',
-  }
   constructor(props: any) {
     super(props)
     this.state = this.getInitState()
@@ -83,7 +82,7 @@ export default class Login extends Component<
   addEventListenerLoginStatus = async () => {
     let isLogin = await api.isLogin()
     if (!isLogin) {
-      this.props.navigation.navigate(pathMap.Login)
+      this.props.navigation.navigate('Login')
     }
   }
   getVerificationCode = () => {
@@ -141,7 +140,7 @@ export default class Login extends Component<
       })
       .then((json: any) => {
         Toast.success('登录成功', 1, () => {
-          this.props.navigation.navigate(pathMap.Home)
+          this.props.navigation.navigate('Home')
           // 登录成功之后,刷新某个页面 (pathMap.Home:为某页面路由名字)
           storage.set('session', json.data.appSession as string, 3 * 60 * 24)
           DeviceEventEmitter.emit(pathMap.Home + 'Reload', null)
@@ -177,7 +176,7 @@ export default class Login extends Component<
       })
       .then((json: any) => {
         Toast.success('登录成功', 1, () => {
-          this.props.navigation.navigate(pathMap.Home)
+          this.props.navigation.navigate('Home')
           // 登录成功之后,刷新某个页面 (pathMap.Home:为某页面路由名字)
           storage.set('session', json.data.appSession as string, 3 * 60 * 24)
           DeviceEventEmitter.emit(pathMap.Home + 'Reload', null)
@@ -268,7 +267,7 @@ export default class Login extends Component<
                 </TouchableOpacity>
               </View>
             </View>
-            <TouchableOpacity style={style.register} onPress={() => this.props.navigation.navigate(pathMap.Register)}>
+            <TouchableOpacity style={style.register} onPress={() => this.props.navigation.navigate('Register')}>
               <Text style={[style.registerTitle, global.fontStyle, global.fontSize14]}>我要注册</Text>
             </TouchableOpacity>
             <TouchableOpacity style={style.subBtn} onPress={this.verificationCodeLogin}>
@@ -303,7 +302,7 @@ export default class Login extends Component<
                 <TouchableOpacity
                   style={style.verificationBtn}
                   onPress={() => {
-                    this.props.navigation.navigate(pathMap.ForgetPwd)
+                    this.props.navigation.navigate('ForgetPwd')
                   }}
                 >
                   <Text style={[style.forgetPwd, global.fontSize14, global.fontStyle]}>忘记密码?</Text>
@@ -321,7 +320,7 @@ export default class Login extends Component<
                   保存账户信息
                 </Checkbox>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => this.props.navigation.navigate(pathMap.Register)}>
+              <TouchableOpacity onPress={() => this.props.navigation.navigate('Register')}>
                 <Text style={[style.savePwdTitle, global.fontStyle, global.fontSize14]}>我要注册</Text>
               </TouchableOpacity>
             </View>

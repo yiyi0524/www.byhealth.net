@@ -2,16 +2,19 @@ import global from '@/assets/styles/global'
 import * as userAction from '@/redux/actions/user'
 import { CurrSetPrescription } from '@/redux/reducers/user'
 import { AppState } from '@/redux/stores/store'
+import { AllScreenParam } from '@/routes/bottomNav'
 import api, { windowWidth } from '@/services/api'
 import { addPrescription, AddPrescriptionParam, GENDER, GENDER_ZH, PrescriptionTpl } from '@/services/doctor'
 import { EXTERN_CHINESE_DRUG_ID, ORAL_CHINESE_DRUG_ID, TOPICAL_CHINESE_DRUG_ID } from '@/services/drug'
 import { getLastPrescriptionInfo, getPatientInfo } from '@/services/patient'
 import { getPersonalInfo } from '@/services/user'
 import { getPicCdnUrl } from '@/utils/utils'
-import { Icon, ImagePicker, InputItem, TextareaItem, Toast, Picker, List } from '@ant-design/react-native'
+import { Icon, ImagePicker, InputItem, List, Picker, TextareaItem, Toast } from '@ant-design/react-native'
 import hospital from '@api/hospital'
 import DashLine from '@components/DashLine'
 import Pharmacy, { CategoryItem } from '@components/Pharmacy'
+import { RouteProp } from '@react-navigation/native'
+import { StackNavigationProp } from '@react-navigation/stack'
 import pathMap from '@routes/pathMap'
 import sColor from '@styles/color'
 import gImg from '@utils/img'
@@ -19,20 +22,18 @@ import gStyle from '@utils/style'
 import _ from 'lodash'
 import React, { Component } from 'react'
 import {
-  Alert,
   BackHandler,
   DeviceEventEmitter,
   EmitterSubscription,
   Image,
   KeyboardAvoidingView,
   NativeEventSubscription,
-  PixelRatio,
   Platform,
   RefreshControl,
+  ScrollView,
   Text,
   TouchableOpacity,
   View,
-  ScrollView,
 } from 'react-native'
 import { connect } from 'react-redux'
 import { Dispatch } from 'redux'
@@ -41,9 +42,10 @@ import { MsgType, Picture } from './Chat'
 const style = gStyle.advisory.SquareRoot
 
 interface Props {
-  navigation: any
+  navigation: StackNavigationProp<AllScreenParam, 'SquareRoot'>
+  route: RouteProp<AllScreenParam, 'SquareRoot'>
 }
-interface State {
+export interface State {
   mode: 'wx' | 'phone' | 'common'
   // 是否为选择药房模式
   isSelectPharmacy: boolean
@@ -161,80 +163,6 @@ export default class SquareRoot extends Component<
   Props & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
   State
 > {
-  static navigationOptions = (opts: any) => {
-    const { navigation } = opts
-    return {
-      title: '在线开方',
-      headerStyle: {
-        backgroundColor: sColor.white,
-        height: 45,
-        elevation: 0,
-        borderBottomWidth: 1 / PixelRatio.get(),
-        borderBottomColor: sColor.colorEee,
-      },
-      headerTintColor: sColor.color333,
-      headerTitleStyle: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-        fontSize: 14,
-        textAlign: 'center',
-      },
-      headerLeft: (
-        <View>
-          <TouchableOpacity
-            onPress={() => {
-              let getState: () => State = navigation.getParam('getState')
-              let state = getState()
-              if (state.mode !== 'common') {
-                return navigation.goBack()
-              }
-              Alert.alert('', '是否保存开方内容', [
-                {
-                  text: '否',
-                  onPress: () => {
-                    const delCurrSetPrescription = navigation.getParam('delCurrSetPrescription')
-                    delCurrSetPrescription()
-                    navigation.goBack()
-                  },
-                },
-                {
-                  text: '保存并返回',
-                  onPress: () => {
-                    let saveCurrSetPrescription: (preload: [number, CurrSetPrescription]) => void = navigation.getParam(
-                      'saveCurrSetPrescription',
-                    )
-                    const {
-                      advice,
-                      discrimination,
-                      prescriptionDrugCategoryList,
-                      serviceMoney,
-                      syndromeDifferentiation,
-                    } = state
-                    let preload: [number, CurrSetPrescription] = [
-                      state.patientInfo.uid,
-                      {
-                        advice,
-                        discrimination,
-                        prescriptionDrugCategoryList,
-                        serviceMoney,
-                        syndromeDifferentiation,
-                      },
-                    ]
-                    saveCurrSetPrescription(preload)
-                    navigation.goBack()
-                  },
-                },
-              ])
-            }}
-          >
-            <Icon name='arrow-left' style={{ fontSize: 22, color: '#000', paddingLeft: 15 }} />
-          </TouchableOpacity>
-        </View>
-      ),
-      headerRight: <Text />,
-    }
-  }
   listener?: EmitterSubscription
   hardwareBackPressListener?: NativeEventSubscription
   constructor(props: any) {
@@ -242,8 +170,8 @@ export default class SquareRoot extends Component<
     this.state = this.getInitState()
   }
   getInitState = (): State => {
-    let mode = this.props.navigation.getParam('mode') || 'common'
-    let prescription: PrescriptionTpl | null = this.props.navigation.getParam('prescription') || null
+    let mode = this.props.route.params.mode
+    let prescription: PrescriptionTpl | null = this.props.route.params.prescription
     let prescriptionDrugCategoryList: PrescriptionDrugCategory[] = []
     if (mode === 'wx' && prescription) {
       let prescriptionCategory: PrescriptionDrugCategory = {
@@ -361,7 +289,7 @@ export default class SquareRoot extends Component<
     this.props.saveCurrSetPrescription(preload)
   }
   initLastPrescriptionInfo = async () => {
-    let patientUid = this.props.navigation.getParam('patientUid')
+    let patientUid = this.props.route.params.patientUid as number
     try {
       const {
         data: { detail: prescriptionDrugCategoryList },
@@ -412,7 +340,7 @@ export default class SquareRoot extends Component<
       pharmacy,
     })
     if (mode === 'phone') {
-      let phone = this.props.navigation.getParam('phone')
+      let phone = this.props.route.params.phone as string
       this.setState({
         phone,
       })
@@ -421,7 +349,7 @@ export default class SquareRoot extends Component<
       return
     }
 
-    let patientUid = this.props.navigation.getParam('patientUid')
+    let patientUid = this.props.route.params.patientUid as number
     try {
       this.setState({
         hasLoad: false,
@@ -776,7 +704,7 @@ export default class SquareRoot extends Component<
               <DashLine len={45} width={windowWidth - 46} backgroundColor={sColor.colorEee} />
               <TouchableOpacity
                 onPress={() => {
-                  this.props.navigation.push(pathMap.SelectPrescriptionTpl)
+                  this.props.navigation.push('SelectPrescriptionTpl')
                 }}
               >
                 <View
@@ -1253,7 +1181,7 @@ export default class SquareRoot extends Component<
     addPrescription(args)
       .then(json => {
         if (mode === 'phone' || mode === 'wx') {
-          this.props.navigation.navigate(pathMap.PrescriptionDetail, {
+          this.props.navigation.navigate('PrescriptionDetail', {
             prescriptionId: json.data.id,
             mode,
           })
@@ -1270,7 +1198,7 @@ export default class SquareRoot extends Component<
         })
         this.props.delCurrSetPrescription()
         // this.props.navigation.goBack()
-        this.props.navigation.navigate(pathMap.AdvisoryChat, {
+        this.props.navigation.navigate('AdvisoryChat', {
           patientUid,
           patientName,
         })

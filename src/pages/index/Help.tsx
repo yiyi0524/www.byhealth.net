@@ -1,10 +1,9 @@
 import { Accordion } from '@ant-design/react-native'
-import sColor from '@styles/color'
 import gImg from '@utils/img'
 import gSass from '@utils/style'
 import React, { Component } from 'react'
-import { Image, PixelRatio, Text, View } from 'react-native'
-import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler'
+import { Image, Text, View } from 'react-native'
+import { ScrollView } from 'react-native-gesture-handler'
 const style = gSass.index.Help
 interface Item {
   id: number
@@ -19,28 +18,6 @@ interface State {
 }
 
 export default class Help extends Component<Props, State> {
-  static navigationOptions = () => ({
-    title: '帮助',
-    headerStyle: {
-      backgroundColor: sColor.white,
-      height: 50,
-      elevation: 0,
-      color: sColor.mainBlack,
-      borderBottomWidth: 1 / PixelRatio.get(),
-      borderBottomColor: sColor.colorEee,
-    },
-    headerTintColor: sColor.color333,
-    headerTitleStyle: {
-      flex: 1,
-      alignItems: 'center',
-      justifyContent: 'center',
-      fontSize: 14,
-      textAlign: 'center',
-    },
-    headerRight: (
-      <TouchableOpacity>{/* <Text style={[style.headerRight, global.fontSize14]}>保存</Text> */}</TouchableOpacity>
-    ),
-  })
   constructor(props: any) {
     super(props)
     this.state = this.getInitState()

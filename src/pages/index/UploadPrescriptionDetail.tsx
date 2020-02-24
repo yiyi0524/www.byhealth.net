@@ -2,10 +2,11 @@ import global from '@/assets/styles/global'
 import { getPicFullUrl, getPicCdnUrl } from '@/utils/utils'
 import { Icon } from '@ant-design/react-native'
 import doctorApi, { UPLOAD_PRESCRIPTION_STATUS } from '@api/doctor'
-import sColor from '@styles/color'
 import gImg from '@utils/img'
 import gSass from '@utils/style'
 import React, { Component } from 'react'
+import { AllScreenParam } from '@/routes/bottomNav'
+import { RouteProp } from '@react-navigation/native'
 import { Image, Text, TouchableOpacity, View } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
 import ImageViewer from 'react-native-image-zoom-viewer'
@@ -13,7 +14,8 @@ import { StackNavigationProp } from '@react-navigation/stack'
 import { imagesViewer, Picture } from '../advisory/Chat'
 const style = gSass.index.uploadPrescriptionDetail
 interface Props {
-  navigation: StackNavigationProp<any>
+  navigation: StackNavigationProp<AllScreenParam, 'UploadPrescriptionDetail'>
+  route: RouteProp<AllScreenParam, 'UploadPrescriptionDetail'>
 }
 interface State {
   hasLoad: boolean
@@ -32,24 +34,6 @@ type DefaultProps = {}
 
 export default class UploadPrescriptionDetail extends Component<Props & DefaultProps, State> {
   static defaultProps: DefaultProps
-  static navigationOptions = () => ({
-    title: '处方详情',
-    headerStyle: {
-      backgroundColor: sColor.white,
-      height: 45,
-      elevation: 0,
-      borderBottomColor: sColor.colorDdd,
-    },
-    headerTintColor: sColor.color333,
-    headerTitleStyle: {
-      flex: 1,
-      alignItems: 'center',
-      justifyContent: 'center',
-      fontSize: 14,
-      textAlign: 'center',
-    },
-    headerRight: <Text />,
-  })
   constructor(props: any) {
     super(props)
     this.state = this.getInitState()
@@ -74,7 +58,7 @@ export default class UploadPrescriptionDetail extends Component<Props & DefaultP
   }
   init = async () => {
     try {
-      let id = this.props.navigation.getParam('id')
+      let id = this.props.route.params.id
       let {
         data: {
           detail: { name, serviceMoney, prescriptionPicList, ctime, expressName, expressNo, advice, status },

@@ -1,21 +1,13 @@
 import * as userAction from '@/redux/actions/user'
 import { AppState } from '@/redux/stores/store'
 import { Icon, Toast } from '@ant-design/react-native'
-import sColor from '@styles/color'
 import gImg from '@utils/img'
 import gStyle from '@utils/style'
+import { AllScreenParam } from '@/routes/bottomNav'
+import { StackNavigationProp } from '@react-navigation/stack'
+import { RouteProp } from '@react-navigation/native'
 import React, { Component } from 'react'
-import {
-  Image,
-  PixelRatio,
-  RefreshControl,
-  ScrollView,
-  Text,
-  TouchableOpacity,
-  View,
-  Alert,
-  Linking,
-} from 'react-native'
+import { Image, RefreshControl, ScrollView, Text, TouchableOpacity, View, Alert, Linking } from 'react-native'
 import DeviceInfo from 'react-native-device-info'
 import { connect } from 'react-redux'
 import { Dispatch } from 'redux'
@@ -25,7 +17,8 @@ import { checkUpdate } from '@/services/api'
 const style = gStyle.personalCenter.about
 const global = gStyle.global
 interface Props {
-  navigation: any
+  navigation: StackNavigationProp<AllScreenParam, 'About'>
+  route: RouteProp<AllScreenParam, 'About'>
 }
 interface State {
   hasLoad: boolean
@@ -47,35 +40,11 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
     },
   }
 }
-@connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)
+@connect(mapStateToProps, mapDispatchToProps)
 export default class About extends Component<
   Props & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
   State
 > {
-  static navigationOptions = () => {
-    return {
-      title: '关于我们',
-      headerStyle: {
-        backgroundColor: sColor.white,
-        height: 45,
-        elevation: 0,
-        borderBottomWidth: 1 / PixelRatio.get(),
-        borderBottomColor: sColor.colorDdd,
-      },
-      headerTintColor: sColor.color333,
-      headerTitleStyle: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-        fontSize: 14,
-        textAlign: 'center',
-      },
-      headerRight: <Text />,
-    }
-  }
   constructor(props: any) {
     super(props)
     this.state = this.getInitState()
@@ -99,18 +68,18 @@ export default class About extends Component<
   }
   onRefresh = () => {
     this.setState({ refreshing: true })
-    Promise.all([this.init(), new Promise(s => setTimeout(s, 500))]).
-      then(_ => {
+    Promise.all([this.init(), new Promise(s => setTimeout(s, 500))])
+      .then(_ => {
         this.setState({ refreshing: false })
-      }).
-      catch(err => {
+      })
+      .catch(err => {
         Toast.fail('刷新失败,错误信息: ' + err.msg)
       })
   }
   checkedVersion = () => {
     if (!isDebugMode()) {
-      checkUpdate().
-        then(json => {
+      checkUpdate()
+        .then(json => {
           const {
             data: { updateUrl, needUpdate },
           } = json
@@ -130,8 +99,8 @@ export default class About extends Component<
           } else {
             Toast.success('当前已是最新版本!', 1)
           }
-        }).
-        catch(e => {
+        })
+        .catch(e => {
           console.log(e)
         })
     }
@@ -163,21 +132,21 @@ export default class About extends Component<
             <Text style={[style.checkedVersion, global.fontSize14]}>检测更新</Text>
           </TouchableOpacity> */}
           <View style={[style.weixin, global.flex, global.alignItemsCenter, global.justifyContentCenter]}>
-            <Icon style={style.weixinLogo} name="wechat" />
+            <Icon style={style.weixinLogo} name='wechat' />
             <Text style={[style.weixinTitle, global.fontSize14]}>微信公众号: 博一健康管理</Text>
           </View>
         </ScrollView>
         <View style={style.bottom}>
           <TouchableOpacity
             onPress={() => {
-              this.props.navigation.push(pathMap.RegisterAgreement)
+              this.props.navigation.push('RegisterAgreement')
             }}
           >
             <Text style={[style.agreement, global.fontSize14]}>医生注册协议</Text>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => {
-              this.props.navigation.push(pathMap.LawAgreement)
+              this.props.navigation.push('LawAgreement')
             }}
           >
             <Text style={[style.agreement, global.fontSize14]}>法律申明与隐私政策</Text>

@@ -1,7 +1,6 @@
 import * as userAction from '@/redux/actions/user'
 import { AppState } from '@/redux/stores/store'
 import { Icon, Toast } from '@ant-design/react-native'
-import sColor from '@styles/color'
 import gStyle from '@utils/style'
 import React, { Component } from 'react'
 import {
@@ -10,19 +9,22 @@ import {
   Text,
   TouchableOpacity,
   View,
-  PixelRatio,
   Image,
   ImageSourcePropType,
   Linking,
 } from 'react-native'
 import { connect } from 'react-redux'
+import { StackNavigationProp } from '@react-navigation/stack'
 import { Dispatch } from 'redux'
+import { AllScreenParam } from '@/routes/bottomNav'
+import { RouteProp } from '@react-navigation/native'
 import gImg from '@utils/img'
 import { customerServicePhone, customerServiceWeChat } from '@/config/api'
 const style = gStyle.personalCenter.customerService
 const global = gStyle.global
 interface Props {
-  navigation: any
+  navigation: StackNavigationProp<AllScreenParam, 'CustomerService'>
+  route: RouteProp<AllScreenParam, 'CustomerService'>
 }
 interface State {
   hasLoad: boolean
@@ -53,27 +55,6 @@ export default class CustomerService extends Component<
   Props & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
   State
 > {
-  static navigationOptions = () => {
-    return {
-      title: '联系客服',
-      headerStyle: {
-        backgroundColor: sColor.white,
-        height: 45,
-        elevation: 0,
-        borderBottomWidth: 1 / PixelRatio.get(),
-        borderBottomColor: sColor.colorDdd,
-      },
-      headerTintColor: sColor.color333,
-      headerTitleStyle: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-        fontSize: 14,
-        textAlign: 'center',
-      },
-      headerRight: <Text />,
-    }
-  }
   list: item[] = []
   constructor(props: any) {
     super(props)

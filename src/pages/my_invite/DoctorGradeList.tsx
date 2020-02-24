@@ -1,19 +1,21 @@
 import pathMap from '@/routes/pathMap'
 import { FirstLevelDoctorChildOrderInfo, listFirstLevelDoctorChildOrderInfo } from '@/services/myInvite'
 import { Icon } from '@ant-design/react-native'
-import sColor from '@styles/color'
+import { AllScreenParam } from '@/routes/bottomNav'
+import { RouteProp } from '@react-navigation/native'
 import global from '@styles/global'
 import gImg from '@utils/img'
 import gSass from '@utils/style'
 import moment from 'moment'
 import React, { Component } from 'react'
-import { Image, PixelRatio, Text, View } from 'react-native'
+import { Image, Text, View } from 'react-native'
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler'
 import { StackNavigationProp } from '@react-navigation/stack'
 import Empty from '@/components/Empty'
 const style = gSass.myInvite.myInviteDoctorGradeList
 interface Props {
-  navigation: StackNavigationProp<any>
+  navigation: StackNavigationProp<AllScreenParam, 'InviteDoctorGradeList'>
+  route: RouteProp<AllScreenParam, 'InviteDoctorGradeList'>
 }
 interface State {
   hasLoad: boolean
@@ -25,41 +27,12 @@ interface State {
 }
 
 export default class DoctorGradeList extends Component<Props, State> {
-  static navigationOptions = () => ({
-    title: '邀请的医生',
-    headerStyle: {
-      backgroundColor: sColor.white,
-      height: 50,
-      elevation: 0,
-      color: sColor.mainBlack,
-      borderBottomWidth: 1 / PixelRatio.get(),
-      borderBottomColor: sColor.colorEee,
-    },
-    headerTintColor: sColor.color333,
-    headerTitleStyle: {
-      flex: 1,
-      alignItems: 'center',
-      justifyContent: 'center',
-      fontSize: 14,
-      textAlign: 'center',
-    },
-    headerRight: (
-      <TouchableOpacity>{/* <Text style={[style.headerRight, global.fontSize14]}>保存</Text> */}</TouchableOpacity>
-    ),
-  })
   constructor(props: any) {
     super(props)
     this.state = this.getInitState(props)
   }
   getInitState = (props: Props): State => {
-    let level = 0,
-      doctorId = 0,
-      doctorName = ''
-    if (props.navigation.state.params) {
-      level = props.navigation.state.params.level || 0
-      doctorId = props.navigation.state.params.doctorId || 0
-      doctorName = props.navigation.state.params.doctorName || ''
-    }
+    let { level, doctorId, doctorName } = props.route.params
     return {
       level,
       doctorId,
@@ -161,7 +134,7 @@ export default class DoctorGradeList extends Component<Props, State> {
                   style={style.item}
                   key={'item' + idx}
                   onPress={() => {
-                    this.props.navigation.push(pathMap.Order, {
+                    this.props.navigation.push('Order', {
                       doctorId: item.doctorId,
                       date,
                       doctorName: item.doctorName,

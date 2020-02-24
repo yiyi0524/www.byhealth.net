@@ -4,14 +4,13 @@ import pathMap from '@/routes/pathMap'
 import { GENDER_ZH, PRESCRIPTION_STATUS, PRESCRIPTION_STATUS_ZH } from '@/services/doctor'
 import { Icon, Toast } from '@ant-design/react-native'
 import userApi from '@api/user'
-import sColor from '@styles/color'
+import { StackNavigationProp } from '@react-navigation/stack'
 import gImg from '@utils/img'
 import gStyle from '@utils/style'
 import moment from 'moment'
 import React, { Component } from 'react'
-import { Image, PixelRatio, Text, View } from 'react-native'
+import { Image, Text, View } from 'react-native'
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler'
-import { StackNavigationProp } from '@react-navigation/stack'
 import { connect } from 'react-redux'
 import { Dispatch } from 'redux'
 const style = gStyle.index.Prescription
@@ -60,26 +59,6 @@ export default class Prescription extends Component<
   Props & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
   State
 > {
-  static navigationOptions = () => ({
-    title: '已开处方',
-    headerStyle: {
-      backgroundColor: sColor.white,
-      height: 50,
-      elevation: 0,
-      color: sColor.mainBlack,
-      borderBottomWidth: 1 / PixelRatio.get(),
-      borderBottomColor: sColor.colorEee,
-    },
-    headerTintColor: sColor.color333,
-    headerTitleStyle: {
-      flex: 1,
-      alignItems: 'center',
-      justifyContent: 'center',
-      fontSize: 14,
-      textAlign: 'center',
-    },
-    headerRight: <Text />,
-  })
   constructor(props: any) {
     super(props)
     this.state = this.getInitState()

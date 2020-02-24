@@ -1,31 +1,28 @@
 import { BASE_URL } from '@/config/api'
 import * as userAction from '@/redux/actions/user'
 import { AppState } from '@/redux/stores/store'
+import { AllScreenParam } from '@/routes/bottomNav'
 import { TECHNICAL_TITLE_ZH } from '@/services/doctor'
 import { Button, Toast } from '@ant-design/react-native'
 import userApi from '@api/user'
-import sColor from '@styles/color'
+import { RouteProp } from '@react-navigation/native'
+import { StackNavigationProp } from '@react-navigation/stack'
 import gImg from '@utils/img'
 import gStyle from '@utils/style'
 import React, { Component } from 'react'
-import { Image, PixelRatio, RefreshControl, Text, View, Alert, TouchableOpacity } from 'react-native'
+import { Alert, Image, RefreshControl, Text, View } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
 import QRCode from 'react-native-qrcode-svg'
 import * as WeChat from 'react-native-wechat'
-import { StackNavigationProp } from '@react-navigation/stack'
 import { connect } from 'react-redux'
 import { Dispatch } from 'redux'
 import { Picture } from '../advisory/Chat'
-import pathMap from '@/routes/pathMap'
 
 const style = gStyle.index.InvitePatients
 const global = gStyle.global
-interface NavParams {
-  navigatePress: () => void
-  mode: 'delete' | 'done'
-}
 interface Props {
-  navigation: NavigationScreenProp<State, NavParams>
+  navigation: StackNavigationProp<AllScreenParam, 'InviteDoctors'>
+  route: RouteProp<AllScreenParam, 'InviteDoctors'>
 }
 interface State {
   hasLoad: boolean
@@ -56,35 +53,6 @@ export default class InvitePatients extends Component<
   Props & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
   State
 > {
-  static navigationOptions = ({ navigation }: { navigation: StackNavigationProp<any> }) => ({
-    title: '邀请医生',
-    headerStyle: {
-      backgroundColor: sColor.white,
-      height: 50,
-      elevation: 0,
-      color: sColor.mainBlack,
-      borderBottomWidth: 1 / PixelRatio.get(),
-      borderBottomColor: sColor.colorEee,
-    },
-    headerTintColor: sColor.color333,
-    headerTitleStyle: {
-      flex: 1,
-      alignItems: 'center',
-      justifyContent: 'center',
-      fontSize: 14,
-      textAlign: 'center',
-    },
-    headerRight: (
-      <TouchableOpacity
-        style={{ paddingRight: 20 }}
-        onPress={() => {
-          navigation.push(pathMap.MyInvite)
-        }}
-      >
-        <Text style={{ fontSize: 14, color: '#05A4A5' }}>我的邀请</Text>
-      </TouchableOpacity>
-    ),
-  })
   constructor(props: any) {
     super(props)
     this.state = this.getInitState()

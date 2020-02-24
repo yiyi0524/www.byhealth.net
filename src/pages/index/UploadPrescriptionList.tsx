@@ -1,12 +1,12 @@
 import global from '@/assets/styles/global'
-import sColor from '@styles/color'
 import gImg from '@utils/img'
 import gSass from '@utils/style'
 import React, { Component } from 'react'
 import { Image, Text, TouchableOpacity, View } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
+import { AllScreenParam } from '@/routes/bottomNav'
+import { RouteProp } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
-import pathMap from '@/routes/pathMap'
 import doctorApi, { UPLOAD_PRESCRIPTION_STATUS } from '@api/doctor'
 import moment from 'moment'
 const style = gSass.index.uploadPrescriptionList
@@ -17,7 +17,8 @@ interface Prescription {
   ctime: string
 }
 interface Props {
-  navigation: StackNavigationProp<any>
+  navigation: StackNavigationProp<AllScreenParam, 'UploadPrescriptionList'>
+  route: RouteProp<AllScreenParam, 'UploadPrescriptionList'>
 }
 interface State {
   hasLoad: boolean
@@ -27,24 +28,6 @@ type DefaultProps = {}
 
 export default class UploadPrescriptionList extends Component<Props & DefaultProps, State> {
   static defaultProps: DefaultProps
-  static navigationOptions = () => ({
-    title: '处方列表',
-    headerStyle: {
-      backgroundColor: sColor.white,
-      height: 45,
-      elevation: 0,
-      borderBottomColor: sColor.colorDdd,
-    },
-    headerTintColor: sColor.color333,
-    headerTitleStyle: {
-      flex: 1,
-      alignItems: 'center',
-      justifyContent: 'center',
-      fontSize: 14,
-      textAlign: 'center',
-    },
-    headerRight: <Text />,
-  })
   constructor(props: any) {
     super(props)
     this.state = this.getInitState()
@@ -92,7 +75,7 @@ export default class UploadPrescriptionList extends Component<Props & DefaultPro
                 key={k}
                 style={[style.item, global.flex, global.alignItemsCenter, global.justifyContentSpaceBetween]}
                 onPress={() => {
-                  this.props.navigation.push(pathMap.UploadPrescriptionDetail, { id: v.id })
+                  this.props.navigation.push('UploadPrescriptionDetail', { id: v.id })
                 }}
               >
                 <Text style={style.name}>{v.name || '未命名'}</Text>

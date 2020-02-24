@@ -1,22 +1,24 @@
 import * as userAction from '@/redux/actions/user'
 import { AppState } from '@/redux/stores/store'
+import { AllScreenParam } from '@/routes/bottomNav'
 import pathMap from '@/routes/pathMap'
 import doctor, { ALLOW_INQUIRY } from '@/services/doctor'
 import { Icon, Switch, Toast } from '@ant-design/react-native'
-import sColor from '@styles/color'
+import { RouteProp } from '@react-navigation/native'
+import { StackNavigationProp } from '@react-navigation/stack'
 import gImg from '@utils/img'
 import gStyle from '@utils/style'
 import React, { Component } from 'react'
-import { DeviceEventEmitter, Image, PixelRatio, RefreshControl, Text, View } from 'react-native'
+import { DeviceEventEmitter, Image, RefreshControl, Text, View } from 'react-native'
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler'
-import { StackNavigationProp } from '@react-navigation/stack'
 import { connect } from 'react-redux'
 import { Dispatch } from 'redux'
 const style = gStyle.index.DiagnosisSettings
 const global = gStyle.global
 
 interface Props {
-  navigation: StackNavigationProp<any>
+  navigation: StackNavigationProp<AllScreenParam, 'DiagnosisSettings'>
+  route: RouteProp<AllScreenParam, 'DiagnosisSettings'>
 }
 interface State {
   hasLoad: boolean
@@ -50,26 +52,6 @@ export default class DiagnosisSettings extends Component<
   Props & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
   State
 > {
-  static navigationOptions = () => ({
-    title: '复诊及诊后咨询设置',
-    headerStyle: {
-      backgroundColor: sColor.white,
-      height: 50,
-      elevation: 0,
-      color: sColor.mainBlack,
-      borderBottomWidth: 1 / PixelRatio.get(),
-      borderBottomColor: sColor.colorEee,
-    },
-    headerTintColor: sColor.color333,
-    headerTitleStyle: {
-      flex: 1,
-      alignItems: 'center',
-      justifyContent: 'center',
-      fontSize: 14,
-      textAlign: 'center',
-    },
-    headerRight: <Text />,
-  })
   constructor(props: any) {
     super(props)
     this.state = this.getInitState()

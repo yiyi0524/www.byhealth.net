@@ -1,24 +1,22 @@
 import * as userAction from '@/redux/actions/user'
 import { AppState } from '@/redux/stores/store'
-import pathMap from '@/routes/pathMap'
+import { AllScreenParam } from '@/routes/bottomNav'
 import api from '@/services/api'
 import { windowWidth } from '@/utils/utils'
-import { Icon, Toast } from '@ant-design/react-native'
-import sColor from '@styles/color'
+import { Toast } from '@ant-design/react-native'
+import { RouteProp } from '@react-navigation/native'
+import { StackNavigationProp } from '@react-navigation/stack'
 import gImg from '@utils/img'
 import gStyle from '@utils/style'
 import React, { Component } from 'react'
-import { BackHandler, Image, NativeEventSubscription, PixelRatio, Text, TouchableOpacity, View } from 'react-native'
+import { BackHandler, Image, NativeEventSubscription, View } from 'react-native'
 import { WebView } from 'react-native-webview'
-import { StackNavigationProp } from '@react-navigation/stack'
 import { connect } from 'react-redux'
 import { Dispatch } from 'redux'
 const style = gStyle.common.LawAgreement
-interface NavParams {
-  isLogin: boolean
-}
 interface Props {
-  navigation: NavigationScreenProp<State, NavParams>
+  navigation: StackNavigationProp<AllScreenParam, 'LawAgreement'>
+  route: RouteProp<AllScreenParam, 'LawAgreement'>
 }
 interface State {
   hasLoad: boolean
@@ -45,40 +43,6 @@ export default class InvitePatients extends Component<
   Props & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
   State
 > {
-  static navigationOptions = ({ navigation }: { navigation: NavigationScreenProp<State, NavParams> }) => ({
-    title: '法律申明与隐私政策',
-    headerStyle: {
-      backgroundColor: sColor.white,
-      height: 50,
-      elevation: 0,
-      color: sColor.mainBlack,
-      borderBottomWidth: 1 / PixelRatio.get(),
-      borderBottomColor: sColor.colorEee,
-    },
-    headerTintColor: sColor.color333,
-    headerTitleStyle: {
-      flex: 1,
-      alignItems: 'center',
-      justifyContent: 'center',
-      fontSize: 14,
-      color: '#666',
-      textAlign: 'center',
-    },
-    headerLeft: (
-      <TouchableOpacity
-        onPress={() => {
-          if (navigation.state.params!.isLogin) {
-            navigation.goBack()
-          } else {
-            navigation.navigate(pathMap.Register)
-          }
-        }}
-      >
-        <Icon style={{ paddingLeft: 15, fontSize: 18, color: '#333' }} name='left' />
-      </TouchableOpacity>
-    ),
-    headerRight: <Text />,
-  })
   loginStatus?: NativeEventSubscription
   constructor(props: any) {
     super(props)
@@ -104,10 +68,10 @@ export default class InvitePatients extends Component<
     }
   }
   addEventListenerBack = () => {
-    if (this.props.navigation.state.params!.isLogin) {
+    if (this.props.route.params.isLogin) {
       this.props.navigation.goBack()
     } else {
-      this.props.navigation.navigate(pathMap.Register)
+      this.props.navigation.navigate('Register')
     }
     return true
   }

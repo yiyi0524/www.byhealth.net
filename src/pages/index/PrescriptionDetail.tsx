@@ -1,23 +1,25 @@
 import global from '@/assets/styles/global'
+import SendPrescribing from '@/components/SendPrescribing'
+import SendPrescribingSuccessTips from '@/components/SendPrescribingSuccessTips'
 import * as userAction from '@/redux/actions/user'
 import { AppState } from '@/redux/stores/store'
+import { AllScreenParam } from '@/routes/bottomNav'
 import { windowWidth } from '@/services/api'
 import doctor, { GENDER_ZH, PRESCRIPTION_STATUS } from '@/services/doctor'
+import { EXTERN_CHINESE_DRUG_ID, ORAL_CHINESE_DRUG_ID, TOPICAL_CHINESE_DRUG_ID } from '@/services/drug'
 import hospital from '@/services/hospital'
-import { DrugInfo, Drug } from '@/services/patient'
+import { Drug, DrugInfo } from '@/services/patient'
 import { Toast } from '@ant-design/react-native'
 import DashLine from '@components/DashLine'
+import { RouteProp } from '@react-navigation/native'
+import { StackNavigationProp } from '@react-navigation/stack'
 import sColor from '@styles/color'
 import gImg from '@utils/img'
 import gStyle from '@utils/style'
 import React, { Component } from 'react'
-import { Image, PixelRatio, RefreshControl, Text, View, ScrollView } from 'react-native'
-import { StackNavigationProp } from '@react-navigation/stack'
+import { Image, RefreshControl, ScrollView, Text, View } from 'react-native'
 import { connect } from 'react-redux'
 import { Dispatch } from 'redux'
-import { ORAL_CHINESE_DRUG_ID, TOPICAL_CHINESE_DRUG_ID, EXTERN_CHINESE_DRUG_ID } from '@/services/drug'
-import SendPrescribingSuccessTips from '@/components/SendPrescribingSuccessTips'
-import SendPrescribing from '@/components/SendPrescribing'
 const style = gStyle.index.PrescriptionDetail
 const mapStateToProps = (state: AppState) => {
   return {
@@ -64,7 +66,8 @@ interface prescriptionDetail {
   shippingNo: string
 }
 interface Props {
-  navigation: StackNavigationProp<any>
+  navigation: StackNavigationProp<AllScreenParam, 'PrescriptionDetail'>
+  route: RouteProp<AllScreenParam, 'PrescriptionDetail'>
 }
 
 interface State {
@@ -81,37 +84,16 @@ export default class SquareRoot extends Component<
   Props & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
   State
 > {
-  static navigationOptions = () => {
-    return {
-      title: '开方详情',
-      headerStyle: {
-        backgroundColor: sColor.white,
-        height: 45,
-        elevation: 0,
-        borderBottomWidth: 1 / PixelRatio.get(),
-        borderBottomColor: sColor.colorEee,
-      },
-      headerTintColor: sColor.color333,
-      headerTitleStyle: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-        fontSize: 14,
-        textAlign: 'center',
-      },
-      headerRight: <Text />,
-    }
-  }
   constructor(props: any) {
     super(props)
     this.state = this.getInitState()
   }
   getInitState = (): State => {
     return {
-      mode: this.props.navigation.getParam('mode') || 'common',
+      mode: this.props.route.params.mode,
       hasLoad: true,
       refreshing: false,
-      prescriptionId: this.props.navigation.getParam('prescriptionId'),
+      prescriptionId: this.props.route.params.prescriptionId,
       detail: {
         doctor: {
           name: '',

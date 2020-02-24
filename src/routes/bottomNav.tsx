@@ -4,7 +4,8 @@ import DrugDetail from '@/pages/advisory/DrugDetail'
 import DrugSelect from '@/pages/advisory/DrugSelect'
 import AdvisoryIndex from '@/pages/advisory/Index'
 import SelectPrescriptionTpl from '@/pages/advisory/PrescriptionTplList'
-import SquareRoot, { PrescriptionDrugCategory } from '@/pages/advisory/SquareRoot'
+import SquareRoot, { PrescriptionDrugCategory, State as SquareRootState } from '@/pages/advisory/SquareRoot'
+import { CurrSetPrescription } from '@/redux/reducers/user'
 import AddOrEditArticle from '@/pages/group_chat/AddOrEditArticle'
 import GroupChatApplyList from '@/pages/group_chat/ApplyList'
 import ArticleDetail from '@/pages/group_chat/ArticleDetail'
@@ -18,6 +19,7 @@ import InvitePatients from '@/pages/index/InvitePatients'
 import Prescribing from '@/pages/index/Prescribing'
 import Prescription from '@/pages/index/Prescription'
 import PrescriptionTpl from '@/pages/index/PrescriptionTpl'
+import { PrescriptionTpl as PrescriptionTplDetail } from '@api/doctor'
 import PrescriptionTplList from '@/pages/index/PrescriptionTplList'
 import SittingHospital from '@/pages/index/SittingHospital'
 import SittingHospitalList from '@/pages/index/SittingHospitalList'
@@ -47,6 +49,7 @@ import EnteringGroupChat from '@pages/group_chat/EnteringGroupChat'
 import GroupChat from '@pages/group_chat/Index'
 import Home from '@pages/Home'
 import Help from '@pages/index/Help'
+import gSass from '@utils/style'
 import PrescriptionDetail from '@pages/index/PrescriptionDetail'
 import ServiceSettings from '@pages/index/ServiceSettings'
 import UploadPrescription from '@pages/index/UploadPrescription'
@@ -72,8 +75,8 @@ import { createStackNavigator, StackNavigationOptions, StackNavigationProp } fro
 import sColor from '@styles/color'
 import gImg from '@utils/img'
 import gStyle from '@utils/style'
-import React from 'react'
-import { Image, PixelRatio, StyleSheet, Text, View, DeviceEventEmitter } from 'react-native'
+import React, { ReactChild } from 'react'
+import { Image, PixelRatio, StyleSheet, Text, View, DeviceEventEmitter, Alert } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import AdvisoryTabbar from './AdvisoryTabbar'
 import GroupChatTabbar from './GroupChatTabbar'
@@ -148,9 +151,20 @@ export type AllScreenParam = {
   About: {}
   CustomerService: {}
   Prescription: {}
-  InvitePatients: {}
+  InvitePatients: {
+    navigatePress: () => void
+    mode: 'delete' | 'done'
+  }
   DiagnosisSettings: {}
-  SquareRoot: {}
+  SquareRoot: {
+    mode: 'wx' | 'phone' | 'common'
+    patientUid?: number
+    phone?: string
+    prescription?: PrescriptionTplDetail | null
+    getState?: () => any
+    saveCurrSetPrescription?: (p: any) => any
+    delCurrSetPrescription?: () => any
+  }
   DrugSelect: {
     isInSession: boolean
     categoryList: {
@@ -168,33 +182,67 @@ export type AllScreenParam = {
     prescriptionId: number
     patientUid: number
   }
-  SquareRootDetail: {}
-  PrescriptionDetail: {}
-  RegisterAgreement: {}
-  LawAgreement: {}
+  SquareRootDetail: {
+    prescriptionId: number
+  }
+  PrescriptionDetail: {
+    mode: 'wx' | 'phone' | 'common'
+    prescriptionId: number
+  }
+  RegisterAgreement: {
+    isLogin: boolean
+  }
+  LawAgreement: {
+    isLogin: boolean
+  }
   AdvisoryMedicalRecord: {
     patientUid: number
     consultationId: number
   }
   ServiceSettings: {}
   InvisiblePatients: {}
-  InviteDoctors: {}
-  QuickReply: {
-    navigatePress: () => void
+  InviteDoctors: {
+    navigatePress?: () => void
     mode: 'delete' | 'done'
   }
-  SittingHospital: {}
+  QuickReply: {
+    navigatePress?: () => void
+    mode: 'delete' | 'done'
+  }
+  SittingHospital: {
+    navigatePress?: () => void
+  }
   SittingHospitalList: {}
-  AddSittingHospital: {}
-  EditSittingHospital: {}
+  AddSittingHospital: {
+    navigatePress?: () => void
+  }
+  EditSittingHospital: {
+    id: number
+    navigatePress?: () => void
+  }
   Calendar: {}
   PrescriptionTpl: {}
-  PrescriptionTplList: {}
-  AddPrescriptionTpl: {}
-  EditPrescriptionTpl: {}
+  PrescriptionTplList: {
+    id: number
+    title: string
+  }
+  AddPrescriptionTpl: {
+    id: number
+    title: string
+  }
+  EditPrescriptionTpl: {
+    title: string
+    id: number
+    categoryId: number
+    categoryName: string
+  }
   SelectPrescriptionTpl: {}
-  AddBankCard: {}
-  EditBankCard: {}
+  AddBankCard: {
+    navigatePress?: () => void
+  }
+  EditBankCard: {
+    navigatePress?: () => void
+  }
   Help: {}
   PostInquiry: {
     id: number
@@ -205,19 +253,50 @@ export type AllScreenParam = {
   }
   UploadPrescription: {}
   UploadPrescriptionList: {}
-  UploadPrescriptionDetail: {}
+  UploadPrescriptionDetail: {
+    id: number
+  }
   GroupChat: {}
-  EnteringGroupChat: {}
-  GroupChatDetail: {}
-  ApplyList: {}
-  AddOrEditArticle: {}
-  ArticleList: {}
-  ArticleDetail: {}
+  EnteringGroupChat: {
+    patientUid: number
+    groupChatId: number
+  }
+  GroupChatDetail: {
+    groupId: number
+    groupName: string
+    navigatePress?: () => void
+    mode?: 'delete' | 'done'
+    isAdmin?: boolean
+  }
+  ApplyList: {
+    id: number
+    name: string
+  }
+  AddOrEditArticle: {
+    id: number
+    type: 'add' | 'edit'
+    sendArticle?: (p: any) => any
+  }
+  ArticleList: {
+    sendArticle?: (p: any) => any
+  }
+  ArticleDetail: {
+    id: number
+    isPersonalArticle: boolean
+  }
   Prescribing: {}
   MyInvite: {}
   InviteDoctorList: {}
-  InviteDoctorGradeList: {}
-  Order: {}
+  InviteDoctorGradeList: {
+    level: number
+    doctorId: number
+    doctorName: string
+  }
+  Order: {
+    doctorId: number
+    doctorName: string
+    date?: string
+  }
   OrderMoney: {}
   OrderCount: {}
 }
@@ -231,53 +310,23 @@ export type ScreenOptsFn<P extends ParamListBase, N extends keyof P, O> = (props
 }) => O
 function bottomTabOptFn<Name extends keyof AllScreenParam>({
   route,
-  navigation,
 }: {
   route: RouteProp<AllScreenParam, Name>
   navigation: BottomTabNavigationProp<any>
 }): BottomTabNavigationOptions {
-  console.log(route, navigation)
-  if (route.name === '医馆' || route.name === '聊天室') {
-    return {
-      title: route.name,
-      // title: '医馆',
-      tabBarIcon: ({ focused }: { focused: boolean }) => {
-        return (
-          <View style={style.iconFa}>
-            <Image style={style.icon} source={focused ? gImg.common.homeActive : gImg.common.home} />
-          </View>
-        )
-      },
-      // headerTitleStyle: {
-      //   color: sColor.white,
-      // },
-      // headerStyle: {
-      //   height: 0,
-      //   overFlow: 'hidden',
-      //   elevation: 0,
-      //   borderBottomWidth: 0,
-      // },
-    }
+  let title: string = route.name
+  if (title === 'Home') {
+    title = '首页'
   }
   return {
-    title: 'buffge',
-    // headerTitleStyle: {
-    //   color: sColor.mainBlack,
-    //   textAlign: 'center',
-    //   justifyContent: 'center',
-    //   alignItems: 'center',
-    //   flex: 1,
-    //   fontSize: 16,
-    // },
-    // headerStyle: {
-    //   height: 50,
-    //   backgroundColor: sColor.white,
-    //   elevation: 0,
-    //   borderBottomColor: sColor.colorEee,
-    //   borderBottomWidth: 0,
-    // },
-    // headerTitleAllowFontScaling: false,
-    // headerBackAllowFontScaling: false,
+    title,
+    tabBarIcon: ({ focused }: { focused: boolean }) => {
+      return (
+        <View style={style.iconFa}>
+          <Image style={style.icon} source={focused ? gImg.common.homeActive : gImg.common.home} />
+        </View>
+      )
+    },
   }
 }
 
@@ -292,14 +341,14 @@ const bottomTabConf: {
       name: 'Home',
       component: Home,
       // options: {
-      //   title: '医馆',
-      //   tabBarIcon: ({ focused }: { focused: boolean }) => {
-      //     return (
-      //       <View style={style.iconFa}>
-      //         <Image style={style.icon} source={focused ? gImg.common.homeActive : gImg.common.home} />
-      //       </View>
-      //     )
-      //   },
+      // title: '医馆',
+      // tabBarIcon: ({ focused }: { focused: boolean }) => {
+      //   return (
+      //     <View style={style.iconFa}>
+      //       <Image style={style.icon} source={focused ? gImg.common.homeActive : gImg.common.home} />
+      //     </View>
+      //   )
+      // },
       // },
       options: param => bottomTabOptFn<'Home'>(param),
     },
@@ -399,6 +448,7 @@ export default () => {
     <Stack.Navigator initialRouteName='Root' headerMode='none'>
       {Object.keys(stacksOverTabsConfig).map(screenName => {
         const props = stacksOverTabsConfig[screenName as keyof AllScreenParam]
+        console.log('1: ', screenName, props)
         // @ts-ignore
         return <Stack.Screen key={screenName} name={screenName} {...props} />
       })}
@@ -420,74 +470,6 @@ const stacksOverTabsConfig: {
     name: 'RealNameAuth',
     component: RealNameAuth,
   },
-  AdvisoryChat: {
-    name: 'AdvisoryChat',
-    component: AdvisoryChat,
-    initialParams: {
-      mode: 'common',
-    },
-    options: ({
-      navigation,
-      route,
-    }: {
-      route: RouteProp<AllScreenParam, 'AdvisoryChat'>
-      navigation: StackNavigationProp<any>
-    }) => {
-      let title = ''
-      let { groupId, groupName, patientName, mode } = route.params
-      let isScanUserMode = false
-      title = patientName || groupName || ''
-      isScanUserMode = mode === 'scanUser'
-      groupId = groupId || 0
-      return {
-        title,
-        headerStyle: {
-          backgroundColor: sColor.white,
-          height: 45,
-          elevation: 0,
-          borderBottomWidth: 1 / PixelRatio.get(),
-          borderBottomColor: sColor.colorEee,
-        },
-        headerTintColor: sColor.color333,
-        headerTitleStyle: {
-          flex: 1,
-          alignItems: 'center',
-          justifyContent: 'center',
-          fontSize: 14,
-          textAlign: 'center',
-        },
-        headerRight: isScanUserMode
-          ? () => null
-          : groupId > 0
-          ? () => (
-              <TouchableOpacity
-                onPress={() => {
-                  navigation.push(pathMap.GroupChatDetail, {
-                    groupId,
-                    groupName,
-                  })
-                }}
-              >
-                <Icon style={[gStyle.advisory.advisoryChat.headerRight, global.fontSize18]} name='menu' />
-              </TouchableOpacity>
-            )
-          : () => (
-              <TouchableOpacity
-                onPress={() => {
-                  navigation.push(pathMap.AdvisoryMedicalRecord, {
-                    patientUid: route.params.patientUid,
-                    consultationId: route.params.consultationId,
-                  })
-                }}
-              >
-                <Text style={[gStyle.advisory.advisoryChat.headerRight, global.fontSize14, global.fontStyle]}>
-                  病历
-                </Text>
-              </TouchableOpacity>
-            ),
-      }
-    },
-  },
   AddressBookGroup: {
     name: 'AddressBookGroup',
     component: AddressBookGroup,
@@ -499,7 +481,7 @@ const stacksOverTabsConfig: {
       navigation,
     }: {
       route: RouteProp<AllScreenParam, 'AddressBookGroup'>
-      navigation: StackNavigationProp<any>
+      navigation: StackNavigationProp<AllScreenParam, 'AddressBookGroup'>
     }) => ({
       title: '患者分组',
       headerStyle: {
@@ -568,7 +550,7 @@ const stacksOverTabsConfig: {
     }: // navigation,
     {
       route: RouteProp<AllScreenParam, 'AddressBookGroupDetail'>
-      navigation: StackNavigationProp<any>
+      navigation: StackNavigationProp<AllScreenParam, 'AddressBookGroupDetail'>
     }) => {
       return {
         title: route.params.title,
@@ -632,38 +614,278 @@ const stacksOverTabsConfig: {
   Account: {
     name: 'Account',
     component: Account,
+    options: {
+      title: '账户',
+      headerStyle: {
+        backgroundColor: sColor.lightGreen,
+        height: 45,
+        elevation: 0,
+        borderColor: sColor.lightGreen,
+      },
+      headerTintColor: sColor.white,
+      headerTitleStyle: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        fontSize: 14,
+        textAlign: 'center',
+      },
+    },
   },
   ChangePwd: {
     name: 'ChangePwd',
     component: ChangePwd,
+    options: {
+      title: '重新设置密码',
+      headerStyle: {
+        backgroundColor: sColor.white,
+        height: 45,
+        elevation: 0,
+        borderBottomWidth: 1 / PixelRatio.get(),
+        borderBottomColor: sColor.colorDdd,
+      },
+      headerTintColor: sColor.color333,
+      headerTitleStyle: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        fontSize: 14,
+        textAlign: 'center',
+      },
+    },
   },
   EditInformation: {
     name: 'EditInformation',
     component: EditInformation,
+    options: {
+      title: '编辑资料',
+      headerStyle: {
+        backgroundColor: sColor.white,
+        height: 45,
+        elevation: 0,
+        borderBottomWidth: 1 / PixelRatio.get(),
+        borderBottomColor: sColor.colorDdd,
+      },
+      headerTintColor: sColor.color333,
+      headerTitleStyle: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        fontSize: 14,
+        textAlign: 'center',
+      },
+    },
   },
   About: {
     name: 'About',
     component: About,
+    options: {
+      title: '关于我们',
+      headerStyle: {
+        backgroundColor: sColor.white,
+        height: 45,
+        elevation: 0,
+        borderBottomWidth: 1 / PixelRatio.get(),
+        borderBottomColor: sColor.colorDdd,
+      },
+      headerTintColor: sColor.color333,
+      headerTitleStyle: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        fontSize: 14,
+        textAlign: 'center',
+      },
+    },
   },
   CustomerService: {
     name: 'CustomerService',
     component: CustomerService,
+    options: {
+      title: '联系客服',
+      headerStyle: {
+        backgroundColor: sColor.white,
+        height: 45,
+        elevation: 0,
+        borderBottomWidth: 1 / PixelRatio.get(),
+        borderBottomColor: sColor.colorDdd,
+      },
+      headerTintColor: sColor.color333,
+      headerTitleStyle: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        fontSize: 14,
+        textAlign: 'center',
+      },
+    },
   },
   Prescription: {
     name: 'Prescription',
     component: Prescription,
+    options: {
+      title: '已开处方',
+      headerStyle: {
+        backgroundColor: sColor.white,
+        height: 50,
+        elevation: 0,
+        borderBottomWidth: 1 / PixelRatio.get(),
+        borderBottomColor: sColor.colorEee,
+      },
+      headerTintColor: sColor.color333,
+      headerTitleStyle: {
+        flex: 1,
+        color: sColor.mainBlack,
+        alignItems: 'center',
+        justifyContent: 'center',
+        fontSize: 14,
+        textAlign: 'center',
+      },
+    },
   },
   InvitePatients: {
     name: 'InvitePatients',
     component: InvitePatients,
+    initialParams: {
+      mode: 'done',
+    },
+    options: ({
+      route,
+    }: {
+      route: RouteProp<AllScreenParam, 'InvitePatients'>
+      navigation: StackNavigationProp<AllScreenParam, 'InvitePatients'>
+    }) => {
+      return {
+        title: '二维码名片',
+        headerStyle: {
+          backgroundColor: sColor.white,
+          height: 50,
+          elevation: 0,
+          borderBottomWidth: 1 / PixelRatio.get(),
+          borderBottomColor: sColor.colorEee,
+        },
+        headerTintColor: sColor.color333,
+        headerTitleStyle: {
+          flex: 1,
+          color: sColor.mainBlack,
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontSize: 14,
+          textAlign: 'center',
+        },
+        headerRight: () => <TouchableOpacity onPress={route.params.navigatePress} />,
+      }
+    },
   },
   DiagnosisSettings: {
     name: 'DiagnosisSettings',
     component: DiagnosisSettings,
+    options: {
+      title: '复诊及诊后咨询设置',
+      headerStyle: {
+        backgroundColor: sColor.white,
+        height: 50,
+        elevation: 0,
+        borderBottomWidth: 1 / PixelRatio.get(),
+        borderBottomColor: sColor.colorEee,
+      },
+      headerTintColor: sColor.color333,
+      headerTitleStyle: {
+        flex: 1,
+        color: sColor.mainBlack,
+        alignItems: 'center',
+        justifyContent: 'center',
+        fontSize: 14,
+        textAlign: 'center',
+      },
+      headerRight: () => <Text />,
+    },
   },
   SquareRoot: {
     name: 'SquareRoot',
     component: SquareRoot,
+    initialParams: {
+      mode: 'common',
+      prescription: null,
+    },
+    options: ({
+      route,
+      navigation,
+    }: {
+      route: RouteProp<AllScreenParam, 'SquareRoot'>
+      navigation: StackNavigationProp<AllScreenParam, 'SquareRoot'>
+    }) => {
+      return {
+        title: '在线开方',
+        headerStyle: {
+          backgroundColor: sColor.white,
+          height: 45,
+          elevation: 0,
+          borderBottomWidth: 1 / PixelRatio.get(),
+          borderBottomColor: sColor.colorEee,
+        },
+        headerTintColor: sColor.color333,
+        headerTitleStyle: {
+          flex: 1,
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontSize: 14,
+          textAlign: 'center',
+        },
+        headerLeft: () => (
+          <View>
+            <TouchableOpacity
+              onPress={() => {
+                let getState: () => SquareRootState = route.params.getState as any
+                let state = getState()
+                if (state.mode !== 'common') {
+                  return navigation.goBack()
+                }
+                Alert.alert('', '是否保存开方内容', [
+                  {
+                    text: '否',
+                    onPress: () => {
+                      const { delCurrSetPrescription } = route.params
+                      delCurrSetPrescription && delCurrSetPrescription()
+                      navigation.goBack()
+                    },
+                  },
+                  {
+                    text: '保存并返回',
+                    onPress: () => {
+                      let saveCurrSetPrescription: (preload: [number, CurrSetPrescription]) => void = route.params
+                        .saveCurrSetPrescription as any
+                      const {
+                        advice,
+                        discrimination,
+                        prescriptionDrugCategoryList,
+                        serviceMoney,
+                        syndromeDifferentiation,
+                      } = state
+                      let preload: [number, CurrSetPrescription] = [
+                        state.patientInfo.uid,
+                        {
+                          advice,
+                          discrimination,
+                          prescriptionDrugCategoryList,
+                          serviceMoney,
+                          syndromeDifferentiation,
+                        },
+                      ]
+                      saveCurrSetPrescription(preload)
+                      navigation.goBack()
+                    },
+                  },
+                ])
+              }}
+            >
+              <Icon name='arrow-left' style={{ fontSize: 22, color: '#000', paddingLeft: 15 }} />
+            </TouchableOpacity>
+          </View>
+        ),
+        headerRight: () => <Text />,
+      }
+    },
   },
   DrugSelect: {
     name: 'DrugSelect',
@@ -673,7 +895,7 @@ const stacksOverTabsConfig: {
       navigation,
     }: {
       route: RouteProp<AllScreenParam, 'DrugSelect'>
-      navigation: StackNavigationProp<any>
+      navigation: StackNavigationProp<AllScreenParam, 'DrugSelect'>
     }) => {
       let title = '选择药材'
       let { categoryList, activeId } = route.params
@@ -807,18 +1029,145 @@ const stacksOverTabsConfig: {
   SquareRootDetail: {
     name: 'SquareRootDetail',
     component: SquareRootDetail,
+    options: {
+      title: '查看整体治疗方案',
+      headerStyle: {
+        backgroundColor: sColor.white,
+        height: 45,
+        elevation: 0,
+        borderBottomWidth: 1 / PixelRatio.get(),
+        borderBottomColor: sColor.colorEee,
+      },
+      headerTintColor: sColor.color333,
+      headerTitleStyle: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        fontSize: 14,
+        textAlign: 'center',
+      },
+      headerRight: () => <Text />,
+    },
   },
   PrescriptionDetail: {
     name: 'PrescriptionDetail',
     component: PrescriptionDetail,
+    initialParams: {
+      mode: 'common',
+    },
+    options: {
+      title: '开方详情',
+      headerStyle: {
+        height: 45,
+        elevation: 0,
+        borderBottomWidth: 1 / PixelRatio.get(),
+        borderBottomColor: sColor.colorEee,
+      },
+      headerTintColor: sColor.color333,
+      headerTitleStyle: {
+        flex: 1,
+        backgroundColor: sColor.white,
+        alignItems: 'center',
+        justifyContent: 'center',
+        fontSize: 14,
+        textAlign: 'center',
+      },
+    },
   },
   RegisterAgreement: {
     name: 'RegisterAgreement',
     component: RegisterAgreement,
+    initialParams: {
+      isLogin: true,
+    },
+    options: ({
+      route,
+      navigation,
+    }: {
+      route: RouteProp<AllScreenParam, 'RegisterAgreement'>
+      navigation: StackNavigationProp<AllScreenParam, 'RegisterAgreement'>
+    }) => ({
+      title: '医生注册协议',
+      headerStyle: {
+        backgroundColor: sColor.white,
+        height: 50,
+        elevation: 0,
+        color: sColor.mainBlack,
+        borderBottomWidth: 1 / PixelRatio.get(),
+        borderBottomColor: sColor.colorEee,
+      },
+      headerTintColor: sColor.color333,
+      headerTitleStyle: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        fontSize: 14,
+        textAlign: 'center',
+      },
+      headerLeft: () => (
+        <TouchableOpacity
+          onPress={() => {
+            if (route.params.isLogin) {
+              navigation.goBack()
+            } else {
+              navigation.navigate('Register')
+            }
+          }}
+        >
+          <Icon style={{ paddingLeft: 15, fontSize: 18, color: '#333' }} name='left' />
+        </TouchableOpacity>
+      ),
+      headerRight: () => <Text />,
+    }),
   },
   LawAgreement: {
     name: 'LawAgreement',
     component: LawAgreement,
+    initialParams: {
+      isLogin: true,
+    },
+    options: ({
+      route,
+      navigation,
+    }: {
+      route: RouteProp<AllScreenParam, 'LawAgreement'>
+      navigation: StackNavigationProp<AllScreenParam, 'LawAgreement'>
+    }) => {
+      return {
+        title: '法律申明与隐私政策',
+        headerStyle: {
+          backgroundColor: sColor.white,
+          height: 50,
+          elevation: 0,
+          color: sColor.mainBlack,
+          borderBottomWidth: 1 / PixelRatio.get(),
+          borderBottomColor: sColor.colorEee,
+        },
+        headerTintColor: sColor.color333,
+        headerTitleStyle: {
+          flex: 1,
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontSize: 14,
+          color: '#666',
+          textAlign: 'center',
+        },
+        headerLeft: () => (
+          <TouchableOpacity
+            onPress={() => {
+              if (route.params.isLogin) {
+                navigation.goBack()
+              } else {
+                navigation.navigate('Register')
+              }
+            }}
+          >
+            <Icon style={{ paddingLeft: 15, fontSize: 18, color: '#333' }} name='left' />
+          </TouchableOpacity>
+        ),
+        headerRight: () => <Text />,
+      }
+    },
   },
   AdvisoryMedicalRecord: {
     name: 'AdvisoryMedicalRecord',
@@ -847,14 +1196,87 @@ const stacksOverTabsConfig: {
   ServiceSettings: {
     name: 'ServiceSettings',
     component: ServiceSettings,
+    options: {
+      title: '服务设置',
+      headerStyle: {
+        backgroundColor: sColor.white,
+        height: 50,
+        elevation: 0,
+        borderBottomWidth: 1 / PixelRatio.get(),
+        borderBottomColor: sColor.colorEee,
+      },
+      headerTintColor: sColor.color333,
+      headerTitleStyle: {
+        flex: 1,
+        color: sColor.mainBlack,
+        alignItems: 'center',
+        justifyContent: 'center',
+        fontSize: 14,
+        textAlign: 'center',
+      },
+    },
   },
   InvisiblePatients: {
     name: 'InvisiblePatients',
     component: InvisiblePatients,
+    options: {
+      title: '患者不可见',
+      headerStyle: {
+        backgroundColor: sColor.white,
+        height: 45,
+        elevation: 0,
+        borderBottomWidth: 1 / PixelRatio.get(),
+        borderBottomColor: sColor.colorDdd,
+      },
+      headerTintColor: sColor.color333,
+      headerTitleStyle: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        fontSize: 14,
+        textAlign: 'center',
+      },
+    },
   },
   InviteDoctors: {
     name: 'InviteDoctors',
     component: InviteDoctors,
+    options: ({
+      navigation,
+    }: {
+      route: RouteProp<AllScreenParam, 'InviteDoctors'>
+      navigation: StackNavigationProp<AllScreenParam, 'InviteDoctors'>
+    }) => {
+      return {
+        title: '邀请医生',
+        headerStyle: {
+          backgroundColor: sColor.white,
+          height: 50,
+          elevation: 0,
+          color: sColor.mainBlack,
+          borderBottomWidth: 1 / PixelRatio.get(),
+          borderBottomColor: sColor.colorEee,
+        },
+        headerTintColor: sColor.color333,
+        headerTitleStyle: {
+          flex: 1,
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontSize: 14,
+          textAlign: 'center',
+        },
+        headerRight: () => (
+          <TouchableOpacity
+            style={{ paddingRight: 20 }}
+            onPress={() => {
+              navigation.push('MyInvite')
+            }}
+          >
+            <Text style={{ fontSize: 14, color: '#05A4A5' }}>我的邀请</Text>
+          </TouchableOpacity>
+        ),
+      }
+    },
   },
   QuickReply: {
     name: 'QuickReply',
@@ -893,7 +1315,7 @@ const stacksOverTabsConfig: {
               navigation.setParams({
                 mode: oriMode === 'done' ? 'delete' : 'done',
               })
-              route.params.navigatePress()
+              route.params.navigatePress && route.params.navigatePress()
             }}
           >
             <Text style={gStyle.advisory.QuickReply.headerRight}>{route.params.mode === 'done' ? '编辑' : '完成'}</Text>
@@ -905,18 +1327,130 @@ const stacksOverTabsConfig: {
   SittingHospital: {
     name: 'SittingHospital',
     component: SittingHospital,
+    options: ({
+      route,
+    }: {
+      route: RouteProp<AllScreenParam, 'SittingHospital'>
+      navigation: StackNavigationProp<AllScreenParam, 'SittingHospital'>
+    }) => {
+      return {
+        title: '本月坐诊信息',
+        headerStyle: {
+          backgroundColor: sColor.white,
+          height: 50,
+          elevation: 0,
+          color: sColor.mainBlack,
+          borderBottomWidth: 1 / PixelRatio.get(),
+          borderBottomColor: sColor.colorEee,
+        },
+        headerTintColor: sColor.color333,
+        headerTitleStyle: {
+          flex: 1,
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontSize: 14,
+          textAlign: 'center',
+        },
+        headerRight: () => (
+          <TouchableOpacity onPress={route.params.navigatePress}>
+            {/* <Text style={[style.headerRight, global.fontSize14]}>分享</Text> */}
+          </TouchableOpacity>
+        ),
+      }
+    },
   },
   SittingHospitalList: {
     name: 'SittingHospitalList',
     component: SittingHospitalList,
+    options: {
+      title: '管理医疗机构',
+      headerStyle: {
+        backgroundColor: sColor.white,
+        height: 50,
+        elevation: 0,
+        borderBottomWidth: 1 / PixelRatio.get(),
+        borderBottomColor: sColor.colorEee,
+      },
+      headerTintColor: sColor.color333,
+      headerTitleStyle: {
+        flex: 1,
+        color: sColor.mainBlack,
+        alignItems: 'center',
+        justifyContent: 'center',
+        fontSize: 14,
+        textAlign: 'center',
+      },
+    },
   },
   AddSittingHospital: {
     name: 'AddSittingHospital',
     component: AddSittingHospital,
+    options: ({
+      route,
+    }: {
+      route: RouteProp<AllScreenParam, 'AddSittingHospital'>
+      navigation: StackNavigationProp<AllScreenParam, 'AddSittingHospital'>
+    }) => {
+      return {
+        title: '医疗机构信息',
+        headerStyle: {
+          backgroundColor: sColor.white,
+          height: 50,
+          elevation: 0,
+          color: sColor.mainBlack,
+          borderBottomWidth: 1 / PixelRatio.get(),
+          borderBottomColor: sColor.colorEee,
+        },
+        headerTintColor: sColor.color333,
+        headerTitleStyle: {
+          flex: 1,
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontSize: 14,
+          textAlign: 'center',
+        },
+        headerRight: () => (
+          <TouchableOpacity onPress={route.params.navigatePress}>
+            <Text style={[gStyle.index.AddSittingHospital.headerRight, global.fontSize14]}>保存</Text>
+          </TouchableOpacity>
+        ),
+      }
+    },
   },
   EditSittingHospital: {
     name: 'EditSittingHospital',
     component: EditSittingHospital,
+    options: ({
+      route,
+    }: {
+      route: RouteProp<AllScreenParam, 'EditSittingHospital'>
+      navigation: StackNavigationProp<AllScreenParam, 'EditSittingHospital'>
+    }) => {
+      return {
+        title: '医疗机构信息',
+        headerStyle: {
+          backgroundColor: sColor.white,
+          height: 50,
+          elevation: 0,
+          borderBottomWidth: 1 / PixelRatio.get(),
+          borderBottomColor: sColor.colorEee,
+        },
+        headerTintColor: sColor.color333,
+        headerTitleStyle: {
+          flex: 1,
+          color: sColor.mainBlack,
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontSize: 14,
+          textAlign: 'center',
+        },
+        headerRight: () => (
+          <TouchableOpacity onPress={route.params.navigatePress}>
+            <Text style={[gStyle.index.EditSittingHospital.headerRight, global.fontSize14]}>保存</Text>
+          </TouchableOpacity>
+        ),
+      }
+    },
   },
   Calendar: {
     name: 'Calendar',
@@ -925,10 +1459,144 @@ const stacksOverTabsConfig: {
   PrescriptionTpl: {
     name: 'PrescriptionTpl',
     component: PrescriptionTpl,
+    options: {
+      title: '选择处方模板类型',
+      headerStyle: {
+        backgroundColor: sColor.white,
+        height: 50,
+        elevation: 0,
+        borderBottomWidth: 1 / PixelRatio.get(),
+        borderBottomColor: sColor.colorEee,
+      },
+      headerTintColor: sColor.color333,
+      headerTitleStyle: {
+        flex: 1,
+        alignItems: 'center',
+        color: sColor.mainBlack,
+        justifyContent: 'center',
+        fontSize: 14,
+        textAlign: 'center',
+      },
+    },
   },
   PrescriptionTplList: {
     name: 'PrescriptionTplList',
     component: PrescriptionTplList,
+    options: ({
+      route,
+      navigation,
+    }: {
+      route: RouteProp<AllScreenParam, 'PrescriptionTplList'>
+      navigation: StackNavigationProp<AllScreenParam, 'PrescriptionTplList'>
+    }) => {
+      let title = '处方模板'
+      let headerRight: () => ReactChild | null = () => null
+      if (route.params.title) {
+        title = route.params.title + '模板'
+        headerRight = () => (
+          <TouchableOpacity
+            style={route.params.id ? {} : { display: 'none' }}
+            onPress={() => {
+              navigation.push('AddPrescriptionTpl', {
+                id: route.params.id,
+                title: route.params.title,
+              })
+            }}
+          >
+            <Text style={[gStyle.index.PrescriptionTplList.headerRight, global.fontSize14, global.fontStyle]}>
+              新建
+            </Text>
+          </TouchableOpacity>
+        )
+      }
+      return {
+        title,
+        headerStyle: {
+          backgroundColor: sColor.white,
+          height: 45,
+          elevation: 0,
+          borderBottomWidth: 1 / PixelRatio.get(),
+          borderBottomColor: sColor.colorEee,
+        },
+        headerTintColor: sColor.color333,
+        headerTitleStyle: {
+          flex: 1,
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontSize: 14,
+          textAlign: 'center',
+        },
+        headerRight,
+      }
+    },
+  },
+  EditPrescriptionTpl: {
+    name: 'EditPrescriptionTpl',
+    component: EditPrescriptionTpl,
+    options: ({
+      route,
+    }: {
+      route: RouteProp<AllScreenParam, 'EditPrescriptionTpl'>
+      navigation: StackNavigationProp<AllScreenParam, 'EditPrescriptionTpl'>
+    }) => {
+      const title = route.params.title + '模板'
+      return {
+        title,
+        headerStyle: {
+          backgroundColor: sColor.white,
+          height: 50,
+          elevation: 0,
+          borderBottomWidth: 1 / PixelRatio.get(),
+          borderBottomColor: sColor.colorEee,
+        },
+        headerTintColor: sColor.color333,
+        headerTitleStyle: {
+          flex: 1,
+          color: sColor.mainBlack,
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontSize: 14,
+          textAlign: 'center',
+        },
+        headerRight: () => <TouchableOpacity />,
+      }
+    },
+  },
+  AddPrescriptionTpl: {
+    name: 'AddPrescriptionTpl',
+    component: AddPrescriptionTpl,
+    options: ({
+      route,
+    }: {
+      route: RouteProp<AllScreenParam, 'AddPrescriptionTpl'>
+      navigation: StackNavigationProp<AllScreenParam, 'AddPrescriptionTpl'>
+    }) => {
+      let title = route.params.title + '模板'
+      return {
+        title,
+        headerStyle: {
+          backgroundColor: sColor.white,
+          height: 50,
+          elevation: 0,
+          color: sColor.mainBlack,
+          borderBottomWidth: 1 / PixelRatio.get(),
+          borderBottomColor: sColor.colorEee,
+        },
+        headerTintColor: sColor.color333,
+        headerTitleStyle: {
+          flex: 1,
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontSize: 14,
+          textAlign: 'center',
+        },
+        headerRight: () => <TouchableOpacity />,
+      }
+    },
+  },
+  SelectPrescriptionTpl: {
+    name: 'SelectPrescriptionTpl',
+    component: SelectPrescriptionTpl,
     options: {
       title: '模板信息',
       headerStyle: {
@@ -949,29 +1617,100 @@ const stacksOverTabsConfig: {
       headerRight: () => <TouchableOpacity />,
     },
   },
-  EditPrescriptionTpl: {
-    name: 'EditPrescriptionTpl',
-    component: EditPrescriptionTpl,
-  },
-  AddPrescriptionTpl: {
-    name: 'AddPrescriptionTpl',
-    component: AddPrescriptionTpl,
-  },
-  SelectPrescriptionTpl: {
-    name: 'SelectPrescriptionTpl',
-    component: SelectPrescriptionTpl,
-  },
   AddBankCard: {
     name: 'AddBankCard',
     component: AddBankCard,
+    options: ({
+      route,
+    }: {
+      route: RouteProp<AllScreenParam, 'AddBankCard'>
+      navigation: StackNavigationProp<AllScreenParam, 'AddBankCard'>
+    }) => {
+      return {
+        title: '管理银行卡',
+        headerStyle: {
+          backgroundColor: '#fff',
+          height: 45,
+          elevation: 0,
+          borderColor: '#fff',
+        },
+        headerTintColor: '#333',
+        headerTitleStyle: {
+          flex: 1,
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontSize: 14,
+          textAlign: 'center',
+        },
+        headerRight: () => (
+          <TouchableOpacity onPress={route.params.navigatePress as any}>
+            <Text style={[gStyle.personalCenter.addBankCard.headerRight, global.fontSize14, global.fontStyle]}>
+              完成
+            </Text>
+          </TouchableOpacity>
+        ),
+      }
+    },
   },
   EditBankCard: {
     name: 'EditBankCard',
     component: EditBankCard,
+    options: ({
+      route,
+    }: {
+      route: RouteProp<AllScreenParam, 'EditBankCard'>
+      navigation: StackNavigationProp<AllScreenParam, 'EditBankCard'>
+    }) => {
+      return {
+        title: '管理银行卡',
+        headerStyle: {
+          backgroundColor: '#fff',
+          height: 45,
+          elevation: 0,
+          borderColor: '#fff',
+        },
+        headerTintColor: '#333',
+        headerTitleStyle: {
+          flex: 1,
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontSize: 14,
+          textAlign: 'center',
+        },
+        headerRight: () => (
+          <TouchableOpacity onPress={route.params.navigatePress}>
+            <Text style={[gStyle.personalCenter.editBankCard.headerRight, global.fontSize14, global.fontStyle]}>
+              完成
+            </Text>
+          </TouchableOpacity>
+        ),
+      }
+    },
   },
   Help: {
     name: 'Help',
     component: Help,
+    options: {
+      title: '帮助',
+      headerStyle: {
+        backgroundColor: sColor.white,
+        height: 50,
+        elevation: 0,
+        borderBottomWidth: 1 / PixelRatio.get(),
+        borderBottomColor: sColor.colorEee,
+      },
+      headerTintColor: sColor.color333,
+      headerTitleStyle: {
+        flex: 1,
+        color: sColor.mainBlack,
+
+        alignItems: 'center',
+        justifyContent: 'center',
+        fontSize: 14,
+        textAlign: 'center',
+      },
+      headerRight: () => <TouchableOpacity />,
+    },
   },
   PostInquiry: {
     name: 'PostInquiry',
@@ -1032,65 +1771,517 @@ const stacksOverTabsConfig: {
   UploadPrescription: {
     name: 'UploadPrescription',
     component: UploadPrescription,
+    options: ({
+      navigation,
+    }: {
+      route: RouteProp<AllScreenParam, 'UploadPrescription'>
+      navigation: StackNavigationProp<AllScreenParam, 'UploadPrescription'>
+    }) => {
+      return {
+        title: '代客下单',
+        headerStyle: {
+          backgroundColor: sColor.white,
+          height: 45,
+          elevation: 0,
+          borderBottomColor: sColor.colorDdd,
+        },
+        headerTintColor: sColor.color333,
+        headerTitleStyle: {
+          flex: 1,
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontSize: 14,
+          textAlign: 'center',
+        },
+        headerRight: () => (
+          <TouchableOpacity
+            style={gSass.index.uploadPrescription.headerRight}
+            onPress={() => {
+              navigation.push('UploadPrescriptionList')
+            }}
+          >
+            <Text style={gSass.index.uploadPrescription.headerTitle}>历史记录</Text>
+          </TouchableOpacity>
+        ),
+      }
+    },
   },
   UploadPrescriptionList: {
     name: 'UploadPrescriptionList',
     component: UploadPrescriptionList,
+    options: {
+      title: '处方列表',
+      headerStyle: {
+        backgroundColor: sColor.white,
+        height: 45,
+        elevation: 0,
+        borderBottomColor: sColor.colorDdd,
+      },
+      headerTintColor: sColor.color333,
+      headerTitleStyle: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        fontSize: 14,
+        textAlign: 'center',
+      },
+    },
   },
   UploadPrescriptionDetail: {
     name: 'UploadPrescriptionDetail',
     component: UploadPrescriptionDetail,
+    options: {
+      title: '处方详情',
+      headerStyle: {
+        backgroundColor: sColor.white,
+        height: 45,
+        elevation: 0,
+        borderBottomColor: sColor.colorDdd,
+      },
+      headerTintColor: sColor.color333,
+      headerTitleStyle: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        fontSize: 14,
+        textAlign: 'center',
+      },
+    },
   },
   EnteringGroupChat: {
     name: 'EnteringGroupChat',
     component: EnteringGroupChat,
   },
+  AdvisoryChat: {
+    name: 'AdvisoryChat',
+    component: AdvisoryChat,
+    initialParams: {
+      mode: 'common',
+    },
+    options: ({
+      navigation,
+      route,
+    }: {
+      route: RouteProp<AllScreenParam, 'AdvisoryChat'>
+      navigation: StackNavigationProp<AllScreenParam, 'AdvisoryChat'>
+    }) => {
+      let title = ''
+      let { groupId, groupName, patientName, mode } = route.params
+      let isScanUserMode = false
+      title = patientName || groupName || ''
+      isScanUserMode = mode === 'scanUser'
+      groupId = groupId as number
+      return {
+        title,
+        headerStyle: {
+          backgroundColor: sColor.white,
+          height: 45,
+          elevation: 0,
+          borderBottomWidth: 1 / PixelRatio.get(),
+          borderBottomColor: sColor.colorEee,
+        },
+        headerTintColor: sColor.color333,
+        headerTitleStyle: {
+          flex: 1,
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontSize: 14,
+          textAlign: 'center',
+        },
+        headerRight: isScanUserMode
+          ? () => null
+          : groupId > 0
+          ? () => (
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.push('GroupChatDetail', {
+                    groupId: groupId as number,
+                    groupName: groupName as string,
+                  })
+                }}
+              >
+                <Icon style={[gStyle.advisory.advisoryChat.headerRight, global.fontSize18]} name='menu' />
+              </TouchableOpacity>
+            )
+          : () => (
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.push('AdvisoryMedicalRecord', {
+                    patientUid: route.params.patientUid as number,
+                    consultationId: route.params.consultationId as number,
+                  })
+                }}
+              >
+                <Text style={[gStyle.advisory.advisoryChat.headerRight, global.fontSize14, global.fontStyle]}>
+                  病历
+                </Text>
+              </TouchableOpacity>
+            ),
+      }
+    },
+  },
   GroupChatDetail: {
     name: 'GroupChatDetail',
     component: GroupChatDetail,
+    initialParams: {
+      groupId: 0,
+      groupName: '',
+      isAdmin: false,
+      mode: 'done',
+    },
+    options: ({
+      navigation,
+      route,
+    }: {
+      route: RouteProp<AllScreenParam, 'GroupChatDetail'>
+      navigation: StackNavigationProp<AllScreenParam, 'GroupChatDetail'>
+    }) => {
+      const { groupName: title, isAdmin } = route.params
+      // const isAdmin = navigation.getParam('isAdmin') || false
+      return {
+        title,
+        headerStyle: {
+          backgroundColor: '#fff',
+          height: 45,
+          elevation: 0,
+          borderColor: '#E3E3E3',
+        },
+        headerTintColor: '#333',
+        headerTitleStyle: {
+          flex: 1,
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontSize: 14,
+          textAlign: 'center',
+        },
+        headerRight: isAdmin
+          ? () => (
+              <TouchableOpacity
+                onPress={() => {
+                  let oriMode = route.params.mode
+                  navigation.setParams({
+                    mode: oriMode === 'done' ? 'delete' : 'done',
+                  })
+                  route.params.navigatePress && route.params.navigatePress()
+                }}
+              >
+                <Text style={style.icon}>{route.params.mode === 'done' ? '选择' : '删除'}</Text>
+              </TouchableOpacity>
+            )
+          : () => <Text />,
+      }
+    },
   },
   ApplyList: {
     name: 'ApplyList',
     component: GroupChatApplyList,
+    initialParams: {
+      id: 0,
+      name: '',
+    },
+    options: ({ route }: { route: RouteProp<AllScreenParam, 'ApplyList'> }) => {
+      let title = route.params.name
+      return {
+        title,
+        headerStyle: {
+          backgroundColor: '#fff',
+          height: 45,
+          elevation: 0,
+          borderColor: '#E3E3E3',
+        },
+        headerTintColor: '#333',
+        headerTitleStyle: {
+          flex: 1,
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontSize: 14,
+          textAlign: 'center',
+        },
+        headerRight: () => (
+          <TouchableOpacity>
+            <Text> </Text>
+          </TouchableOpacity>
+        ),
+      }
+    },
   },
   ArticleList: {
     name: 'ArticleList',
     component: ArticleList,
+    options: {
+      title: '文章列表',
+      headerStyle: {
+        backgroundColor: '#fff',
+        height: 45,
+        elevation: 0,
+        borderColor: '#E3E3E3',
+      },
+      headerTintColor: '#333',
+      headerTitleStyle: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        fontSize: 14,
+        textAlign: 'center',
+      },
+      headerRight: () => (
+        <TouchableOpacity>
+          <Text />
+        </TouchableOpacity>
+      ),
+    },
   },
   ArticleDetail: {
     name: 'ArticleDetail',
     component: ArticleDetail,
+    initialParams: {
+      id: 0,
+      isPersonalArticle: false,
+    },
+    options: ({
+      route,
+      navigation,
+    }: {
+      route: RouteProp<AllScreenParam, 'ArticleDetail'>
+      navigation: StackNavigationProp<AllScreenParam, 'ArticleDetail'>
+    }) => {
+      return {
+        title: '文章详情',
+        headerStyle: {
+          backgroundColor: '#fff',
+          height: 45,
+          elevation: 0,
+          borderColor: '#E3E3E3',
+        },
+        headerTintColor: '#333',
+        headerTitleStyle: {
+          flex: 1,
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontSize: 14,
+          textAlign: 'center',
+        },
+        headerRight: () => (
+          <TouchableOpacity
+            onPress={() => {
+              if (route.params.isPersonalArticle) {
+                navigation.push('AddOrEditArticle', {
+                  type: 'edit',
+                  id: route.params.id,
+                })
+              } else {
+                Toast.info('您不是此文章的作者', 2)
+              }
+            }}
+          >
+            <Text style={gSass.groupChat.articleDetail.rightTitle}>编辑</Text>
+          </TouchableOpacity>
+        ),
+      }
+    },
   },
   AddOrEditArticle: {
     name: 'AddOrEditArticle',
     component: AddOrEditArticle,
+    initialParams: {
+      id: 0,
+      type: 'add',
+    },
+    options: ({ route }: { route: RouteProp<AllScreenParam, 'AddOrEditArticle'> }) => {
+      let title = '添加文章'
+      if (route.params.type === 'edit') {
+        title = '编辑文章'
+      }
+      return {
+        title,
+        headerStyle: {
+          backgroundColor: '#fff',
+          height: 45,
+          elevation: 0,
+          borderColor: '#E3E3E3',
+        },
+        headerTintColor: '#333',
+        headerTitleStyle: {
+          flex: 1,
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontSize: 14,
+          textAlign: 'center',
+        },
+        headerRight: () => (
+          <TouchableOpacity>
+            <Text />
+          </TouchableOpacity>
+        ),
+      }
+    },
   },
   Prescribing: {
     name: 'Prescribing',
     component: Prescribing,
+    options: {
+      title: '立即开方',
+      headerStyle: {
+        backgroundColor: sColor.white,
+        height: 50,
+        elevation: 0,
+        borderBottomWidth: 1 / PixelRatio.get(),
+        borderBottomColor: sColor.colorEee,
+      },
+      headerTintColor: sColor.color333,
+      headerTitleStyle: {
+        flex: 1,
+        color: sColor.mainBlack,
+        alignItems: 'center',
+        justifyContent: 'center',
+        fontSize: 14,
+        textAlign: 'center',
+      },
+      headerRight: () => <TouchableOpacity />,
+    },
   },
   MyInvite: {
     name: 'MyInvite',
     component: MyInvite,
+    options: {
+      title: '我的邀请',
+      headerStyle: {
+        backgroundColor: sColor.white,
+        height: 50,
+        elevation: 0,
+        borderBottomWidth: 1 / PixelRatio.get(),
+        borderBottomColor: sColor.colorEee,
+      },
+      headerTintColor: sColor.color333,
+      headerTitleStyle: {
+        flex: 1,
+        color: sColor.mainBlack,
+        alignItems: 'center',
+        justifyContent: 'center',
+        fontSize: 14,
+        textAlign: 'center',
+      },
+    },
   },
   InviteDoctorList: {
     name: 'InviteDoctorList',
     component: MyInviteDoctorList,
+    options: {
+      title: '邀请的医师',
+      headerStyle: {
+        backgroundColor: sColor.white,
+        height: 50,
+        elevation: 0,
+        borderBottomWidth: 1 / PixelRatio.get(),
+        borderBottomColor: sColor.colorEee,
+      },
+      headerTintColor: sColor.color333,
+      headerTitleStyle: {
+        flex: 1,
+        color: sColor.mainBlack,
+
+        alignItems: 'center',
+        justifyContent: 'center',
+        fontSize: 14,
+        textAlign: 'center',
+      },
+    },
   },
   OrderMoney: {
     name: 'OrderMoney',
     component: OrderMoney,
+    options: {
+      title: '订单金额',
+      headerStyle: {
+        backgroundColor: sColor.white,
+        height: 50,
+        elevation: 0,
+        borderBottomWidth: 1 / PixelRatio.get(),
+        borderBottomColor: sColor.colorEee,
+      },
+      headerTintColor: sColor.color333,
+      headerTitleStyle: {
+        flex: 1,
+        color: sColor.mainBlack,
+        alignItems: 'center',
+        justifyContent: 'center',
+        fontSize: 14,
+        textAlign: 'center',
+      },
+    },
   },
   OrderCount: {
     name: 'OrderCount',
     component: OrderCount,
+    options: {
+      title: '订单量',
+      headerStyle: {
+        backgroundColor: sColor.white,
+        height: 50,
+        elevation: 0,
+        borderBottomWidth: 1 / PixelRatio.get(),
+        borderBottomColor: sColor.colorEee,
+      },
+      headerTintColor: sColor.color333,
+      headerTitleStyle: {
+        flex: 1,
+        color: sColor.mainBlack,
+        alignItems: 'center',
+        justifyContent: 'center',
+        fontSize: 14,
+        textAlign: 'center',
+      },
+    },
   },
   InviteDoctorGradeList: {
     name: 'InviteDoctorGradeList',
     component: MyInviteDoctorGradeList,
+    initialParams: {
+      doctorId: 0,
+      doctorName: '',
+      level: 0,
+    },
+    options: {
+      title: '邀请的医生',
+      headerStyle: {
+        backgroundColor: sColor.white,
+        height: 50,
+        elevation: 0,
+        borderBottomWidth: 1 / PixelRatio.get(),
+        borderBottomColor: sColor.colorEee,
+      },
+      headerTintColor: sColor.color333,
+      headerTitleStyle: {
+        flex: 1,
+        color: sColor.mainBlack,
+        alignItems: 'center',
+        justifyContent: 'center',
+        fontSize: 14,
+        textAlign: 'center',
+      },
+    },
   },
   Order: {
     name: 'Order',
     component: Order,
+    options: {
+      title: '医师订单',
+      headerStyle: {
+        backgroundColor: sColor.white,
+        height: 50,
+        elevation: 0,
+        borderBottomWidth: 1 / PixelRatio.get(),
+        borderBottomColor: sColor.colorEee,
+      },
+      headerTintColor: sColor.color333,
+      headerTitleStyle: {
+        flex: 1,
+        color: sColor.mainBlack,
+        alignItems: 'center',
+        justifyContent: 'center',
+        fontSize: 14,
+        textAlign: 'center',
+      },
+    },
   },
 }

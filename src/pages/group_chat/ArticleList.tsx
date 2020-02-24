@@ -1,17 +1,20 @@
 import global from '@/assets/styles/global'
-import pathMap from '@/routes/pathMap'
-import { Article, ArticleType, listArticle, delArticle } from '@/services/groupChat'
+import { AppState } from '@/redux/stores/store'
+import { AllScreenParam } from '@/routes/bottomNav'
+import { Article, ArticleType, delArticle, listArticle } from '@/services/groupChat'
 import { TYPE } from '@/utils/constant'
 import { Icon, InputItem, Modal, Toast } from '@ant-design/react-native'
+import { RouteProp } from '@react-navigation/native'
+import { StackNavigationProp } from '@react-navigation/stack'
 import gSass from '@utils/style'
 import React, { Component } from 'react'
 import { FlatList, Text, TouchableOpacity, View } from 'react-native'
-import { StackNavigationProp } from '@react-navigation/stack'
 import { connect } from 'react-redux'
-import { AppState } from '@/redux/stores/store'
+
 const style = gSass.groupChat.articleList
 interface Props {
-  navigation: StackNavigationProp<any>
+  navigation: StackNavigationProp<AllScreenParam, 'ArticleList'>
+  route: RouteProp<AllScreenParam, 'ArticleList'>
 }
 interface State {
   page: number
@@ -35,30 +38,6 @@ const mapStateToProps = (state: AppState) => {
 @connect(mapStateToProps)
 export default class ArticleList extends Component<Props & DefaultProps, State> {
   static defaultProps: DefaultProps
-  static navigationOptions = () => {
-    return {
-      title: '文章列表',
-      headerStyle: {
-        backgroundColor: '#fff',
-        height: 45,
-        elevation: 0,
-        borderColor: '#E3E3E3',
-      },
-      headerTintColor: '#333',
-      headerTitleStyle: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-        fontSize: 14,
-        textAlign: 'center',
-      },
-      headerRight: (
-        <TouchableOpacity>
-          <Text />
-        </TouchableOpacity>
-      ),
-    }
-  }
   constructor(props: any) {
     super(props)
     this.state = this.getInitState()
@@ -81,7 +60,7 @@ export default class ArticleList extends Component<Props & DefaultProps, State> 
   }
   sendArticle = (id: number) => {
     let article = this.state.list.find(v => v.id === id)
-    let sendArticle = this.props.navigation.getParam('sendArticle')
+    let sendArticle = this.props.route.params.sendArticle
     sendArticle(article)
     this.props.navigation.goBack()
   }
@@ -110,7 +89,7 @@ export default class ArticleList extends Component<Props & DefaultProps, State> 
             {
               text: '查看',
               onPress: () => {
-                this.props.navigation.push(pathMap.ArticleDetail, { id: item.id })
+                this.props.navigation.push('ArticleDetail', { id: item.id, isPersonalArticle: false })
               },
             },
             {

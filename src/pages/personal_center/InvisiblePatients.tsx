@@ -5,6 +5,8 @@ import pathMap from '@/routes/pathMap'
 import doctor, { GENDER, InvisiblePatient } from '@/services/doctor'
 import { getPicCdnUrl } from '@/utils/utils'
 import { Toast } from '@ant-design/react-native'
+import { AllScreenParam } from '@/routes/bottomNav'
+import { RouteProp } from '@react-navigation/native'
 import sColor from '@styles/color'
 import gImg from '@utils/img'
 import gStyle from '@utils/style'
@@ -24,7 +26,8 @@ import { Dispatch } from 'redux'
 const style = gStyle.personalCenter.InvisiblePatients
 const global = gStyle.global
 interface Props {
-  navigation: any
+  navigation: StackNavigationProp<AllScreenParam, 'InvisiblePatients'>
+  route: RouteProp<AllScreenParam, 'InvisiblePatients'>
 }
 interface State {
   hasLoad: boolean
@@ -45,35 +48,11 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
     },
   }
 }
-@connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)
+@connect(mapStateToProps, mapDispatchToProps)
 export default class Index extends Component<
   Props & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
   State
 > {
-  static navigationOptions = () => {
-    return {
-      title: '患者不可见',
-      headerStyle: {
-        backgroundColor: sColor.white,
-        height: 45,
-        elevation: 0,
-        borderBottomWidth: 1 / PixelRatio.get(),
-        borderBottomColor: sColor.colorDdd,
-      },
-      headerTintColor: sColor.color333,
-      headerTitleStyle: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-        fontSize: 14,
-        textAlign: 'center',
-      },
-      headerRight: <Text />,
-    }
-  }
   constructor(props: any) {
     super(props)
     this.state = this.getInitState()
@@ -103,11 +82,11 @@ export default class Index extends Component<
   }
   onRefresh = () => {
     this.setState({ refreshing: true })
-    Promise.all([this.init(), new Promise(s => setTimeout(s, 500))]).
-      then(_ => {
+    Promise.all([this.init(), new Promise(s => setTimeout(s, 500))])
+      .then(_ => {
         this.setState({ refreshing: false })
-      }).
-      catch(err => {
+      })
+      .catch(err => {
         Toast.fail('刷新失败,错误信息: ' + err.msg)
       })
   }

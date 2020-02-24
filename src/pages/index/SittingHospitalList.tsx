@@ -1,23 +1,25 @@
 import * as userAction from '@/redux/actions/user'
 import { AppState } from '@/redux/stores/store'
-import { Toast, Icon, Modal } from '@ant-design/react-native'
-import sColor from '@styles/color'
+import { AllScreenParam } from '@/routes/bottomNav'
+import pathMap from '@/routes/pathMap'
+import doctor, { SittingHospital } from '@/services/doctor'
+import hospital from '@/services/hospital'
+import { Icon, Modal, Toast } from '@ant-design/react-native'
+import { RouteProp } from '@react-navigation/native'
+import { StackNavigationProp } from '@react-navigation/stack'
 import gImg from '@utils/img'
 import gStyle from '@utils/style'
 import React, { Component } from 'react'
-import { Image, PixelRatio, RefreshControl, Text, View, DeviceEventEmitter, EmitterSubscription } from 'react-native'
+import { DeviceEventEmitter, EmitterSubscription, Image, RefreshControl, Text, View } from 'react-native'
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler'
-import { StackNavigationProp } from '@react-navigation/stack'
 import { connect } from 'react-redux'
 import { Dispatch } from 'redux'
-import doctor, { SittingHospital } from '@/services/doctor'
-import hospital from '@/services/hospital'
-import pathMap from '@/routes/pathMap'
 const style = gStyle.index.SittingHospitalList
 const global = gStyle.global
 
 interface Props {
-  navigation: StackNavigationProp<any>
+  navigation: StackNavigationProp<AllScreenParam, 'SittingHospitalList'>
+  route: RouteProp<AllScreenParam, 'SittingHospitalList'>
 }
 interface State {
   hasLoad: boolean
@@ -48,26 +50,6 @@ export default class DiagnosisSettings extends Component<
   Props & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
   State
 > {
-  static navigationOptions = () => ({
-    title: '管理医疗机构',
-    headerStyle: {
-      backgroundColor: sColor.white,
-      height: 50,
-      elevation: 0,
-      color: sColor.mainBlack,
-      borderBottomWidth: 1 / PixelRatio.get(),
-      borderBottomColor: sColor.colorEee,
-    },
-    headerTintColor: sColor.color333,
-    headerTitleStyle: {
-      flex: 1,
-      alignItems: 'center',
-      justifyContent: 'center',
-      fontSize: 14,
-      textAlign: 'center',
-    },
-    headerRight: <Text />,
-  })
   medicalInstitutionMapColor: string[]
   subscription?: EmitterSubscription
   constructor(props: any) {
@@ -84,9 +66,7 @@ export default class DiagnosisSettings extends Component<
     }
   }
   componentDidMount() {
-    this.subscription = DeviceEventEmitter.addListener(pathMap.SittingHospitalList + 'Reload', _ => {
-      this.init()
-    })
+    this.subscription = DeviceEventEmitter.addListener(pathMap.SittingHospitalList + 'Reload', this.init)
     this.init()
   }
   componentWillUnmount() {
@@ -184,7 +164,7 @@ export default class DiagnosisSettings extends Component<
                     </TouchableOpacity>
                     <TouchableOpacity
                       onPress={() => {
-                        this.props.navigation.push(pathMap.EditSittingHospital, { id: v.id })
+                        this.props.navigation.push('EditSittingHospital', { id: v.id })
                       }}
                     >
                       <Text style={[style.itemBtnTitle, global.fontSize15]}>编辑</Text>
@@ -199,7 +179,7 @@ export default class DiagnosisSettings extends Component<
           </View>
           <TouchableOpacity
             onPress={() => {
-              this.props.navigation.push(pathMap.AddSittingHospital)
+              this.props.navigation.push('AddSittingHospital')
             }}
           >
             <View style={[style.btn, global.flex, global.alignItemsCenter]}>

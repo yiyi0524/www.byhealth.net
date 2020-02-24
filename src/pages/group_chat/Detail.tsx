@@ -1,29 +1,23 @@
 import global from '@/assets/styles/global'
 import { AppState } from '@/redux/stores/store'
-import pathMap from '@/routes/pathMap'
+import { AllScreenParam } from '@/routes/bottomNav'
 import { delGroupChatmember, GroupChatMember, listGroupChat } from '@/services/groupChat'
 import { TYPE } from '@/utils/constant'
 import { getPicFullUrl } from '@/utils/utils'
 import { Icon, Toast } from '@ant-design/react-native'
+import { RouteProp } from '@react-navigation/native'
+import { StackNavigationProp } from '@react-navigation/stack'
 import gImg from '@utils/img'
 import gSass from '@utils/style'
 import React, { Component } from 'react'
-import { Image, Text, TouchableOpacity, View } from 'react-native'
-import { NavigationScreenProp, ScrollView } from 'react-navigation'
+import { Image, ScrollView, Text, TouchableOpacity, View } from 'react-native'
 import { connect } from 'react-redux'
 import { Assign } from 'utility-types'
 const style = gSass.groupChat.detail
 
-interface NavParams {
-  groupId: number
-  groupName: string
-  navigatePress: () => void
-  mode: 'delete' | 'done'
-  isAdmin: boolean
-}
-
 interface Props {
-  navigation: NavigationScreenProp<State, NavParams>
+  navigation: StackNavigationProp<AllScreenParam, 'GroupChatDetail'>
+  route: RouteProp<AllScreenParam, 'GroupChatDetail'>
 }
 interface State {
   isAdmin: boolean
@@ -46,58 +40,12 @@ const mapStateToProps = (state: AppState) => {
 @connect(mapStateToProps)
 export default class Detail extends Component<Props & DefaultProps, State> {
   static defaultProps: DefaultProps
-  static navigationOptions = ({ navigation }: { navigation: NavigationScreenProp<State, NavParams> }) => {
-    let title = ''
-    if (navigation.state.params) {
-      title = navigation.state.params.groupName
-    }
-    const isAdmin = navigation.getParam('isAdmin') || false
-    return {
-      title,
-      headerStyle: {
-        backgroundColor: '#fff',
-        height: 45,
-        elevation: 0,
-        borderColor: '#E3E3E3',
-      },
-      headerTintColor: '#333',
-      headerTitleStyle: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-        fontSize: 14,
-        textAlign: 'center',
-      },
-      headerRight: isAdmin ? (
-        <TouchableOpacity
-          onPress={() => {
-            let oriMode = navigation.getParam('mode')
-            navigation.setParams({
-              mode: oriMode === 'done' ? 'delete' : 'done',
-            })
-            navigation.state.params!.navigatePress()
-          }}
-        >
-          <Text style={style.icon}>
-            {navigation.state.params && navigation.state.params!.mode === 'done' ? '选择' : '删除'}
-          </Text>
-        </TouchableOpacity>
-      ) : (
-        <Text />
-      ),
-    }
-  }
   constructor(props: any) {
     super(props)
     this.state = this.getInitState(props)
   }
   getInitState = (props: Props): State => {
-    let groupId = 0,
-      groupName = ''
-    if (props.navigation.state.params) {
-      groupId = props.navigation.state.params!.groupId
-      groupName = props.navigation.state.params!.groupName
-    }
+    const { groupId, groupName } = props.route.params
     return {
       isAdmin: false,
       groupId,
@@ -279,6 +227,6 @@ export default class Detail extends Component<Props & DefaultProps, State> {
   }
   applyJoinMember = () => {
     let { groupId, groupName } = this.state
-    this.props.navigation.push(pathMap.ApplyList, { id: groupId, name: groupName })
+    this.props.navigation.push('ApplyList', { id: groupId, name: groupName })
   }
 }

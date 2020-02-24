@@ -15,11 +15,10 @@ import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler'
 import { StackNavigationProp } from '@react-navigation/stack'
 import { connect } from 'react-redux'
 import { Dispatch } from 'redux'
+import { AllScreenParam } from '@/routes/bottomNav'
+import { RouteProp } from '@react-navigation/native'
 const style = gStyle.index.AddSittingHospital
 const global = gStyle.global
-interface NavParams {
-  navigatePress: () => void
-}
 interface RegionCidMapAreaName extends Record<string, string> {}
 interface CityItem {
   value: string
@@ -32,7 +31,8 @@ interface hospital {
   hidden: boolean
 }
 interface Props {
-  navigation: StackNavigationProp<any>
+  navigation: StackNavigationProp<AllScreenParam, 'AddSittingHospital'>
+  route: RouteProp<AllScreenParam, 'AddSittingHospital'>
 }
 interface State {
   hasLoad: boolean
@@ -68,7 +68,7 @@ export default class DiagnosisSettings extends Component<
   Props & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
   State
 > {
-  static navigationOptions = ({ navigation }: { navigation: NavigationScreenProp<State, NavParams> }) => ({
+  static navigationOptions = ({ navigation }: { navigation: any }) => ({
     title: '医疗机构信息',
     headerStyle: {
       backgroundColor: sColor.white,
@@ -86,7 +86,7 @@ export default class DiagnosisSettings extends Component<
       fontSize: 14,
       textAlign: 'center',
     },
-    headerRight: (
+    headerRight: () => (
       <TouchableOpacity
         onPress={() => {
           navigation.state.params!.navigatePress()

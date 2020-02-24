@@ -6,11 +6,17 @@ import api from '@api/api'
 import gStyle from '@utils/style'
 import React, { Component } from 'react'
 import { Text, TouchableOpacity, View } from 'react-native'
+import { AllScreenParam } from '@/routes/bottomNav'
+
+import { RouteProp } from '@react-navigation/native'
 import { connect } from 'react-redux'
+import { StackNavigationProp } from '@react-navigation/stack'
+
 import { Dispatch } from 'redux'
 const style = gStyle.user.forgetPwd
 interface Props {
-  navigation: any
+  navigation: StackNavigationProp<AllScreenParam, 'ForgetPwd'>
+  route: RouteProp<AllScreenParam, 'ForgetPwd'>
 }
 interface State {
   saveInformation: boolean
@@ -39,10 +45,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
     },
   }
 }
-@connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)
+@connect(mapStateToProps, mapDispatchToProps)
 export default class ForgetPwd extends Component<
   Props & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
   State
@@ -72,9 +75,9 @@ export default class ForgetPwd extends Component<
     if (!/^1[3456789]\d{9}$/.test(this.state.phone)) {
       return Toast.fail('请输入正确的手机号码', 1)
     }
-    api.
-      getLoginPhoneVerifyCode({ phone: this.state.phone }).
-      then(json => {
+    api
+      .getLoginPhoneVerifyCode({ phone: this.state.phone })
+      .then(json => {
         Toast.info('发送成功', 1)
         let timeout = 60
         this.setState({
@@ -94,8 +97,8 @@ export default class ForgetPwd extends Component<
             verificationCodeMsg: '获取验证码',
           })
         }, timeout * 1000)
-      }).
-      catch(err => {
+      })
+      .catch(err => {
         Toast.info('发送失败 错误信息: ' + err.msg, 1)
       })
   }
@@ -166,7 +169,7 @@ export default class ForgetPwd extends Component<
       <View style={style.main}>
         <View style={[style.header, global.flex, global.justifyContentSpaceBetween, global.alignItemsCenter]}>
           <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
-            <Icon name="left" style={[style.headerLeft, global.fontSize16]} />
+            <Icon name='left' style={[style.headerLeft, global.fontSize16]} />
           </TouchableOpacity>
           <Text style={style.headerCenter}>忘记密码</Text>
           <Text />
@@ -178,8 +181,8 @@ export default class ForgetPwd extends Component<
                 clear
                 value={this.state.phone}
                 style={style.input}
-                placeholder="手机号码"
-                type="number"
+                placeholder='手机号码'
+                type='number'
                 onChange={value => {
                   this.setState({ phone: value })
                 }}
@@ -188,10 +191,10 @@ export default class ForgetPwd extends Component<
             </View>
             <View style={style.inputItem}>
               <InputItem
-                type="number"
+                type='number'
                 value={this.state.verificationCode}
                 style={style.input}
-                placeholder="验证码"
+                placeholder='验证码'
                 onChange={value => {
                   this.setState({ verificationCode: value })
                 }}
@@ -207,8 +210,8 @@ export default class ForgetPwd extends Component<
                 clear
                 value={this.state.pwd}
                 style={style.input}
-                placeholder="6位以上新密码"
-                type="password"
+                placeholder='6位以上新密码'
+                type='password'
                 onChange={value => {
                   this.setState({ pwd: value })
                 }}
@@ -219,8 +222,8 @@ export default class ForgetPwd extends Component<
                 clear
                 value={this.state.confirmPwd}
                 style={style.input}
-                placeholder="再次确认密码"
-                type="password"
+                placeholder='再次确认密码'
+                type='password'
                 onChange={value => {
                   this.setState({ confirmPwd: value })
                 }}

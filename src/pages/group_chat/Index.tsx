@@ -1,7 +1,6 @@
 import global from '@/assets/styles/global'
 import Empty from '@/components/Empty'
 import { AppState } from '@/redux/stores/store'
-import pathMap from '@/routes/pathMap'
 import { GroupChat, joinGroupChat, listGroupChat, STATUS, TAB, TAB_ZH } from '@/services/groupChat'
 import { getPersonalInfo } from '@/services/user'
 import { TYPE } from '@/utils/constant'
@@ -13,13 +12,16 @@ import moment from 'moment'
 import React, { Component } from 'react'
 import { Image, RefreshControl, ScrollView, Text, View } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
+import { AllScreenParam } from '@/routes/bottomNav'
+import { RouteProp } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
 import { connect } from 'react-redux'
 import { Picture } from '../advisory/Chat'
 const style = gSass.groupChat.index
 
 interface Props {
-  navigation: NavigationScreenProp<any>
+  navigation: StackNavigationProp<AllScreenParam, 'GroupChat'>
+  route: RouteProp<AllScreenParam, 'GroupChat'>
 }
 interface State {
   hasLoad: boolean
@@ -371,7 +373,7 @@ export default class Index extends Component<Props & DefaultProps, State> {
         groupChatPic,
       })
     } else {
-      this.props.navigation.push(pathMap.AdvisoryChat, {
+      this.props.navigation.push('AdvisoryChat', {
         mode: 'chatGroup',
         groupId: groupChatId,
         groupName: groupChatName,

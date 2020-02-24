@@ -1,18 +1,20 @@
+import Empty from '@/components/Empty'
+import { AllScreenParam } from '@/routes/bottomNav'
 import { listInviteDoctorOrder } from '@/services/myInvite'
 import { Icon } from '@ant-design/react-native'
-import sColor from '@styles/color'
+import { RouteProp } from '@react-navigation/native'
+import { StackNavigationProp } from '@react-navigation/stack'
 import global from '@styles/global'
 import gImg from '@utils/img'
 import gSass from '@utils/style'
 import moment from 'moment'
 import React, { Component } from 'react'
-import { Image, PixelRatio, Text, View } from 'react-native'
+import { Image, Text, View } from 'react-native'
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler'
-import { StackNavigationProp } from '@react-navigation/stack'
-import Empty from '@/components/Empty'
 const style = gSass.myInvite.order
 interface Props {
-  navigation: StackNavigationProp<any>
+  navigation: StackNavigationProp<AllScreenParam, 'Order'>
+  route: RouteProp<AllScreenParam, 'Order'>
 }
 interface State {
   hasLoad: boolean
@@ -24,45 +26,22 @@ interface State {
 }
 
 export default class Order extends Component<Props, State> {
-  static navigationOptions = () => ({
-    title: '医师订单',
-    headerStyle: {
-      backgroundColor: sColor.white,
-      height: 50,
-      elevation: 0,
-      color: sColor.mainBlack,
-      borderBottomWidth: 1 / PixelRatio.get(),
-      borderBottomColor: sColor.colorEee,
-    },
-    headerTintColor: sColor.color333,
-    headerTitleStyle: {
-      flex: 1,
-      alignItems: 'center',
-      justifyContent: 'center',
-      fontSize: 14,
-      textAlign: 'center',
-    },
-    headerRight: (
-      <TouchableOpacity>{/* <Text style={[style.headerRight, global.fontSize14]}>保存</Text> */}</TouchableOpacity>
-    ),
-  })
   constructor(props: any) {
     super(props)
     this.state = this.getInitState(props)
   }
   getInitState = (props: Props): State => {
-    let doctorId = 0,
-      doctorName = '',
-      date = moment().format('YYYY-MM')
-    if (props.navigation.state.params) {
-      doctorId = props.navigation.state.params.doctorId || 0
-      doctorName = props.navigation.state.params.doctorName || ''
-      date = props.navigation.state.params.date || moment().format('YYYY-MM')
+    let { doctorId, doctorName, date } = props.route.params
+    let actDate: string = ''
+    if (date) {
+      actDate = date
+    } else {
+      actDate = moment().format('YYYY-MM')
     }
     return {
       hasLoad: false,
       total: 0,
-      date,
+      date: actDate,
       doctorId,
       doctorName,
       list: [],

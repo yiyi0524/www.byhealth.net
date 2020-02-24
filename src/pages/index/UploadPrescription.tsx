@@ -1,20 +1,23 @@
 import global from '@/assets/styles/global'
-import pathMap from '@/routes/pathMap'
+import { AllScreenParam } from '@/routes/bottomNav'
 import { uploadImg } from '@/services/api'
 import { Icon, ImagePicker, InputItem, Portal, TextareaItem, Toast } from '@ant-design/react-native'
 import doctorApi from '@api/doctor'
 import imgPickerOpt from '@config/imgPickerOpt'
-import sColor from '@styles/color'
+import { RouteProp } from '@react-navigation/native'
+import { StackNavigationProp } from '@react-navigation/stack'
 import gImg from '@utils/img'
 import gSass from '@utils/style'
 import React, { Component } from 'react'
 import { Image, Linking, Text, TouchableOpacity, View } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
 import RnImagePicker from 'react-native-image-picker'
-import { StackNavigationProp } from '@react-navigation/stack'
 import { Picture } from '../advisory/Chat'
 const style = gSass.index.uploadPrescription
-interface Props {}
+interface Props {
+  navigation: StackNavigationProp<AllScreenParam, 'UploadPrescription'>
+  route: RouteProp<AllScreenParam, 'UploadPrescription'>
+}
 interface State {
   hasLoad: boolean
   isShowImg: boolean
@@ -27,33 +30,6 @@ type DefaultProps = {}
 
 export default class UploadPrescription extends Component<Props & DefaultProps, State> {
   static defaultProps: DefaultProps
-  static navigationOptions = ({ navigation }: { navigation: StackNavigationProp<any> }) => ({
-    title: '代客下单',
-    headerStyle: {
-      backgroundColor: sColor.white,
-      height: 45,
-      elevation: 0,
-      borderBottomColor: sColor.colorDdd,
-    },
-    headerTintColor: sColor.color333,
-    headerTitleStyle: {
-      flex: 1,
-      alignItems: 'center',
-      justifyContent: 'center',
-      fontSize: 14,
-      textAlign: 'center',
-    },
-    headerRight: (
-      <TouchableOpacity
-        style={style.headerRight}
-        onPress={() => {
-          navigation.push(pathMap.UploadPrescriptionList)
-        }}
-      >
-        <Text style={style.headerTitle}>历史记录</Text>
-      </TouchableOpacity>
-    ),
-  })
   constructor(props: any) {
     super(props)
     this.state = this.getInitState()

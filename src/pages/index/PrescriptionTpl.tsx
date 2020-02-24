@@ -1,22 +1,24 @@
 import * as userAction from '@/redux/actions/user'
 import { AppState } from '@/redux/stores/store'
+import { AllScreenParam } from '@/routes/bottomNav'
 import pathMap from '@/routes/pathMap'
 import hospital from '@/services/hospital'
 import { Icon, Toast } from '@ant-design/react-native'
-import sColor from '@styles/color'
+import { RouteProp } from '@react-navigation/native'
+import { StackNavigationProp } from '@react-navigation/stack'
 import gImg from '@utils/img'
 import gStyle from '@utils/style'
 import React, { Component } from 'react'
-import { DeviceEventEmitter, EmitterSubscription, Image, PixelRatio, RefreshControl, Text, View } from 'react-native'
+import { DeviceEventEmitter, EmitterSubscription, Image, RefreshControl, Text, View } from 'react-native'
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler'
 import { connect } from 'react-redux'
 import { Dispatch } from 'redux'
 import { CategoryItem } from '../advisory/DrugSelect'
-import { StackNavigationProp } from '@react-navigation/stack'
 const style = gStyle.index.PrescriptionTpl
 const global = gStyle.global
 interface Props {
-  navigation: StackNavigationProp<any>
+  navigation: StackNavigationProp<AllScreenParam, 'PrescriptionTpl'>
+  route: RouteProp<AllScreenParam, 'PrescriptionTpl'>
 }
 interface State {
   hasLoad: boolean
@@ -43,26 +45,6 @@ export default class PrescriptionTpl extends Component<
   Props & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
   State
 > {
-  static navigationOptions = () => ({
-    title: '选择处方模板类型',
-    headerStyle: {
-      backgroundColor: sColor.white,
-      height: 50,
-      elevation: 0,
-      color: sColor.mainBlack,
-      borderBottomWidth: 1 / PixelRatio.get(),
-      borderBottomColor: sColor.colorEee,
-    },
-    headerTintColor: sColor.color333,
-    headerTitleStyle: {
-      flex: 1,
-      alignItems: 'center',
-      justifyContent: 'center',
-      fontSize: 14,
-      textAlign: 'center',
-    },
-    headerRight: <TouchableOpacity />,
-  })
   subscription?: EmitterSubscription
   constructor(props: any) {
     super(props)
@@ -133,7 +115,7 @@ export default class PrescriptionTpl extends Component<
                 <TouchableOpacity
                   key={k}
                   onPress={() =>
-                    this.props.navigation.push(pathMap.PrescriptionTplList, {
+                    this.props.navigation.push('PrescriptionTplList', {
                       id: category.id,
                       title: category.name,
                     })

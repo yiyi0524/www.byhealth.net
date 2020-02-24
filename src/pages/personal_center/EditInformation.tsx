@@ -1,17 +1,18 @@
 import * as userAction from '@/redux/actions/user'
 import { AppState } from '@/redux/stores/store'
-import pathMap from '@/routes/pathMap'
+import { AllScreenParam } from '@/routes/bottomNav'
 import api from '@/services/api'
 import { GENDER_ZH, setAdeptSymptomIdList, setProfile, TECHNICAL_TITLE_ZH } from '@/services/doctor'
 import { getPicCdnUrl } from '@/utils/utils'
 import { TextareaItem, Toast } from '@ant-design/react-native'
 import hospitalApi from '@api/hospital'
 import userApi, { DoctorInfo } from '@api/user'
-import sColor from '@styles/color'
+import { RouteProp } from '@react-navigation/native'
+import { StackNavigationProp } from '@react-navigation/stack'
 import gImg from '@utils/img'
 import gStyle from '@utils/style'
 import React, { Component } from 'react'
-import { Image, PixelRatio, RefreshControl, ScrollView, Text, View } from 'react-native'
+import { Image, RefreshControl, ScrollView, Text, View } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { connect } from 'react-redux'
 import { Dispatch } from 'redux'
@@ -21,7 +22,8 @@ import { Picture } from '../advisory/Chat'
 const style = gStyle.personalCenter.editInformation
 const global = gStyle.global
 interface Props {
-  navigation: any
+  navigation: StackNavigationProp<AllScreenParam, 'EditInformation'>
+  route: RouteProp<AllScreenParam, 'EditInformation'>
 }
 interface State {
   hasLoad: boolean
@@ -92,27 +94,6 @@ export default class Index extends Component<
   Props & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
   State
 > {
-  static navigationOptions = () => {
-    return {
-      title: '编辑资料',
-      headerStyle: {
-        backgroundColor: sColor.white,
-        height: 45,
-        elevation: 0,
-        borderBottomWidth: 1 / PixelRatio.get(),
-        borderBottomColor: sColor.colorDdd,
-      },
-      headerTintColor: sColor.color333,
-      headerTitleStyle: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-        fontSize: 14,
-        textAlign: 'center',
-      },
-      headerRight: <Text />,
-    }
-  }
   functionList: functionItem[] = []
   constructor(props: any) {
     super(props)
@@ -332,7 +313,7 @@ export default class Index extends Component<
                 </Text>
               </View>
               <TouchableOpacity
-                onPress={() => this.props.navigation.push(pathMap.CustomerService)}
+                onPress={() => this.props.navigation.push('CustomerService')}
                 style={style.headerInfoCustomerFa}
               >
                 <Text style={[style.headerInfoCustomer, global.fontSize12]}>联系客服修改</Text>

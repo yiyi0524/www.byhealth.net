@@ -1,18 +1,21 @@
+import { AllScreenParam } from '@/routes/bottomNav'
 import { uploadImg } from '@/services/api'
 import { addArticle, editArticle, getArticle } from '@/services/groupChat'
 import { getPicFullUrl } from '@/utils/utils'
 import { ImagePicker, InputItem, Portal, TextareaItem, Toast } from '@ant-design/react-native'
 import imgPickerOpt from '@config/imgPickerOpt'
+import { RouteProp } from '@react-navigation/native'
+import { StackNavigationProp } from '@react-navigation/stack'
 import gSass from '@utils/style'
 import React, { Component } from 'react'
 import { KeyboardAvoidingView, Platform, ScrollView, Text, TouchableOpacity, View } from 'react-native'
 import RnImagePicker from 'react-native-image-picker'
 import Permissions from 'react-native-permissions'
-import { StackNavigationProp } from '@react-navigation/stack'
 import { Picture } from '../advisory/Chat'
 const style = gSass.groupChat.addArticle
 interface Props {
-  navigation: StackNavigationProp<any>
+  navigation: StackNavigationProp<AllScreenParam, 'AddOrEditArticle'>
+  route: RouteProp<AllScreenParam, 'AddOrEditArticle'>
 }
 interface State {
   id: number
@@ -25,47 +28,12 @@ type DefaultProps = {}
 
 export default class AddArticle extends Component<Props & DefaultProps, State> {
   static defaultProps: DefaultProps
-  static navigationOptions = ({ navigation }: { navigation: StackNavigationProp<any> }) => {
-    let title = '添加文章'
-    if (navigation.state.params) {
-      if (navigation.state.params.type === 'edit') {
-        title = '编辑文章'
-      }
-    }
-    return {
-      title,
-      headerStyle: {
-        backgroundColor: '#fff',
-        height: 45,
-        elevation: 0,
-        borderColor: '#E3E3E3',
-      },
-      headerTintColor: '#333',
-      headerTitleStyle: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-        fontSize: 14,
-        textAlign: 'center',
-      },
-      headerRight: (
-        <TouchableOpacity>
-          <Text />
-        </TouchableOpacity>
-      ),
-    }
-  }
   constructor(props: any) {
     super(props)
     this.state = this.getInitState(props)
   }
   getInitState = (props: Props): State => {
-    let id = 0,
-      type = 'add'
-    if (props.navigation.state.params) {
-      id = props.navigation.state.params.id || 0
-      type = props.navigation.state.params.type || 'add'
-    }
+    const { id, type } = props.route.params
     return {
       id,
       type,
@@ -278,7 +246,7 @@ export default class AddArticle extends Component<Props & DefaultProps, State> {
               let {
                 data: { detail: article },
               } = await getArticle({ id: json.data.id })
-              let sendArticle = this.props.navigation.getParam('sendArticle')
+              let sendArticle = this.props.route.params.sendArticle
               sendArticle(article)
               this.props.navigation.goBack()
             })

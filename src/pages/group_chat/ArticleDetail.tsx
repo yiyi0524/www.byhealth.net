@@ -1,22 +1,20 @@
 import global from '@/assets/styles/global'
 import { AppState } from '@/redux/stores/store'
-import pathMap from '@/routes/pathMap'
+import { AllScreenParam } from '@/routes/bottomNav'
 import { Article, getArticle } from '@/services/groupChat'
 import { getPicFullUrl } from '@/utils/utils'
-import { Carousel, Toast } from '@ant-design/react-native'
+import { Carousel } from '@ant-design/react-native'
+import { RouteProp } from '@react-navigation/native'
+import { StackNavigationProp } from '@react-navigation/stack'
 import gSass from '@utils/style'
 import React, { Component } from 'react'
-import { Image, ScrollView, Text, TouchableOpacity, View } from 'react-native'
-import { StackNavigationProp } from '@react-navigation/stack'
+import { Image, ScrollView, Text, View } from 'react-native'
 import { connect } from 'react-redux'
 const style = gSass.groupChat.articleDetail
 
-interface NavParams {
-  id: number
-  isPersonalArticle: boolean
-}
 interface Props {
-  navigation: NavigationScreenProp<State, NavParams>
+  navigation: StackNavigationProp<AllScreenParam, 'ArticleDetail'>
+  route: RouteProp<AllScreenParam, 'ArticleDetail'>
 }
 interface State {
   isPersonalArticle: boolean
@@ -36,51 +34,12 @@ const mapStateToProps = (state: AppState) => {
 @connect(mapStateToProps)
 export default class ArticleDetail extends Component<Props & DefaultProps, State> {
   static defaultProps: DefaultProps
-  static navigationOptions = ({ navigation }: { navigation: NavigationScreenProp<State, NavParams> }) => {
-    return {
-      title: '文章详情',
-      headerStyle: {
-        backgroundColor: '#fff',
-        height: 45,
-        elevation: 0,
-        borderColor: '#E3E3E3',
-      },
-      headerTintColor: '#333',
-      headerTitleStyle: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-        fontSize: 14,
-        textAlign: 'center',
-      },
-      headerRight: (
-        <TouchableOpacity
-          onPress={() => {
-            console.log('state: ', navigation.state)
-            if (navigation.state.params!.isPersonalArticle) {
-              navigation.push(pathMap.AddOrEditArticle, {
-                type: 'edit',
-                id: navigation.state.params!.id,
-              })
-            } else {
-              Toast.info('您不是此文章的作者', 2)
-            }
-          }}
-        >
-          <Text style={style.rightTitle}>编辑</Text>
-        </TouchableOpacity>
-      ),
-    }
-  }
   constructor(props: any) {
     super(props)
     this.state = this.getInitState(props)
   }
   getInitState = (props: Props): State => {
-    let id = 0
-    if (props.navigation.state.params) {
-      id = props.navigation.state.params.id
-    }
+    const { id } = props.route.params
     return {
       id,
       isPersonalArticle: false,

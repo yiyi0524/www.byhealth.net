@@ -1,13 +1,13 @@
 import global from '@/assets/styles/global'
-import pathMap from '@/routes/pathMap'
+import { AppState } from '@/redux/stores/store'
+import { AllScreenParam } from '@/routes/bottomNav'
 import { Icon, Modal, Toast } from '@ant-design/react-native'
-import sColor from '@styles/color'
+import { RouteProp } from '@react-navigation/native'
+import { StackNavigationProp } from '@react-navigation/stack'
 import gImg from '@utils/img'
 import gSass from '@utils/style'
 import React, { Component } from 'react'
-import { Image, PixelRatio, ScrollView, Text, TouchableOpacity, View } from 'react-native'
-import { NavigationScreenProps } from 'react-navigation'
-import { AppState } from '@/redux/stores/store'
+import { Image, ScrollView, Text, TouchableOpacity, View } from 'react-native'
 import { connect } from 'react-redux'
 const style = gSass.index.prescribing
 
@@ -20,7 +20,10 @@ interface State {
   search: string
   patientList: []
 }
-type DefaultProps = {} & NavigationScreenProps & ReturnType<typeof mapStateToProps>
+type DefaultProps = {
+  navigation: StackNavigationProp<AllScreenParam, 'Prescribing'>
+  route: RouteProp<AllScreenParam, 'Prescribing'>
+} & ReturnType<typeof mapStateToProps>
 const mapStateToProps = (state: AppState) => {
   return {
     name: state.user.name,
@@ -31,26 +34,6 @@ const mapStateToProps = (state: AppState) => {
 @connect(mapStateToProps)
 export default class Prescribing extends Component<Props & DefaultProps, State> {
   static defaultProps: DefaultProps
-  static navigationOptions = () => ({
-    title: '立即开方',
-    headerStyle: {
-      backgroundColor: sColor.white,
-      height: 50,
-      elevation: 0,
-      color: sColor.mainBlack,
-      borderBottomWidth: 1 / PixelRatio.get(),
-      borderBottomColor: sColor.colorEee,
-    },
-    headerTintColor: sColor.color333,
-    headerTitleStyle: {
-      flex: 1,
-      alignItems: 'center',
-      justifyContent: 'center',
-      fontSize: 14,
-      textAlign: 'center',
-    },
-    headerRight: <TouchableOpacity />,
-  })
   constructor(props: any) {
     super(props)
     this.state = this.getInitState()
@@ -90,7 +73,7 @@ export default class Prescribing extends Component<Props & DefaultProps, State> 
                   if (!/1\d{10}/.test(phone)) {
                     return Toast.fail('手机号格式不正确')
                   }
-                  this.props.navigation.navigate(pathMap.SquareRoot, {
+                  this.props.navigation.navigate('SquareRoot', {
                     mode: 'phone',
                     phone,
                   })
@@ -104,12 +87,12 @@ export default class Prescribing extends Component<Props & DefaultProps, State> 
             <Image style={style.img} source={gImg.home.prescribingPhone} />
             <Text style={style.title}>手机号邀请患者</Text>
             <Text style={style.desc}>去填手机号</Text>
-            <Icon style={style.icon} name="right" />
+            <Icon style={style.icon} name='right' />
           </TouchableOpacity>
           <TouchableOpacity
             style={[style.item, global.flex, global.aCenter]}
             onPress={() => {
-              this.props.navigation.navigate(pathMap.SquareRoot, {
+              this.props.navigation.navigate('SquareRoot', {
                 mode: 'wx',
               })
             }}
@@ -117,29 +100,29 @@ export default class Prescribing extends Component<Props & DefaultProps, State> 
             <Image style={style.img} source={gImg.home.prescribingWeChat} />
             <Text style={style.title}>微信邀请患者</Text>
             <Text style={style.desc}>发送患者微信</Text>
-            <Icon style={style.icon} name="right" />
+            <Icon style={style.icon} name='right' />
           </TouchableOpacity>
           <TouchableOpacity
             style={[style.item, global.flex, global.aCenter]}
             onPress={() => {
-              this.props.navigation.navigate(pathMap.UploadPrescription)
+              this.props.navigation.navigate('UploadPrescription')
             }}
           >
             <Image style={style.img} source={gImg.home.prescribingPhotograph} />
             <Text style={style.title}>直接拍方</Text>
             <Text style={style.desc}>拍方后药房会联系患者添加微信</Text>
-            <Icon style={style.icon} name="right" />
+            <Icon style={style.icon} name='right' />
           </TouchableOpacity>
           <TouchableOpacity
             style={[style.item, global.flex, global.aCenter]}
             onPress={() => {
-              this.props.navigation.navigate(pathMap.PrescriptionTplList)
+              this.props.navigation.navigate('PrescriptionTpl')
             }}
           >
             <Image style={style.img} source={gImg.home.prescribingPhotograph} />
             <Text style={style.title}>模板开方</Text>
             <Text style={style.desc}>选择模板立即开方发送给微信患者</Text>
-            <Icon style={style.icon} name="right" />
+            <Icon style={style.icon} name='right' />
           </TouchableOpacity>
         </View>
         <View style={style.tips}>

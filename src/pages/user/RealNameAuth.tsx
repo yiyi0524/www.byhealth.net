@@ -1,6 +1,7 @@
 import global from '@/assets/styles/global'
 import * as userAction from '@/redux/actions/user'
 import { AppState } from '@/redux/stores/store'
+import { AllScreenParam } from '@/routes/bottomNav'
 import pathMap from '@/routes/pathMap'
 import { CASH_OUT_APPLY_STATUS } from '@/services/doctorBankCard'
 import { getPicCdnUrl } from '@/utils/utils'
@@ -9,6 +10,8 @@ import api, { TYPE, uploadImg } from '@api/api'
 import doctorApi, { authParam, GENDER, GENDER_ZH, STATUS, TECHNICAL_TITLE, TECHNICAL_TITLE_ZH } from '@api/doctor'
 import hospitalApi from '@api/hospital'
 import imgPickerOpt from '@config/imgPickerOpt'
+import { RouteProp } from '@react-navigation/native'
+import { StackNavigationProp } from '@react-navigation/stack'
 import sColor from '@styles/color'
 import gImg from '@utils/img'
 import gStyle from '@utils/style'
@@ -24,13 +27,13 @@ import {
   View,
 } from 'react-native'
 import RnImagePicker from 'react-native-image-picker'
-import { StackNavigationProp } from '@react-navigation/stack'
 import { connect } from 'react-redux'
 import { Dispatch } from 'redux'
 import { Picture } from '../advisory/Chat'
 const style = gStyle.user.realNameAuth
 interface Props {
-  navigation: StackNavigationProp<any>
+  navigation: StackNavigationProp<AllScreenParam, 'RealNameAuth'>
+  route: RouteProp<AllScreenParam, 'RealNameAuth'>
 }
 interface adeptSymptomIdItem {
   id: number

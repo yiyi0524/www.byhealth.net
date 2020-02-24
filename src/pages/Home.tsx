@@ -25,6 +25,8 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native'
+import { AllScreenParam } from '@/routes/bottomNav'
+import { RouteProp } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
 import { connect } from 'react-redux'
 import { Dispatch } from 'redux'
@@ -32,7 +34,8 @@ import { Picture } from './advisory/Chat'
 const style = gStyle.home
 const globalStyle = gStyle.global
 interface Props {
-  navigation: StackNavigationProp<any>
+  navigation: StackNavigationProp<AllScreenParam, 'AddressBookGroup'>
+  route: RouteProp<AllScreenParam, 'AddressBookGroup'>
 }
 interface bannerItem {
   id: number
@@ -262,7 +265,7 @@ export default class Home extends Component<
   addEventListenerLoginStatus = async () => {
     let isLogin = await api.isLogin()
     if (!isLogin) {
-      this.props.navigation.navigate(pathMap.Login)
+      this.props.navigation.navigate('Login')
     }
   }
   init = async () => {
@@ -337,7 +340,7 @@ export default class Home extends Component<
           settingList,
         })
       } else {
-        this.props.navigation.navigate(pathMap.Login)
+        this.props.navigation.navigate('Login')
       }
     } catch (err) {
       console.log(err)
@@ -403,7 +406,7 @@ export default class Home extends Component<
                 </Text>
                 <TouchableOpacity
                   onPress={() => {
-                    this.props.navigation.push(pathMap.RealNameAuth)
+                    this.props.navigation.push('RealNameAuth')
                   }}
                   style={[
                     this.state.hasRealNameAuth ? globalStyle.hidden : style.headerMedicalQualification,
@@ -422,7 +425,7 @@ export default class Home extends Component<
             <TouchableOpacity
               style={style.headerHelp}
               onPress={() => {
-                this.props.navigation.push(pathMap.Help)
+                this.props.navigation.push('Help')
                 // this.props.navigation.push(pathMap.Test)
               }}
             >
@@ -438,7 +441,7 @@ export default class Home extends Component<
                 if (!this.state.hasRealNameAuth) {
                   return Toast.info('您未认证完成', 1)
                 }
-                this.props.navigation.push(pathMap.Prescription)
+                this.props.navigation.push('Prescription')
               }}
             >
               <Text style={[style.prescriptionItemNum, global.fontSize15]}>{this.state.prescriptionCount}</Text>
@@ -464,7 +467,7 @@ export default class Home extends Component<
               globalStyle.justifyContentSpaceBetween,
             ]}
             onPress={() => {
-              this.props.navigation.push(pathMap.RealNameAuth)
+              this.props.navigation.push('RealNameAuth')
             }}
           >
             <View style={[style.verifiedTheme, globalStyle.flex, globalStyle.alignItemsCenter]}>
@@ -511,6 +514,7 @@ export default class Home extends Component<
                   style={style.bannerItem}
                   activeOpacity={0.8}
                   onPress={() => {
+                    // @ts-ignore
                     this.props.navigation.push(v.link)
                   }}
                 >
@@ -536,6 +540,7 @@ export default class Home extends Component<
                     if (!this.state.hasRealNameAuth) {
                       return Toast.info('您未认证完成', 1)
                     }
+                    // @ts-ignore
                     this.props.navigation.push(v.link)
                   }}
                 >

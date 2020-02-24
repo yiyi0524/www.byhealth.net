@@ -1,30 +1,29 @@
 import * as userAction from '@/redux/actions/user'
 import { AppState } from '@/redux/stores/store'
+import { AllScreenParam } from '@/routes/bottomNav'
 import pathMap from '@/routes/pathMap'
+import doctor, { SittingHospital } from '@/services/doctor'
+import hospital from '@/services/hospital'
 import { Icon, Toast } from '@ant-design/react-native'
 import Calendar from '@components/Calendar'
-import sColor from '@styles/color'
+import { RouteProp } from '@react-navigation/native'
+import { StackNavigationProp } from '@react-navigation/stack'
 import gImg from '@utils/img'
 import gStyle from '@utils/style'
 import React, { Component } from 'react'
-import { Image, PixelRatio, RefreshControl, Text, View, DeviceEventEmitter, EmitterSubscription } from 'react-native'
+import { DeviceEventEmitter, EmitterSubscription, Image, RefreshControl, Text, View } from 'react-native'
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler'
-import { StackNavigationProp } from '@react-navigation/stack'
 import { connect } from 'react-redux'
 import { Dispatch } from 'redux'
-import doctor, { SittingHospital } from '@/services/doctor'
-import hospital from '@/services/hospital'
 const style = gStyle.index.SittingHospital
 const global = gStyle.global
-interface NavParams {
-  navigatePress: () => void
-}
 interface Hospital {
   id: number
   name: string
 }
 interface Props {
-  navigation: NavigationScreenProp<State, NavParams>
+  navigation: StackNavigationProp<AllScreenParam, 'SittingHospital'>
+  route: RouteProp<AllScreenParam, 'SittingHospital'>
 }
 interface State {
   hasLoad: boolean
@@ -51,34 +50,6 @@ export default class SittingInformation extends Component<
   Props & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
   State
 > {
-  static navigationOptions = ({ navigation }: { navigation: NavigationScreenProp<State, NavParams> }) => ({
-    title: '本月坐诊信息',
-    headerStyle: {
-      backgroundColor: sColor.white,
-      height: 50,
-      elevation: 0,
-      color: sColor.mainBlack,
-      borderBottomWidth: 1 / PixelRatio.get(),
-      borderBottomColor: sColor.colorEee,
-    },
-    headerTintColor: sColor.color333,
-    headerTitleStyle: {
-      flex: 1,
-      alignItems: 'center',
-      justifyContent: 'center',
-      fontSize: 14,
-      textAlign: 'center',
-    },
-    headerRight: (
-      <TouchableOpacity
-        onPress={() => {
-          navigation.state.params!.navigatePress()
-        }}
-      >
-        {/* <Text style={[style.headerRight, global.fontSize14]}>分享</Text> */}
-      </TouchableOpacity>
-    ),
-  })
   sittingInfoMapColor: string[]
   subscription?: EmitterSubscription
   constructor(props: any) {
@@ -160,7 +131,7 @@ export default class SittingInformation extends Component<
             <View style={style.medicalInstitution}>
               <View style={[style.header, global.flex, global.alignItemsCenter]}>
                 <Text style={[style.selectMedicalInstitutionTitle, global.fontSize14]}>医疗机构</Text>
-                <TouchableOpacity onPress={() => this.props.navigation.push(pathMap.SittingHospitalList)}>
+                <TouchableOpacity onPress={() => this.props.navigation.push('SittingHospitalList')}>
                   <View style={[style.selectMedicalInstitution, global.flex, global.alignItemsCenter]}>
                     <Text style={[style.selectMedicalInstitutionTheme, global.fontSize14]}>添加医疗机构</Text>
                     <Icon style={[style.selectMedicalInstitutionIcon, global.fontSize14]} name='right' />

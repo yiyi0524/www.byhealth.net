@@ -12,6 +12,9 @@ import doctorBankCard, {
 import { Icon, Toast, Modal, InputItem } from '@ant-design/react-native'
 import sColor from '@styles/color'
 import gImg from '@utils/img'
+import { AllScreenParam } from '@/routes/bottomNav'
+import { RouteProp } from '@react-navigation/native'
+import { StackNavigationProp } from '@react-navigation/stack'
 import gStyle from '@utils/style'
 import React, { Component } from 'react'
 import {
@@ -30,7 +33,8 @@ import pathMap from '@/routes/pathMap'
 const style = gStyle.personalCenter.account
 const global = gStyle.global
 interface Props {
-  navigation: any
+  navigation: StackNavigationProp<AllScreenParam, 'Account'>
+  route: RouteProp<AllScreenParam, 'Account'>
 }
 interface State {
   isCashOutModalActive: boolean
@@ -77,36 +81,6 @@ export default class Account extends Component<
   Props & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
   State
 > {
-  static navigationOptions = () => {
-    return {
-      title: '账户',
-      headerStyle: {
-        backgroundColor: sColor.lightGreen,
-        height: 45,
-        elevation: 0,
-        borderColor: sColor.lightGreen,
-      },
-      headerTintColor: sColor.white,
-      headerTitleStyle: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-        fontSize: 14,
-        textAlign: 'center',
-      },
-      headerRight: (
-        <TouchableOpacity
-        // onPress={() =>
-        //   navigation.push(pathMap.PatientDetail, {
-        //     id: navigation.getParam("patientId"),
-        //   })
-        // }
-        >
-          {/* <Text style={[style.headerRight, global.fontSize14, global.fontStyle]}>说明</Text> */}
-        </TouchableOpacity>
-      ),
-    }
-  }
   functionList: functionItem[] = []
   subscription?: EmitterSubscription
   constructor(props: any) {
@@ -273,7 +247,7 @@ export default class Account extends Component<
               <TouchableOpacity
                 style={style.addBank}
                 onPress={() => {
-                  this.props.navigation.push(pathMap.AddBankCard)
+                  this.props.navigation.push('AddBankCard')
                 }}
               >
                 <View style={[style.addBankTitle, global.flex, global.alignItemsCenter, global.justifyContentCenter]}>
@@ -286,7 +260,7 @@ export default class Account extends Component<
               <TouchableOpacity
                 style={[style.bankDescription, global.flex, global.alignItemsCenter, global.justifyContentSpaceBetween]}
                 onPress={() => {
-                  this.props.navigation.push(pathMap.EditBankCard)
+                  this.props.navigation.push('EditBankCard')
                 }}
               >
                 <Text style={[style.bankDescriptionTitle, global.fontSize14]}>{bankList[0].bankName}</Text>

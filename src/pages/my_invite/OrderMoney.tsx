@@ -1,19 +1,20 @@
-import sColor from '@styles/color'
+import Empty from '@/components/Empty'
+import { AllScreenParam } from '@/routes/bottomNav'
+import { InviteDoctorChildInfo, listInviteDoctorChildInfo } from '@/services/myInvite'
+import { Icon } from '@ant-design/react-native'
+import { RouteProp } from '@react-navigation/native'
+import { StackNavigationProp } from '@react-navigation/stack'
 import global from '@styles/global'
 import gImg from '@utils/img'
 import gSass from '@utils/style'
-import React, { Component } from 'react'
-import { Image, PixelRatio, Text, View } from 'react-native'
-import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler'
-import pathMap from '@/routes/pathMap'
-import { StackNavigationProp } from '@react-navigation/stack'
-import { Icon } from '@ant-design/react-native'
 import moment from 'moment'
-import { InviteDoctorChildInfo, listInviteDoctorChildInfo } from '@/services/myInvite'
-import Empty from '@/components/Empty'
+import React, { Component } from 'react'
+import { Image, Text, View } from 'react-native'
+import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler'
 const style = gSass.myInvite.myInviteDoctorList
 interface Props {
-  navigation: StackNavigationProp<any>
+  navigation: StackNavigationProp<AllScreenParam, 'AddressBookGroup'>
+  route: RouteProp<AllScreenParam, 'AddressBookGroup'>
 }
 interface State {
   hasLoad: boolean
@@ -23,28 +24,6 @@ interface State {
 }
 
 export default class OrderMoney extends Component<Props, State> {
-  static navigationOptions = () => ({
-    title: '订单金额',
-    headerStyle: {
-      backgroundColor: sColor.white,
-      height: 50,
-      elevation: 0,
-      color: sColor.mainBlack,
-      borderBottomWidth: 1 / PixelRatio.get(),
-      borderBottomColor: sColor.colorEee,
-    },
-    headerTintColor: sColor.color333,
-    headerTitleStyle: {
-      flex: 1,
-      alignItems: 'center',
-      justifyContent: 'center',
-      fontSize: 14,
-      textAlign: 'center',
-    },
-    headerRight: (
-      <TouchableOpacity>{/* <Text style={[style.headerRight, global.fontSize14]}>保存</Text> */}</TouchableOpacity>
-    ),
-  })
   constructor(props: any) {
     super(props)
     this.state = this.getInitState()
@@ -175,7 +154,7 @@ export default class OrderMoney extends Component<Props, State> {
                   <Text
                     style={style.desc}
                     onPress={() => {
-                      this.props.navigation.push(pathMap.InviteDoctorGradeList, {
+                      this.props.navigation.push('InviteDoctorGradeList', {
                         doctorId: item.doctorId,
                         level: 1,
                         doctorName: item.name,
@@ -187,7 +166,7 @@ export default class OrderMoney extends Component<Props, State> {
                   <Text
                     style={style.desc}
                     onPress={() => {
-                      this.props.navigation.push(pathMap.InviteDoctorGradeList, {
+                      this.props.navigation.push('InviteDoctorGradeList', {
                         doctorId: item.doctorId,
                         level: 2,
                         doctorName: item.name,
@@ -199,7 +178,7 @@ export default class OrderMoney extends Component<Props, State> {
                   <Text
                     style={style.desc}
                     onPress={() => {
-                      this.props.navigation.push(pathMap.InviteDoctorGradeList, {
+                      this.props.navigation.push('InviteDoctorGradeList', {
                         doctorId: item.doctorId,
                         level: 3,
                         doctorName: item.name,

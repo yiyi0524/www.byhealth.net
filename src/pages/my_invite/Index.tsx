@@ -1,24 +1,25 @@
-import sColor from '@styles/color'
+import { AllScreenParam } from '@/routes/bottomNav'
+import {
+  getInviteDoctorOrderInfo,
+  getInviteDoctorOrderMoneyInfo,
+  getInviteDoctorStatistics,
+  InviteDoctorOrderInfo,
+  InviteDoctorOrderMoneyInfo,
+  InviteDoctorStatistics,
+} from '@/services/myInvite'
+import { RouteProp } from '@react-navigation/native'
+import { StackNavigationProp } from '@react-navigation/stack'
 import global from '@styles/global'
 import gImg from '@utils/img'
 import gSass from '@utils/style'
-import React, { Component } from 'react'
-import { Image, PixelRatio, Text, View } from 'react-native'
-import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler'
-import pathMap from '@/routes/pathMap'
-import { StackNavigationProp } from '@react-navigation/stack'
-import {
-  InviteDoctorStatistics,
-  InviteDoctorOrderMoneyInfo,
-  InviteDoctorOrderInfo,
-  getInviteDoctorStatistics,
-  getInviteDoctorOrderMoneyInfo,
-  getInviteDoctorOrderInfo,
-} from '@/services/myInvite'
 import moment from 'moment'
+import React, { Component } from 'react'
+import { Image, Text, View } from 'react-native'
+import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler'
 const style = gSass.myInvite.myInviteIndex
 interface Props {
-  navigation: StackNavigationProp<any>
+  navigation: StackNavigationProp<AllScreenParam, 'MyInvite'>
+  route: RouteProp<AllScreenParam, 'MyInvite'>
 }
 interface State {
   hasLoad: boolean
@@ -28,28 +29,6 @@ interface State {
 }
 
 export default class Index extends Component<Props, State> {
-  static navigationOptions = () => ({
-    title: '我的邀请',
-    headerStyle: {
-      backgroundColor: sColor.white,
-      height: 50,
-      elevation: 0,
-      color: sColor.mainBlack,
-      borderBottomWidth: 1 / PixelRatio.get(),
-      borderBottomColor: sColor.colorEee,
-    },
-    headerTintColor: sColor.color333,
-    headerTitleStyle: {
-      flex: 1,
-      alignItems: 'center',
-      justifyContent: 'center',
-      fontSize: 14,
-      textAlign: 'center',
-    },
-    headerRight: (
-      <TouchableOpacity>{/* <Text style={[style.headerRight, global.fontSize14]}>保存</Text> */}</TouchableOpacity>
-    ),
-  })
   constructor(props: any) {
     super(props)
     this.state = this.getInitState()
@@ -107,7 +86,7 @@ export default class Index extends Component<Props, State> {
           <View style={style.list}>
             <TouchableOpacity
               onPress={() => {
-                this.props.navigation.push(pathMap.InviteDoctorList)
+                this.props.navigation.push('InviteDoctorList')
               }}
             >
               <View style={style.item}>
@@ -142,7 +121,7 @@ export default class Index extends Component<Props, State> {
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => {
-                this.props.navigation.push(pathMap.OrderMoney)
+                this.props.navigation.push('OrderMoney')
               }}
             >
               <View style={style.item}>
@@ -178,7 +157,7 @@ export default class Index extends Component<Props, State> {
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => {
-                this.props.navigation.push(pathMap.OrderCount)
+                this.props.navigation.push('OrderCount')
               }}
             >
               <View style={style.item}>

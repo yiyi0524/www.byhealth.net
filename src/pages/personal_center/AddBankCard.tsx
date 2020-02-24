@@ -1,9 +1,11 @@
 import * as userAction from '@/redux/actions/user'
 import { AppState } from '@/redux/stores/store'
+import { AllScreenParam } from '@/routes/bottomNav'
 import pathMap from '@/routes/pathMap'
-import api from '@/services/api'
 import doctorBankCard from '@/services/doctorBankCard'
 import { InputItem, List, Toast } from '@ant-design/react-native'
+import { RouteProp } from '@react-navigation/native'
+import { StackNavigationProp } from '@react-navigation/stack'
 import gImg from '@utils/img'
 import gStyle from '@utils/style'
 import React, { Component } from 'react'
@@ -14,20 +16,15 @@ import {
   Platform,
   RefreshControl,
   ScrollView,
-  Text,
-  TouchableOpacity,
   View,
 } from 'react-native'
-import { StackNavigationProp } from '@react-navigation/stack'
 import { connect } from 'react-redux'
 import { Dispatch } from 'redux'
 const style = gStyle.personalCenter.addBankCard
 const global = gStyle.global
 interface Props {
-  navigation: any
-}
-interface NavParams {
-  navigatePress: () => void
+  navigation: StackNavigationProp<AllScreenParam, 'AddBankCard'>
+  route: RouteProp<AllScreenParam, 'AddBankCard'>
 }
 interface State {
   hasLoad: boolean
@@ -64,34 +61,6 @@ export default class Account extends Component<
   Props & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
   State
 > {
-  static navigationOptions = ({ navigation }: { navigation: NavigationScreenProp<State, NavParams> }) => {
-    return {
-      title: '管理银行卡',
-      headerStyle: {
-        backgroundColor: '#fff',
-        height: 45,
-        elevation: 0,
-        borderColor: '#fff',
-      },
-      headerTintColor: '#333',
-      headerTitleStyle: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-        fontSize: 14,
-        textAlign: 'center',
-      },
-      headerRight: (
-        <TouchableOpacity
-          onPress={() => {
-            navigation.state.params!.navigatePress()
-          }}
-        >
-          <Text style={[style.headerRight, global.fontSize14, global.fontStyle]}>完成</Text>
-        </TouchableOpacity>
-      ),
-    }
-  }
   functionList: functionItem[] = []
   constructor(props: any) {
     super(props)

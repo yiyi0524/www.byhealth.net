@@ -3,13 +3,16 @@ import { agreeJoin, GroupChat, listGroupChat, rejectJoin } from '@/services/grou
 import { getPicFullUrl } from '@/utils/utils'
 import { Toast } from '@ant-design/react-native'
 import gImg from '@utils/img'
+import { RouteProp } from '@react-navigation/native'
+import { AllScreenParam } from '@/routes/bottomNav'
 import gSass from '@utils/style'
 import React, { Component } from 'react'
 import { Image, ScrollView, Text, TouchableOpacity, View } from 'react-native'
 import { StackNavigationProp } from '@react-navigation/stack'
 const style = gSass.groupChat.applyList
 interface Props {
-  navigation: StackNavigationProp<any>
+  navigation: StackNavigationProp<AllScreenParam, 'ApplyList'>
+  route: RouteProp<AllScreenParam, 'ApplyList'>
 }
 interface State {
   groupChatId: number
@@ -20,45 +23,12 @@ type DefaultProps = {}
 
 export default class ApplyList extends Component<Props & DefaultProps, State> {
   static defaultProps: DefaultProps
-  static navigationOptions = ({ navigation }: { navigation: StackNavigationProp<any> }) => {
-    let title = ''
-    if (navigation.state.params) {
-      title = navigation.state.params.name
-    }
-    return {
-      title,
-      headerStyle: {
-        backgroundColor: '#fff',
-        height: 45,
-        elevation: 0,
-        borderColor: '#E3E3E3',
-      },
-      headerTintColor: '#333',
-      headerTitleStyle: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-        fontSize: 14,
-        textAlign: 'center',
-      },
-      headerRight: (
-        <TouchableOpacity>
-          <Text> </Text>
-        </TouchableOpacity>
-      ),
-    }
-  }
   constructor(props: any) {
     super(props)
     this.state = this.getInitState(props)
   }
   getInitState = (props: Props): State => {
-    let groupChatId = 0,
-      groupChatName = ''
-    if (props.navigation.state.params) {
-      groupChatId = props.navigation.state.params.id
-      groupChatName = props.navigation.state.params.name
-    }
+    const { id: groupChatId, name: groupChatName } = props.route.params
     return {
       groupChatId,
       groupChatName,

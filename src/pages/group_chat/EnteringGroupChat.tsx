@@ -17,6 +17,8 @@ import sColor from '@styles/color'
 import Buff from '@utils/Buff'
 import gStyle from '@utils/style'
 import React, { Component } from 'react'
+import { AllScreenParam } from '@/routes/bottomNav'
+import { RouteProp } from '@react-navigation/native'
 import {
   AppState as RnAppState,
   AppStateStatus,
@@ -31,6 +33,7 @@ import {
   RefreshControl,
   Text,
   View,
+  ScrollView,
 } from 'react-native'
 import { AudioRecorder, AudioUtils } from 'react-native-audio'
 import { TouchableOpacity } from 'react-native-gesture-handler'
@@ -38,15 +41,16 @@ import ImageZoom from 'react-native-image-pan-zoom'
 import RnImagePicker from 'react-native-image-picker'
 import Permissions from 'react-native-permissions'
 import Sound from 'react-native-sound'
-import { NavigationScreenProp, ScrollView } from 'react-navigation'
 import { connect } from 'react-redux'
 import { Dispatch } from 'redux'
+import { StackNavigationProp } from '@react-navigation/stack'
 import { Overwrite } from 'utility-types'
 const style = gStyle.groupChat.chat
 const audioPath = AudioUtils.DocumentDirectoryPath + '/tempAudio.aac'
 export type ChatMode = 'text' | 'audio'
 interface Props {
-  navigation: StackNavigationProp<any>
+  navigation: StackNavigationProp<AllScreenParam, 'EnteringGroupChat'>
+  route: RouteProp<AllScreenParam, 'EnteringGroupChat'>
 }
 
 /**
@@ -223,7 +227,7 @@ export default class EnteringGroupChat extends Component<
   Props & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
   State
 > {
-  static navigationOptions = ({ navigation }: { navigation: StackNavigationProp<any> }) => {
+  static navigationOptions = ({ navigation }: { navigation: any }) => {
     let title = ''
     if (navigation.state.params) {
       title = navigation.state.params.groupChatName
@@ -281,7 +285,7 @@ export default class EnteringGroupChat extends Component<
       link: '',
     },
   ]
-  myScroll: ScrollView | null = null
+  myScroll = React.createRef<ScrollView>()
   msgInput: TextareaItem | null = null
   listener?: EmitterSubscription
   whoosh: Sound | null = null
@@ -290,8 +294,7 @@ export default class EnteringGroupChat extends Component<
     this.state = this.getInitState()
   }
   getInitState = (): State => {
-    let patientUid = this.props.navigation.getParam('patientUid')
-    let groupChatId = this.props.navigation.getParam('groupChatId')
+    const { patientUid, groupChatId } = this.props.route.params
     return {
       groupChatId,
       isStopRecord: false,
@@ -345,7 +348,7 @@ export default class EnteringGroupChat extends Component<
   componentDidMount() {
     this.init()
     this.requestReadExteralStorage()
-    setTimeout(() => this.myScroll && this.myScroll.scrollToEnd(), 100)
+    setTimeout(() => this.myScroll.current && this.myScroll.current.scrollToEnd(), 100)
     RnAppState.addEventListener('change', this.onAppStateChange)
     Permissions.check('microphone').then(resp => {
       if (resp === 'authorized') {
@@ -426,7 +429,7 @@ export default class EnteringGroupChat extends Component<
             shouldScrollToEnd: true,
           })
         }
-        setTimeout(() => this.myScroll && this.myScroll.scrollToEnd(), 100)
+        setTimeout(() => this.myScroll.current && this.myScroll.current.scrollToEnd(), 100)
       }
     }
   }
@@ -601,8 +604,8 @@ export default class EnteringGroupChat extends Component<
             ref={this.myScroll}
             style={style.content}
             onContentSizeChange={() => {
-              if (this.myScroll && this.state.shouldScrollToEnd) {
-                this.myScroll.scrollToEnd()
+              if (this.myScroll.current && this.state.shouldScrollToEnd) {
+                this.myScroll.current.scrollToEnd()
                 this.setState({
                   shouldScrollToEnd: false,
                 })
@@ -1260,8 +1263,9 @@ export default class EnteringGroupChat extends Component<
           </View>
           <TouchableOpacity
             onPress={() => {
-              this.props.navigation.push(pathMap.ArticleDetail, {
+              this.props.navigation.push('ArticleDetail', {
                 id: msg.extraData.id,
+                isPersonalArticle: false,
               })
             }}
           >
@@ -1303,7 +1307,7 @@ export default class EnteringGroupChat extends Component<
           <Text style={[style.treatmentPlanItem, global.fontSize14]}>根据治疗方案购买 服药, 并按时复诊</Text>
           <TouchableOpacity
             onPress={() => {
-              this.props.navigation.push(pathMap.SquareRootDetail, {
+              this.props.navigation.push('SquareRootDetail', {
                 prescriptionId: msg.extraData.id,
               })
             }}
@@ -1325,8 +1329,9 @@ export default class EnteringGroupChat extends Component<
         <TouchableOpacity
           activeOpacity={0.8}
           onPress={() =>
-            this.props.navigation.push(pathMap.InquirySheet, {
+            this.props.navigation.push('InquirySheet', {
               patientUid: msg.extraData.patient.id,
+              consultationId: 0,
             })
           }
           style={style.inquirySheetContent}
@@ -1575,10 +1580,12 @@ export default class EnteringGroupChat extends Component<
   }
   selectBottomNav = (v: bottomNavItem) => {
     if (v.title === '发布') {
+      // @ts-ignore
       this.props.navigation.push(v.link, {
         patientUid: this.state.patientUid,
       })
     } else if (v.title === '文章') {
+      // @ts-ignore
       this.props.navigation.push(v.link, {
         patientUid: this.state.patientUid,
       })
@@ -1603,8 +1610,8 @@ export default class EnteringGroupChat extends Component<
       this.setState({
         sendMsg: '',
       })
-      if (this.myScroll && this.state.shouldScrollToEnd) {
-        this.myScroll.scrollToEnd()
+      if (this.myScroll.current && this.state.shouldScrollToEnd) {
+        this.myScroll.current.scrollToEnd()
         this.setState({
           shouldScrollToEnd: false,
         })

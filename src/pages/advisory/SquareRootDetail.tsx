@@ -1,22 +1,24 @@
 import global from '@/assets/styles/global'
 import * as userAction from '@/redux/actions/user'
 import { AppState } from '@/redux/stores/store'
+import { AllScreenParam } from '@/routes/bottomNav'
 import { windowWidth } from '@/services/api'
 import doctor, { GENDER_ZH, squareRoot } from '@/services/doctor'
+import { EXTERN_CHINESE_DRUG_ID, ORAL_CHINESE_DRUG_ID, TOPICAL_CHINESE_DRUG_ID } from '@/services/drug'
 import hospital from '@/services/hospital'
 import { DrugInfo } from '@/services/patient'
 import { Toast } from '@ant-design/react-native'
 import DashLine from '@components/DashLine'
+import { StackNavigationProp } from '@react-navigation/stack'
+import { RouteProp } from '@react-navigation/native'
 import sColor from '@styles/color'
 import gImg from '@utils/img'
 import gStyle from '@utils/style'
 import moment from 'moment'
 import React, { Component } from 'react'
-import { Image, PixelRatio, RefreshControl, Text, View } from 'react-native'
-import { NavigationScreenProp, ScrollView } from 'react-navigation'
+import { Image, RefreshControl, ScrollView, Text, View } from 'react-native'
 import { connect } from 'react-redux'
 import { Dispatch } from 'redux'
-import { ORAL_CHINESE_DRUG_ID, EXTERN_CHINESE_DRUG_ID, TOPICAL_CHINESE_DRUG_ID } from '@/services/drug'
 const style = gStyle.advisory.SquareRootDetail
 const mapStateToProps = (state: AppState) => {
   return {
@@ -38,7 +40,8 @@ interface drugCategory {
   child: drugCategory[]
 }
 interface Props {
-  navigation: StackNavigationProp<any>
+  navigation: StackNavigationProp<AllScreenParam, 'SquareRootDetail'>
+  route: RouteProp<AllScreenParam, 'SquareRootDetail'>
 }
 
 interface State {
@@ -54,27 +57,6 @@ export default class SquareRoot extends Component<
   Props & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
   State
 > {
-  static navigationOptions = () => {
-    return {
-      title: '查看整体治疗方案',
-      headerStyle: {
-        backgroundColor: sColor.white,
-        height: 45,
-        elevation: 0,
-        borderBottomWidth: 1 / PixelRatio.get(),
-        borderBottomColor: sColor.colorEee,
-      },
-      headerTintColor: sColor.color333,
-      headerTitleStyle: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-        fontSize: 14,
-        textAlign: 'center',
-      },
-      headerRight: <Text />,
-    }
-  }
   constructor(props: any) {
     super(props)
     this.state = this.getInitState()
@@ -83,7 +65,7 @@ export default class SquareRoot extends Component<
     return {
       hasLoad: false,
       refreshing: false,
-      prescriptionId: this.props.navigation.getParam('prescriptionId'),
+      prescriptionId: this.props.route.params.prescriptionId,
       detail: {
         doctor: {
           name: '',

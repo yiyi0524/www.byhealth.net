@@ -94,15 +94,21 @@ export async function isLogin() {
           s(true)
         })
         .catch(err => {
-          if (err.msg && err.msg.includes('Network request failed')) {
-            s(true)
-          } else {
+          if ('code' in err && err.code === 0xee) {
             s(false)
+          } else {
+            s(true)
           }
+          // if (err.msg && err.msg.includes('Network request failed')) {
+          //   s(true)
+          // } else {
+          //   s(false)
+          // }
         })
     } catch (err) {
+      s(true)
       console.log('check isLogin err: ', err)
-      s(false)
+      // s(false)
     }
   })
   if (!userIsLogin) {

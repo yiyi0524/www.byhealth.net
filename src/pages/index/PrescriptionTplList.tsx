@@ -1,24 +1,26 @@
+import Empty from '@/components/Empty'
 import * as userAction from '@/redux/actions/user'
 import { AppState } from '@/redux/stores/store'
+import { AllScreenParam } from '@/routes/bottomNav'
 import pathMap from '@/routes/pathMap'
 import doctor, { PrescriptionTpl } from '@/services/doctor'
 import { TYPE } from '@/utils/constant'
-import { Toast, SwipeAction } from '@ant-design/react-native'
-import sColor from '@styles/color'
+import { SwipeAction, Toast } from '@ant-design/react-native'
+import { SwipeActionProps } from '@ant-design/react-native/lib/swipe-action'
+import { RouteProp } from '@react-navigation/native'
+import { StackNavigationProp } from '@react-navigation/stack'
 import gImg from '@utils/img'
 import gStyle from '@utils/style'
-import React, { Component, ReactChild } from 'react'
-import { DeviceEventEmitter, EmitterSubscription, Image, PixelRatio, RefreshControl, Text, View } from 'react-native'
-import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler'
-import { StackNavigationProp } from '@react-navigation/stack'
+import React, { Component } from 'react'
+import { DeviceEventEmitter, EmitterSubscription, Image, RefreshControl, Text, View } from 'react-native'
+import { ScrollView } from 'react-native-gesture-handler'
 import { connect } from 'react-redux'
 import { Dispatch } from 'redux'
-import Empty from '@/components/Empty'
-import { SwipeActionProps } from '@ant-design/react-native/lib/swipe-action'
 const style = gStyle.index.PrescriptionTplList
 const global = gStyle.global
 interface Props {
-  navigation: StackNavigationProp<any>
+  navigation: StackNavigationProp<AllScreenParam, 'PrescriptionTplList'>
+  route: RouteProp<AllScreenParam, 'PrescriptionTplList'>
 }
 interface State {
   hasLoad: boolean
@@ -46,45 +48,6 @@ export default class PrescriptionTplList extends Component<
   Props & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
   State
 > {
-  static navigationOptions = ({ navigation }: { navigation: StackNavigationProp<any> }) => {
-    let title = '处方模板'
-    let headerRight: ReactChild | null = null
-    if (navigation.state.params) {
-      title = navigation.state.params.title + '模板'
-      headerRight = (
-        <TouchableOpacity
-          style={navigation.getParam('id') ? {} : { display: 'none' }}
-          onPress={() => {
-            navigation.push(pathMap.AddPrescriptionTpl, {
-              id: navigation.getParam('id'),
-              title: navigation.getParam('title'),
-            })
-          }}
-        >
-          <Text style={[style.headerRight, global.fontSize14, global.fontStyle]}>新建</Text>
-        </TouchableOpacity>
-      )
-    }
-    return {
-      title,
-      headerStyle: {
-        backgroundColor: sColor.white,
-        height: 45,
-        elevation: 0,
-        borderBottomWidth: 1 / PixelRatio.get(),
-        borderBottomColor: sColor.colorEee,
-      },
-      headerTintColor: sColor.color333,
-      headerTitleStyle: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-        fontSize: 14,
-        textAlign: 'center',
-      },
-      headerRight,
-    }
-  }
   subscription?: EmitterSubscription
   constructor(props: any) {
     super(props)
@@ -113,8 +76,7 @@ export default class PrescriptionTplList extends Component<
   }
   init = async () => {
     try {
-      let categoryId = this.props.navigation.getParam('id'),
-        categoryName = this.props.navigation.getParam('title')
+      let { id: categoryId, title: categoryName } = this.props.route.params
       let {
         data: { list: prescriptionTplList },
       } = await doctor.listPrescriptionTpl({
@@ -190,7 +152,7 @@ export default class PrescriptionTplList extends Component<
                     {
                       text: '开方',
                       onPress: () => {
-                        this.props.navigation.push(pathMap.SquareRoot, {
+                        this.props.navigation.push('SquareRoot', {
                           mode: 'wx',
                           prescription: prescription,
                         })
@@ -202,7 +164,7 @@ export default class PrescriptionTplList extends Component<
                     {
                       text: '开方',
                       onPress: () => {
-                        this.props.navigation.push(pathMap.SquareRoot, {
+                        this.props.navigation.push('SquareRoot', {
                           mode: 'wx',
                           prescription: prescription,
                         })
@@ -212,7 +174,7 @@ export default class PrescriptionTplList extends Component<
                     {
                       text: '编辑',
                       onPress: () => {
-                        this.props.navigation.push(pathMap.EditPrescriptionTpl, {
+                        this.props.navigation.push('EditPrescriptionTpl', {
                           id: prescription.id,
                           title: this.state.categoryName,
                           categoryId: this.state.categoryId,

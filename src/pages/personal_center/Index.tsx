@@ -21,11 +21,14 @@ import {
 } from 'react-native'
 import { connect } from 'react-redux'
 import { Dispatch } from 'redux'
+import { AllScreenParam } from '@/routes/bottomNav'
+import { RouteProp } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
 const style = gStyle.personalCenter.personalCenterIndex
 const global = gStyle.global
 interface Props {
-  navigation: StackNavigationProp<any>
+  navigation: StackNavigationProp<AllScreenParam, 'PersonalCenter'>
+  route: RouteProp<AllScreenParam, 'PersonalCenter'>
 }
 interface State {
   hasLoad: boolean
@@ -138,7 +141,7 @@ export default class Index extends Component<
     try {
       let isLogin = await api.isLogin()
       if (!isLogin) {
-        this.props.navigation.navigate(pathMap.Login)
+        this.props.navigation.navigate('Login')
       }
       let {
         data: { doctorInfo },
@@ -181,7 +184,7 @@ export default class Index extends Component<
           url: '',
         },
       })
-      navigation.navigate(pathMap.Login)
+      navigation.navigate('Login')
       DeviceEventEmitter.emit(pathMap.PersonalCenter + 'Reload', null)
       DeviceEventEmitter.emit('wsReload', null)
     } catch (err) {

@@ -20,8 +20,8 @@ import { PrescriptionDrugCategory, PrescriptionDrugInfo } from './SquareRoot'
 const style = gStyle.advisory.SelectPrescriptionTplList
 const global = gStyle.global
 interface Props {
-  navigation: StackNavigationProp<AllScreenParam, 'PrescriptionTplList'>
-  route: RouteProp<AllScreenParam, 'PrescriptionTplList'>
+  navigation: StackNavigationProp<AllScreenParam, 'SelectPrescriptionTpl'>
+  route: RouteProp<AllScreenParam, 'SelectPrescriptionTpl'>
 }
 interface State {
   hasLoad: boolean
