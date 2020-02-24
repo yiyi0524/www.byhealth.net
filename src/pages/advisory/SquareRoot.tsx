@@ -95,8 +95,8 @@ export interface State {
   }
   prescriptionDrugCategoryList: PrescriptionDrugCategory[]
   patientName: string
-  yearAge: number
-  monthAge: number
+  yearAge: string
+  monthAge: string
   gender: number
 }
 /**
@@ -228,8 +228,8 @@ export default class SquareRoot extends Component<
       prescriptionDrugCategoryList,
       patientName: '',
       gender: 0,
-      monthAge: 0,
-      yearAge: 0,
+      monthAge: '',
+      yearAge: '',
     }
   }
   async componentDidMount() {
@@ -555,36 +555,58 @@ export default class SquareRoot extends Component<
                   </View>
                   <View style={[style.diagnosisItem, global.flex, global.alignItemsCenter]}>
                     <Text style={[style.diagnosisItemTitle, global.fontSize14]}>年龄</Text>
-                    <View style={style.diagnosisItemInput}>
-                      <InputItem
-                        style={style.input}
-                        value={String(yearAge)}
-                        onChange={val => {
-                          let age: number = parseInt(val)
-                          if (isNaN(age)) {
-                            age = 0
-                          }
-                          this.setState({
-                            yearAge: age,
-                          })
-                        }}
-                      />
+                    <View style={[style.diagnosisItemInput, global.flex, global.alignItemsCenter]}>
+                      <View style={{ flex: 1 }}>
+                        <InputItem
+                          style={[style.input]}
+                          value={String(yearAge)}
+                          placeholder='0'
+                          onChange={val => {
+                            // eslint-disable-next-line no-shadow
+                            let age: number | string = parseFloat(val)
+                            if (isNaN(age)) {
+                              age = ''
+                            }
+                            this.setState({
+                              yearAge: String(age),
+                            })
+                          }}
+                          onBlur={() => {
+                            if (yearAge === '') {
+                              this.setState({
+                                yearAge: String(yearAge),
+                              })
+                            }
+                          }}
+                        />
+                      </View>
                       <Text>岁</Text>
                     </View>
-                    <View style={style.diagnosisItemInput}>
-                      <InputItem
-                        style={style.input}
-                        value={String(monthAge)}
-                        onChange={val => {
-                          let age: number = parseInt(val)
-                          if (isNaN(age)) {
-                            age = 0
-                          }
-                          this.setState({
-                            monthAge: age,
-                          })
-                        }}
-                      />
+                    <View style={[style.diagnosisItemInput, global.flex, global.alignItemsCenter]}>
+                      <View style={{ flex: 1 }}>
+                        <InputItem
+                          style={style.input}
+                          placeholder='0'
+                          value={String(monthAge)}
+                          onChange={val => {
+                            // eslint-disable-next-line no-shadow
+                            let age: number | string = parseFloat(val)
+                            if (isNaN(age)) {
+                              age = ''
+                            }
+                            this.setState({
+                              monthAge: String(age),
+                            })
+                          }}
+                          onBlur={() => {
+                            if (monthAge === '') {
+                              this.setState({
+                                monthAge: String(monthAge),
+                              })
+                            }
+                          }}
+                        />
+                      </View>
                       <Text>月</Text>
                     </View>
                   </View>
@@ -595,7 +617,7 @@ export default class SquareRoot extends Component<
                         style={style.input}
                         data={[
                           { value: 0, label: '男' },
-                          { value: 0, label: '女' },
+                          { value: 1, label: '女' },
                         ]}
                         cols={1}
                         value={[gender]}
@@ -603,7 +625,7 @@ export default class SquareRoot extends Component<
                           this.setState({ gender: val ? (val[0] as number) : 0 })
                         }}
                       >
-                        <List.Item arrow='horizontal'>{gender === 0 ? '男' : '女'}</List.Item>
+                        <List.Item arrow='horizontal'></List.Item>
                       </Picker>
                     </View>
                   </View>
@@ -1154,20 +1176,20 @@ export default class SquareRoot extends Component<
       syndromeDifferentiation,
       drugCategoryList: prescriptionDrugCategoryList,
       gender,
-      monthAge,
-      yearAge,
+      monthAge: parseFloat(monthAge),
+      yearAge: parseFloat(yearAge),
     }
     if (mode === 'phone' || mode === 'wx') {
-      if (yearAge === 0) {
-        if (monthAge === 0) {
+      if (parseFloat(yearAge) === 0) {
+        if (parseFloat(monthAge) === 0) {
           return Toast.info('请输入年龄', 3)
         }
       }
       args.phone = phone
       args.patientName = name
       args.gender = gender
-      args.yearAge = yearAge
-      args.monthAge = monthAge
+      args.yearAge = parseFloat(yearAge)
+      args.monthAge = parseFloat(monthAge)
     }
     if (serviceMoney !== '') {
       args.serviceMoney = parseFloat(serviceMoney) * 100

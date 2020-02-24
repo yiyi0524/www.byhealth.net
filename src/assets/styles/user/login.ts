@@ -5,7 +5,6 @@ export default StyleSheet.create({
   main: {
     backgroundColor: sColor.white,
     flex: 1,
-    marginTop: 15,
   },
   tabs: {
     height: windowHeight,
