@@ -534,31 +534,26 @@ class CalendarMode extends React.Component<Props, State> {
               </View>
             </View>
             <View style={[style.modeItem]}>
-              <List>
-                <RadioItem
-                  checked={this.state.isSitting === SITTING.TRUE}
-                  onChange={(evt: any) => {
-                    console.log(evt.target.checked)
-                    if (evt.target.checked) {
-                      this.setState({ isSitting: SITTING.TRUE })
-                    }
-                  }}
-                >
-                  坐诊
-                </RadioItem>
-                <RadioItem
-                  checked={this.state.isSitting === SITTING.FALSE}
-                  onChange={(evt: any) => {
-                    if (evt.target.checked) {
-                      this.setState({ isSitting: SITTING.FALSE })
-                    }
-                  }}
-                >
-                  不坐诊
-                </RadioItem>
-              </List>
+              <TouchableOpacity
+                style={[global.flex, global.alignItemsCenter, { height: 40 }]}
+                onPress={() => {
+                  this.setState({ isSitting: SITTING.TRUE })
+                }}
+              >
+                <Text style={{ color: '#333', flex: 1 }}>坐诊</Text>
+                {this.state.isSitting === SITTING.TRUE && <Icon style={{ color: '#1890ff' }} name='check'></Icon>}
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[global.flex, global.alignItemsCenter, { height: 40 }]}
+                onPress={() => {
+                  this.setState({ isSitting: SITTING.FALSE })
+                }}
+              >
+                <Text style={{ color: '#333', flex: 1 }}>不做坐诊</Text>
+                {this.state.isSitting === SITTING.FALSE && <Icon style={{ color: '#1890ff' }} name='check'></Icon>}
+              </TouchableOpacity>
             </View>
-            <View style={[style.modeItem, { alignItems: 'center', justifyContent: 'center', marginTop: 5 }]}>
+            <View style={[style.modeItem, { alignItems: 'center', justifyContent: 'center', marginTop: 8 }]}>
               <Checkbox
                 style={{ justifyContent: 'center' }}
                 onChange={(param: OnChangeParams) => {
