@@ -171,7 +171,7 @@ export default class SquareRoot extends Component<
   }
   getInitState = (): State => {
     let mode = this.props.route.params.mode
-    let prescription: PrescriptionTpl | null = this.props.route.params.prescription
+    let prescription: PrescriptionTpl | null | undefined = this.props.route.params.prescription
     let prescriptionDrugCategoryList: PrescriptionDrugCategory[] = []
     if (mode === 'wx' && prescription) {
       let prescriptionCategory: PrescriptionDrugCategory = {
@@ -594,6 +594,10 @@ export default class SquareRoot extends Component<
                             if (isNaN(age)) {
                               age = ''
                             }
+                            if (age > 12) {
+                              age = ''
+                              Toast.info('月份不能大于12个月', 2)
+                            }
                             this.setState({
                               monthAge: String(age),
                             })
@@ -625,7 +629,21 @@ export default class SquareRoot extends Component<
                           this.setState({ gender: val ? (val[0] as number) : 0 })
                         }}
                       >
-                        <List.Item arrow='horizontal'></List.Item>
+                        <TouchableOpacity>
+                          <View style={[global.flex, global.alignItemsCenter]}>
+                            <Text
+                              style={[
+                                style.diagnosisItemTitle,
+                                global.fontStyle,
+                                global.fontSize14,
+                                { flex: 1, textAlign: 'right' },
+                              ]}
+                            >
+                              {gender === 0 ? '男' : '女'}
+                            </Text>
+                            <Icon name='right' style={[global.fontSize16]} />
+                          </View>
+                        </TouchableOpacity>
                       </Picker>
                     </View>
                   </View>
@@ -663,7 +681,7 @@ export default class SquareRoot extends Component<
               )}
               {mode === 'phone' && (
                 <View style={[style.diagnosisItem, global.flex, global.alignItemsCenter]}>
-                  <Text style={[style.diagnosisItemTitle, global.fontSize14]}>手机:</Text>
+                  <Text style={[style.diagnosisItemTitle, global.fontSize14]}>手机</Text>
                   <Text style={[style.diagnosisItemInput, global.fontSize14]}>{phone}</Text>
                 </View>
               )}
@@ -1175,21 +1193,18 @@ export default class SquareRoot extends Component<
       patientUid,
       syndromeDifferentiation,
       drugCategoryList: prescriptionDrugCategoryList,
-      gender,
-      monthAge: parseFloat(monthAge),
-      yearAge: parseFloat(yearAge),
     }
     if (mode === 'phone' || mode === 'wx') {
-      if (parseFloat(yearAge) === 0) {
-        if (parseFloat(monthAge) === 0) {
+      if (yearAge === '' || parseFloat(yearAge) === 0) {
+        if (monthAge === '' || parseFloat(monthAge) === 0) {
           return Toast.info('请输入年龄', 3)
         }
       }
       args.phone = phone
       args.patientName = name
       args.gender = gender
-      args.yearAge = parseFloat(yearAge)
-      args.monthAge = parseFloat(monthAge)
+      args.yearAge = yearAge !== '' ? parseFloat(yearAge) : 0
+      args.monthAge = monthAge !== '' ? parseFloat(monthAge) : 0
     }
     if (serviceMoney !== '') {
       args.serviceMoney = parseFloat(serviceMoney) * 100

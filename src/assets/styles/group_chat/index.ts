@@ -28,6 +28,7 @@ export default StyleSheet.create({
   main: {
     position: 'relative',
     flex: 1,
+    backgroundColor: '#fff',
   },
   tabs: {
     height: 50,

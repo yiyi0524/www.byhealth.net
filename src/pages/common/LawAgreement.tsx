@@ -56,28 +56,28 @@ export default class InvitePatients extends Component<
     }
   }
   async componentDidMount() {
-    await this.init()
-    this.props.navigation.setParams({
-      isLogin: this.state.isLogin,
-    })
-    this.loginStatus = BackHandler.addEventListener('hardwareBackPress', this.addEventListenerBack)
+    this.init()
+    // this.loginStatus = BackHandler.addEventListener('hardwareBackPress', this.addEventListenerBack)
   }
   componentWillUnmount() {
     if (this.loginStatus) {
       this.loginStatus.remove()
     }
   }
-  addEventListenerBack = () => {
-    if (this.props.route.params.isLogin) {
-      this.props.navigation.goBack()
-    } else {
-      this.props.navigation.navigate('Register')
-    }
-    return true
-  }
+  // addEventListenerBack = () => {
+  //   if (this.props.route.params.isLogin) {
+  //     this.props.navigation.goBack()
+  //   } else {
+  //     this.props.navigation.navigate('Register')
+  //   }
+  //   return true
+  // }
   init = async () => {
     try {
       let isLogin = await api.isLogin()
+      this.props.navigation.setParams({
+        isLogin,
+      })
       this.setState({
         hasLoad: true,
         isLogin,

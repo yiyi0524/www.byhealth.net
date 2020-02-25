@@ -329,7 +329,7 @@ export default class Index extends Component<
               </Text>
             </View>
           </View>
-          <View style={style.department}>
+          <View style={this.state.isEditProfile ? style.departmentHidden : style.department}>
             <View style={[global.flex, global.alignItemsCenter, global.justifyContentSpaceBetween]}>
               <Text style={[style.departmentTitle, global.fontSize16]}>擅长治疗疾病</Text>
               <TouchableOpacity

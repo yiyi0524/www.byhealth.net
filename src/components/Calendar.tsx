@@ -3,7 +3,7 @@ import pathMap from '@/routes/pathMap'
 import doctor, { SITTING, STAGE, STAGE_ZH } from '@/services/doctor'
 import hospital from '@/services/hospital'
 import { windowWidth } from '@/utils/utils'
-import { Checkbox, Icon, Modal, Picker, Radio, Toast } from '@ant-design/react-native'
+import { Checkbox, Icon, Modal, Picker, Radio, Toast, List } from '@ant-design/react-native'
 import { OnChangeParams } from '@ant-design/react-native/lib/checkbox/PropsType'
 import moment from 'moment'
 import React, { Fragment } from 'react'
@@ -533,27 +533,30 @@ class CalendarMode extends React.Component<Props, State> {
                 </Picker>
               </View>
             </View>
-            <View style={style.modeItem}>
-              <RadioItem
-                checked={this.state.isSitting === SITTING.TRUE}
-                onChange={(evt: any) => {
-                  if (evt.target.checked) {
-                    this.setState({ isSitting: SITTING.TRUE })
-                  }
-                }}
-              >
-                坐诊
-              </RadioItem>
-              <RadioItem
-                checked={this.state.isSitting === SITTING.FALSE}
-                onChange={(evt: any) => {
-                  if (evt.target.checked) {
-                    this.setState({ isSitting: SITTING.FALSE })
-                  }
-                }}
-              >
-                不坐诊
-              </RadioItem>
+            <View style={[style.modeItem]}>
+              <List>
+                <RadioItem
+                  checked={this.state.isSitting === SITTING.TRUE}
+                  onChange={(evt: any) => {
+                    console.log(evt.target.checked)
+                    if (evt.target.checked) {
+                      this.setState({ isSitting: SITTING.TRUE })
+                    }
+                  }}
+                >
+                  坐诊
+                </RadioItem>
+                <RadioItem
+                  checked={this.state.isSitting === SITTING.FALSE}
+                  onChange={(evt: any) => {
+                    if (evt.target.checked) {
+                      this.setState({ isSitting: SITTING.FALSE })
+                    }
+                  }}
+                >
+                  不坐诊
+                </RadioItem>
+              </List>
             </View>
             <View style={[style.modeItem, { alignItems: 'center', justifyContent: 'center', marginTop: 5 }]}>
               <Checkbox

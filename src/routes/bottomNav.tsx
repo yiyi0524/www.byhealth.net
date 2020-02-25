@@ -409,7 +409,7 @@ const bottomTabConf: {
     lazy: true, // 是否在app打开的时候将底部标签栏全部加载
     backBehavior: 'none', // 点击返回退到上级界面
     tabBarOptions: {
-      allowFontScaling: false,
+      allowFontScaling: true,
       activeTintColor: sColor.mainRed,
       inactiveTintColor: sColor.bottonNavColor,
       showIcon: true,
@@ -425,7 +425,7 @@ const bottomTabConf: {
         paddingBottom: 5,
       },
       labelStyle: {
-        fontSize: 10,
+        fontSize: 11,
       },
     },
   },
@@ -445,7 +445,7 @@ const TabNav = () => {
 const Stack = createStackNavigator()
 export default () => {
   return (
-    <Stack.Navigator initialRouteName='Root' headerMode='none'>
+    <Stack.Navigator initialRouteName='Root'>
       {Object.keys(stacksOverTabsConfig).map(screenName => {
         const props = stacksOverTabsConfig[screenName as keyof AllScreenParam]
         // @ts-ignore
@@ -1138,7 +1138,7 @@ const stacksOverTabsConfig: {
           backgroundColor: sColor.white,
           height: 50,
           elevation: 0,
-          color: sColor.mainBlack,
+          // color: sColor.mainBlack,
           borderBottomWidth: 1 / PixelRatio.get(),
           borderBottomColor: sColor.colorEee,
         },
@@ -1332,6 +1332,8 @@ const stacksOverTabsConfig: {
       route: RouteProp<AllScreenParam, 'SittingHospital'>
       navigation: StackNavigationProp<AllScreenParam, 'SittingHospital'>
     }) => {
+      console.log(route)
+      console.log(navigator)
       return {
         title: '本月坐诊信息',
         headerStyle: {
@@ -1351,9 +1353,7 @@ const stacksOverTabsConfig: {
           textAlign: 'center',
         },
         headerRight: () => (
-          <TouchableOpacity onPress={route.params.navigatePress}>
-            {/* <Text style={[style.headerRight, global.fontSize14]}>分享</Text> */}
-          </TouchableOpacity>
+          <TouchableOpacity>{/* <Text style={[style.headerRight, global.fontSize14]}>分享</Text> */}</TouchableOpacity>
         ),
       }
     },
@@ -1409,7 +1409,11 @@ const stacksOverTabsConfig: {
           textAlign: 'center',
         },
         headerRight: () => (
-          <TouchableOpacity onPress={route.params.navigatePress}>
+          <TouchableOpacity
+            onPress={() => {
+              route.params.navigatePress && route.params.navigatePress()
+            }}
+          >
             <Text style={[gStyle.index.AddSittingHospital.headerRight, global.fontSize14]}>保存</Text>
           </TouchableOpacity>
         ),
@@ -1642,7 +1646,11 @@ const stacksOverTabsConfig: {
           textAlign: 'center',
         },
         headerRight: () => (
-          <TouchableOpacity onPress={route.params.navigatePress as any}>
+          <TouchableOpacity
+            onPress={() => {
+              route.params.navigatePress && route.params.navigatePress()
+            }}
+          >
             <Text style={[gStyle.personalCenter.addBankCard.headerRight, global.fontSize14, global.fontStyle]}>
               完成
             </Text>

@@ -9,6 +9,7 @@ import { RouteProp } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
 import doctorApi, { UPLOAD_PRESCRIPTION_STATUS } from '@api/doctor'
 import moment from 'moment'
+import Empty from '@/components/Empty'
 const style = gSass.index.uploadPrescriptionList
 interface Prescription {
   id: number
@@ -92,6 +93,7 @@ export default class UploadPrescriptionList extends Component<Props & DefaultPro
               </TouchableOpacity>
             )
           })}
+          {prescriptionList.length === 0 && <Empty />}
         </View>
       </ScrollView>
     )

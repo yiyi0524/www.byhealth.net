@@ -87,6 +87,10 @@ export default StyleSheet.create({
     marginTop: 30,
     marginBottom: 30,
   },
+  departmentHidden: {
+    height: windowHeight - 300,
+    overflow: 'hidden',
+  },
   departmentTitle: {
     color: sColor.mainBlack,
   },
@@ -217,6 +221,7 @@ export default StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
+    height: windowHeight,
     backgroundColor: sColor.white,
   },
   editProfileInput: {

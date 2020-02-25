@@ -32,6 +32,7 @@ export default StyleSheet.create({
     paddingLeft: 15,
     paddingRight: 15,
     paddingBottom: 8,
+    paddingTop: 8,
   },
   search: {
     backgroundColor: sColor.mainBgColor,
