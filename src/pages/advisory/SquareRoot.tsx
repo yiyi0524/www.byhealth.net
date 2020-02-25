@@ -767,7 +767,12 @@ export default class SquareRoot extends Component<
                 {this.state.prescriptionDrugCategoryList.map((category, k) => {
                   let gram = 0
                   for (let item of category.drugList) {
-                    gram += item.count
+                    let g = item.detail.unit.match(/(\d+)[g克]/)
+                    if (g && g[1] && !isNaN(parseFloat(g[1]))) {
+                      gram += item.count + parseFloat(g[1])
+                    } else {
+                      gram += item.count
+                    }
                   }
                   if (
                     category.id === ORAL_CHINESE_DRUG_ID ||
