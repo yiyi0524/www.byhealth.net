@@ -374,16 +374,6 @@ export function idCardIDChecked(sId: string) {
   return Boolean(idCard.verify(sId))
 }
 /**
- * 获取缩略图url
- */
-export function getThumbUrl({ path, width = 400 }: { width?: number; path: string }) {
-  // 如果不是我们服务器的图片就不转换,比如微信
-  if (path.indexOf('http') === 0 && path.indexOf(BASE_URL) !== 0) {
-    return path
-  }
-  return BASE_URL + `/getThumb?path=${path}&width=${width}`
-}
-/**
  * 检查更新
  */
 export function checkUpdate() {
@@ -418,7 +408,6 @@ export function uploadAudio(uri: string) {
 }
 export default {
   checkUpdate,
-  getThumbUrl,
   uploadImg,
   uploadAudio,
   bget,

@@ -2,7 +2,7 @@ import * as userAction from '@/redux/actions/user'
 import { AppState } from '@/redux/stores/store'
 import { AllScreenParam } from '@/routes/bottomNav'
 import pathMap from '@/routes/pathMap'
-import api, { getThumbUrl, NOT_LIMIT } from '@/services/api'
+import api, { NOT_LIMIT } from '@/services/api'
 import doctor, { GENDER, GENDER_ZH } from '@/services/doctor'
 import hospital from '@/services/hospital'
 import { getPicCdnUrl, getPicFullUrl } from '@/utils/utils'
@@ -252,9 +252,7 @@ export default class PatientDetail extends Component<
               <Image
                 style={style.headerImg}
                 source={
-                  patientInfo.avatar.url
-                    ? { uri: getThumbUrl({ path: getPicFullUrl(patientInfo.avatar.url) }) }
-                    : gImg.common.defaultAvatar
+                  patientInfo.avatar.url ? { uri: getPicFullUrl(patientInfo.avatar.url) } : gImg.common.defaultAvatar
                 }
               />
             </View>
@@ -385,14 +383,11 @@ export default class PatientDetail extends Component<
             <View style={[style.medicalRecordPics, global.flex, global.alignItemsCenter, global.flexWrap]}>
               {patientInfo.hospitalMedicalRecordPicList.map((pic, k) => {
                 return (
-                  <TouchableOpacity
-                    key={k}
-                    onPress={() => this.showMode(getThumbUrl({ path: getPicFullUrl(pic.url) }))}
-                  >
+                  <TouchableOpacity key={k} onPress={() => this.showMode(getPicFullUrl(pic.url))}>
                     <Image
                       style={style.medicalRecordImg}
                       source={{
-                        uri: getThumbUrl({ path: getPicFullUrl(pic.url) }),
+                        uri: getPicFullUrl(pic.url),
                       }}
                     />
                   </TouchableOpacity>
@@ -410,14 +405,11 @@ export default class PatientDetail extends Component<
             <View style={[style.medicalRecordPics, global.flex, global.alignItemsCenter, global.flexWrap]}>
               {patientInfo.tonguePicList.map((pic, k) => {
                 return (
-                  <TouchableOpacity
-                    key={k}
-                    onPress={() => this.showMode(getThumbUrl({ path: getPicFullUrl(pic.url) }))}
-                  >
+                  <TouchableOpacity key={k} onPress={() => this.showMode(getPicFullUrl(pic.url))}>
                     <Image
                       style={style.medicalRecordImg}
                       source={{
-                        uri: getThumbUrl({ path: getPicFullUrl(pic.url) }),
+                        uri: getPicFullUrl(pic.url),
                       }}
                     />
                   </TouchableOpacity>
@@ -425,14 +417,11 @@ export default class PatientDetail extends Component<
               })}
               {patientInfo.infectedPartPicList.map((pic, k) => {
                 return (
-                  <TouchableOpacity
-                    key={k}
-                    onPress={() => this.showMode(getThumbUrl({ path: getPicFullUrl(pic.url) }))}
-                  >
+                  <TouchableOpacity key={k} onPress={() => this.showMode(getPicFullUrl(pic.url))}>
                     <Image
                       style={style.medicalRecordImg}
                       source={{
-                        uri: getThumbUrl({ path: getPicFullUrl(pic.url) }),
+                        uri: getPicFullUrl(pic.url),
                       }}
                     />
                   </TouchableOpacity>
@@ -440,14 +429,11 @@ export default class PatientDetail extends Component<
               })}
               {patientInfo.facePicList.map((pic, k) => {
                 return (
-                  <TouchableOpacity
-                    key={k}
-                    onPress={() => this.showMode(getThumbUrl({ path: getPicFullUrl(pic.url) }))}
-                  >
+                  <TouchableOpacity key={k} onPress={() => this.showMode(getPicFullUrl(pic.url))}>
                     <Image
                       style={style.medicalRecordImg}
                       source={{
-                        uri: getThumbUrl({ path: getPicFullUrl(pic.url) }),
+                        uri: getPicFullUrl(pic.url),
                       }}
                     />
                   </TouchableOpacity>
@@ -499,7 +485,7 @@ export default class PatientDetail extends Component<
                         <TouchableOpacity
                           key={k}
                           onPress={() => {
-                            this.showMode(getThumbUrl({ path: getPicFullUrl(tonguePic.url) }))
+                            this.showMode(getPicFullUrl(tonguePic.url))
                           }}
                         >
                           <Image
@@ -507,7 +493,7 @@ export default class PatientDetail extends Component<
                             source={
                               tonguePic.url
                                 ? {
-                                    uri: getThumbUrl({ path: getPicFullUrl(tonguePic.url) }),
+                                    uri: getPicFullUrl(tonguePic.url),
                                   }
                                 : gImg.common.defaultPic
                             }
@@ -520,7 +506,7 @@ export default class PatientDetail extends Component<
                         <TouchableOpacity
                           key={k}
                           onPress={() => {
-                            this.showMode(getThumbUrl({ path: getPicFullUrl(infectedPartPic.url) }))
+                            this.showMode(getPicFullUrl(infectedPartPic.url))
                           }}
                         >
                           <Image
@@ -528,7 +514,7 @@ export default class PatientDetail extends Component<
                             source={
                               infectedPartPic.url
                                 ? {
-                                    uri: getThumbUrl({ path: getPicFullUrl(infectedPartPic.url) }),
+                                    uri: getPicFullUrl(infectedPartPic.url),
                                   }
                                 : gImg.common.defaultPic
                             }
@@ -541,7 +527,7 @@ export default class PatientDetail extends Component<
                         <TouchableOpacity
                           key={k}
                           onPress={() => {
-                            this.showMode(getThumbUrl({ path: getPicFullUrl(facePic.url) }))
+                            this.showMode(getPicFullUrl(facePic.url))
                           }}
                         >
                           <Image
@@ -549,7 +535,7 @@ export default class PatientDetail extends Component<
                             source={
                               facePic.url
                                 ? {
-                                    uri: getThumbUrl({ path: getPicFullUrl(facePic.url) }),
+                                    uri: getPicFullUrl(facePic.url),
                                   }
                                 : gImg.common.defaultPic
                             }
@@ -580,7 +566,7 @@ export default class PatientDetail extends Component<
                         <TouchableOpacity
                           key={k}
                           onPress={() => {
-                            this.showMode(getThumbUrl({ path: getPicFullUrl(v1.url) }))
+                            this.showMode(getPicFullUrl(v1.url))
                           }}
                         >
                           <Image
@@ -588,7 +574,7 @@ export default class PatientDetail extends Component<
                             source={
                               v1.url
                                 ? {
-                                    uri: getThumbUrl({ path: getPicFullUrl(v1.url) }),
+                                    uri: getPicFullUrl(v1.url),
                                   }
                                 : gImg.common.defaultPic
                             }

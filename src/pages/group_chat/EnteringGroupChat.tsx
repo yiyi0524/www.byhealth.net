@@ -3,7 +3,7 @@ import DashLine from '@/components/DashLine'
 import * as wsAction from '@/redux/actions/ws'
 import { AppState } from '@/redux/stores/store'
 import pathMap from '@/routes/pathMap'
-import api, { getRegion, getThumbUrl, uploadAudio, uploadImg, windowHeight } from '@/services/api'
+import api, { getRegion, uploadAudio, uploadImg, windowHeight } from '@/services/api'
 import { clearPatientUnreadMsgCount, GENDER_ZH } from '@/services/doctor'
 import { Article } from '@/services/groupChat'
 import gImg from '@/utils/img'
@@ -1103,22 +1103,18 @@ export default class EnteringGroupChat extends Component<
               <Image
                 style={style.itemImg}
                 source={
-                  msg.sendUser.avatar.url
-                    ? { uri: getThumbUrl({ path: getPicFullUrl(msg.sendUser.avatar.url) }) }
-                    : gImg.common.defaultAvatar
+                  msg.sendUser.avatar.url ? { uri: getPicFullUrl(msg.sendUser.avatar.url) } : gImg.common.defaultAvatar
                 }
               />
             </View>
             <View style={isSelfMsg ? global.hidden : style.leftItemIcon} />
             <TouchableOpacity
               style={style.leftItemPicture}
-              onPress={() => this.openShowPic(getThumbUrl({ path: getPicFullUrl(msg.pic.url) }))}
+              onPress={() => this.openShowPic(getPicFullUrl(msg.pic.url))}
             >
               <Image
                 style={style.itemPicImg}
-                source={
-                  msg.pic.url ? { uri: getThumbUrl({ path: getPicFullUrl(msg.pic.url) }) } : gImg.common.defaultPic
-                }
+                source={msg.pic.url ? { uri: getPicFullUrl(msg.pic.url) } : gImg.common.defaultPic}
               />
             </TouchableOpacity>
           </View>
@@ -1129,13 +1125,11 @@ export default class EnteringGroupChat extends Component<
           <View style={[style.leftItem, global.flex, global.justifyContentEnd]}>
             <TouchableOpacity
               style={style.rightItemPicture}
-              onPress={() => this.openShowPic(getThumbUrl({ path: getPicFullUrl(msg.pic.url) }))}
+              onPress={() => this.openShowPic(getPicFullUrl(msg.pic.url))}
             >
               <Image
                 style={style.itemPicImg}
-                source={
-                  msg.pic.url ? { uri: getThumbUrl({ path: getPicFullUrl(msg.pic.url) }) } : gImg.common.defaultPic
-                }
+                source={msg.pic.url ? { uri: getPicFullUrl(msg.pic.url) } : gImg.common.defaultPic}
               />
             </TouchableOpacity>
             <View style={isSelfMsg ? style.rightItemIcon : global.hidden} />
@@ -1143,9 +1137,7 @@ export default class EnteringGroupChat extends Component<
               <Image
                 style={style.itemImg}
                 source={
-                  msg.sendUser.avatar.url
-                    ? { uri: getThumbUrl({ path: getPicFullUrl(msg.sendUser.avatar.url) }) }
-                    : gImg.common.defaultAvatar
+                  msg.sendUser.avatar.url ? { uri: getPicFullUrl(msg.sendUser.avatar.url) } : gImg.common.defaultAvatar
                 }
               />
             </View>
@@ -1190,7 +1182,7 @@ export default class EnteringGroupChat extends Component<
                   style={style.itemImg}
                   source={
                     msg.sendUser.avatar.url
-                      ? { uri: getThumbUrl({ path: getPicFullUrl(msg.sendUser.avatar.url) }) }
+                      ? { uri: getPicFullUrl(msg.sendUser.avatar.url) }
                       : gImg.common.defaultAvatar
                   }
                 />
@@ -1206,7 +1198,7 @@ export default class EnteringGroupChat extends Component<
                   style={style.itemImg}
                   source={
                     msg.sendUser.avatar.url
-                      ? { uri: getThumbUrl({ path: getPicFullUrl(msg.sendUser.avatar.url) }) }
+                      ? { uri: getPicFullUrl(msg.sendUser.avatar.url) }
                       : gImg.common.defaultAvatar
                   }
                 />

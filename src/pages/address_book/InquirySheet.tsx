@@ -1,7 +1,7 @@
 import * as userAction from '@/redux/actions/user'
 import { AppState } from '@/redux/stores/store'
 import { AllScreenParam } from '@/routes/bottomNav'
-import api, { getThumbUrl } from '@/services/api'
+import api from '@/services/api'
 import patient, { inquirySheet } from '@/services/patient'
 import { getPicFullUrl } from '@/utils/utils'
 import { Toast } from '@ant-design/react-native'
@@ -173,12 +173,12 @@ export default class InquirySheet extends Component<
                   <TouchableOpacity
                     key={v.id}
                     onPress={() => {
-                      this.showImg(getThumbUrl({ path: getPicFullUrl(v.url) }))
+                      this.showImg(getPicFullUrl(v.url))
                     }}
                   >
                     <Image
                       style={style.patientImg}
-                      source={v.url ? { uri: getThumbUrl({ path: getPicFullUrl(v.url) }) } : gImg.common.defaultPic}
+                      source={v.url ? { uri: getPicFullUrl(v.url) } : gImg.common.defaultPic}
                     />
                   </TouchableOpacity>
                 )
@@ -196,12 +196,12 @@ export default class InquirySheet extends Component<
                   <TouchableOpacity
                     key={v.id}
                     onPress={() => {
-                      this.showImg(getThumbUrl({ path: getPicFullUrl(v.url) }))
+                      this.showImg(getPicFullUrl(v.url))
                     }}
                   >
                     <Image
                       style={style.patientImg}
-                      source={v.url ? { uri: getThumbUrl({ path: getPicFullUrl(v.url) }) } : gImg.common.defaultPic}
+                      source={v.url ? { uri: getPicFullUrl(v.url) } : gImg.common.defaultPic}
                     />
                   </TouchableOpacity>
                 )
@@ -211,12 +211,12 @@ export default class InquirySheet extends Component<
                   <TouchableOpacity
                     key={v.id}
                     onPress={() => {
-                      this.showImg(getThumbUrl({ path: getPicFullUrl(v.url) }))
+                      this.showImg(getPicFullUrl(v.url))
                     }}
                   >
                     <Image
                       style={style.patientImg}
-                      source={v.url ? { uri: getThumbUrl({ path: getPicFullUrl(v.url) }) } : gImg.common.defaultPic}
+                      source={v.url ? { uri: getPicFullUrl(v.url) } : gImg.common.defaultPic}
                     />
                   </TouchableOpacity>
                 )
@@ -226,12 +226,12 @@ export default class InquirySheet extends Component<
                   <TouchableOpacity
                     key={v.id}
                     onPress={() => {
-                      this.showImg(getThumbUrl({ path: getPicFullUrl(v.url) }))
+                      this.showImg(getPicFullUrl(v.url))
                     }}
                   >
                     <Image
                       style={style.patientImg}
-                      source={v.url ? { uri: getThumbUrl({ path: getPicFullUrl(v.url) }) } : gImg.common.defaultPic}
+                      source={v.url ? { uri: getPicFullUrl(v.url) } : gImg.common.defaultPic}
                     />
                   </TouchableOpacity>
                 )
@@ -251,12 +251,12 @@ export default class InquirySheet extends Component<
                   <TouchableOpacity
                     key={v.id}
                     onPress={() => {
-                      this.showImg(getThumbUrl({ path: getPicFullUrl(v.url) }))
+                      this.showImg(getPicFullUrl(v.url))
                     }}
                   >
                     <Image
                       style={style.patientImg}
-                      source={v.url ? { uri: getThumbUrl({ path: getPicFullUrl(v.url) }) } : gImg.common.defaultPic}
+                      source={v.url ? { uri: getPicFullUrl(v.url) } : gImg.common.defaultPic}
                     />
                   </TouchableOpacity>
                 )

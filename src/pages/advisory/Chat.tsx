@@ -4,7 +4,7 @@ import * as wsAction from '@/redux/actions/ws'
 import { AppState } from '@/redux/stores/store'
 import { AllScreenParam } from '@/routes/bottomNav'
 import pathMap from '@/routes/pathMap'
-import api, { getRegion, getThumbUrl, uploadAudio, uploadImg, windowHeight } from '@/services/api'
+import api, { getRegion, uploadAudio, uploadImg, windowHeight } from '@/services/api'
 import { clearPatientUnreadMsgCount, closeInquiry, GENDER_ZH } from '@/services/doctor'
 import { Article } from '@/services/groupChat'
 import gImg from '@/utils/img'
@@ -1436,7 +1436,7 @@ export default class Chat extends Component<
   pictureFormat = (serverMsg: Exclude<Overwrite<Msg, { pic: Picture }>, 'dom'>) => {
     let msg: Overwrite<Msg, { pic: Picture }> = serverMsg
     let isSelfMsg = msg.sendUser.uid === this.props.uid
-    console.log('url:', getThumbUrl({ path: getPicFullUrl(msg.pic.url) }))
+    console.log('url:', getPicFullUrl(msg.pic.url))
     msg.dom = (
       <View>
         {/* 左边图片 */}
@@ -1448,7 +1448,7 @@ export default class Chat extends Component<
                 style={style.itemImg}
                 source={
                   msg.sendUser.avatar.url
-                    ? { uri: getThumbUrl({ path: getPicFullUrl(msg.sendUser.avatar.url) }), width: 400, height: 400 }
+                    ? { uri: getPicFullUrl(msg.sendUser.avatar.url), width: 400, height: 400 }
                     : gImg.common.defaultAvatar
                 }
               />
@@ -1456,13 +1456,11 @@ export default class Chat extends Component<
             <View style={isSelfMsg ? global.hidden : style.leftItemIcon} />
             <TouchableOpacity
               style={style.leftItemPicture}
-              onPress={() => this.openShowPic(getThumbUrl({ path: getPicFullUrl(msg.pic.url) }))}
+              onPress={() => this.openShowPic(getPicFullUrl(msg.pic.url))}
             >
               <Image
                 style={style.itemPicImg}
-                source={
-                  msg.pic.url ? { uri: getThumbUrl({ path: getPicFullUrl(msg.pic.url) }) } : gImg.common.defaultPic
-                }
+                source={msg.pic.url ? { uri: getPicFullUrl(msg.pic.url) } : gImg.common.defaultPic}
               />
             </TouchableOpacity>
           </View>
@@ -1473,13 +1471,11 @@ export default class Chat extends Component<
           <View style={[style.leftItem, global.flex, global.justifyContentEnd]}>
             <TouchableOpacity
               style={style.rightItemPicture}
-              onPress={() => this.openShowPic(getThumbUrl({ path: getPicFullUrl(msg.pic.url) }))}
+              onPress={() => this.openShowPic(getPicFullUrl(msg.pic.url))}
             >
               <Image
                 style={style.itemPicImg}
-                source={
-                  msg.pic.url ? { uri: getThumbUrl({ path: getPicFullUrl(msg.pic.url) }) } : gImg.common.defaultPic
-                }
+                source={msg.pic.url ? { uri: getPicFullUrl(msg.pic.url) } : gImg.common.defaultPic}
               />
             </TouchableOpacity>
             <View style={isSelfMsg ? style.rightItemIcon : global.hidden} />
@@ -1487,9 +1483,7 @@ export default class Chat extends Component<
               <Image
                 style={style.itemImg}
                 source={
-                  msg.sendUser.avatar.url
-                    ? { uri: getThumbUrl({ path: getPicFullUrl(msg.sendUser.avatar.url) }) }
-                    : gImg.common.defaultAvatar
+                  msg.sendUser.avatar.url ? { uri: getPicFullUrl(msg.sendUser.avatar.url) } : gImg.common.defaultAvatar
                 }
               />
             </View>
@@ -1534,7 +1528,7 @@ export default class Chat extends Component<
                   style={style.itemImg}
                   source={
                     msg.sendUser.avatar.url
-                      ? { uri: getThumbUrl({ path: getPicFullUrl(msg.sendUser.avatar.url) }) }
+                      ? { uri: getPicFullUrl(msg.sendUser.avatar.url) }
                       : gImg.common.defaultAvatar
                   }
                 />
@@ -1550,7 +1544,7 @@ export default class Chat extends Component<
                   style={style.itemImg}
                   source={
                     msg.sendUser.avatar.url
-                      ? { uri: getThumbUrl({ path: getPicFullUrl(msg.sendUser.avatar.url) }) }
+                      ? { uri: getPicFullUrl(msg.sendUser.avatar.url) }
                       : gImg.common.defaultAvatar
                   }
                 />
