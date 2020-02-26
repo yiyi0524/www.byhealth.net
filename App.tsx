@@ -1,9 +1,8 @@
 import * as wsAction from '@/redux/actions/ws'
-import { AppState } from '@/redux/stores/store'
 import routeConfig from '@/routes/route'
 import Ws from '@pages/Ws'
 import React, { Component } from 'react'
-import { NavigationContainer, NavigationContainerRef } from '@react-navigation/native'
+import { NavigationContainer, NavigationContainerRef, NavigationState, PartialState } from '@react-navigation/native'
 import { connect } from 'react-redux'
 import { Dispatch } from 'redux'
 import { AppState as RnAppState, AppStateStatus } from 'react-native'
@@ -16,14 +15,6 @@ import * as Sentry from '@sentry/react-native'
 import { enableScreens } from 'react-native-screens'
 import { createStackNavigator } from '@react-navigation/stack'
 enableScreens()
-const mapStateToProps = (state: AppState) => {
-  return {
-    isLogin: state.user.isLogin,
-    name: state.user.name,
-    uid: state.user.uid,
-    ws: state.ws,
-  }
-}
 const mapDispatchToProps = (dispatch: Dispatch) => {
   return {
     changeScreen: (screenName: string) => {
@@ -37,21 +28,26 @@ const codePushOptions = {
   checkFrequency: CodePush.CheckFrequency.ON_APP_RESUME,
   installMode: CodePush.InstallMode.ON_NEXT_RESUME,
 }
+export type Props = {}
+export type DefaultProps = {} & ReturnType<typeof mapDispatchToProps>
+
 // 在组件根节点的地方设置热更新。
 @CodePush(codePushOptions)
 // @ts-ignore
-@connect(mapStateToProps, mapDispatchToProps)
-export default class App extends Component<any> {
+@connect(null, mapDispatchToProps)
+export default class App extends Component<Props & DefaultProps> {
+  static defaultProps: DefaultProps
   containerRef = React.createRef<NavigationContainerRef>()
-  getActiveRouteName = (navigationState: any): any => {
-    if (!navigationState) {
-      return null
+  getActiveRouteName = (state: NavigationState): string => {
+    let currscreen = state.routes[state.index].name,
+      currState: NavigationState | PartialState<NavigationState> | undefined = state
+    while (currState && currState.index !== undefined) {
+      currState = currState.routes[currState.index].state
+      if (currState && currState.index !== undefined) {
+        currscreen = currState.routes[currState.index].name
+      }
     }
-    const route = navigationState.routes[navigationState.index]
-    if (route.routes) {
-      return this.getActiveRouteName(route)
-    }
-    return route.routeName
+    return currscreen
   }
   componentDidMount() {
     WeChat.registerApp(wxAppId)
@@ -77,7 +73,15 @@ export default class App extends Component<any> {
   render() {
     return (
       <Ws>
-        <NavigationContainer ref={this.containerRef}>
+        <NavigationContainer
+          ref={this.containerRef}
+          onStateChange={state => {
+            if (state) {
+              let currRouteName = this.getActiveRouteName(state)
+              this.props.changeScreen(currRouteName)
+            }
+          }}
+        >
           <Stack.Navigator {...routeConfig.stackNavConfig}>
             {Object.keys(routeConfig.screens).map(screenName => {
               const props = routeConfig.screens[screenName]

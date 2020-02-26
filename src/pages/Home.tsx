@@ -189,9 +189,7 @@ export default class Home extends Component<
     }
   }
   componentDidMount() {
-    this.subscription = DeviceEventEmitter.addListener(pathMap.Home + 'Reload', _ => {
-      this.init()
-    })
+    this.subscription = DeviceEventEmitter.addListener(pathMap.Home + 'Reload', this.init)
     // this.loginStatus = BackHandler.addEventListener(
     //   "hardwareBackPress",
     //   this.addEventListenerLoginStatus,

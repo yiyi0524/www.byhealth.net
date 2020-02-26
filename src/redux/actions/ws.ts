@@ -34,6 +34,7 @@ export const SET_USER_UNREAD_MSG_COUNT = '改变与指定用户的未读消息�
 export const SET_GROUP_UNREAD_MSG_COUNT = '改变与指定群组的未读消息数量'
 export const CHANGE_SCREEN = '设置当前screen'
 export const SET_CURR_CHAT_UID = '设置当前聊天的患者uid'
+export const SET_RECEIVE_CB = '设置接收消息的回调函数'
 
 export function changeScreen(preload: { screenName: string }) {
   return {
@@ -96,6 +97,12 @@ export function setUserUnReadMsgCount(preload: { uid: number; count: number }) {
 export function setGroupUnReadMsgCount(preload: { groupId: number; count: number }) {
   return {
     type: SET_GROUP_UNREAD_MSG_COUNT,
+    preload,
+  }
+}
+export function setReceiveMsgCb(preload: { fn: (type: 'common' | 'chatGroup', subjectId: number) => void }) {
+  return {
+    type: SET_RECEIVE_CB,
     preload,
   }
 }

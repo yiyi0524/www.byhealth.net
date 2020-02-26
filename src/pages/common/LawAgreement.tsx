@@ -111,6 +111,7 @@ export default class InvitePatients extends Component<
     return (
       <>
         <WebView
+          androidHardwareAccelerationDisabled
           style={{
             flex: 1,
             width: windowWidth,

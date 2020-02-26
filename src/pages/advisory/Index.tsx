@@ -133,7 +133,6 @@ export default class Index extends Component<
           })
         }
       }
-      console.log(scanUserList)
       this.setState({
         hasLoad: true,
         scanUserList,
@@ -147,6 +146,7 @@ export default class Index extends Component<
     }
   }
   bgUpdate = async () => {
+    console.log('bg Update')
     try {
       let isLogin = await api.isLogin()
       if (!isLogin) {
@@ -165,7 +165,7 @@ export default class Index extends Component<
       } = await listScanUserPromise
 
       for (let consultation of consultationList) {
-        if (consultation.doctorUnreadMsgCount !== 0) {
+        if (consultation.doctorUnreadMsgCount !== 0 && this.props.ws.currChatUid !== consultation.patientUid) {
           this.props.setUserUnReadMsgCount({
             uid: consultation.patientUid,
             count: consultation.doctorUnreadMsgCount,

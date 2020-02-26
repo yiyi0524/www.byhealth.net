@@ -16,6 +16,7 @@ export interface WsState {
   groupMsg: Record<number, Msg[]>
   wsGet: (data: { url: string; query?: Object }) => boolean
   wsPost: (data: { url: string; data?: Object }) => boolean
+  reveiveMsgCallback: (type: 'common' | 'chatGroup', subjectId: number) => void
 }
 export const initState: WsState = {
   currScreen: '',
@@ -40,6 +41,7 @@ export const initState: WsState = {
     }
     return false
   },
+  reveiveMsgCallback: () => {},
 }
 export interface Action<T> {
   type: string
@@ -83,6 +85,7 @@ function addMsg(state = initState, action: Action<wsAction.MsgPreload>) {
     let newState = Object.assign({}, state, {
       chatMsg,
     })
+    state.reveiveMsgCallback('common', uid)
     if (uid in state.chatMsg) {
       newState.chatMsg[uid].push(action.preload.msg)
     } else {
@@ -125,6 +128,7 @@ function addGroupMsg(state = initState, action: Action<wsAction.GroupMsgPreload>
     let newState = Object.assign({}, state, {
       groupMsg,
     })
+    state.reveiveMsgCallback('chatGroup', groupId)
     if (groupId in state.groupMsg) {
       newState.groupMsg[groupId].push(action.preload.msg)
     } else {
@@ -186,9 +190,8 @@ function setGroupUnReadMsgCount(state = initState, action: Action<{ groupId: num
  * 改变当前屏幕
  */
 function changeScreen(state = initState, action: Action<{ screenName: string }>) {
-  if (action.type === wsAction.CHANGE_SCREEN) {
-    let newState = Object.assign({}, state, { currScreen: action.preload.screenName })
-    return newState
+  if (state.currScreen !== action.preload.screenName) {
+    return Object.assign({}, state, { currScreen: action.preload.screenName })
   }
   return state
 }
@@ -201,6 +204,12 @@ function setCurrChatUid(state = initState, action: Action<{ uid: number }>) {
     return newState
   }
   return state
+}
+/**
+ * 设置接收消息的回调函数
+ */
+function setReceiveCallback(state = initState, action: Action<{ fn: () => void }>) {
+  return Object.assign({}, state, { reveiveMsgCallback: action.preload.fn })
 }
 export default function reducer(state = initState, action: Action<any>) {
   switch (action.type) {
@@ -224,6 +233,8 @@ export default function reducer(state = initState, action: Action<any>) {
       return changeScreen(state, action)
     case wsAction.SET_CURR_CHAT_UID:
       return setCurrChatUid(state, action)
+    case wsAction.SET_RECEIVE_CB:
+      return setReceiveCallback(state, action)
     default:
       break
   }

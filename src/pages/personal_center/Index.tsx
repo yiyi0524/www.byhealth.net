@@ -127,9 +127,7 @@ export default class Index extends Component<
     }
   }
   componentDidMount() {
-    this.subscription = DeviceEventEmitter.addListener(pathMap.PersonalCenter + 'Reload', _ => {
-      this.init()
-    })
+    this.subscription = DeviceEventEmitter.addListener(pathMap.PersonalCenter + 'Reload', this.init)
     this.init()
   }
   componentWillUnmount() {
@@ -236,10 +234,7 @@ export default class Index extends Component<
                   <View key={k}>
                     <View style={style.separationModule} />
                     <TouchableOpacity
-                      onPress={() => {
-                        // this.props.navigation.navigate(pathMap.RealNameAuth)
-                        this.logout()
-                      }}
+                      onPress={this.logout}
                       style={[style.item, global.flex, global.justifyContentCenter, global.alignItemsCenter]}
                     >
                       <Text style={[style.logout, global.fontStyle, global.fontSize15]}>{v.name}</Text>

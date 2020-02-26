@@ -460,6 +460,9 @@ const stacksOverTabsConfig: {
   Root: {
     name: 'Root',
     component: TabNav,
+    options: {
+      header: () => null,
+    },
   },
   Test: {
     name: 'Test',

@@ -308,6 +308,9 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
     setCurrChatUid: (patientUid: number) => {
       dispatch(wsAction.setCurrChatUid({ uid: patientUid }))
     },
+    setReceiveMsgCb: (fn: (type: 'common' | 'chatGroup', subjectId: number) => void) => {
+      dispatch(wsAction.setReceiveMsgCb({ fn }))
+    },
   }
 }
 // @ts-ignore
@@ -405,8 +408,21 @@ export default class Chat extends Component<
       selectPic: [],
     }
   }
+  reeiveMsgCb = (type: 'common' | 'chatGroup', subjectId: number) => {
+    if (type === this.state.mode) {
+      if (
+        (type === 'common' && subjectId === this.state.patientUid) ||
+        (type === 'chatGroup' && subjectId === this.state.groupId)
+      ) {
+        this.setState({
+          shouldScrollToEnd: true,
+        })
+      }
+    }
+  }
   componentDidMount() {
     this.init()
+    this.props.setReceiveMsgCb(this.reeiveMsgCb)
     this.bottomNavList = this.generateBottomNavList()
     this.requestReadExteralStorage()
     this.listener = DeviceEventEmitter.addListener(pathMap.SquareRoot + 'Reload', quickReplyMsg => {
@@ -536,6 +552,7 @@ export default class Chat extends Component<
       this.listener.remove()
     }
     RnAppState.removeEventListener('change', this.onAppStateChange)
+    this.props.setReceiveMsgCb(() => {})
   }
   onAppStateChange = (status: AppStateStatus) => {
     if (status === 'background') {
@@ -838,6 +855,7 @@ export default class Chat extends Component<
             ref={this.myScroll}
             style={style.content}
             onContentSizeChange={() => {
+              console.log('size Change: ', this.state.shouldScrollToEnd)
               if (this.myScroll.current && this.state.shouldScrollToEnd) {
                 this.myScroll.current.scrollToEnd()
                 this.setState({
