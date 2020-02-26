@@ -21,7 +21,6 @@ import {
 import { connect } from 'react-redux'
 import { Dispatch } from 'redux'
 const style = gStyle.personalCenter.addBankCard
-const global = gStyle.global
 interface Props {
   navigation: StackNavigationProp<AllScreenParam, 'AddBankCard'>
   route: RouteProp<AllScreenParam, 'AddBankCard'>

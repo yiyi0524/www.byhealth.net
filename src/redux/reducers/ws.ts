@@ -7,6 +7,7 @@ type UnReadMsgCount = number
 export interface WsState {
   currScreen: string
   currChatUid: number
+  currGroupId: number
   status: number
   // 未读消息数量统计
   unReadMsgCountRecord: Record<Uid, UnReadMsgCount>
@@ -21,6 +22,7 @@ export interface WsState {
 export const initState: WsState = {
   currScreen: '',
   currChatUid: 0,
+  currGroupId: 0,
   // websocket 状态
   status: WebSocket.CLOSED,
   unReadMsgCountRecord: {},
@@ -206,6 +208,12 @@ function setCurrChatUid(state = initState, action: Action<{ uid: number }>) {
   return state
 }
 /**
+ * 设置当前聊天的群组id
+ */
+function setCurrGroupId(state = initState, action: Action<{ groupId: number }>) {
+  return Object.assign({}, state, { currGroupId: action.preload.groupId })
+}
+/**
  * 设置接收消息的回调函数
  */
 function setReceiveCallback(state = initState, action: Action<{ fn: () => void }>) {
@@ -235,6 +243,8 @@ export default function reducer(state = initState, action: Action<any>) {
       return setCurrChatUid(state, action)
     case wsAction.SET_RECEIVE_CB:
       return setReceiveCallback(state, action)
+    case wsAction.SET_CURR_GROUP_ID:
+      return setCurrGroupId(state, action)
     default:
       break
   }

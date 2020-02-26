@@ -308,6 +308,9 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
     setCurrChatUid: (patientUid: number) => {
       dispatch(wsAction.setCurrChatUid({ uid: patientUid }))
     },
+    setCurrGroupId: (groupId: number) => {
+      dispatch(wsAction.setCurrGroupId({ groupId }))
+    },
     setReceiveMsgCb: (fn: (type: 'common' | 'chatGroup', subjectId: number) => void) => {
       dispatch(wsAction.setReceiveMsgCb({ fn }))
     },
@@ -553,6 +556,8 @@ export default class Chat extends Component<
     }
     RnAppState.removeEventListener('change', this.onAppStateChange)
     this.props.setReceiveMsgCb(() => {})
+    this.props.setCurrChatUid(0)
+    this.props.setCurrGroupId(0)
   }
   onAppStateChange = (status: AppStateStatus) => {
     if (status === 'background') {
@@ -566,6 +571,7 @@ export default class Chat extends Component<
         })
         let { patientUid, mode, groupId } = this.state
         if (mode === 'chatGroup') {
+          this.props.setCurrGroupId(groupId)
           this.props.setGroupUnReadMsgCount({ groupId, count: 0 })
           return
         }
@@ -605,6 +611,7 @@ export default class Chat extends Component<
   }
   initChatGroup = async () => {
     let { groupId } = this.state
+    this.props.setCurrGroupId(groupId)
     this.props.setGroupUnReadMsgCount({ groupId, count: 0 })
     if (groupId in this.props.ws.groupMsg) {
       if (this.props.ws.groupMsg[groupId].length === 0) {
@@ -855,7 +862,6 @@ export default class Chat extends Component<
             ref={this.myScroll}
             style={style.content}
             onContentSizeChange={() => {
-              console.log('size Change: ', this.state.shouldScrollToEnd)
               if (this.myScroll.current && this.state.shouldScrollToEnd) {
                 this.myScroll.current.scrollToEnd()
                 this.setState({

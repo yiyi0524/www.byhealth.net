@@ -471,6 +471,9 @@ const stacksOverTabsConfig: {
   RealNameAuth: {
     name: 'RealNameAuth',
     component: RealNameAuth,
+    options: {
+      title: '实名认证',
+    },
   },
   AddressBookGroup: {
     name: 'AddressBookGroup',
@@ -1688,7 +1691,7 @@ const stacksOverTabsConfig: {
           textAlign: 'center',
         },
         headerRight: () => (
-          <TouchableOpacity onPress={route.params.navigatePress}>
+          <TouchableOpacity onPress={() => route.params.navigatePress && route.params.navigatePress()}>
             <Text style={[gStyle.personalCenter.editBankCard.headerRight, global.fontSize14, global.fontStyle]}>
               完成
             </Text>

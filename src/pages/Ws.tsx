@@ -269,12 +269,14 @@ class Ws extends React.Component<
   }
   receiveGroupMsg = (frame: ReceiveFrame<Exclude<Overwrite<Msg, MsgOptionalDataToRequired>, 'dom'>>) => {
     console.log(frame)
-    let { unReadGroupMsgCountRecord } = this.props.ws
+    let { unReadGroupMsgCountRecord, currScreen, currGroupId } = this.props.ws
     let groupId = frame.data.receiveGroup!.id
     console.log('正在添加群聊消息')
     this.props.addGroupMsg({ groupId, msg: frame.data })
-    let groupUnreadMsgCount = unReadGroupMsgCountRecord[groupId] || 0
-    this.props.setGroupUnReadMsgCount({ groupId, count: groupUnreadMsgCount + 1 })
+    if (currScreen !== pathMap.AdvisoryChat || currGroupId !== groupId) {
+      let groupUnreadMsgCount = unReadGroupMsgCountRecord[groupId] || 0
+      this.props.setGroupUnReadMsgCount({ groupId, count: groupUnreadMsgCount + 1 })
+    }
   }
   initClient = async () => {
     console.log('正在初始化ws客户端')

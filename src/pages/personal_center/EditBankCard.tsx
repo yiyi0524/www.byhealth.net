@@ -172,254 +172,132 @@ export default class Account extends Component<
         </View>
       )
     }
-    if (Platform.OS === 'android') {
-      return (
-        <>
-          <ScrollView
-            style={style.main}
-            keyboardShouldPersistTaps='always'
-            refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh} />}
-          >
-            <View style={style.addBankCard}>
-              <List renderHeader={'添加银行卡'}>
-                <InputItem
-                  style={style.input}
-                  labelNumber={5}
-                  clear
-                  value={this.state.name}
-                  maxLength={4}
-                  onChange={name => {
-                    this.setState({
-                      name,
-                    })
-                  }}
-                  placeholder='持卡人姓名'
-                >
-                  持卡人
-                </InputItem>
-                <InputItem
-                  style={style.input}
-                  labelNumber={5}
-                  clear
-                  type='text'
-                  value={this.state.idCardNo}
-                  onChange={idCardNo => {
-                    this.setState({
-                      idCardNo,
-                    })
-                  }}
-                  onBlur={(idCardNo: any) => {
-                    if (!idCardNo) {
-                      return false
-                    }
-                    // if (!api.idCardIDChecked(idCardNo)) {
-                    //   Toast.fail('身份证不正确', 3)
-                    // }
-                    //
-                    // eslint-disable-next-line prefer-named-capture-group
-                    if (!/(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/.test(idCardNo)) {
-                      Toast.fail('身份证号码位数不正确', 3)
-                    }
-                  }}
-                  placeholder='持卡人身份证号码'
-                >
-                  身份证号码
-                </InputItem>
-                <InputItem
-                  style={style.input}
-                  clear
-                  type='text'
-                  labelNumber={5}
-                  value={this.state.bankName}
-                  onChange={bankName => {
-                    this.setState({
-                      bankName,
-                    })
-                  }}
-                  placeholder='银行卡所属银行名称'
-                >
-                  银行
-                </InputItem>
-                <InputItem
-                  style={style.input}
-                  clear
-                  labelNumber={5}
-                  type='text'
-                  value={this.state.cardNo}
-                  onChange={cardNo => {
-                    this.setState({
-                      cardNo,
-                    })
-                  }}
-                  placeholder='储蓄卡卡号'
-                >
-                  卡号
-                </InputItem>
-                <InputItem
-                  style={style.input}
-                  clear
-                  type='text'
-                  labelNumber={5}
-                  value={this.state.openingBank}
-                  onChange={openingBank => {
-                    this.setState({
-                      openingBank,
-                    })
-                  }}
-                  placeholder='开户行'
-                >
-                  开户行
-                </InputItem>
-                <InputItem
-                  style={style.input}
-                  clear
-                  labelNumber={5}
-                  last
-                  type='number'
-                  value={this.state.phone}
-                  onChange={phone => {
-                    this.setState({
-                      phone,
-                    })
-                  }}
-                  onBlur={(phone: any) => {
-                    if (!/^1[3456789]\d{9}$/.test(phone)) {
-                      return Toast.fail('请输入正确的手机号码', 1)
-                    }
-                  }}
-                  placeholder='手机号码'
-                >
-                  手机号
-                </InputItem>
-              </List>
-            </View>
-          </ScrollView>
-        </>
-      )
-    }
     return (
-      <>
-        <KeyboardAvoidingView behavior='padding' style={{ flex: 1 }} keyboardVerticalOffset={70}>
-          <ScrollView
-            style={style.main}
-            keyboardShouldPersistTaps='always'
-            refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh} />}
-          >
-            <View style={style.addBankCard}>
-              <List renderHeader={'添加银行卡'}>
-                <InputItem
-                  style={style.input}
-                  labelNumber={5}
-                  clear
-                  value={this.state.name}
-                  maxLength={4}
-                  onChange={name => {
-                    this.setState({
-                      name,
-                    })
-                  }}
-                  placeholder='持卡人姓名'
-                >
-                  持卡人
-                </InputItem>
-                <InputItem
-                  style={style.input}
-                  labelNumber={5}
-                  clear
-                  type='text'
-                  value={this.state.idCardNo}
-                  onChange={idCardNo => {
-                    this.setState({
-                      idCardNo,
-                    })
-                  }}
-                  onBlur={(idCardNo: any) => {
-                    if (!idCardNo) {
-                      return false
-                    }
-                    // if (!api.idCardIDChecked(idCardNo)) {
-                    //   Toast.fail('身份证不正确', 3)
-                    // }
-                    // eslint-disable-next-line prefer-named-capture-group
-                    if (!/(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/.test(idCardNo)) {
-                      Toast.fail('身份证号码位数不正确', 3)
-                    }
-                  }}
-                  placeholder='持卡人身份证号码'
-                >
-                  身份证号码
-                </InputItem>
-                <InputItem
-                  style={style.input}
-                  clear
-                  type='text'
-                  labelNumber={5}
-                  value={this.state.bankName}
-                  onChange={bankName => {
-                    this.setState({
-                      bankName,
-                    })
-                  }}
-                  placeholder='银行卡所属银行名称'
-                >
-                  银行
-                </InputItem>
-                <InputItem
-                  style={style.input}
-                  clear
-                  labelNumber={5}
-                  type='bankCard'
-                  value={this.state.cardNo}
-                  onChange={cardNo => {
-                    this.setState({
-                      cardNo,
-                    })
-                  }}
-                  placeholder='储蓄卡卡号'
-                >
-                  卡号
-                </InputItem>
-                <InputItem
-                  style={style.input}
-                  clear
-                  type='text'
-                  labelNumber={5}
-                  value={this.state.openingBank}
-                  onChange={openingBank => {
-                    this.setState({
-                      openingBank,
-                    })
-                  }}
-                  placeholder='开户行'
-                >
-                  开户行
-                </InputItem>
-                <InputItem
-                  style={style.input}
-                  clear
-                  labelNumber={5}
-                  last
-                  type='number'
-                  value={this.state.phone}
-                  onChange={phone => {
-                    this.setState({
-                      phone,
-                    })
-                  }}
-                  onBlur={(phone: any) => {
-                    if (!/^1[3456789]\d{9}$/.test(phone)) {
-                      return Toast.fail('请输入正确的手机号码', 1)
-                    }
-                  }}
-                  placeholder='手机号码'
-                >
-                  手机号
-                </InputItem>
-              </List>
-            </View>
-          </ScrollView>
-        </KeyboardAvoidingView>
-      </>
+      <KeyboardAvoidingView
+        enabled={Platform.OS !== 'android'}
+        behavior='padding'
+        style={{ flex: 1 }}
+        keyboardVerticalOffset={70}
+      >
+        <ScrollView
+          style={style.main}
+          keyboardShouldPersistTaps='always'
+          refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh} />}
+        >
+          <View style={style.addBankCard}>
+            <List renderHeader={'添加银行卡'}>
+              <InputItem
+                style={style.input}
+                labelNumber={5}
+                clear
+                value={this.state.name}
+                maxLength={4}
+                onChange={name => {
+                  this.setState({
+                    name,
+                  })
+                }}
+                placeholder='持卡人姓名'
+              >
+                持卡人
+              </InputItem>
+              <InputItem
+                style={style.input}
+                labelNumber={5}
+                clear
+                type='text'
+                value={this.state.idCardNo}
+                onChange={idCardNo => {
+                  this.setState({
+                    idCardNo,
+                  })
+                }}
+                onBlur={(idCardNo: any) => {
+                  if (!idCardNo) {
+                    return false
+                  }
+                  // if (!api.idCardIDChecked(idCardNo)) {
+                  //   Toast.fail('身份证不正确', 3)
+                  // }
+                  // eslint-disable-next-line prefer-named-capture-group
+                  if (!/(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/.test(idCardNo)) {
+                    Toast.fail('身份证号码位数不正确', 3)
+                  }
+                }}
+                placeholder='持卡人身份证号码'
+              >
+                身份证号码
+              </InputItem>
+              <InputItem
+                style={style.input}
+                clear
+                type='text'
+                labelNumber={5}
+                value={this.state.bankName}
+                onChange={bankName => {
+                  this.setState({
+                    bankName,
+                  })
+                }}
+                placeholder='银行卡所属银行名称'
+              >
+                银行
+              </InputItem>
+              <InputItem
+                style={style.input}
+                clear
+                labelNumber={5}
+                type='bankCard'
+                value={this.state.cardNo}
+                onChange={cardNo => {
+                  this.setState({
+                    cardNo,
+                  })
+                }}
+                placeholder='储蓄卡卡号'
+              >
+                卡号
+              </InputItem>
+              <InputItem
+                style={style.input}
+                clear
+                type='text'
+                labelNumber={5}
+                value={this.state.openingBank}
+                onChange={openingBank => {
+                  this.setState({
+                    openingBank,
+                  })
+                }}
+                placeholder='开户行'
+              >
+                开户行
+              </InputItem>
+              <InputItem
+                style={style.input}
+                clear
+                labelNumber={5}
+                last
+                type='number'
+                value={this.state.phone}
+                onChange={phone => {
+                  this.setState({
+                    phone,
+                  })
+                }}
+                onBlur={(phone: any) => {
+                  if (!/^1[3456789]\d{9}$/.test(phone)) {
+                    return Toast.fail('请输入正确的手机号码', 1)
+                  }
+                }}
+                placeholder='手机号码'
+              >
+                手机号
+              </InputItem>
+            </List>
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
     )
   }
 }

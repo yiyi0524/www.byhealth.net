@@ -61,7 +61,7 @@ export default class ArticleList extends Component<Props & DefaultProps, State> 
   sendArticle = (id: number) => {
     let article = this.state.list.find(v => v.id === id)
     let sendArticle = this.props.route.params.sendArticle
-    sendArticle(article)
+    sendArticle && sendArticle(article)
     this.props.navigation.goBack()
   }
   delArticle = (id: number) => {
@@ -125,12 +125,12 @@ export default class ArticleList extends Component<Props & DefaultProps, State> 
   changeType = (type: number) => {
     let { filter } = this.state
     if (type === ArticleType.personal) {
-      filter.doctorId = {
+      filter.uid = {
         condition: TYPE.eq,
         val: this.props.uid,
       }
     } else {
-      delete filter.doctorId
+      delete filter.uid
     }
     this.setState(
       {
@@ -175,7 +175,7 @@ export default class ArticleList extends Component<Props & DefaultProps, State> 
             onChange={editSearch => {
               let { filter } = this.state
               filter.search = {
-                condition: TYPE.eqString,
+                condition: TYPE.like,
                 val: editSearch,
               }
               this.setState(
