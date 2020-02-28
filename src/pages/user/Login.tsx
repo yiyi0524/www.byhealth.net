@@ -142,7 +142,7 @@ export default class Login extends Component<
         Toast.success('登录成功', 1, () => {
           this.props.navigation.navigate('Home')
           // 登录成功之后,刷新某个页面 (pathMap.Home:为某页面路由名字)
-          storage.set('session', json.data.appSession as string, 3 * 60 * 24)
+          storage.set('session', json.data.appSession as string)
           DeviceEventEmitter.emit(pathMap.Home + 'Reload', null)
           DeviceEventEmitter.emit(pathMap.PersonalCenter + 'Reload', null)
           DeviceEventEmitter.emit(pathMap.AddressBookIndex + 'Reload', null)
@@ -178,7 +178,7 @@ export default class Login extends Component<
         Toast.success('登录成功', 1, () => {
           this.props.navigation.navigate('Home')
           // 登录成功之后,刷新某个页面 (pathMap.Home:为某页面路由名字)
-          storage.set('session', json.data.appSession as string, 3 * 60 * 24)
+          storage.set('session', json.data.appSession as string)
           DeviceEventEmitter.emit(pathMap.Home + 'Reload', null)
           DeviceEventEmitter.emit(pathMap.PersonalCenter + 'Reload', null)
           DeviceEventEmitter.emit(pathMap.AddressBookIndex + 'Reload', null)
