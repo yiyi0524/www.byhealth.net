@@ -1,5 +1,6 @@
 platform :ios, '9.0'
 require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
+source 'https://github.com/CocoaPods/Specs.git'
 source 'https://github.com/aliyun/aliyun-specs.git'
 target '博一健康' do
   # buff
@@ -10,7 +11,7 @@ target '博一健康' do
   pod 'SSZipArchive', :git => 'https://github.com/ZipArchive/ZipArchive',:tag => 'v2.1.5'
   pod 'JWT', :git => 'https://github.com/yourkarma/JWT', :tag => '3.0.0-beta.12'
   pod 'Base64', :git =>'https://github.com/ekscrypto/Base64', :tag => '1.1.2'
-  pod 'Sentry', :git => 'https://github.com/getsentry/sentry-cocoa', :tag => "4.1.3"
+  pod 'Sentry', :git => 'https://github.com/getsentry/sentry-cocoa', :tag => "4.4.3"
   # Pods for 博一健康
   pod 'FBLazyVector', :path => "../node_modules/react-native/Libraries/FBLazyVector"
   pod 'FBReactNativeSpec', :path => "../node_modules/react-native/Libraries/FBReactNativeSpec"

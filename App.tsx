@@ -5,7 +5,7 @@ import React, { Component } from 'react'
 import { NavigationContainer, NavigationContainerRef, NavigationState, PartialState } from '@react-navigation/native'
 import { connect } from 'react-redux'
 import { Dispatch } from 'redux'
-import { AppState as RnAppState, AppStateStatus } from 'react-native'
+import { AppState as RnAppState, AppStateStatus, SafeAreaView } from 'react-native'
 import { isLogin, updateAppStateStatus } from '@/services/api'
 import CodePush from 'react-native-code-push'
 import SplashScreen from 'react-native-splash-screen'
@@ -82,12 +82,14 @@ export default class App extends Component<Props & DefaultProps> {
             }
           }}
         >
-          <Stack.Navigator {...routeConfig.stackNavConfig}>
-            {Object.keys(routeConfig.screens).map(screenName => {
-              const props = routeConfig.screens[screenName]
-              return <Stack.Screen key={screenName} {...props} />
-            })}
-          </Stack.Navigator>
+          <SafeAreaView style={{ flex: 1 }}>
+            <Stack.Navigator {...routeConfig.stackNavConfig}>
+              {Object.keys(routeConfig.screens).map(screenName => {
+                const props = routeConfig.screens[screenName]
+                return <Stack.Screen key={screenName} {...props} />
+              })}
+            </Stack.Navigator>
+          </SafeAreaView>
         </NavigationContainer>
       </Ws>
     )
