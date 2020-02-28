@@ -512,6 +512,9 @@ export default class Home extends Component<
                   style={style.bannerItem}
                   activeOpacity={0.8}
                   onPress={() => {
+                    if (!this.state.hasRealNameAuth) {
+                      return Toast.info('您未认证完成', 1)
+                    }
                     // @ts-ignore
                     this.props.navigation.push(v.link)
                   }}

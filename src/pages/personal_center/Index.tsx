@@ -245,7 +245,7 @@ export default class Index extends Component<
               return (
                 <TouchableOpacity
                   onPress={() => {
-                    if (v.name === '编辑资料' || v.name === '患者不可见' || v.name === '邀请医生') {
+                    if (v.name === '编辑资料' || v.name === '患者不可见' || v.name === '我的邀请') {
                       if (!this.state.hasRealNameAuth) {
                         return Toast.info('您未认证完成', 1)
                       }

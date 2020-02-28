@@ -133,8 +133,8 @@ android {
         applicationId "net.byhealth.boyi"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 35
-        versionName "2.0.2"
+        versionCode 36
+        versionName "2.0.3"
         multiDexEnabled true
     }
     splits {
@@ -211,6 +211,7 @@ dependencies {
     implementation 'com.facebook.fresco:fresco:2.0.0'
     implementation 'com.facebook.fresco:animated-gif:2.0.0'
     implementation 'com.android.support:multidex:1.0.3'
+    implementation "me.leolin:ShortcutBadger:1.1.22@aar"
     if (enableHermes) {
         def hermesPath = "../../node_modules/hermes-engine/android/"
         debugImplementation files(hermesPath + "hermes-debug.aar")

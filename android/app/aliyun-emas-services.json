@@ -6,28 +6,41 @@
     "hotfix.idSecret": "27603622-1",
     "hotfix.rsaSecret": "MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDOxA/NAyK///w4DmUK9hwyADRZynGG1fXD8nXjMlGNVAv+7uhScOho75Ese7RrZM43LnCLSKYBKAfLPZMskzGObOAwuzXIV+2yc8EnrdBAho9RMmpt233PWhp4++JmS4of28P3FMu/QBpu5bcxwIOtXV2GzeY0J0B60m725KIR0qfCpPZNfA3rM4cXk04KTmqYDeN7tem39wUW6KTMQ6nU8GOT4W2RTATBk4tBmAGVyOThZNtYNTSYGnIFsPhmMvp47aJMO0DpYvCuyo58+8w0e2+babrBBG5uUq6C9glWDRBIotZQyKNv9EhD/ly0RiyY+KujZl0LTQMZw/P7OUWzAgMBAAECggEACA+WuhxkL24QbDMLd2ju4nglklaVJHeU9EWwmOHuUf8z1IWF4yjptqWYWE6eUw2ECJyz4Io9hpAD9cV5xmQaq33NI7k4uI3NA4cFwcFB/DICxlybz5qeBgZyP8M6KVjKksFjm29hHhymqyojgToLKCgarFW8os3g8qjfkJqLQvyMchXGM0lG7SqdGwufv3+df1mIo4br9qTVuX3isjFlx25efP+dj603+gEuGxc2FWG98IG0jvjtflKpqhqwLA6pUOJDnpqVc3pQgf4POPYJH/QNEqFet/kN3WZ9MyRnd6tl7/gaqfzRiwu7Sxe6MsuQYq4/G+aq7xdsU32eFmg8sQKBgQD66qSjWPfO/lDEzj9EAvgIxlIn+/JsjPANuIilaDkCbAyGDc9aTrjD5mKZt+GqedqaY2EgCZ5dmKvbfgQX6eJJeFoHPEMcinQ7sQaRoBlqKe2rKiZmXuv5IPjCyC+HANHcvEK3Vl87HXbvLvoUBbvkel6aU9aB1dTIdDvuwfxyKQKBgQDS9G9P8XZ/aCws1CBb4FMtHq41B8Xx1uIOrnhtMokajT8NLhagzqu8YAj0UPhAZ8vkRImv0RhyRqfND04QZ5dkZeqgFdxIPBZ8cz0Aqw+prqgdv6v/yJ5V/tzRA6hKA/xrBRtsa5WkDW1iBGHWaAa06FUncHLQ6a+YcDudBICMewKBgQCPAMH6Us9RCoIv2DgYY/TG03ipTx9YHG8H8t72HlM3fSsaD67YkjsdcyVI5JLZnP8otHD7WGAIieWQf96HXoXYR55Pt1msX4BlMLxErNEvP1w0DB68g2bLoq4EHSFxONdijW0cnj5CK8XIBacDWE1ApzlZjWSYtKzD3fL2XVqqGQKBgDSX0kSZC5T6EMFgZWzigXonQwFfnb8MdrF4V/fJeJsRCd4sVmHjBLfjLXhT04CjIBcZ60XVGIYtDVq3bRvz56+VJSiiKpgruuNuC5BmFXKVY75+8c/EYY1JDB5kDgnd8olv7YVbUSRkYJfmRcohh0KFBe3eQBHLoQadPI+J9s6PAoGBAPEvBSajJTW7qYqlLJNXIwwkjsT5OEQOsVOLTCnjs+oMt92RTUzn/AXvwjD2hQHvGcMrIUJjNBE/MAdBZ5g/aOOmNqqEoLFb0q9Y/hkW+1NRNJRUlHTTvAyJYHqEvAOe+BRFAOi3FGbEKBgbtz4OW60QAPcRgqIaXx9buNk2TPwX",
     "httpdns.accountId": "144101",
-    "httpdns.secretKey": "f09ffb42592ea52f6d6911b91e54f65e"
+    "httpdns.secretKey": "f09ffb42592ea52f6d6911b91e54f65e",
+    "appmonitor.tlog.rsaSecret": "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCStMwqCcaBXrjTDEo5AiG5RimCKe9gX+qZy0IKiK1xSGsfPX1QO2pDXeeMGt6OiqkSk11SNRfSZ7HG5BSJdG5X3Qkppcmn7Jaga3IWQhK2T2EObukYaW/UPLiDllo9nbnCSGyUEDlzXJy006ThIKSBmIzYN3VaFO0Cen+K0dsrMwIDAQAB"
   },
   "services": {
-    "httpdns_service": {
-      "status": 0,
-      "version": "1.2.5"
-    },
-    "cps_service": {
-      "status": 1,
-      "version": "3.1.4"
-    },
     "hotfix_service": {
       "status": 0,
-      "version": "3.2.8"
+      "version": "3.2.13"
+    },
+    "ha-adapter_service": {
+      "status": 1,
+      "version": "1.1.3.2-open"
+    },
+    "feedback_service": {
+      "status": 1,
+      "version": "3.3.1"
+    },
+    "tlog_service": {
+      "status": 1,
+      "version": "1.1.2.3-open"
+    },
+    "httpdns_service": {
+      "status": 0,
+      "version": "1.2.9"
+    },
+    "apm_service": {
+      "status": 1,
+      "version": "1.0.7.8-open"
     },
     "man_service": {
       "status": 1,
       "version": "1.2.4"
     },
-    "feedback_service": {
-      "status": 0,
-      "version": "3.3.1"
+    "cps_service": {
+      "status": 1,
+      "version": "3.1.9"
     }
   },
   "use_maven": true,
