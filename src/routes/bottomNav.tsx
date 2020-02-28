@@ -445,7 +445,7 @@ const TabNav = () => {
 const Stack = createStackNavigator()
 export default () => {
   return (
-    <Stack.Navigator initialRouteName='Root'>
+    <Stack.Navigator initialRouteName='Root' headerMode='screen'>
       {Object.keys(stacksOverTabsConfig).map(screenName => {
         const props = stacksOverTabsConfig[screenName as keyof AllScreenParam]
         // @ts-ignore
@@ -461,7 +461,8 @@ const stacksOverTabsConfig: {
     name: 'Root',
     component: TabNav,
     options: {
-      header: () => null,
+      title: '返回',
+      header: () => undefined,
     },
   },
   Test: {
