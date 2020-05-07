@@ -158,7 +158,10 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
   }
 }
 // @ts-ignore
-@connect(mapStateToProps, mapDispatchToProps)
+@connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)
 export default class SquareRoot extends Component<
   Props & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
   State
@@ -619,10 +622,7 @@ export default class SquareRoot extends Component<
                     <View style={style.diagnosisItemInput}>
                       <Picker
                         style={style.input}
-                        data={[
-                          { value: 0, label: '男' },
-                          { value: 1, label: '女' },
-                        ]}
+                        data={[{ value: 0, label: '男' }, { value: 1, label: '女' }]}
                         cols={1}
                         value={[gender]}
                         onChange={val => {
@@ -1223,11 +1223,10 @@ export default class SquareRoot extends Component<
     addPrescription(args)
       .then(json => {
         if (mode === 'phone' || mode === 'wx') {
-          this.props.navigation.navigate('PrescriptionDetail', {
+          return this.props.navigation.navigate('PrescriptionDetail', {
             prescriptionId: json.data.id,
             mode,
           })
-          return
         }
         let prescriptionId = json.data.id
         this.props.ws.wsPost({

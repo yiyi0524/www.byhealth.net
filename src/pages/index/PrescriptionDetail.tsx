@@ -79,7 +79,10 @@ interface State {
   drugCategoryList: drugCategory[]
   drugList: DrugInfo[]
 }
-@connect(mapStateToProps, mapDispatchToProps)
+@connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)
 export default class SquareRoot extends Component<
   Props & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
   State
@@ -355,7 +358,7 @@ export default class SquareRoot extends Component<
                         {categoryName} 共{v.list.length}味
                       </Text>
                       <View style={style.drugListFa}>
-                        // eslint-disable-next-line no-shadow // eslint-disable-next-line no-shadow
+                        {/* // eslint-disable-next-line no-shadow // eslint-disable-next-line no-shadow */}
                         {v.list.map((v, k) => {
                           let drugItem = '',
                             unit = '',
