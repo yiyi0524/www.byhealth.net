@@ -219,7 +219,7 @@ export default class SquareRoot extends Component<
       },
       patientInfo: {
         uid: 0,
-        gender: GENDER.UNDEFINED,
+        gender: GENDER.MAN,
         monthAge: 0,
         yearAge: 0,
         name: '',
@@ -230,7 +230,7 @@ export default class SquareRoot extends Component<
       advice: '',
       prescriptionDrugCategoryList,
       patientName: '',
-      gender: 0,
+      gender: GENDER.MAN,
       monthAge: '',
       yearAge: '',
     }
@@ -622,11 +622,14 @@ export default class SquareRoot extends Component<
                     <View style={style.diagnosisItemInput}>
                       <Picker
                         style={style.input}
-                        data={[{ value: 0, label: '男' }, { value: 1, label: '女' }]}
+                        data={[
+                          { value: GENDER.MAN, label: GENDER_ZH[GENDER.MAN] },
+                          { value: GENDER.WOMAN, label: GENDER_ZH[GENDER.WOMAN] },
+                        ]}
                         cols={1}
                         value={[gender]}
                         onChange={val => {
-                          this.setState({ gender: val ? (val[0] as number) : 0 })
+                          this.setState({ gender: val ? (val[0] as number) : 1 })
                         }}
                       >
                         <TouchableOpacity>
@@ -639,7 +642,7 @@ export default class SquareRoot extends Component<
                                 { flex: 1, textAlign: 'right' },
                               ]}
                             >
-                              {gender === 0 ? '男' : '女'}
+                              {gender === GENDER.MAN ? GENDER_ZH[GENDER.MAN] : GENDER_ZH[GENDER.WOMAN]}
                             </Text>
                             <Icon name='right' style={[global.fontSize16]} />
                           </View>

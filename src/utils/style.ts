@@ -16,6 +16,8 @@ import account from '@/assets/styles/personal_center/account'
 import addBankCard from '@/assets/styles/personal_center/addBankCard'
 import editBankCard from '@/assets/styles/personal_center/editBankCard'
 import changePwd from '@/assets/styles/personal_center/changePwd'
+import assistantDoctor from '@/assets/styles/personal_center/assistantDoctor'
+import addAssistant from '@/assets/styles/personal_center/addAssistant'
 import editInformation from '@/assets/styles/personal_center/editInformation'
 import about from '@/assets/styles/personal_center/about'
 import customerService from '@/assets/styles/personal_center/customerService'
@@ -119,6 +121,8 @@ export default {
     addBankCard,
     editBankCard,
     changePwd,
+    assistantDoctor,
+    addAssistant,
     editInformation,
     about,
     customerService,

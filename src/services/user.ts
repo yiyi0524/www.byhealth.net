@@ -1,6 +1,6 @@
 import { Picture } from '@/pages/advisory/Chat'
 import { prescriptionItem } from '@/pages/index/Prescription'
-import { bget, GetListParam } from './api'
+import { bget, GetListParam, bpost } from './api'
 export interface PersonalInfo {
   info: {
     id: number
@@ -77,8 +77,30 @@ export async function getUserWxInfo(query: { openid: string }) {
     query,
   })
 }
+
+/**
+ *  添加医助
+ */
+export function addAssistant(data: { name: string; account: string; pwd: string }) {
+  return bpost<{ id: number }>({
+    url: '',
+    data,
+  })
+}
+/**
+ *  编辑医助
+ */
+export function editAssistant(data: { id: number; name: string; account: string; pwd: string }) {
+  return bpost({
+    url: '',
+    data,
+  })
+}
+
 export default {
   getPersonalInfo,
   getHospitalList,
   getPrescriptionList,
+  addAssistant,
+  editAssistant,
 }

@@ -15,6 +15,8 @@ export default {
   PatientDetail: 'PatientDetail',
   Account: 'Account',
   ChangePwd: 'ChangePwd',
+  AssistantDoctorList: 'AssistantDoctorList', //医助管理
+  AddOrEditAssistant: 'AddOrEditAssistant', //添加医助
   EditInformation: 'EditInformation',
   About: 'About',
   CustomerService: 'CustomerService',

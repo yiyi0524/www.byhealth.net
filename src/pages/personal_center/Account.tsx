@@ -76,7 +76,10 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
     },
   }
 }
-@connect(mapStateToProps, mapDispatchToProps)
+@connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)
 export default class Account extends Component<
   Props & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
   State
@@ -413,6 +416,7 @@ export default class Account extends Component<
                   微信账号
                 </InputItem>
               )}
+              <Text style={style.tips}>请先关注公众号：博一咨询平台</Text>
             </View>
           </Modal>
         </ScrollView>

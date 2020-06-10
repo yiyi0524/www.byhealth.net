@@ -27,6 +27,8 @@ import About from '@/pages/personal_center/About'
 import Account from '@/pages/personal_center/Account'
 import AddBankCard from '@/pages/personal_center/AddBankCard'
 import ChangePwd from '@/pages/personal_center/ChangePwd'
+import AssistantDoctorList from '@/pages/personal_center/AssistantDoctorList'
+import AddOrEditAssistant from '@/pages/personal_center/AddOrEditAssistant'
 import CustomerService from '@/pages/personal_center/CustomerService'
 import EditBankCard from '@/pages/personal_center/EditBankCard'
 import EditInformation from '@/pages/personal_center/EditInformation'
@@ -80,7 +82,10 @@ import { Image, PixelRatio, StyleSheet, Text, View, DeviceEventEmitter, Alert } 
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import AdvisoryTabbar from './AdvisoryTabbar'
 import GroupChatTabbar from './GroupChatTabbar'
-import { Icon, Toast } from '@ant-design/react-native'
+import { Toast } from '@ant-design/react-native'
+
+import Icon from 'react-native-vector-icons/FontAwesome'
+
 import pathMap from './pathMap'
 const global = gStyle.global
 const style = StyleSheet.create({
@@ -147,6 +152,7 @@ export type AllScreenParam = {
   }
   Account: {}
   ChangePwd: {}
+  AssistantDoctorList: {}
   EditInformation: {}
   About: {}
   CustomerService: {}
@@ -277,6 +283,11 @@ export type AllScreenParam = {
     type: 'add' | 'edit'
     sendArticle?: (p: any) => any
   }
+  AddOrEditAssistant: {
+    id: number
+    type: 'add' | 'edit'
+    sendArticle?: (p: any) => any
+  }
   ArticleList: {
     sendArticle?: (p: any) => any
   }
@@ -331,9 +342,7 @@ function bottomTabOptFn<Name extends keyof AllScreenParam>({
 }
 
 const bottomTabConf: {
-  screens: {
-    [P in keyof AllScreenParam]?: RouteConfig<AllScreenParam, P, BottomTabNavigationOptions>
-  }
+  screens: { [P in keyof AllScreenParam]?: RouteConfig<AllScreenParam, P, BottomTabNavigationOptions> }
   conf: Omit<GetComponentProps<typeof Tab['Navigator']>, 'children'>
 } = {
   screens: {
@@ -454,9 +463,7 @@ export default () => {
     </Stack.Navigator>
   )
 }
-const stacksOverTabsConfig: {
-  [P in keyof AllScreenParam]?: RouteConfig<AllScreenParam, P, StackNavigationOptions>
-} = {
+const stacksOverTabsConfig: { [P in keyof AllScreenParam]?: RouteConfig<AllScreenParam, P, StackNavigationOptions> } = {
   Root: {
     name: 'Root',
     component: TabNav,
@@ -658,6 +665,85 @@ const stacksOverTabsConfig: {
         fontSize: 14,
         textAlign: 'center',
       },
+    },
+  },
+  // 医助管理
+  AssistantDoctorList: {
+    name: 'AssistantDoctorList',
+    component: AssistantDoctorList,
+    options: ({
+      route,
+      navigation,
+    }: {
+      route: RouteProp<AllScreenParam, 'AssistantDoctorList'>
+      navigation: StackNavigationProp<AllScreenParam, 'AssistantDoctorList'>
+    }) => {
+      return {
+        title: '医助管理',
+        headerStyle: {
+          backgroundColor: '#fff',
+          height: 45,
+          elevation: 0,
+          borderColor: '#E3E3E3',
+        },
+        headerTintColor: '#333',
+        headerTitleStyle: {
+          flex: 1,
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontSize: 14,
+          textAlign: 'center',
+        },
+        headerRight: () => (
+          <TouchableOpacity
+            onPress={() => {
+              navigation.push('AddOrEditAssistant', {
+                type: 'add',
+                id: 0,
+              })
+            }}
+          >
+            <Text style={gSass.groupChat.articleDetail.rightTitle}>新建</Text>
+          </TouchableOpacity>
+        ),
+      }
+    },
+  },
+  // 添加医助
+  AddOrEditAssistant: {
+    name: 'AddOrEditAssistant',
+    component: AddOrEditAssistant,
+    initialParams: {
+      id: 0,
+      type: 'add',
+    },
+    options: ({ route }: { route: RouteProp<AllScreenParam, 'AddOrEditAssistant'> }) => {
+      let title = '添加医助'
+      if (route.params.type === 'edit') {
+        title = '编辑医助'
+      }
+      return {
+        title,
+        headerStyle: {
+          backgroundColor: '#fff',
+          height: 45,
+          elevation: 0,
+          borderColor: '#E3E3E3',
+        },
+        headerTintColor: '#333',
+        headerTitleStyle: {
+          flex: 1,
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontSize: 14,
+          textAlign: 'center',
+        },
+        headerRight: () => (
+          <TouchableOpacity>
+            <Text />
+          </TouchableOpacity>
+        ),
+      }
     },
   },
   EditInformation: {

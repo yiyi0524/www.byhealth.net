@@ -148,4 +148,11 @@ export default StyleSheet.create({
     fontSize: 12,
     color: '#888',
   },
+  tips: {
+    fontSize: 14,
+    color: sColor.mainRed,
+    textAlign: 'center',
+    marginTop: 20,
+    marginBottom: 0,
+  },
 })

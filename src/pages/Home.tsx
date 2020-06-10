@@ -79,7 +79,10 @@ export interface SettingItem {
   link: string
 }
 //@ts-ignore
-@connect(mapStateToProps, mapDispatchToProps)
+@connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)
 export default class Home extends Component<
   Props & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
   State
@@ -445,16 +448,16 @@ export default class Home extends Component<
               <Text style={[style.prescriptionItemNum, global.fontSize15]}>{this.state.prescriptionCount}</Text>
               <Text style={[style.prescriptionItemTitle, global.fontSize12]}>处方数</Text>
             </TouchableOpacity>
-            {/* <TouchableOpacity
+            <TouchableOpacity
               onPress={() => {
-                Buff.setShortcutBadger(988)
+                this.props.navigation.navigate('AddressBookIndex')
               }}
-            > */}
-            <View style={style.prescriptionItem}>
-              <Text style={[style.prescriptionItemNum, global.fontSize15]}>{this.state.patientCount}</Text>
-              <Text style={[style.prescriptionItemTitle, global.fontSize12]}>患者数</Text>
-            </View>
-            {/* </TouchableOpacity> */}
+            >
+              <View style={style.prescriptionItem}>
+                <Text style={[style.prescriptionItemNum, global.fontSize15]}>{this.state.patientCount}</Text>
+                <Text style={[style.prescriptionItemTitle, global.fontSize12]}>患者数</Text>
+              </View>
+            </TouchableOpacity>
           </View>
           {/* 认证 */}
           <TouchableOpacity

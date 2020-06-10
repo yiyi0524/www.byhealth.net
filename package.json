@@ -18,6 +18,7 @@
     "iosHotUpdateProd": "appcenter codepush release-react -d Production -a buffge/bo2-yi1-jian4-kang1-ios --entry-file index.tsx --plist-file ios/boyi615/Info.plist"
   },
   "dependencies": {
+    "@ant-design/icons-react-native": "^2.2.1",
     "@ant-design/react-native": "^3.2.0",
     "@react-native-community/masked-view": "^0.1.6",
     "@react-navigation/bottom-tabs": "^5.0.5",
@@ -26,6 +27,7 @@
     "@sentry/react-native": "^1.3.1",
     "@types/lodash": "^4.14.142",
     "@types/react-native-permissions": "^1.1.1",
+    "antd-iconfont": "^3.0.3",
     "classnames": "^2.2.6",
     "hermes-engine": "0.1.1",
     "idcard": "^4.1.0",
@@ -53,6 +55,7 @@
     "react-native-sound": "^0.11.0",
     "react-native-splash-screen": "^3.2.0",
     "react-native-svg": "^9.8.4",
+    "react-native-vector-icons": "^6.6.0",
     "react-native-webview": "^8.1.2",
     "react-native-wechat": "^1.9.12",
     "react-redux": "6.*",

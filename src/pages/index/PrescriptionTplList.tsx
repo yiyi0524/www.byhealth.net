@@ -12,7 +12,15 @@ import { StackNavigationProp } from '@react-navigation/stack'
 import gImg from '@utils/img'
 import gStyle from '@utils/style'
 import React, { Component } from 'react'
-import { DeviceEventEmitter, EmitterSubscription, Image, RefreshControl, Text, View } from 'react-native'
+import {
+  DeviceEventEmitter,
+  EmitterSubscription,
+  Image,
+  RefreshControl,
+  Text,
+  View,
+  TouchableOpacity,
+} from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
 import { connect } from 'react-redux'
 import { Dispatch } from 'redux'
@@ -43,7 +51,10 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
     },
   }
 }
-@connect(mapStateToProps, mapDispatchToProps)
+@connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)
 export default class PrescriptionTplList extends Component<
   Props & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
   State
@@ -197,7 +208,15 @@ export default class PrescriptionTplList extends Component<
                   style={{ backgroundColor: 'transparent', marginTop: 8 }}
                   right={rightOpt}
                 >
-                  <View style={style.prescriptionItem}>
+                  <TouchableOpacity
+                    style={style.prescriptionItem}
+                    onPress={() => {
+                      this.props.navigation.push('SquareRoot', {
+                        mode: 'wx',
+                        prescription: prescription,
+                      })
+                    }}
+                  >
                     <View
                       style={[
                         style.prescriptionHeader,
@@ -221,7 +240,7 @@ export default class PrescriptionTplList extends Component<
                     <Text style={[style.prescriptionDetail, global.fontSize14]} numberOfLines={1}>
                       {drugStr}
                     </Text>
-                  </View>
+                  </TouchableOpacity>
                 </SwipeAction>
               )
             })}

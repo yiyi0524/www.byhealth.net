@@ -58,7 +58,10 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
   }
 }
 // @ts-ignore
-@connect(mapStateToProps, mapDispatchToProps)
+@connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)
 export default class Index extends Component<
   Props & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
   State
@@ -79,6 +82,10 @@ export default class Index extends Component<
       {
         name: '修改密码',
         link: pathMap.ChangePwd,
+      },
+      {
+        name: '医助管理',
+        link: pathMap.AssistantDoctorList,
       },
       {
         name: '患者不可见',
