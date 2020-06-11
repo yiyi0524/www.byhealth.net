@@ -48,7 +48,10 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
   }
 }
 // @ts-ignore
-@connect(mapStateToProps, mapDispatchToProps)
+@connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)
 export default class Login extends Component<
   Props & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
   State
@@ -143,6 +146,7 @@ export default class Login extends Component<
           this.props.navigation.navigate('Home')
           // 登录成功之后,刷新某个页面 (pathMap.Home:为某页面路由名字)
           storage.set('session', json.data.appSession as string)
+          storage.set('isAssistant', false)
           DeviceEventEmitter.emit(pathMap.Home + 'Reload', null)
           DeviceEventEmitter.emit(pathMap.PersonalCenter + 'Reload', null)
           DeviceEventEmitter.emit(pathMap.AddressBookIndex + 'Reload', null)
@@ -156,11 +160,11 @@ export default class Login extends Component<
   }
   pwdLogin = () => {
     if (this.state.phone === '') {
-      return Toast.fail('请输入手机号码', 2)
+      return Toast.fail('请输入手机号码或医助账号', 2)
     }
-    if (!/^1[3456789]\d{9}$/.test(this.state.phone)) {
-      return Toast.fail('请输入正确的手机号码', 1)
-    }
+    // if (!/^1[3456789]\d{9}$/.test(this.state.phone)) {
+    //   return Toast.fail('请输入正确的手机号码', 1)
+    // }
     if (this.state.pwd === '') {
       return Toast.fail('请输入密码', 2)
     }
@@ -179,6 +183,7 @@ export default class Login extends Component<
           this.props.navigation.navigate('Home')
           // 登录成功之后,刷新某个页面 (pathMap.Home:为某页面路由名字)
           storage.set('session', json.data.appSession as string)
+          storage.set('isAssistant', json.data.isAssistant as boolean)
           DeviceEventEmitter.emit(pathMap.Home + 'Reload', null)
           DeviceEventEmitter.emit(pathMap.PersonalCenter + 'Reload', null)
           DeviceEventEmitter.emit(pathMap.AddressBookIndex + 'Reload', null)
@@ -282,7 +287,7 @@ export default class Login extends Component<
                   clear
                   value={this.state.phone}
                   style={style.input}
-                  placeholder='手机号码'
+                  placeholder='手机号码/医助账号'
                   type='number'
                   onChange={value => {
                     this.setState({ phone: value })

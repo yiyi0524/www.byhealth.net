@@ -38,6 +38,7 @@ interface State {
     current: string
     new: string
   }
+  isAssistant: boolean
 }
 interface functionItem {
   name: string
@@ -131,6 +132,7 @@ export default class Index extends Component<
         current: '1.0.0',
         new: '',
       },
+      isAssistant: false,
     }
   }
   componentDidMount() {
@@ -143,6 +145,10 @@ export default class Index extends Component<
     }
   }
   init = async () => {
+    let isAssistant = await storage.get('isAssistant')
+    this.setState({
+      isAssistant,
+    })
     try {
       let isLogin = await api.isLogin()
       if (!isLogin) {
@@ -218,7 +224,7 @@ export default class Index extends Component<
           <View style={style.list}>
             {this.functionList.map((v: any, k: number) => {
               if (v.name === '账户') {
-                return (
+                return this.state.isAssistant ? null : (
                   <View key={k}>
                     <TouchableOpacity
                       onPress={() => {
@@ -260,7 +266,11 @@ export default class Index extends Component<
                     this.props.navigation.push(v.link)
                   }}
                   key={k}
-                  style={[style.item, global.flex, global.justifyContentSpaceBetween, global.alignItemsCenter]}
+                  style={
+                    (v.name === '医助管理' || v.name === '修改密码') && this.state.isAssistant
+                      ? [global.hidden]
+                      : [style.item, global.flex, global.justifyContentSpaceBetween, global.alignItemsCenter]
+                  }
                 >
                   <Text style={[style.title, global.fontStyle, global.fontSize15]}>{v.name}</Text>
                 </TouchableOpacity>

@@ -60,6 +60,7 @@ import UploadPrescriptionList from '@pages/index/UploadPrescriptionList'
 import MyInviteDoctorGradeList from '@pages/my_invite/DoctorGradeList'
 import MyInviteDoctorList from '@pages/my_invite/DoctorList'
 import MyInvite from '@pages/my_invite/Index'
+import FundingDetail from '@pages/personal_center/FundingDetail'
 import Order from '@pages/my_invite/Order'
 import OrderCount from '@pages/my_invite/OrderCount'
 import OrderMoney from '@pages/my_invite/OrderMoney'
@@ -82,9 +83,9 @@ import { Image, PixelRatio, StyleSheet, Text, View, DeviceEventEmitter, Alert } 
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import AdvisoryTabbar from './AdvisoryTabbar'
 import GroupChatTabbar from './GroupChatTabbar'
-import { Toast } from '@ant-design/react-native'
+import { Toast, Icon } from '@ant-design/react-native'
 
-import Icon from 'react-native-vector-icons/FontAwesome'
+// import Icon from 'react-native-vector-icons/FontAwesome'
 
 import pathMap from './pathMap'
 const global = gStyle.global
@@ -297,6 +298,7 @@ export type AllScreenParam = {
   }
   Prescribing: {}
   MyInvite: {}
+  FundingDetail: {}
   InviteDoctorList: {}
   InviteDoctorGradeList: {
     level: number
@@ -627,22 +629,39 @@ const stacksOverTabsConfig: { [P in keyof AllScreenParam]?: RouteConfig<AllScree
   Account: {
     name: 'Account',
     component: Account,
-    options: {
-      title: '账户',
-      headerStyle: {
-        backgroundColor: sColor.lightGreen,
-        height: 45,
-        elevation: 0,
-        borderColor: sColor.lightGreen,
-      },
-      headerTintColor: sColor.white,
-      headerTitleStyle: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-        fontSize: 14,
-        textAlign: 'center',
-      },
+    options: ({
+      navigation,
+      route,
+    }: {
+      route: RouteProp<AllScreenParam, 'Account'>
+      navigation: StackNavigationProp<AllScreenParam, 'Account'>
+    }) => {
+      return {
+        title: '账户',
+        headerStyle: {
+          backgroundColor: sColor.lightGreen,
+          height: 45,
+          elevation: 0,
+          borderColor: sColor.lightGreen,
+        },
+        headerTintColor: sColor.white,
+        headerTitleStyle: {
+          flex: 1,
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontSize: 14,
+          textAlign: 'center',
+        },
+        headerRight: () => (
+          <TouchableOpacity
+            onPress={() => {
+              navigation.push('FundingDetail')
+            }}
+          >
+            <Text style={{ fontSize: 14, color: '#fff', marginRight: 20 }}>明细</Text>
+          </TouchableOpacity>
+        ),
+      }
     },
   },
   ChangePwd: {
@@ -665,6 +684,7 @@ const stacksOverTabsConfig: { [P in keyof AllScreenParam]?: RouteConfig<AllScree
         fontSize: 14,
         textAlign: 'center',
       },
+      headerRight: () => <TouchableOpacity />,
     },
   },
   // 医助管理
@@ -766,6 +786,7 @@ const stacksOverTabsConfig: { [P in keyof AllScreenParam]?: RouteConfig<AllScree
         fontSize: 14,
         textAlign: 'center',
       },
+      headerRight: () => <TouchableOpacity />,
     },
   },
   About: {
@@ -788,6 +809,7 @@ const stacksOverTabsConfig: { [P in keyof AllScreenParam]?: RouteConfig<AllScree
         fontSize: 14,
         textAlign: 'center',
       },
+      headerRight: () => <TouchableOpacity />,
     },
   },
   CustomerService: {
@@ -810,6 +832,7 @@ const stacksOverTabsConfig: { [P in keyof AllScreenParam]?: RouteConfig<AllScree
         fontSize: 14,
         textAlign: 'center',
       },
+      headerRight: () => <TouchableOpacity />,
     },
   },
   Prescription: {
@@ -833,6 +856,7 @@ const stacksOverTabsConfig: { [P in keyof AllScreenParam]?: RouteConfig<AllScree
         fontSize: 14,
         textAlign: 'center',
       },
+      headerRight: () => <TouchableOpacity />,
     },
   },
   InvitePatients: {
@@ -1328,6 +1352,7 @@ const stacksOverTabsConfig: { [P in keyof AllScreenParam]?: RouteConfig<AllScree
         fontSize: 14,
         textAlign: 'center',
       },
+      headerRight: () => <TouchableOpacity />,
     },
   },
   InviteDoctors: {
@@ -2216,6 +2241,31 @@ const stacksOverTabsConfig: { [P in keyof AllScreenParam]?: RouteConfig<AllScree
       }
     },
   },
+  //资金明细
+  FundingDetail: {
+    name: 'FundingDetail',
+    component: FundingDetail,
+    options: {
+      title: '资金明细',
+      headerStyle: {
+        backgroundColor: sColor.white,
+        height: 50,
+        elevation: 0,
+        borderBottomWidth: 1 / PixelRatio.get(),
+        borderBottomColor: sColor.colorEee,
+      },
+      headerTintColor: sColor.color333,
+      headerTitleStyle: {
+        flex: 1,
+        color: sColor.mainBlack,
+        alignItems: 'center',
+        justifyContent: 'center',
+        fontSize: 14,
+        textAlign: 'center',
+      },
+      headerRight: () => <TouchableOpacity />,
+    },
+  },
   Prescribing: {
     name: 'Prescribing',
     component: Prescribing,
@@ -2261,6 +2311,7 @@ const stacksOverTabsConfig: { [P in keyof AllScreenParam]?: RouteConfig<AllScree
         fontSize: 14,
         textAlign: 'center',
       },
+      headerRight: () => <TouchableOpacity />,
     },
   },
   InviteDoctorList: {
@@ -2285,6 +2336,7 @@ const stacksOverTabsConfig: { [P in keyof AllScreenParam]?: RouteConfig<AllScree
         fontSize: 14,
         textAlign: 'center',
       },
+      headerRight: () => <TouchableOpacity />,
     },
   },
   OrderMoney: {
@@ -2308,6 +2360,7 @@ const stacksOverTabsConfig: { [P in keyof AllScreenParam]?: RouteConfig<AllScree
         fontSize: 14,
         textAlign: 'center',
       },
+      headerRight: () => <TouchableOpacity />,
     },
   },
   OrderCount: {
@@ -2331,6 +2384,7 @@ const stacksOverTabsConfig: { [P in keyof AllScreenParam]?: RouteConfig<AllScree
         fontSize: 14,
         textAlign: 'center',
       },
+      headerRight: () => <TouchableOpacity />,
     },
   },
   InviteDoctorGradeList: {
@@ -2359,6 +2413,7 @@ const stacksOverTabsConfig: { [P in keyof AllScreenParam]?: RouteConfig<AllScree
         fontSize: 14,
         textAlign: 'center',
       },
+      headerRight: () => <TouchableOpacity />,
     },
   },
   Order: {

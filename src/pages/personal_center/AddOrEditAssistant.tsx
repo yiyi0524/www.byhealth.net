@@ -6,7 +6,7 @@ import gImg from '@utils/img'
 import gStyle from '@utils/style'
 import React, { Component } from 'react'
 import { Image, RefreshControl, ScrollView, Text, TouchableOpacity, View } from 'react-native'
-import { addAssistant, editAssistant } from '@/services/user'
+import { addAssistant, editAssistant, doctorAssistantDetail } from '@/services/user'
 const style = gStyle.personalCenter.addAssistant
 
 interface Props {
@@ -21,6 +21,7 @@ interface State {
   name: string
   account: string
   pwd: string
+  remark: string
 }
 type DefaultProps = {}
 
@@ -40,12 +41,30 @@ export default class AddAssistant extends Component<Props & DefaultProps, State>
       name: '',
       account: '',
       pwd: '',
+      remark: '',
     }
   }
   componentDidMount() {
     this.init()
   }
-  init = async () => {}
+  init = async () => {
+    if (this.state.type === 'edit') {
+      try {
+        let {
+          data: {
+            detail: { name, account, remark },
+          },
+        } = await doctorAssistantDetail(this.state.id)
+        this.setState({
+          name,
+          account,
+          remark,
+        })
+      } catch (res) {
+        console.log(res)
+      }
+    }
+  }
   onRefresh = () => {
     this.setState({ refreshing: true })
     Promise.all([this.init(), new Promise(s => setTimeout(s, 500))])
@@ -115,6 +134,20 @@ export default class AddAssistant extends Component<Props & DefaultProps, State>
               }}
             />
           </View>
+          <View style={style.item}>
+            <InputItem
+              clear
+              value={this.state.remark}
+              placeholder='备注'
+              type='text'
+              style={style.input}
+              onChange={remark => {
+                this.setState({
+                  remark,
+                })
+              }}
+            />
+          </View>
           <TouchableOpacity onPress={this.submit}>
             <Text style={style.btn}>{this.state.type === 'add' ? '添加' : '编辑'}</Text>
           </TouchableOpacity>
@@ -125,7 +158,7 @@ export default class AddAssistant extends Component<Props & DefaultProps, State>
 
   //发布
   submit = () => {
-    let { name, account, pwd, type, id } = this.state
+    let { name, account, pwd, type, id, remark } = this.state
     try {
       if (name === '') {
         return Toast.info('请填写名称', 1)
@@ -141,6 +174,7 @@ export default class AddAssistant extends Component<Props & DefaultProps, State>
         name,
         account,
         pwd,
+        remark,
       }
       if (type === 'add') {
         addAssistant(data)

@@ -81,19 +81,43 @@ export async function getUserWxInfo(query: { openid: string }) {
 /**
  *  添加医助
  */
-export function addAssistant(data: { name: string; account: string; pwd: string }) {
+export function addAssistant(data: { name: string; account: string; pwd: string; remark: string }) {
   return bpost<{ id: number }>({
-    url: '',
+    url: '/api/addDoctorAssistant',
     data,
   })
 }
 /**
  *  编辑医助
  */
-export function editAssistant(data: { id: number; name: string; account: string; pwd: string }) {
+export function editAssistant(data: { id: number; name: string; account: string; pwd: string; remark: string }) {
   return bpost({
-    url: '',
+    url: '/api/editDoctorAssistant',
     data,
+  })
+}
+/**
+ *  医助详情
+ */
+export function doctorAssistantDetail(id: number) {
+  return bpost<{ detail: { id: number; name: string; account: string; remark: string } }>({
+    url: '/api/doctorAssistantDetail',
+    data: {
+      id,
+    },
+  })
+}
+/**
+ * 获取医助列表
+ */
+export async function getAssistantList({ page = -1, limit = -1, filter = {} }: GetListParam) {
+  return bget({
+    url: '/doctor/getAssistant',
+    query: {
+      page,
+      limit,
+      filter,
+    },
   })
 }
 
@@ -103,4 +127,5 @@ export default {
   getPrescriptionList,
   addAssistant,
   editAssistant,
+  getAssistantList,
 }

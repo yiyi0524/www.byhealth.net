@@ -203,9 +203,16 @@ export default class Account extends Component<
                 />
                 <Text style={[style.headerCenterLeftTitle]}>{this.state.isShowAccount ? '隐藏余额' : '显示余额'}</Text>
               </TouchableOpacity>
-              <Text style={[style.headerCenterTitle]}>
-                ¥ {this.state.isShowAccount ? this.state.balance / 100 : '****'}
-              </Text>
+              <TouchableOpacity
+                onPress={() => {
+                  this.props.navigation.push('FundingDetail')
+                }}
+                style={{ flex: 1, paddingTop: 5 }}
+              >
+                <Text style={[style.headerCenterTitle]}>
+                  ¥ {this.state.isShowAccount ? this.state.balance / 100 : '****'}
+                </Text>
+              </TouchableOpacity>
               <TouchableOpacity
                 style={style.headerCenterRightFa}
                 onPress={() => {

@@ -124,7 +124,7 @@ export default class Index extends Component<Props, State> {
                 this.props.navigation.push('OrderMoney')
               }}
             >
-              <View style={style.item}>
+              <View style={orderInfo.isFinance ? [style.item] : [global.hidden]}>
                 <View style={[style.header, { backgroundColor: '#058687' }, global.flex, global.jBetween]}>
                   <Text style={style.theme}>我邀请的订单金额 (元)</Text>
                   <Text style={style.time}>{moment().format('YYYY年MM月')}</Text>
@@ -160,7 +160,7 @@ export default class Index extends Component<Props, State> {
                 this.props.navigation.push('OrderCount')
               }}
             >
-              <View style={style.item}>
+              <View style={orderInfo.isFinance ? [style.item] : [global.hidden]}>
                 <View style={[style.header, { backgroundColor: '#058A88' }, global.flex, global.jBetween]}>
                   <Text style={style.theme}>我邀请的订单</Text>
                   <Text style={style.time}>{moment().format('YYYY年MM月')}</Text>

@@ -101,6 +101,7 @@ export default StyleSheet.create({
     fontSize: 14,
     color: sColor.color666,
   },
+
   diagnosisPic: {},
   diagnosisPicTitle: {
     height: 50,
@@ -265,5 +266,9 @@ export default StyleSheet.create({
   },
   name: {
     flex: 1,
+  },
+  minusCircle: {
+    color: sColor.mainRed,
+    marginRight: 10,
   },
 })

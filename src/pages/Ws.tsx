@@ -279,7 +279,7 @@ class Ws extends React.Component<
     }
   }
   initClient = async () => {
-    console.log('正在初始化ws客户端')
+    // console.log('正在初始化ws客户端')
     if (this.clientIsConnect) {
       console.log('客户端正在连接,已取消本次初始化client')
       return
@@ -306,7 +306,7 @@ class Ws extends React.Component<
    * 当ws断开的时候 关闭ping计时器,如果应该重连,则1s后重连
    */
   onClose = (_: CloseEvent) => {
-    console.log('ws is onClose')
+    // console.log('ws is onClose')
     if (this.pingTimer) {
       clearInterval(this.pingTimer)
     }
@@ -319,10 +319,10 @@ class Ws extends React.Component<
     // }
   }
   onError = (evt: Event) => {
-    console.log('socket 有错误', evt)
+    // console.log('socket 有错误', evt)
   }
   onMessage = (evt: MessageEvent) => {
-    console.log(evt.data)
+    // console.log(evt.data)
     let { client } = this
     if (!client) {
       return
@@ -414,4 +414,7 @@ class Ws extends React.Component<
     return this.props.children
   }
 }
-export default connect(mapStateToProps, mapDispatchToProps)(Ws)
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(Ws)

@@ -685,7 +685,20 @@ export default class SquareRoot extends Component<
               {mode === 'phone' && (
                 <View style={[style.diagnosisItem, global.flex, global.alignItemsCenter]}>
                   <Text style={[style.diagnosisItemTitle, global.fontSize14]}>手机</Text>
-                  <Text style={[style.diagnosisItemInput, global.fontSize14]}>{phone}</Text>
+                  <View style={style.diagnosisItemInput}>
+                    <InputItem
+                      style={[style.input, global.fontSize14]}
+                      placeholder='请输入手机号'
+                      value={phone}
+                      onChange={phone => {
+                        this.setState({
+                          phone,
+                        })
+                      }}
+                    />
+                  </View>
+
+                  {/* <Text style={[style.diagnosisItemInput, global.fontSize14]}>{phone}</Text> */}
                 </View>
               )}
               <View style={[style.diagnosisItem, global.flex, global.alignItemsCenter]}>
@@ -798,6 +811,18 @@ export default class SquareRoot extends Component<
                           {category.drugList.map((drugInfo, k1) => {
                             return (
                               <View style={[style.chooseDrugItem, global.flex, global.alignItemsCenter]} key={k1}>
+                                <TouchableOpacity
+                                  onPress={() => {
+                                    let prescriptionDrugCategoryList = this.state.prescriptionDrugCategoryList
+                                    let activeDrugList = prescriptionDrugCategoryList[k].drugList
+                                    activeDrugList.splice(k1, 1)
+                                    this.setState({
+                                      prescriptionDrugCategoryList,
+                                    })
+                                  }}
+                                >
+                                  <Icon name='minus-circle' style={[style.minusCircle, global.fontSize16]} />
+                                </TouchableOpacity>
                                 <Text style={[style.chooseDrugTitle, global.fontSize14]} numberOfLines={1}>
                                   {drugInfo.detail.name}
                                 </Text>
@@ -1203,11 +1228,11 @@ export default class SquareRoot extends Component<
       drugCategoryList: prescriptionDrugCategoryList,
     }
     if (mode === 'phone' || mode === 'wx') {
-      if (yearAge === '' || parseFloat(yearAge) === 0) {
-        if (monthAge === '' || parseFloat(monthAge) === 0) {
-          return Toast.info('请输入年龄', 3)
-        }
-      }
+      // if (yearAge === '' || parseFloat(yearAge) === 0) {
+      //   if (monthAge === '' || parseFloat(monthAge) === 0) {
+      //     return Toast.info('请输入年龄', 3)
+      //   }
+      // }
       args.phone = phone
       args.patientName = name
       args.gender = gender

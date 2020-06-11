@@ -8,7 +8,7 @@ import * as userAction from '@/redux/actions/user'
 import { StackNavigationProp } from '@react-navigation/stack'
 import { RouteProp } from '@react-navigation/native'
 import { AllScreenParam } from '@/routes/bottomNav'
-
+import userApi from '@api/user'
 import gStyle from '@utils/style'
 const global = gStyle.global
 const style = gStyle.personalCenter.assistantDoctor
@@ -61,32 +61,7 @@ export default class ChangePwd extends Component<
     return {
       hasLoad: true,
       refreshing: false,
-      assistantDoctorList: [
-        {
-          id: 1,
-          name: '小李',
-          account: '18019991888',
-          pwd: '123456',
-        },
-        {
-          id: 2,
-          name: '小赵',
-          account: '18019991888',
-          pwd: '123456',
-        },
-        {
-          id: 3,
-          name: '小钱',
-          account: '18019991888',
-          pwd: '123456',
-        },
-        {
-          id: 4,
-          name: '小孙',
-          account: '18019991888',
-          pwd: '123456',
-        },
-      ],
+      assistantDoctorList: [],
       addAssistant: false,
       editAssistant: false,
       showModal: false,
@@ -98,6 +73,16 @@ export default class ChangePwd extends Component<
   init = async () => {
     this.setState({
       hasLoad: true,
+    })
+    let {
+      data: { list: assistantDoctorList },
+    } = await userApi.getAssistantList({
+      page: -1,
+      limit: -1,
+      filter: {},
+    })
+    this.setState({
+      assistantDoctorList,
     })
   }
   buildAssistantDom = (v: assistantDoctor, k: number): React.ReactChild => {

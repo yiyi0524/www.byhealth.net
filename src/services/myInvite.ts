@@ -1,4 +1,4 @@
-import { bpost } from './api'
+import { bpost, bget, GetListParam } from './api'
 
 //医生统计
 export interface InviteDoctorStatistics {
@@ -23,6 +23,7 @@ export interface InviteDoctorOrderInfo {
   secondLevelCount: number
   thirdLevelCount: number
   fourthLevelCount: number
+  isFinance?: boolean
 }
 
 //邀请的医生详情
@@ -94,5 +95,27 @@ export async function listInviteDoctorOrder(data: { year: number; month: number;
   return bpost({
     url: 'doctor/getInviteDoctorOrderList',
     data,
+  })
+}
+
+export interface FundingType {
+  ctime: string
+  category: string
+  offset: number
+  currBalance: number
+}
+/**
+ * 获取资金明细记录
+ */
+export async function listChangeRecord({ page, limit, filter = {} }: GetListParam) {
+  return bget<{
+    list: FundingType[]
+  }>({
+    url: '/admin/listChangeRecord',
+    query: {
+      page,
+      limit,
+      filter,
+    },
   })
 }

@@ -45,7 +45,10 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
     },
   }
 }
-@connect(mapStateToProps, mapDispatchToProps)
+@connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)
 export default class ForgetPwd extends Component<
   Props & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
   State
@@ -127,19 +130,22 @@ export default class ForgetPwd extends Component<
       codeUuid: this.state.verificationCodeUuid,
       pwd: this.state.pwd,
     })
-    // api.changePwd({
-    //   phone: this.state.phone,
-    //   code: this.state.verificationCode,
-    //   codeUuid: this.state.verificationCodeUuid,
-    //   pwd: this.state.pwd,
-    // }).then(() => {
-    //   Toast.success("修改密码成功", 1)
-    // setTimeout(()=>{
-    //   this.props.navigation.goBack();
-    // },1000)
-    // }).catch(err => {
-    //   Toast.fail("修改密码失败: " + err.msg, 2)
-    // })
+    api
+      .changePwd({
+        phone: this.state.phone,
+        code: this.state.verificationCode,
+        codeUuid: this.state.verificationCodeUuid,
+        pwd: this.state.pwd,
+      })
+      .then(() => {
+        Toast.success('修改密码成功', 1)
+        setTimeout(() => {
+          this.props.navigation.goBack()
+        }, 1000)
+      })
+      .catch(err => {
+        Toast.fail('修改密码失败: ' + err.msg, 2)
+      })
   }
   comfirePwd = () => {
     let pwd = this.state.pwd,

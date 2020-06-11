@@ -245,6 +245,22 @@ export function modifyPwd({ oriPwd, pwd, rePwd }: { oriPwd: string; pwd: string;
   return bpost({ url: '/api/modifyPwd', data: { oriPwd, pwd, rePwd } })
 }
 /**
+ * 已登录修改密码
+ */
+export function changePwd({
+  phone,
+  code,
+  codeUuid,
+  pwd,
+}: {
+  phone: string
+  code: string
+  codeUuid: string
+  pwd: string
+}) {
+  return bpost({ url: '/api/changePwd', data: { phone, code, codeUuid, pwd } })
+}
+/**
  * 发送修改密码手机验证码
  */
 export function getmodifyPwdWithPhoneCode({ phone }: { phone: string }) {
@@ -428,4 +444,5 @@ export default {
   idCardIDChecked,
   getmodifyPwdWithPhoneCode,
   modifyPwdWithOriPwd,
+  changePwd,
 }
