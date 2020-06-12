@@ -37,6 +37,7 @@ export interface DrugItem {
   detail?: DrugInfo
   count: number
   usage: string
+  type?: string
 }
 export interface DrugInfo {
   isChinesePatentDrug?: boolean

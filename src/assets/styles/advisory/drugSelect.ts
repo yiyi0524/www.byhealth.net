@@ -259,4 +259,13 @@ export default StyleSheet.create({
     paddingRight: 10,
     paddingLeft: 10,
   },
+  activeChooseItem: {
+    fontSize: 14,
+    borderWidth: 1,
+    borderColor: sColor.mainRed,
+    paddingTop: 5,
+    paddingBottom: 5,
+    paddingRight: 10,
+    paddingLeft: 10,
+  },
 })

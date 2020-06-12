@@ -98,6 +98,7 @@ export interface State {
   yearAge: string
   monthAge: string
   gender: number
+  status: boolean
 }
 /**
  * 处方中某个药品分类的药品集合
@@ -120,6 +121,7 @@ export interface PrescriptionDrugInfo {
   id: number
   count: number
   detail: Drug
+  type?: string
 }
 /**
  * 药品详情
@@ -129,6 +131,7 @@ export interface Drug {
   name: string
   unit: string
   price: number
+  type?: number
   standard: string
   manufacturer: string
   signature: string
@@ -233,6 +236,7 @@ export default class SquareRoot extends Component<
       gender: GENDER.MAN,
       monthAge: '',
       yearAge: '',
+      status: true,
     }
   }
   async componentDidMount() {
@@ -340,6 +344,7 @@ export default class SquareRoot extends Component<
     let pharmacy = this.state.pharmacy
     pharmacy.categoryList = categoryList
     this.setState({
+      status: true,
       pharmacy,
     })
     if (mode === 'phone') {
@@ -697,7 +702,6 @@ export default class SquareRoot extends Component<
                       }}
                     />
                   </View>
-
                   {/* <Text style={[style.diagnosisItemInput, global.fontSize14]}>{phone}</Text> */}
                 </View>
               )}
@@ -825,6 +829,7 @@ export default class SquareRoot extends Component<
                                 </TouchableOpacity>
                                 <Text style={[style.chooseDrugTitle, global.fontSize14]} numberOfLines={1}>
                                   {drugInfo.detail.name}
+                                  {drugInfo.type ? '(' + drugInfo.type + ')' : ''}
                                 </Text>
                                 <Text style={[style.chooseDrugCount, global.fontSize14]}>
                                   {drugInfo.count} * {drugInfo.detail.unit}
@@ -1171,6 +1176,10 @@ export default class SquareRoot extends Component<
    */
   // eslint-disable-next-line complexity
   sendPrescriptionToUser = () => {
+    if (!this.state.status) {
+      return true
+    }
+    this.setState({ status: false })
     const {
       mode,
       phone,
@@ -1191,6 +1200,7 @@ export default class SquareRoot extends Component<
     } = this.state
 
     if (prescriptionDrugCategoryList.length === 0) {
+      this.setState({ status: true })
       return Toast.info('请选择药材', 3)
     }
 
@@ -1201,21 +1211,26 @@ export default class SquareRoot extends Component<
         category.id === EXTERN_CHINESE_DRUG_ID
       ) {
         if (!category.doseCount || category.doseCount < 1) {
+          this.setState({ status: true })
           return Toast.info('中药剂数必填', 2)
         }
         if (!category.dailyDose || category.dailyDose < 1) {
+          this.setState({ status: true })
           return Toast.info('中药每日剂数必填', 2)
         }
         if (!category.everyDoseUseCount || category.everyDoseUseCount < 1) {
+          this.setState({ status: true })
           return Toast.info('中药每剂分几次服用必填', 2)
         }
         if (category.dailyDose > category.doseCount) {
+          this.setState({ status: true })
           return Toast.info('每日剂量数不能大于总剂量数', 1)
         }
       }
     }
     if (isSaveToTpl) {
       if (tplName === '') {
+        this.setState({ status: true })
         return Toast.info('请输入模板名称', 3)
       }
     }
@@ -1250,6 +1265,7 @@ export default class SquareRoot extends Component<
     }
     addPrescription(args)
       .then(json => {
+        this.setState({ status: true })
         if (mode === 'phone' || mode === 'wx') {
           return this.props.navigation.navigate('PrescriptionDetail', {
             prescriptionId: json.data.id,
@@ -1274,6 +1290,7 @@ export default class SquareRoot extends Component<
       })
       .catch(err => {
         console.log(err)
+        this.setState({ status: true })
         Toast.fail('发送处方失败, 错误信息: ' + err.msg || err)
       })
   }

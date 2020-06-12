@@ -138,7 +138,7 @@ export default class SquareRoot extends Component<
       let {
         data: { detail },
       } = await doctor.getPrescriptionDetail({ prescriptionId: this.state.prescriptionId })
-      // console.log(detail)
+      console.log(detail)
       let {
         data: { list: drugCategoryList },
       } = await hospital.getDrugCategoryList({ page: -1, limit: -1 })
@@ -331,7 +331,8 @@ export default class SquareRoot extends Component<
                           return (
                             <View style={[style.traditionalChineseMedicineItem, { marginLeft: 15 }]} key={k1}>
                               <Text style={[style.drugName, global.fontSize14]}>
-                                {drugName} {v1.count} * {unit}
+                                {drugName}
+                                {v1.type ? '(' + v1.type + ')' : ''} {v1.count} * {unit}
                               </Text>
                             </View>
                           )

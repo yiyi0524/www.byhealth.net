@@ -147,7 +147,7 @@ android {
     }
     signingConfigs {
         release {
-            storeFile file('C:\\Users\\buff\\git\\rn-boyi\\android\\app\\keystores\\my-release-key.keystore')
+            storeFile file('F:\\cds\\rn\\boyi\\www.byhealth.net\\android\\app\\keystores\\my-release-key.keystore')
      
         //    storeFile file('C:\\Users\\buff\\git\\rn-boyi\\android\\app\\keystores\\my-release-key.keystore')
            keyAlias = 'my-key-alias'

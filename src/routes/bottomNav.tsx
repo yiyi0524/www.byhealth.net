@@ -1188,6 +1188,7 @@ const stacksOverTabsConfig: { [P in keyof AllScreenParam]?: RouteConfig<AllScree
         fontSize: 14,
         textAlign: 'center',
       },
+      headerRight: () => <Text />,
     },
   },
   RegisterAgreement: {

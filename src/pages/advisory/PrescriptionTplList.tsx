@@ -11,7 +11,7 @@ import { StackNavigationProp } from '@react-navigation/stack'
 import gImg from '@utils/img'
 import gStyle from '@utils/style'
 import React, { Component } from 'react'
-import { DeviceEventEmitter, Image, RefreshControl, Text, View } from 'react-native'
+import { DeviceEventEmitter, Image, RefreshControl, Text, View, TouchableOpacity } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
 import { connect } from 'react-redux'
 import { Dispatch } from 'redux'
@@ -54,7 +54,10 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
     },
   }
 }
-@connect(mapStateToProps, mapDispatchToProps)
+@connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)
 export default class PrescriptionTplList extends Component<
   Props & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
   State
@@ -186,26 +189,32 @@ export default class PrescriptionTplList extends Component<
                     },
                   ]}
                 >
-                  <View style={style.prescriptionItem}>
-                    <View
-                      style={[
-                        style.prescriptionHeader,
-                        global.flex,
-                        global.alignItemsCenter,
-                        global.justifyContentSpaceBetween,
-                      ]}
-                    >
-                      <Text style={[style.prescriptionTitle, global.fontSize14]} numberOfLines={1}>
-                        {prescription.name}
-                      </Text>
-                      <Text style={[style.prescriptionTime, global.fontSize12]}>
-                        {prescription.ctime.substr(0, 10)}
+                  <TouchableOpacity
+                    onPress={() => {
+                      this.selectPrescriptionTpl(prescription)
+                    }}
+                  >
+                    <View style={style.prescriptionItem}>
+                      <View
+                        style={[
+                          style.prescriptionHeader,
+                          global.flex,
+                          global.alignItemsCenter,
+                          global.justifyContentSpaceBetween,
+                        ]}
+                      >
+                        <Text style={[style.prescriptionTitle, global.fontSize14]} numberOfLines={1}>
+                          {prescription.name}
+                        </Text>
+                        <Text style={[style.prescriptionTime, global.fontSize12]}>
+                          {prescription.ctime.substr(0, 10)}
+                        </Text>
+                      </View>
+                      <Text style={[style.prescriptionDetail, global.fontSize14]} numberOfLines={1}>
+                        {drugStr}
                       </Text>
                     </View>
-                    <Text style={[style.prescriptionDetail, global.fontSize14]} numberOfLines={1}>
-                      {drugStr}
-                    </Text>
-                  </View>
+                  </TouchableOpacity>
                 </SwipeAction>
               )
             })}
