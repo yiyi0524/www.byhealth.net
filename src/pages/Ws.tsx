@@ -1,16 +1,16 @@
 import { WSS_URL } from '@/config/api'
 import { AppState } from '@/redux/stores/store'
+import pathMap from '@/routes/pathMap'
 import { JsonReturnCode } from '@/services/api'
 import storage from '@/utils/storage'
 import { Toast } from '@ant-design/react-native'
 import * as wsAction from '@redux/actions/ws'
 import React, { ReactChild } from 'react'
-import { AppState as RnAppState, DeviceEventEmitter, EmitterSubscription } from 'react-native'
+import { Alert, AppState as RnAppState, DeviceEventEmitter, EmitterSubscription } from 'react-native'
 import { connect } from 'react-redux'
 import { Dispatch } from 'redux'
 import { Overwrite } from 'utility-types'
-import { MsgType, Picture, File } from './advisory/Chat'
-import pathMap from '@/routes/pathMap'
+import { File, MsgType, Picture } from './advisory/Chat'
 /**
  * 一条消息
  */
@@ -251,7 +251,10 @@ class Ws extends React.Component<
    * websocket 是否已连接
    */
   wsIsConnect = (): boolean => {
-    return Boolean(this.client) && this.client!.readyState === WebSocket.OPEN
+    return (
+      Boolean(this.client) &&
+      (this.client!.readyState === WebSocket.OPEN || this.client!.readyState === WebSocket.CONNECTING)
+    )
   }
   receiveMsg = (frame: ReceiveFrame<Exclude<Overwrite<Msg, MsgOptionalDataToRequired>, 'dom'>>) => {
     let { currChatUid, currScreen, unReadMsgCountRecord } = this.props.ws
@@ -317,6 +320,10 @@ class Ws extends React.Component<
     //     setTimeout(this.reConnect, 1000)
     //   }
     // }
+    if (this.clientIsConnect) {
+      this.clientIsConnect = false
+      this.client = undefined
+    }
   }
   onError = (evt: Event) => {
     // console.log('socket 有错误', evt)

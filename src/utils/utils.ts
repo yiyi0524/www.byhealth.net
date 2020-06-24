@@ -52,7 +52,6 @@ export function isDebugMode() {
       (scriptURL as string).indexOf('http://localhost') === zeroPos
     )
   } catch (e) {
-    console.log('buffge: ', e)
     return false
   }
 }
