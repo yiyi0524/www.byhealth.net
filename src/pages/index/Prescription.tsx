@@ -2,14 +2,15 @@ import * as userAction from '@/redux/actions/user'
 import { AppState } from '@/redux/stores/store'
 import pathMap from '@/routes/pathMap'
 import { GENDER_ZH, PRESCRIPTION_STATUS, PRESCRIPTION_STATUS_ZH } from '@/services/doctor'
-import { Icon, Toast } from '@ant-design/react-native'
+import { Icon, Toast, InputItem} from '@ant-design/react-native'
 import userApi from '@api/user'
 import { StackNavigationProp } from '@react-navigation/stack'
 import gImg from '@utils/img'
 import gStyle from '@utils/style'
 import moment from 'moment'
+import { Assign } from 'utility-types'
 import React, { Component } from 'react'
-import { Image, Text, View } from 'react-native'
+import { Image, Text, View, Button} from 'react-native'
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler'
 import { connect } from 'react-redux'
 import { Dispatch } from 'redux'
@@ -25,7 +26,8 @@ interface State {
   page: number
   limit: number
   filter: {}
-  prescriptionList: prescriptionItem[]
+  prescriptionList: Assign<prescriptionItem, { hidden?: boolean }>[]
+  search: string
 }
 export interface prescriptionItem {
   id: number
@@ -37,6 +39,7 @@ export interface prescriptionItem {
   syndromeDifferentiation: string //辨证
   status: number
   ctime: string
+  phone: string
   type: 'wx' | 'common' | 'phone'
 }
 
@@ -65,6 +68,7 @@ export default class Prescription extends Component<
   }
   getInitState = (): State => {
     return {
+      search: '',
       hasLoad: false,
       refreshing: false,
       selectTab: 'all',
@@ -100,13 +104,32 @@ export default class Prescription extends Component<
         Toast.fail('刷新失败,错误信息: ' + err.msg)
       })
   }
+//   search=(val: string)=>{
+//     if(!!val){
+//       this.state.prescriptionList.map((item,index)=>{
+//         if(item.phone.includes(val)){
+// console.log(item.phone)
+//         }
+//       })
+//       // this.setState({
+//       //   prescriptionList: []
+//       // })
+//     }
+//     else{
+//       this.setState({
+//         prescriptionList: 
+//       })
+//     }
+//   }
 
   buildPrescriptionDom = (v: prescriptionItem, k: number, showPayStatus = true): React.ReactChild => {
+    if (v.hidden) {
+      return null
+    }
     return (
-      <TouchableOpacity
+      <View
         key={k}
         style={style.prescriptionItem}
-        onPress={() => this.props.navigation.push(pathMap.PrescriptionDetail, { prescriptionId: v.id })}
       >
         <View
           style={[
@@ -126,10 +149,13 @@ export default class Prescription extends Component<
               </Text>
             )}
           </View>
-          <View style={[style.prescriptionItemHeaderRight, global.flex, global.alignItemsCenter]}>
+          <TouchableOpacity 
+          style={[style.prescriptionItemHeaderRight, global.flex, global.alignItemsCenter]}
+          onPress={() => this.props.navigation.push(pathMap.PrescriptionDetail, { prescriptionId: v.id })}
+          >
             <Text style={[style.prescriptionItemHeaderRightTitle, global.fontSize14]}>查看详情</Text>
             <Icon name='right' style={[style.prescriptionItemHeaderRightIcon, global.fontSize14]} />
-          </View>
+          </TouchableOpacity>
         </View>
         <View style={style.prescriptionItemDescription}>
           <Text style={[style.prescriptionItemDescriptionDiagnosis, global.fontSize14]} numberOfLines={1}>
@@ -147,13 +173,28 @@ export default class Prescription extends Component<
               {moment(v.ctime).format('YYYY年MM月DD日 HH:mm')}
             </Text>
             {showPayStatus ? (
-              <Text style={[style.prescriptionItemDescriptionStatus, global.fontSize14]} numberOfLines={1}>
-                {PRESCRIPTION_STATUS_ZH[v.status]}
-              </Text>
-            ) : null}
+              <View style={global.flex}>
+                <TouchableOpacity  
+                style={style.paddRight}
+                onPress={()=>{
+                  this.props.navigation.navigate(pathMap.SquareRoot, {
+                    mode: v.type,
+                    patientUid: v.id,
+                    status: true,
+                  })
+                }}
+                >
+                 <Text>再开一单</Text> 
+                </TouchableOpacity >
+                <Text style={[style.prescriptionItemDescriptionStatus, global.fontSize14]} numberOfLines={1}>
+                  {PRESCRIPTION_STATUS_ZH[v.status]}
+                </Text>
+              </View>
+              ) : null}
+              
           </View>
         </View>
-      </TouchableOpacity>
+      </View>
     )
   }
   render() {
@@ -207,22 +248,56 @@ export default class Prescription extends Component<
                 </Text>
               </TouchableOpacity>
             </View>
+            <InputItem
+                  style={[style.searchTitle, global.fontSize14, global.fontStyle]}
+                  clear
+                  last
+                  labelNumber={2}
+                  value={this.state.search}
+                  onChange={search => {
+                    console.log(search)
+                    this.setState({
+                      search,
+                    })
+                    let { prescriptionList } = this.state
+                    if (search !== '') {
+                      for (let patient of prescriptionList) {
+                        patient.hidden = patient.name.indexOf(search) < 0
+                      }
+                    } else {
+                      prescriptionList = prescriptionList.map(v => {
+                        v.hidden = false
+                        return v
+                      })
+                    }
+                    console.log(this.state.prescriptionList)
+                    this.setState({
+                      prescriptionList,
+                    })
+                    
+                  }}
+                  placeholder='搜索'
+                >
+                  <Icon name='search' style={[style.searchIcon, global.fontSize20]} />
+                </InputItem>
             <View style={this.state.selectTab === 'all' ? style.prescriptionList : global.hidden}>
               <ScrollView style={style.tabScroll}>
-                {this.state.prescriptionList.map((v: prescriptionItem, k: number) => this.buildPrescriptionDom(v, k))}
+                {this.state.prescriptionList.map((v: Assign<prescriptionItem, { hidden?: boolean }>, k: number) => this.buildPrescriptionDom(v, k))}
               </ScrollView>
             </View>
             <View style={this.state.selectTab === 'pay' ? style.prescriptionList : global.hidden}>
               <ScrollView style={style.tabScroll}>
                 {this.state.prescriptionList
                   .filter(v => v.status === PRESCRIPTION_STATUS.completePay)
-                  .map((v: prescriptionItem, k: number) => {
+                  .map((v: Assign<prescriptionItem, { hidden?: boolean }>, k: number) => {
                     return this.buildPrescriptionDom(v, k, false)
                   })}
               </ScrollView>
             </View>
+            
           </View>
         </View>
+        
       </>
     )
   }

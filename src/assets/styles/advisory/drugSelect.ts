@@ -59,7 +59,6 @@ export default StyleSheet.create({
   list: {
     backgroundColor: sColor.white,
     minHeight: windowHeight - 150,
-    paddingBottom: 15,
   },
   theme: {
     height: 50,
@@ -79,6 +78,22 @@ export default StyleSheet.create({
     backgroundColor: sColor.color333,
   },
   item: {
+    paddingLeft: 20,
+    paddingRight: 20,
+    // paddingTop: 5,
+    // width: 150,
+    backgroundColor: '#f9f9f9',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  numberRight: {
+    paddingRight: 10,
+  },
+  wid: {
+    width: 50,
+    textAlign: "right",
+  },
+  itemWest: {
     padding: 15,
     paddingTop: 5,
     alignItems: 'center',
@@ -88,28 +103,32 @@ export default StyleSheet.create({
   },
   itemIcon: {
     color: sColor.mainRed,
-    marginRight: 15,
+    marginRight: 10,
   },
   itemCenter: {
     flex: 1,
     marginRight: 15,
   },
+  flex: {
+    display: 'flex',
+    flexDirection: 'row',
+  },
   itemCenterTitleFa: {
-    height: 40,
+    height: 20,
   },
   itemCenterTitlePar: {
-    height: 40,
+    height: 20,
   },
   itemCenterTitle: {
-    lineHeight: 40,
-    color: sColor.blue,
-    flex: 1,
-    marginRight: 15,
+    lineHeight: 32,
+    
+    marginRight: 5,
   },
-  itemCenterDetail: {},
+  itemNumber: {color: sColor.mainRed,},
+  itemCenterDetail: {marginRight: 5,},
   itemCenterDetailTitle: {
     color: sColor.color666,
-    marginBottom: 5,
+    marginTop: 5,
   },
   itemCenterDetailCompany: {
     color: sColor.color888,
@@ -126,6 +145,7 @@ export default StyleSheet.create({
   inputWrap: {
     width: windowWidth / 2,
     height: 30,
+    flex: 1,
   },
   closeList: {
     color: sColor.color666,
@@ -148,6 +168,7 @@ export default StyleSheet.create({
     textAlign: 'center',
   },
   drugList: {
+    padding: 15,
     backgroundColor: sColor.white,
   },
   drugItem: {
@@ -226,9 +247,9 @@ export default StyleSheet.create({
     alignItems: 'center',
     marginTop: 20,
   },
-  inputWrap: {
-    flex: 1,
-  },
+  // inputWrap: {
+  //   flex: 1,
+  // },
   inputNum: {
     borderBottomWidth: 1,
     borderBottomColor: '#333',

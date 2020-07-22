@@ -166,6 +166,7 @@ export type AllScreenParam = {
   SquareRoot: {
     mode: 'wx' | 'phone' | 'common'
     patientUid?: number
+    status?: boolean
     phone?: string
     prescription?: PrescriptionTplDetail | null
     getState?: () => any

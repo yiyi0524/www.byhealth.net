@@ -38,6 +38,17 @@ export default StyleSheet.create({
   prescriptionList: {
     flex: 1,
   },
+  paddRight: {
+    marginRight: 16,
+  },
+  searchIcon: {
+    color: sColor.color888,
+  },
+  searchTitle: {
+    color: sColor.color888,
+    width: '100%',
+    position: 'relative',
+  },
   tabScroll: {
     flex: 1,
     marginBottom: 8,

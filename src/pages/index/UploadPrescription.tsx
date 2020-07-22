@@ -1,7 +1,7 @@
 import global from '@/assets/styles/global'
 import { AllScreenParam } from '@/routes/bottomNav'
 import { uploadImg } from '@/services/api'
-import { Icon, ImagePicker, InputItem, Portal, TextareaItem, Toast } from '@ant-design/react-native'
+import { Icon, ImagePicker, InputItem, Portal, TextareaItem, Toast, Modal} from '@ant-design/react-native'
 import doctorApi from '@api/doctor'
 import imgPickerOpt from '@config/imgPickerOpt'
 import { RouteProp } from '@react-navigation/native'
@@ -12,6 +12,7 @@ import React, { Component } from 'react'
 import { Image, Linking, Text, TouchableOpacity, View } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
 import RnImagePicker from 'react-native-image-picker'
+import ImagePickerO from 'react-native-image-crop-picker';
 import { Picture } from '../advisory/Chat'
 const style = gSass.index.uploadPrescription
 interface Props {
@@ -25,6 +26,7 @@ interface State {
   serviceMoney: string
   advice: string
   prescriptionPicList: Picture[]
+  isAddDrug: boolean
 }
 type DefaultProps = {}
 
@@ -42,6 +44,7 @@ export default class UploadPrescription extends Component<Props & DefaultProps, 
       advice: '',
       serviceMoney: '',
       prescriptionPicList: [],
+      isAddDrug: false
     }
   }
   componentDidMount() {
@@ -184,33 +187,36 @@ export default class UploadPrescription extends Component<Props & DefaultProps, 
                 onChange={this.prescriptionPicChange}
                 files={prescriptionPicList}
                 onAddImageClick={() => {
-                  RnImagePicker.showImagePicker(imgPickerOpt, resp => {
-                    const uploadingImgKey = Toast.loading('上传图片中', 0, undefined, true)
-                    if (resp.didCancel) {
-                      Portal.remove(uploadingImgKey)
-                    } else if (resp.error) {
-                      Portal.remove(uploadingImgKey)
-                      return Toast.info('您禁止了拍摄照片和录制视频权限, 请到设置中心打开', 3)
-                    } else {
-                      uploadImg({ url: resp.uri })
-                        .then(json => {
-                          Portal.remove(uploadingImgKey)
-                          const { picId } = json.data
-                          let img = {
-                            url: resp.uri,
-                            picId,
-                            id: picId,
-                            title: '',
-                          }
-                          prescriptionPicList.push(img)
-                          this.setState({ prescriptionPicList })
-                        })
-                        .catch(e => {
-                          Portal.remove(uploadingImgKey)
-                          Toast.fail('上传图片, 错误信息: ' + e)
-                        })
-                    }
-                  })
+                  this.setState({isAddDrug: true})
+                  // RnImagePicker.showImagePicker(imgPickerOpt, resp => {
+                  //   const uploadingImgKey = Toast.loading('上传图片中', 0, undefined, true)
+                  //   if (resp.didCancel) {
+                  //     Portal.remove(uploadingImgKey)
+                  //   } else if (resp.error) {
+                  //     Portal.remove(uploadingImgKey)
+                  //     return Toast.info('您禁止了拍摄照片和录制视频权限, 请到设置中心打开', 3)
+                  //   } else {
+                  //     console.log(resp)
+
+                  //     uploadImg({ url: resp.uri })
+                  //       .then(json => {
+                  //         Portal.remove(uploadingImgKey)
+                  //         const { picId } = json.data
+                  //         let img = {
+                  //           url: resp.uri,
+                  //           picId,
+                  //           id: picId,
+                  //           title: '',
+                  //         }
+                  //         prescriptionPicList.push(img)
+                  //         this.setState({ prescriptionPicList })
+                  //       })
+                  //       .catch(e => {
+                  //         Portal.remove(uploadingImgKey)
+                  //         Toast.fail('上传图片, 错误信息: ' + e)
+                  //       })
+                  //   }
+                  // })
                 }}
               />
             </View>
@@ -259,6 +265,77 @@ export default class UploadPrescription extends Component<Props & DefaultProps, 
         >
           <Image style={isShowImg ? style.imgShow : global.hidden} source={gImg.home.prescriptionExample} />
         </TouchableOpacity>
+        <Modal
+              visible={this.state.isAddDrug}
+              maskClosable
+              transparent={true}
+              // closable
+              onClose={() => {
+                this.setState({ isAddDrug: false})
+              }}
+              >
+                <TouchableOpacity onPress={()=>{
+                  this.setState({ prescriptionPicList })
+                  ImagePickerO.openPicker({
+                    multiple: true
+                  }).then(images => {
+                  const uploadingImgKey = Toast.loading('上传图片中', 0, undefined, true)
+                  
+                    for(let list in images){
+                      
+                      uploadImg({ url: images[list].path})
+                        .then(json => {
+                          Portal.remove(uploadingImgKey)
+                          const { picId } = json.data
+                          let img = {
+                            url: images[list].path,
+                            picId,
+                            id: picId,
+                            title: '',
+                          }
+                          prescriptionPicList.push(img)
+                          this.setState({ prescriptionPicList })
+                          
+                        })
+                        .catch(e => {
+                          Portal.remove(uploadingImgKey)
+                          Toast.fail('上传图片, 错误信息: ' + e)
+                        })
+                    }
+                    
+                    this.setState({isAddDrug: false})
+                  });
+                }}>
+                    <Text style={{color:'#000',fontSize:18}}>打开相册</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={()=>{
+                  this.setState({isAddDrug: false})
+                  ImagePickerO.openCamera({
+                  }).then(images => {
+                    console.log(images)
+                  const uploadingImgKey = Toast.loading('上传图片中', 0, undefined, true)
+                    uploadImg({ url: images.path})
+                      .then(json => {
+                        Portal.remove(uploadingImgKey)
+                        const { picId } = json.data
+                        let img = {
+                          url: images.path,
+                          picId,
+                          id: picId,
+                          title: '',
+                        }
+                        prescriptionPicList.push(img)
+                        this.setState({ prescriptionPicList })
+                      })
+                      .catch(e => {
+                        Portal.remove(uploadingImgKey)
+                        Toast.fail('上传图片, 错误信息: ' + e)
+                      })
+                  });
+                }}>
+                    <Text style={{color:'#000',marginTop:20,fontSize:18}}>拍照上传</Text>
+                </TouchableOpacity>
+              </Modal>
       </ScrollView>
     )
   }

@@ -133,7 +133,8 @@ android {
         applicationId "net.byhealth.boyi"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 38
+         vectorDrawables.useSupportLibrary = true 
+        versionCode 39
         versionName "2.0.5"
         multiDexEnabled true
     }
@@ -147,7 +148,7 @@ android {
     }
     signingConfigs {
         release {
-            storeFile file('F:\\cds\\rn\\boyi\\www.byhealth.net\\android\\app\\keystores\\my-release-key.keystore')
+            storeFile file('D:\\HBuilderX\\projectGit\\boyibeifen\\www.byhealth.net\\android\\app\\keystores\\my-release-key.keystore')
      
         //    storeFile file('C:\\Users\\buff\\git\\rn-boyi\\android\\app\\keystores\\my-release-key.keystore')
            keyAlias = 'my-key-alias'

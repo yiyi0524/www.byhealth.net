@@ -4,12 +4,12 @@ import { CurrSetPrescription } from '@/redux/reducers/user'
 import { AppState } from '@/redux/stores/store'
 import { AllScreenParam } from '@/routes/bottomNav'
 import api, { windowWidth } from '@/services/api'
-import { addPrescription, AddPrescriptionParam, GENDER, GENDER_ZH, PrescriptionTpl } from '@/services/doctor'
+import doctor, { addPrescription, AddPrescriptionParam, GENDER, GENDER_ZH, PrescriptionTpl } from '@/services/doctor'
 import { EXTERN_CHINESE_DRUG_ID, ORAL_CHINESE_DRUG_ID, TOPICAL_CHINESE_DRUG_ID } from '@/services/drug'
 import { getLastPrescriptionInfo, getPatientInfo } from '@/services/patient'
 import { getPersonalInfo } from '@/services/user'
 import { getPicCdnUrl } from '@/utils/utils'
-import { Icon, ImagePicker, InputItem, List, Picker, TextareaItem, Toast } from '@ant-design/react-native'
+import { Icon, ImagePicker, InputItem,  Picker, TextareaItem, Toast } from '@ant-design/react-native'
 import hospital from '@api/hospital'
 import DashLine from '@components/DashLine'
 import Pharmacy, { CategoryItem } from '@components/Pharmacy'
@@ -166,8 +166,8 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
   mapDispatchToProps,
 )
 export default class SquareRoot extends Component<
-  Props & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
-  State
+Props & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
+State
 > {
   listener?: EmitterSubscription
   hardwareBackPressListener?: NativeEventSubscription
@@ -178,6 +178,7 @@ export default class SquareRoot extends Component<
   getInitState = (): State => {
     let mode = this.props.route.params.mode
     let prescription: PrescriptionTpl | null | undefined = this.props.route.params.prescription
+    console.log(prescription)
     let prescriptionDrugCategoryList: PrescriptionDrugCategory[] = []
     if (mode === 'wx' && prescription) {
       let prescriptionCategory: PrescriptionDrugCategory = {
@@ -297,6 +298,7 @@ export default class SquareRoot extends Component<
   }
   initLastPrescriptionInfo = async () => {
     let patientUid = this.props.route.params.patientUid as number
+    console.log(patientUid + '|111')
     try {
       const {
         data: { detail: prescriptionDrugCategoryList },
@@ -334,6 +336,30 @@ export default class SquareRoot extends Component<
   }
   init = async () => {
     let { patientInfo, mode } = this.state
+    console.log(this.props.route.params)
+    let status: boolean = false 
+    if(this.props.route.params.status){
+      status = this.props.route.params.status
+    }
+    if (this.props.route.params.patientUid) {
+      let {
+        data: { detail },
+      } = await doctor.getPrescriptionDetail({ prescriptionId: this.props.route.params.patientUid })
+      if (mode !== 'common' || status) {
+        console.log(detail)
+        patientInfo = {
+          uid: detail.patient.uid || this.props.route.params.patientUid,
+          monthAge: detail.patient.monthAge,
+          name: detail.patient.name,
+          gender: detail.patient.gender,
+          yearAge: detail.patient.yearAge,
+        }
+        this.setState({
+          patientInfo,
+        })
+      }
+    }
+
     let {
       data: { list: categoryList },
     } = await hospital.getDrugCategoryList({
@@ -353,43 +379,45 @@ export default class SquareRoot extends Component<
         phone,
       })
     }
-    if (mode !== 'common') {
-      return
-    }
 
     let patientUid = this.props.route.params.patientUid as number
     try {
       this.setState({
         hasLoad: false,
       })
-      let {
-        data: { yearAge, monthAge, name, gender, hospitalMedicalRecordPicList },
-      } = await getPatientInfo({ uid: patientUid })
+      if (mode === 'common' && !status) {
+        let {
+          data: { yearAge, monthAge, name, gender, hospitalMedicalRecordPicList },
+        } = await getPatientInfo({ uid: patientUid })
+        patientInfo = {
+          uid: patientUid,
+          monthAge,
+          name,
+          gender,
+          yearAge,
+        }
+        if (!hospitalMedicalRecordPicList) {
+          hospitalMedicalRecordPicList = []
+        }
+        for (let k in hospitalMedicalRecordPicList) {
+          if (hospitalMedicalRecordPicList.hasOwnProperty(k)) {
+            hospitalMedicalRecordPicList[k].url = getPicCdnUrl(hospitalMedicalRecordPicList[k].url, 'avatar')
+          }
+        }
+
+        this.setState({
+          patientInfo,
+          medicalRecordPicList: hospitalMedicalRecordPicList,
+        })
+      }
       let {
         data: {
           doctorInfo: { percentageOfCommission },
         },
       } = await getPersonalInfo()
-      patientInfo = {
-        uid: patientUid,
-        monthAge,
-        name,
-        gender,
-        yearAge,
-      }
-      if (!hospitalMedicalRecordPicList) {
-        hospitalMedicalRecordPicList = []
-      }
-      for (let k in hospitalMedicalRecordPicList) {
-        if (hospitalMedicalRecordPicList.hasOwnProperty(k)) {
-          hospitalMedicalRecordPicList[k].url = getPicCdnUrl(hospitalMedicalRecordPicList[k].url, 'avatar')
-        }
-      }
       this.setState({
         hasLoad: true,
-        patientInfo,
         percentageOfCommission: percentageOfCommission ? percentageOfCommission : 0,
-        medicalRecordPicList: hospitalMedicalRecordPicList,
       })
       if (patientUid in this.props.currSetPrescription) {
         console.log('正在初始化redux处方信息')
@@ -401,6 +429,7 @@ export default class SquareRoot extends Component<
     } catch (err) {
       console.log('发生了错误, ', err)
     }
+    console.log(this.state.patientInfo)
   }
   onRefresh = () => {
     this.setState({ refreshing: true })
@@ -501,9 +530,9 @@ export default class SquareRoot extends Component<
     if (mode === 'common') {
       patientName = patientInfo.name
     } else if (mode === 'wx') {
-      patientName = '微信用户'
+      patientName = patientInfo.name || '微信用户'
     } else if (mode === 'phone') {
-      patientName = '手机用户'
+      patientName = patientInfo.name || '手机用户'
     }
     return (
       <>
@@ -588,7 +617,7 @@ export default class SquareRoot extends Component<
                           }}
                         />
                       </View>
-                      <Text>岁</Text>
+                      <Text>年</Text>
                     </View>
                     <View style={[style.diagnosisItemInput, global.flex, global.alignItemsCenter]}>
                       <View style={{ flex: 1 }}>
@@ -736,7 +765,7 @@ export default class SquareRoot extends Component<
                         })
                       }
                     }}
-                    // onBlur={this.saveTemp}
+                  // onBlur={this.saveTemp}
                   />
                 </View>
               </View>
@@ -785,6 +814,7 @@ export default class SquareRoot extends Component<
                   <Text style={[style.empty, global.fontSize14]}>暂无</Text>
                 ) : null}
                 {this.state.prescriptionDrugCategoryList.map((category, k) => {
+
                   let gram = 0
                   for (let item of category.drugList) {
                     let g = item.detail.unit.match(/(\d+)[g克]/)
@@ -989,6 +1019,7 @@ export default class SquareRoot extends Component<
               </View>
               <TouchableOpacity
                 onPress={() => {
+                  console.log(prescriptionDrugCategoryList)
                   this.setState({
                     isSelectPharmacy: true,
                   })
@@ -1011,8 +1042,8 @@ export default class SquareRoot extends Component<
                   {isSaveToTpl ? (
                     <Icon style={[style.editDrugIcon, global.fontSize16, style.important]} name='check-square' />
                   ) : (
-                    <Icon style={[style.editDrugIcon, global.fontSize16, style.saveTpl]} name='border' />
-                  )}
+                      <Icon style={[style.editDrugIcon, global.fontSize16, style.saveTpl]} name='border' />
+                    )}
                   <Text style={[style.important, global.fontSize14]}>同时保存为模板</Text>
                 </View>
               </TouchableOpacity>
@@ -1053,7 +1084,7 @@ export default class SquareRoot extends Component<
                         })
                       }
                     }}
-                    // onBlur={this.saveTemp}
+                  // onBlur={this.saveTemp}
                   />
                 </View>
               </View>

@@ -331,6 +331,7 @@ export interface prescriptionDetail {
     name: string
   }
   patient: {
+    uid?: number
     name: string
     phone: string
     gender: number
