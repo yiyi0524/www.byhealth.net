@@ -180,6 +180,8 @@ export type AllScreenParam = {
       name: string
     }[]
     activeId: number
+    stateId?: number
+    stateName?: string
     prescriptionDrugCategoryList: PrescriptionDrugCategory[]
   }
   InquirySheet: {
@@ -1066,7 +1068,8 @@ const stacksOverTabsConfig: { [P in keyof AllScreenParam]?: RouteConfig<AllScree
         headerRight: () => (
           <TouchableOpacity
             onPress={() => {
-              let { prescriptionDrugCategoryList } = route.params
+              let { prescriptionDrugCategoryList,stateName,stateId } = route.params
+              console.log( route.params)
               console.log(prescriptionDrugCategoryList)
               for (let drugCategory of prescriptionDrugCategoryList) {
                 for (let drug of drugCategory.drugList) {
@@ -1075,6 +1078,10 @@ const stacksOverTabsConfig: { [P in keyof AllScreenParam]?: RouteConfig<AllScree
                   }
                 }
               }
+              DeviceEventEmitter.emit(pathMap.SquareRoot + 'State', {
+                id: stateId,
+                name: stateName
+              })
               DeviceEventEmitter.emit(pathMap.SquareRoot + 'Reload', prescriptionDrugCategoryList)
               DeviceEventEmitter.emit(pathMap.AddPrescriptionTpl + 'Reload', prescriptionDrugCategoryList)
               DeviceEventEmitter.emit(pathMap.EditPrescriptionTpl + 'Reload', prescriptionDrugCategoryList)

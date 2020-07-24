@@ -78,6 +78,10 @@ export interface State {
     monthAge: number
     gender: number
   }
+  pharmacyName:{
+    id: number
+    name: string
+  }
   // 辨病
   discrimination: string
   // 辨证
@@ -99,6 +103,7 @@ export interface State {
   monthAge: string
   gender: number
   status: boolean
+  
 }
 /**
  * 处方中某个药品分类的药品集合
@@ -198,6 +203,7 @@ State
       prescriptionDrugCategoryList.push(prescriptionCategory)
     }
     return {
+      
       mode,
       hasLoad: true,
       refreshing: false,
@@ -232,6 +238,10 @@ State
       syndromeDifferentiation: '',
       medicalRecordPicList: [],
       advice: '',
+      pharmacyName:{
+        id: 0,
+        name: '',
+      },
       prescriptionDrugCategoryList,
       patientName: '',
       gender: GENDER.MAN,
@@ -253,6 +263,17 @@ State
       (prescriptionDrugCategoryList: PrescriptionDrugCategory[]) => {
         this.setState({
           prescriptionDrugCategoryList,
+        })
+      },
+    )
+    this.listener = DeviceEventEmitter.addListener(
+      pathMap.SquareRoot + 'State',
+      (state: {
+        id: number,
+        name: string
+      }) => {
+        this.setState({
+          pharmacyName: state,
         })
       },
     )
@@ -473,6 +494,11 @@ State
     let { pharmacy } = this.state
     pharmacy.activeId = id
     this.setState({ pharmacy })
+  }
+  pharmacyChange = (data:{id:number,name: string}) => {
+    this.setState({
+      pharmacyName: data
+    })
   }
   closeChooseCategory = () => {
     this.setState({ isSelectPharmacy: false })
@@ -808,6 +834,34 @@ State
                   <Icon style={[style.prescriptionTplIcon, global.fontSize14]} name='right' />
                 </View>
               </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => {
+                  this.setState({
+                    isSelectPharmacy: true,
+                  })
+                }}
+              >
+                <View
+                  style={[
+                    style.prescriptionTpl,
+                    global.flex,
+                    global.alignItemsCenter,
+                    global.justifyContentSpaceBetween,
+                  ]}
+                >
+                  <Text style={[global.fontSize14, style.prescriptionTplTitle]}>切换药房</Text>
+                  <View
+                    style={[
+                      global.flex,
+                      global.alignItemsCenter,
+                      global.justifyContentSpaceBetween,]}
+                  >
+                  <Text style={[global.fontSize14, style.prescriptionTplTitle]}>{this.state.pharmacyName.name}</Text>
+                    <Icon style={[style.prescriptionTplIcon, global.fontSize14]} name='right' />
+                  </View>
+                  
+                </View>
+              </TouchableOpacity>
               <DashLine len={45} width={windowWidth - 46} backgroundColor={sColor.colorEee} />
               <View style={style.chooseCategoryDrugList}>
                 {this.state.prescriptionDrugCategoryList.length === 0 ? (
@@ -830,7 +884,9 @@ State
                     category.id === EXTERN_CHINESE_DRUG_ID
                   ) {
                     /* 中药 */
+                    console.log(category.drugList)
                     return (
+                      
                       <View
                         key={k}
                         style={[
@@ -1019,7 +1075,6 @@ State
               </View>
               <TouchableOpacity
                 onPress={() => {
-                  console.log(prescriptionDrugCategoryList)
                   this.setState({
                     isSelectPharmacy: true,
                   })
@@ -1170,6 +1225,42 @@ State
                   </InputItem>
                 </View>
               </View>
+              <View
+                style={[style.diagnosisItem, global.flex, global.alignItemsCenter, global.justifyContentSpaceBetween]}
+              >
+                <Text style={[style.diagnosisItemTitle, global.fontSize14]}>加工费</Text>
+                <View style={style.percentageOfCommission}>
+                <View style={style.percentageOfCommission}>
+                  <InputItem
+                    type='number'
+                    labelNumber={1}
+                    disabled
+                    // disabled={this.state.prescriptionDrugCategoryList.length === 0}
+                    style={style.percentageOfCommissionInput}
+                    placeholder={this.state.serviceMoney === '' ? calcServiceMoney : '0.00'}
+                    value={this.state.serviceMoney}
+                    onChange={val => {
+                      let serviceMoney: number | string = parseFloat(val)
+                      if (isNaN(serviceMoney)) {
+                        serviceMoney = ''
+                      }
+                      this.setState({
+                        serviceMoney: String(serviceMoney),
+                      })
+                    }}
+                    onBlur={() => {
+                      if (this.state.serviceMoney === '') {
+                        this.setState({
+                          serviceMoney: String(calcServiceMoney),
+                        })
+                      }
+                    }}
+                  >
+                    ¥
+                  </InputItem>
+                </View>
+                </View>
+              </View>
               <DashLine len={45} width={windowWidth - 46} backgroundColor={sColor.colorEee} />
               <View
                 style={[style.diagnosisItem, global.flex, global.alignItemsCenter, global.justifyContentSpaceBetween]}
@@ -1193,6 +1284,7 @@ State
               categoryList={this.state.pharmacy.categoryList}
               activeId={this.state.pharmacy.activeId}
               chooseCategory={this.chooseCategory}
+              pharmacyChange={this.pharmacyChange}
               isInSession
               closeChooseCategory={this.closeChooseCategory}
               prescriptionDrugCategoryList={this.state.prescriptionDrugCategoryList}

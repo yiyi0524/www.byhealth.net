@@ -124,6 +124,9 @@ export default StyleSheet.create({
     
     marginRight: 5,
   },
+  deficiency: {
+    color: sColor.mainRed,
+  },
   itemNumber: {color: sColor.mainRed,},
   itemCenterDetail: {marginRight: 5,},
   itemCenterDetailTitle: {

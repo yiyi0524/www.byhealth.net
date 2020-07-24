@@ -50,10 +50,32 @@ export async function getDrugList({ page = -1, limit = -1, filter = {} }: GetLis
     },
   })
 }
+export async function getDrugStoreList({ page = -1, limit = -1, filter = {} }: GetListParam) {
+  return bget({
+    url: '/hospital/getDrugStoreList',
+    query: {
+      page,
+      limit,
+      filter,
+    },
+  })
+}
+export async function getDrugStateList({ page = -1, limit = -1, filter = {} }: GetListParam) {
+  return bget({
+    url: '/hospital/getDrugStateList',
+    query: {
+      page,
+      limit,
+      filter,
+    },
+  })
+}
 export default {
   getList,
   getDepartmentList,
   getAllSymptomList,
   getDrugCategoryList,
   getDrugList,
+  getDrugStoreList,
+  getDrugStateList
 }

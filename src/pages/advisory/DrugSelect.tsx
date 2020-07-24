@@ -113,24 +113,34 @@ export default class DrugSelect extends Component<Props, State> {
     })
   }
   init = async () => {
-    let activeId = this.props.route.params.activeId
+    let activeId = this.props.route.params.activeId,
+    filter:any = {
+      category: {
+        condition: TYPE.eq,
+        val: activeId,
+      },
+    }
+    if(this.props.route.params.stateId){
+      filter.stateId = {
+        condition: TYPE.eq,
+        val: this.props.route.params.stateId,
+      }
+    }
     let {
       data: { list: popularDrugList },
     } = await listPopularDrug({
       page: 1,
       limit: 30,
-      filter: {
-        category: {
-          condition: TYPE.eq,
-          val: activeId,
-        },
-      },
+      filter,
     })
     this.setState({
       popularDrugList,
       hasLoad: true,
     })
+    console.log(activeId)
+    console.log(popularDrugList)
   }
+  
   getDrugList = async (page: number, limit: number, filter = {}) => {
     try {
       let {
@@ -362,7 +372,7 @@ export default class DrugSelect extends Component<Props, State> {
                           })
                         }}
                       >
-                        <Text style={style.numberRight}>{k2+1}</Text>
+                        
                         <TouchableOpacity
                           onPress={() => {
                             let { prescriptionDrugCategoryList } = this.state
@@ -377,6 +387,7 @@ export default class DrugSelect extends Component<Props, State> {
                           
                           <Icon style={[style.itemIcon, global.fontSize22]} name='minus-circle' />
                         </TouchableOpacity>
+                        <Text style={style.numberRight}>{k2+1}.</Text>
                         <View style={style.itemCenter}>
                           <View
                             style={[
@@ -408,6 +419,9 @@ export default class DrugSelect extends Component<Props, State> {
                                 <View style={style.littleSpot} />
                                   <Text style={[style.itemCenterDetailTitle, global.fontSize12]}>
                                     {drugInfo.detail.standard}
+                                  </Text>
+                                  <Text style={[style.deficiency, global.fontSize12]}>
+                                    (缺)
                                   </Text>
                               </View>
                             </View  >

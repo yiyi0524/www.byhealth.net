@@ -34,6 +34,7 @@ export default StyleSheet.create({
     paddingBottom: 8,
     paddingTop: 8,
   },
+
   search: {
     backgroundColor: sColor.mainBgColor,
     borderRadius: 5,
