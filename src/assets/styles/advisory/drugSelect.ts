@@ -121,7 +121,6 @@ export default StyleSheet.create({
   },
   itemCenterTitle: {
     lineHeight: 32,
-    
     marginRight: 5,
   },
   deficiency: {
@@ -130,8 +129,8 @@ export default StyleSheet.create({
   itemNumber: {color: sColor.mainRed,},
   itemCenterDetail: {marginRight: 5,},
   itemCenterDetailTitle: {
-    color: sColor.color666,
     marginTop: 5,
+    color: sColor.color666,
   },
   itemCenterDetailCompany: {
     color: sColor.color888,

@@ -122,7 +122,7 @@ export default class Prescription extends Component<
 //     }
 //   }
 
-  buildPrescriptionDom = (v: prescriptionItem, k: number, showPayStatus = true): React.ReactChild => {
+  buildPrescriptionDom = (v:  Assign<prescriptionItem, { hidden?: boolean }>, k: number, showPayStatus = true): React.ReactChild => {
     if (v.hidden) {
       return null
     }
@@ -255,7 +255,6 @@ export default class Prescription extends Component<
                   labelNumber={2}
                   value={this.state.search}
                   onChange={search => {
-                    console.log(search)
                     this.setState({
                       search,
                     })
@@ -270,7 +269,6 @@ export default class Prescription extends Component<
                         return v
                       })
                     }
-                    console.log(this.state.prescriptionList)
                     this.setState({
                       prescriptionList,
                     })

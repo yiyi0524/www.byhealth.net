@@ -5,7 +5,7 @@ import { listPopularDrug } from '@/services/drug'
 import hospital from '@/services/hospital'
 import { TYPE } from '@/utils/constant'
 import { TYPE as DrugType } from '@api/drug'
-import { Icon, InputItem, List, Toast, Modal } from '@ant-design/react-native'
+import { Icon, InputItem, Toast, Modal } from '@ant-design/react-native'
 import { RouteProp } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
 import gImg from '@utils/img'
@@ -48,8 +48,6 @@ interface State {
   popularDrugList: Drug[]
   search: string
   isAddDrug: boolean
-  // activeName: string
-  // activeId: number
   activeDrug: Drug
   chinese: boolean
   activeValue: number
@@ -113,7 +111,9 @@ export default class DrugSelect extends Component<Props, State> {
     })
   }
   init = async () => {
+    
     let activeId = this.props.route.params.activeId,
+    
     filter:any = {
       category: {
         condition: TYPE.eq,
@@ -126,19 +126,21 @@ export default class DrugSelect extends Component<Props, State> {
         val: this.props.route.params.stateId,
       }
     }
-    let {
-      data: { list: popularDrugList },
-    } = await listPopularDrug({
-      page: 1,
-      limit: 30,
-      filter,
-    })
-    this.setState({
-      popularDrugList,
-      hasLoad: true,
-    })
-    console.log(activeId)
-    console.log(popularDrugList)
+    try {
+      let {
+        data: { list: popularDrugList },
+      } = await listPopularDrug({
+        page: 1,
+        limit: 30,
+        filter,
+      })
+      this.setState({
+        popularDrugList,
+        hasLoad: true,
+      })
+    } catch (err) {
+      console.log(err)
+    }
   }
   
   getDrugList = async (page: number, limit: number, filter = {}) => {
@@ -169,7 +171,6 @@ export default class DrugSelect extends Component<Props, State> {
     this.setState({
       search: val,
     })
-    // console.log(val)
     // if (!val) {
     //   return
     // }
@@ -358,8 +359,7 @@ export default class DrugSelect extends Component<Props, State> {
                     }
                   }, 500)
                   // 中药
-                  console.log(k)
-                  if(this.state.chinese){
+                  if(drugInfo.detail.type===0){
                     return(
                       <TouchableOpacity
                       key={k + '-' + k2}
@@ -372,7 +372,6 @@ export default class DrugSelect extends Component<Props, State> {
                           })
                         }}
                       >
-                        
                         <TouchableOpacity
                           onPress={() => {
                             let { prescriptionDrugCategoryList } = this.state
@@ -413,16 +412,23 @@ export default class DrugSelect extends Component<Props, State> {
                                 {drugInfo.type ? '(' + drugInfo.type + ')' : ''}
                               </Text>
                               <View style={[style.itemCenterDetail, global.flex, global.alignItemsCenter]}>
-                                <Text style={[style.itemCenterDetailTitle, global.fontSize12]}>
+                                <Text style={[style.itemCenterDetailTitle, global.fontSize14]}>
                                   {drugInfo.detail.price / 1000}元/{drugInfo.detail.unit}
                                 </Text>
                                 <View style={style.littleSpot} />
-                                  <Text style={[style.itemCenterDetailTitle, global.fontSize12]}>
+                                  <Text style={[style.itemCenterDetailTitle, global.fontSize14]}>
                                     {drugInfo.detail.standard}
                                   </Text>
-                                  <Text style={[style.deficiency, global.fontSize12]}>
-                                    (缺)
-                                  </Text>
+                                  {this.state.popularDrugList.length!==0 && 
+                                      this.state.popularDrugList.every(item=>{
+                                        return item.id !== drugInfo.detail.id
+                                      }) 
+                                      ?
+                                      <Text style={[style.deficiency, global.fontSize14]}>
+                                        (缺)
+                                      </Text> 
+                                    : null
+                                  }
                               </View>
                             </View  >
                             <TouchableOpacity>
@@ -613,7 +619,6 @@ export default class DrugSelect extends Component<Props, State> {
                       style={style.popularDrugItem}
                       key={k}
                       onPress={() => {
-                        console.log(drug)
                         if (drug.type === DrugType.chinese) {
                           this.setState({
                             isAddDrug: true,
@@ -725,7 +730,6 @@ export default class DrugSelect extends Component<Props, State> {
                         if (category.id === currCategoryId) {
                           hasCategory = true
                           for (let drugInfo of category.drugList) {
-                            console.log(drugInfo.id,this.state.activeDrug.id)
                             if (drugInfo.id === this.state.activeDrug.id) {
                               drugInfo.count = this.state.activeValue
                               drugInfo.type = this.state.fryFirst
@@ -750,7 +754,6 @@ export default class DrugSelect extends Component<Props, State> {
                       } else {
                         for (let category of prescriptionDrugCategoryList) {
                           if (category.id === currCategoryId) {
-                            console.log(111)
                             category.drugList.push({
                               id: this.state.activeDrug.id,
                               count: this.state.activeValue,
@@ -812,7 +815,6 @@ export default class DrugSelect extends Component<Props, State> {
                       }
                     }}
                     onBlur={evt => {
-                      console.log(evt)
                       this.setState({
                         activeValue: 0,
                       })

@@ -5,10 +5,11 @@ import { AppState } from '@/redux/stores/store'
 import { AllScreenParam } from '@/routes/bottomNav'
 import api, { windowWidth } from '@/services/api'
 import doctor, { addPrescription, AddPrescriptionParam, GENDER, GENDER_ZH, PrescriptionTpl } from '@/services/doctor'
-import { EXTERN_CHINESE_DRUG_ID, ORAL_CHINESE_DRUG_ID, TOPICAL_CHINESE_DRUG_ID } from '@/services/drug'
-import { getLastPrescriptionInfo, getPatientInfo } from '@/services/patient'
+import { EXTERN_CHINESE_DRUG_ID, ORAL_CHINESE_DRUG_ID, TOPICAL_CHINESE_DRUG_ID, listPopularDrug} from '@/services/drug'
+import { getLastPrescriptionInfo, getPatientInfo, DrugInfo} from '@/services/patient'
 import { getPersonalInfo } from '@/services/user'
 import { getPicCdnUrl } from '@/utils/utils'
+import { TYPE } from '@/utils/constant'
 import { Icon, ImagePicker, InputItem,  Picker, TextareaItem, Toast } from '@ant-design/react-native'
 import hospital from '@api/hospital'
 import DashLine from '@components/DashLine'
@@ -40,7 +41,36 @@ import { Dispatch } from 'redux'
 import { MsgType, Picture } from './Chat'
 
 const style = gStyle.advisory.SquareRoot
-
+interface prescriptionDetail {
+  type: 'wx' | 'phone' | 'common'
+  doctor: {
+    name: string
+  }
+  patient: {
+    name: string
+    phone: string
+    gender: number
+    yearAge: number
+    monthAge: number
+  }
+  discrimination: string //辨病
+  syndromeDifferentiation: string //辨证
+  advice: string //医嘱
+  drugList: Drug[]
+  cost: {
+    drugCost: number
+    doctorServiceCost: number
+    expressCost: number
+  }
+  time: string
+  status: number
+  shippingNo: string
+}
+interface drugCategory {
+  id: number
+  name: string
+  child: drugCategory[]
+}
 interface Props {
   navigation: StackNavigationProp<AllScreenParam, 'SquareRoot'>
   route: RouteProp<AllScreenParam, 'SquareRoot'>
@@ -68,6 +98,8 @@ export interface State {
   oneDoseUseCount: string
   // 服务费
   serviceMoney: string
+  //常用药
+  popularDrugList: Drug[]
   // 医生诊后管理费比率
   percentageOfCommission: number
   // 患者信息
@@ -81,7 +113,10 @@ export interface State {
   pharmacyName:{
     id: number
     name: string
+    drugType: number
+    state: string
   }
+  
   // 辨病
   discrimination: string
   // 辨证
@@ -103,7 +138,10 @@ export interface State {
   monthAge: string
   gender: number
   status: boolean
-  
+  filter: {}
+  drugList: DrugInfo[]
+  drugCategoryList: drugCategory[]
+  detail: prescriptionDetail
 }
 /**
  * 处方中某个药品分类的药品集合
@@ -183,7 +221,6 @@ State
   getInitState = (): State => {
     let mode = this.props.route.params.mode
     let prescription: PrescriptionTpl | null | undefined = this.props.route.params.prescription
-    console.log(prescription)
     let prescriptionDrugCategoryList: PrescriptionDrugCategory[] = []
     if (mode === 'wx' && prescription) {
       let prescriptionCategory: PrescriptionDrugCategory = {
@@ -203,7 +240,6 @@ State
       prescriptionDrugCategoryList.push(prescriptionCategory)
     }
     return {
-      
       mode,
       hasLoad: true,
       refreshing: false,
@@ -223,6 +259,7 @@ State
       drugMoney: 0,
       serviceMoney: '',
       percentageOfCommission: 30,
+      popularDrugList: [],
       pharmacy: {
         activeId: 0,
         categoryList: [],
@@ -239,8 +276,10 @@ State
       medicalRecordPicList: [],
       advice: '',
       pharmacyName:{
-        id: 0,
-        name: '',
+        id: 14,
+        name: "至信药业（广州）",
+        drugType: 17,
+        state: "自煎",
       },
       prescriptionDrugCategoryList,
       patientName: '',
@@ -248,6 +287,34 @@ State
       monthAge: '',
       yearAge: '',
       status: true,
+      filter: {},
+      detail: {
+        doctor: {
+          name: '',
+        },
+        patient: {
+          name: '',
+          phone: '',
+          gender: 0,
+          yearAge: 0,
+          monthAge: 0,
+        },
+        type: 'common',
+        discrimination: '', //辨病
+        syndromeDifferentiation: '', //辨证
+        advice: '', //医嘱
+        drugList: [],
+        cost: {
+          drugCost: 0,
+          doctorServiceCost: 0,
+          expressCost: 0,
+        },
+        time: '',
+        status: 0,
+        shippingNo: '',
+      },
+      drugList: [],
+      drugCategoryList: [],
     }
   }
   async componentDidMount() {
@@ -270,7 +337,9 @@ State
       pathMap.SquareRoot + 'State',
       (state: {
         id: number,
-        name: string
+        name: string,
+        drugType: number,
+        state: string,
       }) => {
         this.setState({
           pharmacyName: state,
@@ -319,7 +388,6 @@ State
   }
   initLastPrescriptionInfo = async () => {
     let patientUid = this.props.route.params.patientUid as number
-    console.log(patientUid + '|111')
     try {
       const {
         data: { detail: prescriptionDrugCategoryList },
@@ -355,9 +423,9 @@ State
       })
     }
   }
+  
   init = async () => {
     let { patientInfo, mode } = this.state
-    console.log(this.props.route.params)
     let status: boolean = false 
     if(this.props.route.params.status){
       status = this.props.route.params.status
@@ -366,8 +434,13 @@ State
       let {
         data: { detail },
       } = await doctor.getPrescriptionDetail({ prescriptionId: this.props.route.params.patientUid })
+      let {
+        data: { list: drugCategoryList },
+      } = await hospital.getDrugCategoryList({ page: -1, limit: -1 })
+      let {
+        data: { list: drugList },
+      } = await hospital.getDrugList({ page: -1, limit: -1 })
       if (mode !== 'common' || status) {
-        console.log(detail)
         patientInfo = {
           uid: detail.patient.uid || this.props.route.params.patientUid,
           monthAge: detail.patient.monthAge,
@@ -377,7 +450,10 @@ State
         }
         this.setState({
           patientInfo,
+          drugCategoryList,
+          drugList,
         })
+        
       }
     }
 
@@ -390,6 +466,7 @@ State
     })
     let pharmacy = this.state.pharmacy
     pharmacy.categoryList = categoryList
+    pharmacy.activeId = 14
     this.setState({
       status: true,
       pharmacy,
@@ -417,6 +494,7 @@ State
           gender,
           yearAge,
         }
+        
         if (!hospitalMedicalRecordPicList) {
           hospitalMedicalRecordPicList = []
         }
@@ -443,14 +521,13 @@ State
       if (patientUid in this.props.currSetPrescription) {
         console.log('正在初始化redux处方信息')
         this.initSavedPrescriptionInfo()
-      } else {
+      } else if (patientUid){
         console.log('正在初始化上次处方信息')
         this.initLastPrescriptionInfo()
       }
     } catch (err) {
       console.log('发生了错误, ', err)
     }
-    console.log(this.state.patientInfo)
   }
   onRefresh = () => {
     this.setState({ refreshing: true })
@@ -495,7 +572,7 @@ State
     pharmacy.activeId = id
     this.setState({ pharmacy })
   }
-  pharmacyChange = (data:{id:number,name: string}) => {
+  pharmacyChange = (data:{id:number,name: string,drugType:number,state:string}) => {
     this.setState({
       pharmacyName: data
     })
@@ -589,6 +666,7 @@ State
               <View style={[style.diagnosisItem, global.flex, global.alignItemsCenter]}>
                 <Text style={[style.diagnosisItemTitle, global.fontSize14]}>患者信息</Text>
                 {mode !== 'wx' && mode !== 'phone' && (
+                 
                   <>
                     <Text style={[style.diagnosisItemLineTitle, global.fontSize14]}>{patientName}</Text>
                     <Text style={[style.diagnosisItemLineTitle, global.fontSize14]}>
@@ -730,7 +808,6 @@ State
                       onBlur={() => {
                         if (phone) {
                           if (!/^1\d{10}$/.test(phone)) {
-                            console.log('phone: ', phone)
                             Toast.info('手机号码格式错误', 1)
                             this.setState({
                               phone: '',
@@ -856,10 +933,9 @@ State
                       global.alignItemsCenter,
                       global.justifyContentSpaceBetween,]}
                   >
-                  <Text style={[global.fontSize14, style.prescriptionTplTitle]}>{this.state.pharmacyName.name}</Text>
+                  <Text style={[global.fontSize14, style.prescriptionTplTitle]}>{this.state.pharmacyName.state}-{this.state.pharmacyName.name}</Text>
                     <Icon style={[style.prescriptionTplIcon, global.fontSize14]} name='right' />
                   </View>
-                  
                 </View>
               </TouchableOpacity>
               <DashLine len={45} width={windowWidth - 46} backgroundColor={sColor.colorEee} />
@@ -868,7 +944,6 @@ State
                   <Text style={[style.empty, global.fontSize14]}>暂无</Text>
                 ) : null}
                 {this.state.prescriptionDrugCategoryList.map((category, k) => {
-
                   let gram = 0
                   for (let item of category.drugList) {
                     let g = item.detail.unit.match(/(\d+)[g克]/)
@@ -884,7 +959,6 @@ State
                     category.id === EXTERN_CHINESE_DRUG_ID
                   ) {
                     /* 中药 */
-                    console.log(category.drugList)
                     return (
                       
                       <View
@@ -920,6 +994,9 @@ State
                                 <Text style={[style.chooseDrugCount, global.fontSize14]}>
                                   {drugInfo.count} * {drugInfo.detail.unit}
                                 </Text>
+                                {/* <Text style={[style.deficiency, global.fontSize14]}>
+                                  (缺)
+                                </Text> */}
                               </View>
                             )
                           })}
@@ -1075,8 +1152,15 @@ State
               </View>
               <TouchableOpacity
                 onPress={() => {
-                  this.setState({
-                    isSelectPharmacy: true,
+                  const {navigation} = this.props
+                  navigation.navigate('DrugSelect',{
+                    categoryList: this.state.pharmacy.categoryList,
+                    stateId: this.state.pharmacyName.id,
+                    stateName: this.state.pharmacyName.name,
+                    activeId:  this.state.pharmacyName.drugType,
+                    state: this.state.pharmacyName.state,
+                    isInSession: false,
+                    prescriptionDrugCategoryList: this.state.prescriptionDrugCategoryList
                   })
                 }}
               >
@@ -1288,6 +1372,7 @@ State
               isInSession
               closeChooseCategory={this.closeChooseCategory}
               prescriptionDrugCategoryList={this.state.prescriptionDrugCategoryList}
+              
             />
           </View>
         </KeyboardAvoidingView>
@@ -1386,6 +1471,7 @@ State
     if (isSaveToTpl) {
       args.tplName = _.trim(tplName)
     }
+    // console.log(args)
     addPrescription(args)
       .then(json => {
         this.setState({ status: true })

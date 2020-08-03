@@ -134,11 +134,11 @@ export default class SquareRoot extends Component<
     this.setState({
       hasLoad: false,
     })
+    console.log(this.state.prescriptionId)
     try {
       let {
         data: { detail },
       } = await doctor.getPrescriptionDetail({ prescriptionId: this.state.prescriptionId })
-      console.log(detail)
       let {
         data: { list: drugCategoryList },
       } = await hospital.getDrugCategoryList({ page: -1, limit: -1 })
@@ -184,7 +184,6 @@ export default class SquareRoot extends Component<
       typeZh = '问诊开方',
       patientName = detail.patient.name,
       phone = detail.patient.phone
-
     if (detail.type === 'wx') {
       typeZh = '微信开方'
       if (patientName === '') {

@@ -182,6 +182,7 @@ export type AllScreenParam = {
     activeId: number
     stateId?: number
     stateName?: string
+    state?: string
     prescriptionDrugCategoryList: PrescriptionDrugCategory[]
   }
   InquirySheet: {
@@ -591,7 +592,6 @@ const stacksOverTabsConfig: { [P in keyof AllScreenParam]?: RouteConfig<AllScree
         headerRight: () => (
           <TouchableOpacity
             onPress={() => {
-              console.log('headerRight pressed')
             }}
           >
             <Text
@@ -1017,13 +1017,13 @@ const stacksOverTabsConfig: { [P in keyof AllScreenParam]?: RouteConfig<AllScree
       navigation: StackNavigationProp<AllScreenParam, 'DrugSelect'>
     }) => {
       let title = '选择药材'
-      let { categoryList, activeId } = route.params
+      let { categoryList, activeId, stateName, state} = route.params
       if (!categoryList) {
         return {}
       }
       for (let v of categoryList) {
         if (v.id === activeId) {
-          title = v.name
+          title = state+"-" + stateName
         }
       }
       return {
@@ -1068,9 +1068,8 @@ const stacksOverTabsConfig: { [P in keyof AllScreenParam]?: RouteConfig<AllScree
         headerRight: () => (
           <TouchableOpacity
             onPress={() => {
-              let { prescriptionDrugCategoryList,stateName,stateId } = route.params
-              console.log( route.params)
-              console.log(prescriptionDrugCategoryList)
+              
+              let { prescriptionDrugCategoryList, stateName, stateId, state, activeId } = route.params
               for (let drugCategory of prescriptionDrugCategoryList) {
                 for (let drug of drugCategory.drugList) {
                   if (drug.count <= 0) {
@@ -1080,7 +1079,9 @@ const stacksOverTabsConfig: { [P in keyof AllScreenParam]?: RouteConfig<AllScree
               }
               DeviceEventEmitter.emit(pathMap.SquareRoot + 'State', {
                 id: stateId,
-                name: stateName
+                name: stateName,
+                state: state,
+                drugType: activeId
               })
               DeviceEventEmitter.emit(pathMap.SquareRoot + 'Reload', prescriptionDrugCategoryList)
               DeviceEventEmitter.emit(pathMap.AddPrescriptionTpl + 'Reload', prescriptionDrugCategoryList)
@@ -1459,8 +1460,6 @@ const stacksOverTabsConfig: { [P in keyof AllScreenParam]?: RouteConfig<AllScree
       route: RouteProp<AllScreenParam, 'SittingHospital'>
       navigation: StackNavigationProp<AllScreenParam, 'SittingHospital'>
     }) => {
-      console.log(route)
-      console.log(navigator)
       return {
         title: '本月坐诊信息',
         headerStyle: {

@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native'
+import sColor from '@styles/color'
 export default StyleSheet.create({
   main: {
     flex: 1,
@@ -33,6 +34,17 @@ export default StyleSheet.create({
     height: 36,
     resizeMode: 'contain',
   },
+  inputNumBox: {
+    flex: 6,
+    
+  },
+  inputNum: {
+    borderBottomWidth: 1,
+    borderBottomColor: '#333',
+    color: sColor.color666,
+    fontSize: 14,
+    textAlign: 'center',
+  },
   title: {
     fontSize: 16,
     color: '#333',
@@ -47,6 +59,9 @@ export default StyleSheet.create({
   icon: {
     fontSize: 18,
     color: '#6D6D6D',
+  },
+  userIcon: {
+    flex: 1,
   },
   tips: {
     backgroundColor: '#4D81E4',

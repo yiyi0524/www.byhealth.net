@@ -220,6 +220,9 @@ export default StyleSheet.create({
   chooseDrugCount: {
     color: sColor.color333,
   },
+  deficiency: {
+    color: sColor.mainRed,
+  },
   prescriptionTpl: {
     height: 45,
   },

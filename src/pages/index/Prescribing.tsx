@@ -1,7 +1,7 @@
 import global from '@/assets/styles/global'
 import { AppState } from '@/redux/stores/store'
 import { AllScreenParam } from '@/routes/bottomNav'
-import { Icon, Modal, Toast } from '@ant-design/react-native'
+import { Icon, Modal, Toast, InputItem} from '@ant-design/react-native'
 import { RouteProp } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
 import gImg from '@utils/img'
@@ -19,6 +19,7 @@ interface State {
   filter: Record<string, any>
   search: string
   patientList: []
+  isAddDrug: boolean
 }
 type DefaultProps = {
   navigation: StackNavigationProp<AllScreenParam, 'Prescribing'>
@@ -46,6 +47,7 @@ export default class Prescribing extends Component<Props & DefaultProps, State> 
       filter: {},
       search: '',
       patientList: [],
+      isAddDrug: false
     }
   }
   componentDidMount() {
@@ -66,6 +68,9 @@ export default class Prescribing extends Component<Props & DefaultProps, State> 
           <TouchableOpacity
             style={[style.item, global.flex, global.aCenter]}
             onPress={() => {
+              // this.setState({
+              //   isAddDrug:true
+              // })
               Modal.prompt(
                 '手机号开方',
                 '',
@@ -80,7 +85,7 @@ export default class Prescribing extends Component<Props & DefaultProps, State> 
                 },
                 'default',
                 '',
-                ['请输入用户手机号'],
+                ['请输入用户手机号']
               )
             }}
           >
@@ -89,6 +94,7 @@ export default class Prescribing extends Component<Props & DefaultProps, State> 
             <Text style={style.desc}>去填手机号</Text>
             <Icon style={style.icon} name='right' />
           </TouchableOpacity>
+          
           <TouchableOpacity
             style={[style.item, global.flex, global.aCenter]}
             onPress={() => {
@@ -130,7 +136,67 @@ export default class Prescribing extends Component<Props & DefaultProps, State> 
             互联网诊疗仅适用常见病、慢性病复诊、且您须掌握患者病历，确定其在实体医疗机构有过同诊断。请勿为首诊、急重症患者在线诊疗。
           </Text>
         </View>
+        {/* <Modal
+        
+        visible={this.state.isAddDrug}
+        maskClosable
+        transparent={true}
+        closable
+        title={'手机号开方'}
+        footer={[
+          {
+            text: '取消',
+            onPress: () => {
+              this.setState({ isAddDrug: false})
+            },
+          },
+          {
+            text: '确定',
+            onPress: () => {
+              (phone: string) => {
+                if (!/1\d{10}/.test(phone)) {
+                  return Toast.fail('手机号格式不正确')
+                }
+                this.props.navigation.navigate('SquareRoot', {
+                  mode: 'phone',
+                  phone,
+                })
+              }
+            },
+          },
+        ]}
+        onClose={() => {
+          this.setState({ isAddDrug: false})
+        }}
+      >
+        <View
+          style={[global.flex, global.alignItemsCenter]}
+        >
+          <View
+          style={style.inputNumBox}>
+            <InputItem
+              last
+              type='number'
+              style={style.inputNum}
+              onChange={val => {
+                
+              }}
+              
+            />
+          </View>
+          <Text onPress={()=>{
+            
+          }
+          }>
+            <Icon style={style.userIcon} name='user'></Icon>
+          </Text>
+          
+        </View>
+        
+      </Modal> */}
       </ScrollView>
+      
     )
+    
   }
 }
