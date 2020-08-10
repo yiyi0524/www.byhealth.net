@@ -166,6 +166,7 @@ export type AllScreenParam = {
   SquareRoot: {
     mode: 'wx' | 'phone' | 'common'
     patientUid?: number
+    prescriptionId?: number
     status?: boolean
     phone?: string
     prescription?: PrescriptionTplDetail | null
@@ -181,8 +182,10 @@ export type AllScreenParam = {
     }[]
     activeId: number
     stateId?: number
+    storeId?: number
     stateName?: string
     state?: string
+    categoryName?: string
     prescriptionDrugCategoryList: PrescriptionDrugCategory[]
   }
   InquirySheet: {
@@ -1069,7 +1072,7 @@ const stacksOverTabsConfig: { [P in keyof AllScreenParam]?: RouteConfig<AllScree
           <TouchableOpacity
             onPress={() => {
               
-              let { prescriptionDrugCategoryList, stateName, stateId, state, activeId } = route.params
+              let { prescriptionDrugCategoryList, stateName, storeId,stateId, state, activeId,categoryName } = route.params
               for (let drugCategory of prescriptionDrugCategoryList) {
                 for (let drug of drugCategory.drugList) {
                   if (drug.count <= 0) {
@@ -1078,10 +1081,12 @@ const stacksOverTabsConfig: { [P in keyof AllScreenParam]?: RouteConfig<AllScree
                 }
               }
               DeviceEventEmitter.emit(pathMap.SquareRoot + 'State', {
-                id: stateId,
+                id: storeId,
                 name: stateName,
                 state: state,
-                drugType: activeId
+                stateId,
+                drugType: activeId,
+                categoryName
               })
               DeviceEventEmitter.emit(pathMap.SquareRoot + 'Reload', prescriptionDrugCategoryList)
               DeviceEventEmitter.emit(pathMap.AddPrescriptionTpl + 'Reload', prescriptionDrugCategoryList)

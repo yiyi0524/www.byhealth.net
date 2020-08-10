@@ -179,7 +179,7 @@ export default class Prescription extends Component<
                 onPress={()=>{
                   this.props.navigation.navigate(pathMap.SquareRoot, {
                     mode: v.type,
-                    patientUid: v.id,
+                    prescriptionId: v.id,
                     status: true,
                   })
                 }}

@@ -120,10 +120,10 @@ export default class DrugSelect extends Component<Props, State> {
         val: activeId,
       },
     }
-    if(this.props.route.params.stateId){
+    if(this.props.route.params.storeId){
       filter.stateId = {
         condition: TYPE.eq,
-        val: this.props.route.params.stateId,
+        val: this.props.route.params.storeId,
       }
     }
     try {
@@ -344,10 +344,11 @@ export default class DrugSelect extends Component<Props, State> {
             <View style={[this.state.search === '' ? style.drugList : global.hidden]}>
 
               {this.state.prescriptionDrugCategoryList.map((category, k) => {
-                if (category.id !== drugCategoryId) {
-                  return false
-                }
+                // if (category.id !== drugCategoryId) {
+                //   return false
+                // }
                 return category.drugList.map((drugInfo, k2) => {
+                  console.log(drugInfo)
                   setTimeout(() => {
                     if (this.state.currDrugId === drugInfo.id) {
                       try {
@@ -359,7 +360,7 @@ export default class DrugSelect extends Component<Props, State> {
                     }
                   }, 500)
                   // 中药
-                  if(drugInfo.detail.type===0){
+                  if(!drugInfo.detail.type || drugInfo.detail.type===0){
                     return(
                       <TouchableOpacity
                       key={k + '-' + k2}

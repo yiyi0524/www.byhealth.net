@@ -5,13 +5,13 @@ import { AppState } from '@/redux/stores/store'
 import { AllScreenParam } from '@/routes/bottomNav'
 import api, { windowWidth } from '@/services/api'
 import doctor, { addPrescription, AddPrescriptionParam, GENDER, GENDER_ZH, PrescriptionTpl } from '@/services/doctor'
-import { EXTERN_CHINESE_DRUG_ID, ORAL_CHINESE_DRUG_ID, TOPICAL_CHINESE_DRUG_ID, listPopularDrug} from '@/services/drug'
-import { getLastPrescriptionInfo, getPatientInfo, DrugInfo} from '@/services/patient'
+import { EXTERN_CHINESE_DRUG_ID, ORAL_CHINESE_DRUG_ID, TOPICAL_CHINESE_DRUG_ID, getDetail } from '@/services/drug'
+import { getLastPrescriptionInfo, getPatientInfo, Drug as DrugTwo } from '@/services/patient'
 import { getPersonalInfo } from '@/services/user'
 import { getPicCdnUrl } from '@/utils/utils'
-import { TYPE } from '@/utils/constant'
-import { Icon, ImagePicker, InputItem,  Picker, TextareaItem, Toast } from '@ant-design/react-native'
+import { Icon, ImagePicker, InputItem, Picker, TextareaItem, Toast } from '@ant-design/react-native'
 import hospital from '@api/hospital'
+import { TYPE } from '@/utils/constant'
 import DashLine from '@components/DashLine'
 import Pharmacy, { CategoryItem } from '@components/Pharmacy'
 import { RouteProp } from '@react-navigation/native'
@@ -66,11 +66,6 @@ interface prescriptionDetail {
   status: number
   shippingNo: string
 }
-interface drugCategory {
-  id: number
-  name: string
-  child: drugCategory[]
-}
 interface Props {
   navigation: StackNavigationProp<AllScreenParam, 'SquareRoot'>
   route: RouteProp<AllScreenParam, 'SquareRoot'>
@@ -98,6 +93,8 @@ export interface State {
   oneDoseUseCount: string
   // 服务费
   serviceMoney: string
+  // 加工费
+  processingFee: string
   //常用药
   popularDrugList: Drug[]
   // 医生诊后管理费比率
@@ -110,13 +107,15 @@ export interface State {
     monthAge: number
     gender: number
   }
-  pharmacyName:{
+  pharmacyName: {
     id: number
     name: string
     drugType: number
+    stateId: number
     state: string
+    categoryName?: string
   }
-  
+
   // 辨病
   discrimination: string
   // 辨证
@@ -139,10 +138,20 @@ export interface State {
   gender: number
   status: boolean
   filter: {}
-  drugList: DrugInfo[]
-  drugCategoryList: drugCategory[]
   detail: prescriptionDetail
+  NoMedicine: {
+    id: number
+    name: string
+    price: number
+    status: boolean
+  }[]
+  stateType: {
+    status: boolean
+    price: number
+  }
+  saveType: number
 }
+
 /**
  * 处方中某个药品分类的药品集合
  */
@@ -258,6 +267,7 @@ State
       oneDoseUseCount: '',
       drugMoney: 0,
       serviceMoney: '',
+      processingFee: '',
       percentageOfCommission: 30,
       popularDrugList: [],
       pharmacy: {
@@ -275,11 +285,13 @@ State
       syndromeDifferentiation: '',
       medicalRecordPicList: [],
       advice: '',
-      pharmacyName:{
-        id: 14,
-        name: "至信药业（广州）",
-        drugType: 17,
-        state: "自煎",
+      pharmacyName: {
+        id: 0,
+        name: "",
+        drugType: 0,
+        stateId: 0,
+        state: "",
+        categoryName: '',
       },
       prescriptionDrugCategoryList,
       patientName: '',
@@ -313,8 +325,12 @@ State
         status: 0,
         shippingNo: '',
       },
-      drugList: [],
-      drugCategoryList: [],
+      NoMedicine: [],
+      stateType: {
+        status: true,
+        price: 0,
+      },
+      saveType: 0
     }
   }
   async componentDidMount() {
@@ -328,22 +344,26 @@ State
     this.listener = DeviceEventEmitter.addListener(
       pathMap.SquareRoot + 'Reload',
       (prescriptionDrugCategoryList: PrescriptionDrugCategory[]) => {
+        console.log(prescriptionDrugCategoryList)
         this.setState({
           prescriptionDrugCategoryList,
-        })
+        }, this.store)
       },
     )
+
     this.listener = DeviceEventEmitter.addListener(
       pathMap.SquareRoot + 'State',
       (state: {
         id: number,
         name: string,
         drugType: number,
+        stateId: number
         state: string,
+        categoryName: string
       }) => {
         this.setState({
           pharmacyName: state,
-        })
+        }, this.store)
       },
     )
     if (mode === 'common') {
@@ -359,6 +379,41 @@ State
     if (mode === 'common' && this.hardwareBackPressListener) {
       this.hardwareBackPressListener.remove()
     }
+  }
+  store = async () => {
+    let { prescriptionDrugCategoryList, pharmacyName } = this.state,
+      drug: number[] = [];
+    if (prescriptionDrugCategoryList.length !== 0) {
+      for (let categoryList of prescriptionDrugCategoryList[0].drugList) {
+        drug.push(categoryList.id)
+      }
+    }
+    let {
+      data: { list: storeList },
+    } = await hospital.getStoreDrug({
+      page: -1,
+      limit: -1,
+      filter: {
+        storeId: {
+          condition: TYPE.eq,
+          val: pharmacyName.id,
+        },
+        stateId: {
+          condition: TYPE.eq,
+          val: pharmacyName.stateId,
+        },
+        drug: {
+          condition: TYPE.in,
+          val: drug,
+        }
+      },
+    })
+    this.setState({
+      NoMedicine: storeList
+    })
+
+    // 加工费
+
   }
   onHardwareBackPress = () => {
     const {
@@ -388,17 +443,19 @@ State
   }
   initLastPrescriptionInfo = async () => {
     let patientUid = this.props.route.params.patientUid as number
-    try {
-      const {
-        data: { detail: prescriptionDrugCategoryList },
-      } = await getLastPrescriptionInfo({ patientUid })
-      if (prescriptionDrugCategoryList) {
-        this.setState({
-          prescriptionDrugCategoryList,
-        })
+    if (patientUid > 0) {
+      try {
+        const {
+          data: { detail: prescriptionDrugCategoryList },
+        } = await getLastPrescriptionInfo({ patientUid })
+        if (prescriptionDrugCategoryList) {
+          this.setState({
+            prescriptionDrugCategoryList,
+          })
+        }
+      } catch (e) {
+        console.log(e)
       }
-    } catch (e) {
-      console.log(e)
     }
   }
   initSavedPrescriptionInfo = () => {
@@ -423,40 +480,85 @@ State
       })
     }
   }
-  
+  getStateStore = async (stateId: number, storeId: number) => {
+    let status: boolean = true,
+      price = 0;
+    let {
+      data
+    } = await hospital.getStateStore(stateId, storeId)
+    price = data.price
+    status = data.status
+    this.setState({
+      stateType: {
+        status,
+        price
+      }
+    })
+  }
   init = async () => {
     let { patientInfo, mode } = this.state
-    let status: boolean = false 
-    if(this.props.route.params.status){
+    let status: boolean = false
+    if (this.props.route.params.status) {
       status = this.props.route.params.status
     }
+    let categoryId: number = 0,
+      storeId: number = 0,
+      stateId: number = 0;
+
+    let drugList: DrugTwo[] = [],
+      prescriptionDrugCategoryList = this.state.prescriptionDrugCategoryList;
     if (this.props.route.params.patientUid) {
-      let {
-        data: { detail },
-      } = await doctor.getPrescriptionDetail({ prescriptionId: this.props.route.params.patientUid })
-      let {
-        data: { list: drugCategoryList },
-      } = await hospital.getDrugCategoryList({ page: -1, limit: -1 })
-      let {
-        data: { list: drugList },
-      } = await hospital.getDrugList({ page: -1, limit: -1 })
-      if (mode !== 'common' || status) {
+      try {
+        let {
+          data: { detail },
+        } = await doctor.getPrescriptionDetail({ prescriptionId: this.props.route.params.patientUid, status: false })
+
+        if (mode !== 'common' || status) {
+          patientInfo = {
+            uid: detail.patient.uid || this.props.route.params.patientUid,
+            monthAge: detail.patient.monthAge,
+            name: detail.patient.name,
+            gender: detail.patient.gender,
+            yearAge: detail.patient.yearAge,
+          }
+          this.setState({
+            patientInfo,
+          })
+
+        }
+      } catch (e) {
+
+      }
+    } else if (this.props.route.params.prescriptionId) {
+      try {
+        let {
+          data: { detail },
+        } = await doctor.getPrescriptionDetail({ prescriptionId: this.props.route.params.prescriptionId })
+        if (detail.drugList[0]) {
+          categoryId = detail.drugList[0].categoryId
+          drugList = detail.drugList
+        }
+        storeId = detail.storeId || 0;
+        stateId = detail.stateId || 0;
         patientInfo = {
-          uid: detail.patient.uid || this.props.route.params.patientUid,
+          uid: detail.patient.uid || 0,
           monthAge: detail.patient.monthAge,
           name: detail.patient.name,
           gender: detail.patient.gender,
           yearAge: detail.patient.yearAge,
         }
+
+        this.setState({
+          patientName: detail.patient.name,
+          phone: detail.patient.phone,
+        })
         this.setState({
           patientInfo,
-          drugCategoryList,
-          drugList,
         })
-        
+      } catch (err) {
+
       }
     }
-
     let {
       data: { list: categoryList },
     } = await hospital.getDrugCategoryList({
@@ -464,9 +566,173 @@ State
       limit: -1,
       filter: {},
     })
+    let categoryName: string = ''
+    if (categoryId > 0) {
+      for (let item of categoryList) {
+        if (item.id === categoryId) {
+          categoryName = item.name
+        }
+      }
+      if (!categoryName) {
+        categoryId = 0
+      }
+    }
+
+    prescriptionDrugCategoryList = []
+    for (let drug of drugList) {
+      let name: string = ''
+      for (let item of categoryList) {
+        if (item.id === drug.categoryId) {
+          name = item.name
+        }
+      }
+      let prescriptionDrugInfo: PrescriptionDrugInfo[] = []
+      for (let drugInfo of drug.list) {
+        if (drugInfo.detail && drugInfo.id) {
+          prescriptionDrugInfo.push({
+            id: drugInfo.id || 0,
+            count: drugInfo.count,
+            detail: {
+              id: drugInfo.id || 0,
+              name: drugInfo.detail.name || '',
+              unit: drugInfo.detail.unit || '',
+              price: drugInfo.detail.price || 0,
+              type: drugInfo.detail.type || 0,
+              standard: drugInfo.detail.standard || '',
+              manufacturer: drugInfo.detail.manufacturer || '',
+              signature: drugInfo.detail.signature || '',
+              ctime: drugInfo.detail.ctime || '',
+              category_id: drug.categoryId,
+            },
+            type: drugInfo.type,
+          })
+        } else if (drugInfo.id) {
+          try {
+            let {
+              data: { detail },
+            } = await getDetail({ id: drugInfo.id })
+            prescriptionDrugInfo.push({
+              id: drugInfo.id,
+              count: drugInfo.count,
+              detail: {
+                id: drugInfo.id,
+                name: detail.name,
+                unit: detail.unit,
+                price: detail.price,
+                type: detail.type,
+                standard: detail.standard,
+                manufacturer: detail.manufacturer,
+                signature: detail.signature,
+                ctime: detail.ctime || '',
+                category_id: drug.categoryId,
+              },
+              type: drugInfo.type,
+            })
+          } catch (e) { }
+        }
+      }
+      if (prescriptionDrugInfo) {
+        prescriptionDrugCategoryList.push({
+          id: drug.categoryId,
+          name,
+          drugList: prescriptionDrugInfo,
+          // 剂量数
+          doseCount: drug.doseCount,
+          // 每日剂量数
+          dailyDose: drug.dailyDose,
+          // 每剂分几次使用
+          everyDoseUseCount: drug.everyDoseUseCount
+        })
+      }
+
+      this.setState({
+        prescriptionDrugCategoryList,
+      })
+    }
     let pharmacy = this.state.pharmacy
     pharmacy.categoryList = categoryList
-    pharmacy.activeId = 14
+    this.setState({
+      pharmacy,
+    })
+    let {
+      data: { list: stateList },
+    } = await hospital.getDrugStateList({
+      page: -1,
+      limit: -1,
+      filter: {
+        categoryId: {
+          condition: TYPE.eq,
+          val: categoryId === 0 ? categoryList[0].id : categoryId,
+        }
+      },
+    })
+    let stateName: string = ''
+    if (stateId > 0) {
+      for (let item of stateList) {
+        if (item.id === stateId) {
+          stateName = item.name
+        }
+      }
+      if (!stateName) {
+        stateId = 0
+      }
+    }
+    pharmacy.activeId = 0
+    if (stateList.length > 0) {
+      let {
+        data: { list: storeList },
+      } = await hospital.getDrugStoreList({
+        page: -1,
+        limit: -1,
+        filter: {
+          stateId: {
+            condition: TYPE.eq,
+            val: stateId > 0 ? stateId : stateList[0].id,
+          },
+        },
+      })
+      if (stateId > 0 && storeList.length == 0) {
+        stateId = 0
+        let {
+          data: { list },
+        } = await hospital.getDrugStoreList({
+          page: -1,
+          limit: -1,
+          filter: {
+            stateId: {
+              condition: TYPE.eq,
+              val: stateList[0].id,
+            },
+          },
+        })
+        storeList = list
+      }
+      if (storeList.length > 0) {
+        pharmacy.activeId = stateId > 0 ? stateId : stateList[0].id
+        let storeName: string = ''
+        if (storeId > 0) {
+          for (let item of storeList) {
+            if (item.id === storeId) {
+              storeName = item.name
+            }
+          }
+          if (!storeName) {
+            storeId = 0
+          }
+        }
+        this.setState({
+          pharmacyName: {
+            id: storeId > 0 ? storeId : storeList[0].id,
+            name: storeId > 0 ? storeName : storeList[0].name,
+            drugType: categoryId > 0 ? categoryId : categoryList[0].id,
+            stateId: stateId > 0 ? stateId : stateList[0].id,
+            state: stateId > 0 ? stateName : stateList[0].name,
+            categoryName: categoryId > 0 ? categoryName : categoryList[0].name,
+          }
+        }, this.store)
+        this.getStateStore(stateId > 0 ? stateId : stateList[0].id, storeId > 0 ? storeId : storeList[0].id)
+      }
+    }
     this.setState({
       status: true,
       pharmacy,
@@ -479,54 +745,55 @@ State
     }
 
     let patientUid = this.props.route.params.patientUid as number
-    try {
-      this.setState({
-        hasLoad: false,
-      })
-      if (mode === 'common' && !status) {
-        let {
-          data: { yearAge, monthAge, name, gender, hospitalMedicalRecordPicList },
-        } = await getPatientInfo({ uid: patientUid })
-        patientInfo = {
-          uid: patientUid,
-          monthAge,
-          name,
-          gender,
-          yearAge,
-        }
-        
-        if (!hospitalMedicalRecordPicList) {
-          hospitalMedicalRecordPicList = []
-        }
-        for (let k in hospitalMedicalRecordPicList) {
-          if (hospitalMedicalRecordPicList.hasOwnProperty(k)) {
-            hospitalMedicalRecordPicList[k].url = getPicCdnUrl(hospitalMedicalRecordPicList[k].url, 'avatar')
-          }
-        }
-
+    if (patientUid > 0) {
+      try {
         this.setState({
-          patientInfo,
-          medicalRecordPicList: hospitalMedicalRecordPicList,
+          hasLoad: false,
         })
+        if (mode === 'common' && !status) {
+          let {
+            data: { yearAge, monthAge, name, gender, hospitalMedicalRecordPicList },
+          } = await getPatientInfo({ uid: patientUid })
+          patientInfo = {
+            uid: patientUid,
+            monthAge,
+            name,
+            gender,
+            yearAge,
+          }
+
+          if (!hospitalMedicalRecordPicList) {
+            hospitalMedicalRecordPicList = []
+          }
+          for (let k in hospitalMedicalRecordPicList) {
+            if (hospitalMedicalRecordPicList.hasOwnProperty(k)) {
+              hospitalMedicalRecordPicList[k].url = getPicCdnUrl(hospitalMedicalRecordPicList[k].url, 'avatar')
+            }
+          }
+          this.setState({
+            patientInfo,
+            medicalRecordPicList: hospitalMedicalRecordPicList,
+          })
+        }
+        let {
+          data: {
+            doctorInfo: { percentageOfCommission },
+          },
+        } = await getPersonalInfo()
+        this.setState({
+          hasLoad: true,
+          percentageOfCommission: percentageOfCommission ? percentageOfCommission : 0,
+        })
+        if (patientUid in this.props.currSetPrescription) {
+          console.log('正在初始化redux处方信息')
+          this.initSavedPrescriptionInfo()
+        } else if (patientUid) {
+          console.log('正在初始化上次处方信息')
+          this.initLastPrescriptionInfo()
+        }
+      } catch (err) {
+        console.log('发生了错误, ', err)
       }
-      let {
-        data: {
-          doctorInfo: { percentageOfCommission },
-        },
-      } = await getPersonalInfo()
-      this.setState({
-        hasLoad: true,
-        percentageOfCommission: percentageOfCommission ? percentageOfCommission : 0,
-      })
-      if (patientUid in this.props.currSetPrescription) {
-        console.log('正在初始化redux处方信息')
-        this.initSavedPrescriptionInfo()
-      } else if (patientUid){
-        console.log('正在初始化上次处方信息')
-        this.initLastPrescriptionInfo()
-      }
-    } catch (err) {
-      console.log('发生了错误, ', err)
     }
   }
   onRefresh = () => {
@@ -572,10 +839,11 @@ State
     pharmacy.activeId = id
     this.setState({ pharmacy })
   }
-  pharmacyChange = (data:{id:number,name: string,drugType:number,state:string}) => {
+  pharmacyChange = (data: { id: number, name: string, drugType: number, state: string, stateId: number, categoryName: string }) => {
+    this.getStateStore(data.stateId, data.id)
     this.setState({
       pharmacyName: data
-    })
+    }, this.store)
   }
   closeChooseCategory = () => {
     this.setState({ isSelectPharmacy: false })
@@ -602,8 +870,14 @@ State
       gender,
       monthAge,
       yearAge,
+      NoMedicine,
+      stateType
     } = this.state
     let drugMoney = 0
+    let drugList: any = {};
+    for (let drugInfo of NoMedicine) {
+      drugList[drugInfo.id] = drugInfo.price
+    }
     for (let prescriptionDrugCategory of prescriptionDrugCategoryList) {
       // 某分类的药品总价
       let drugCategoryMoney = 0
@@ -611,7 +885,11 @@ State
         let {
           detail: { price },
           count,
+          id
         } = prescriptionDrugInfo
+        if (drugList[id]) {
+          price = drugList[id]
+        }
         drugCategoryMoney += (price / 1000) * count
       }
       // 如果为中药
@@ -627,16 +905,38 @@ State
     }
     let calcServiceMoney = ((drugMoney * this.state.percentageOfCommission) / 100).toFixed(2),
       actuallyServiceMoney =
-        this.state.serviceMoney === '' ? parseFloat(calcServiceMoney) : parseFloat(this.state.serviceMoney),
-      totalMoney = (drugMoney + actuallyServiceMoney).toFixed(2)
-    let patientName: string = ''
-    if (mode === 'common') {
-      patientName = patientInfo.name
-    } else if (mode === 'wx') {
-      patientName = patientInfo.name || '微信用户'
-    } else if (mode === 'phone') {
-      patientName = patientInfo.name || '手机用户'
+        this.state.serviceMoney === '' ? parseFloat(calcServiceMoney) : parseFloat(this.state.serviceMoney);
+    let processingPrice: number = 0;
+    this.state.prescriptionDrugCategoryList.forEach(category => {
+      let gram: number = 0
+      for (let item of category.drugList) {
+        let g = item.detail.unit.match(/(\d+)[g克]/)
+        if (g && g[1] && !isNaN(parseFloat(g[1]))) {
+          gram += item.count * parseFloat(g[1])
+        } else {
+          gram += item.count
+        }
+      }
+      if (stateType.status) {
+        if (category.doseCount) {
+          processingPrice += gram * category.doseCount * stateType.price
+        }
+      } else {
+        processingPrice += gram * stateType.price
+      }
+    })
+    let
+      totalMoney = (drugMoney + actuallyServiceMoney + processingPrice / 1000).toFixed(2)
+    let processingFee = (processingPrice / 1000).toFixed(2)
+    let patientName: string = patientInfo.name
+    if (!patientName) {
+      if (mode === 'wx') {
+        patientName = '微信用户'
+      } else if (mode === 'phone') {
+        patientName = '手机用户'
+      }
     }
+    console.log(prescriptionDrugCategoryList)
     return (
       <>
         <KeyboardAvoidingView
@@ -666,7 +966,7 @@ State
               <View style={[style.diagnosisItem, global.flex, global.alignItemsCenter]}>
                 <Text style={[style.diagnosisItemTitle, global.fontSize14]}>患者信息</Text>
                 {mode !== 'wx' && mode !== 'phone' && (
-                 
+
                   <>
                     <Text style={[style.diagnosisItemLineTitle, global.fontSize14]}>{patientName}</Text>
                     <Text style={[style.diagnosisItemLineTitle, global.fontSize14]}>
@@ -933,7 +1233,7 @@ State
                       global.alignItemsCenter,
                       global.justifyContentSpaceBetween,]}
                   >
-                  <Text style={[global.fontSize14, style.prescriptionTplTitle]}>{this.state.pharmacyName.state}-{this.state.pharmacyName.name}</Text>
+                    <Text style={[global.fontSize14, style.prescriptionTplTitle]}>{this.state.pharmacyName.state}-{this.state.pharmacyName.name}</Text>
                     <Icon style={[style.prescriptionTplIcon, global.fontSize14]} name='right' />
                   </View>
                 </View>
@@ -948,7 +1248,7 @@ State
                   for (let item of category.drugList) {
                     let g = item.detail.unit.match(/(\d+)[g克]/)
                     if (g && g[1] && !isNaN(parseFloat(g[1]))) {
-                      gram += item.count + parseFloat(g[1])
+                      gram += item.count * parseFloat(g[1])
                     } else {
                       gram += item.count
                     }
@@ -960,7 +1260,7 @@ State
                   ) {
                     /* 中药 */
                     return (
-                      
+
                       <View
                         key={k}
                         style={[
@@ -973,6 +1273,7 @@ State
                         </Text>
                         <View style={[style.chooseDrugList, global.flex, global.alignItemsCenter, global.flexWrap]}>
                           {category.drugList.map((drugInfo, k1) => {
+                            let res = this.state.NoMedicine?.filter((item) => item.id === drugInfo.detail.id)
                             return (
                               <View style={[style.chooseDrugItem, global.flex, global.alignItemsCenter]} key={k1}>
                                 <TouchableOpacity
@@ -987,19 +1288,30 @@ State
                                 >
                                   <Icon name='minus-circle' style={[style.minusCircle, global.fontSize16]} />
                                 </TouchableOpacity>
-                                <Text style={[style.chooseDrugTitle, global.fontSize14]} numberOfLines={1}>
+                                <Text style={[style.chooseDrugTitle, global.fontSize14, res && res.length != 0 && res[0].status === false ? style.deficiency : null]} numberOfLines={1}>
                                   {drugInfo.detail.name}
                                   {drugInfo.type ? '(' + drugInfo.type + ')' : ''}
                                 </Text>
-                                <Text style={[style.chooseDrugCount, global.fontSize14]}>
+                                <Text style={[style.chooseDrugCount, global.fontSize14, res && res.length != 0 && res[0].status === false ? style.deficiency : null]}>
                                   {drugInfo.count} * {drugInfo.detail.unit}
                                 </Text>
-                                {/* <Text style={[style.deficiency, global.fontSize14]}>
-                                  (缺)
-                                </Text> */}
+                                {
+                                  this.state.NoMedicine && this.state.NoMedicine.some((item) => item.status !== true) &&
+                                  this.state.NoMedicine.map((drugStatus) => {
+                                    if (drugInfo.detail.id === drugStatus.id && drugStatus.status === false) {
+                                      return <Text style={[style.deficiency, global.fontSize14]}>
+                                        (缺)
+                                              </Text>
+                                    }
+                                  })
+
+
+                                }
+
                               </View>
                             )
-                          })}
+                          }
+                          )}
                         </View>
                         <View style={[style.gram, global.flex, global.alignItemsCenter, global.justifyContentEnd]}>
                           <Text style={style.gramDesc}>
@@ -1152,13 +1464,15 @@ State
               </View>
               <TouchableOpacity
                 onPress={() => {
-                  const {navigation} = this.props
-                  navigation.navigate('DrugSelect',{
+                  const { navigation } = this.props
+                  navigation.navigate('DrugSelect', {
                     categoryList: this.state.pharmacy.categoryList,
-                    stateId: this.state.pharmacyName.id,
+                    storeId: this.state.pharmacyName.id,
                     stateName: this.state.pharmacyName.name,
-                    activeId:  this.state.pharmacyName.drugType,
+                    activeId: this.state.pharmacyName.drugType,
+                    stateId: this.state.pharmacyName.stateId,
                     state: this.state.pharmacyName.state,
+                    categoryName: this.state.pharmacyName.categoryName,
                     isInSession: false,
                     prescriptionDrugCategoryList: this.state.prescriptionDrugCategoryList
                   })
@@ -1309,42 +1623,44 @@ State
                   </InputItem>
                 </View>
               </View>
-              <View
-                style={[style.diagnosisItem, global.flex, global.alignItemsCenter, global.justifyContentSpaceBetween]}
-              >
-                <Text style={[style.diagnosisItemTitle, global.fontSize14]}>加工费</Text>
-                <View style={style.percentageOfCommission}>
-                <View style={style.percentageOfCommission}>
-                  <InputItem
-                    type='number'
-                    labelNumber={1}
-                    disabled
-                    // disabled={this.state.prescriptionDrugCategoryList.length === 0}
-                    style={style.percentageOfCommissionInput}
-                    placeholder={this.state.serviceMoney === '' ? calcServiceMoney : '0.00'}
-                    value={this.state.serviceMoney}
-                    onChange={val => {
-                      let serviceMoney: number | string = parseFloat(val)
-                      if (isNaN(serviceMoney)) {
-                        serviceMoney = ''
-                      }
-                      this.setState({
-                        serviceMoney: String(serviceMoney),
-                      })
-                    }}
-                    onBlur={() => {
-                      if (this.state.serviceMoney === '') {
-                        this.setState({
-                          serviceMoney: String(calcServiceMoney),
-                        })
-                      }
-                    }}
-                  >
-                    ¥
+              {this.state.pharmacyName.id > 0 &&
+                <View
+                  style={[style.diagnosisItem, global.flex, global.alignItemsCenter, global.justifyContentSpaceBetween]}
+                >
+                  <Text style={[style.diagnosisItemTitle, global.fontSize14]}>加工费</Text>
+                  <View style={style.percentageOfCommission}>
+                    <View style={style.percentageOfCommission}>
+                      <InputItem
+                        type='number'
+                        labelNumber={1}
+                        disabled
+                        // disabled={this.state.prescriptionDrugCategoryList.length === 0}
+                        style={style.percentageOfCommissionInput}
+                        placeholder={this.state.processingFee === '' ? processingFee : '0.00'}
+                        value={this.state.processingFee}
+                        onChange={val => {
+                          let processingFee: number | string = parseFloat(val)
+                          if (isNaN(processingFee)) {
+                            processingFee = ''
+                          }
+                          this.setState({
+                            processingFee: String(processingFee),
+                          })
+                        }}
+                        onBlur={() => {
+                          if (this.state.processingFee === '') {
+                            this.setState({
+                              processingFee: String(processingFee),
+                            })
+                          }
+                        }}
+                      >
+                        ¥
                   </InputItem>
+                    </View>
+                  </View>
                 </View>
-                </View>
-              </View>
+              }
               <DashLine len={45} width={windowWidth - 46} backgroundColor={sColor.colorEee} />
               <View
                 style={[style.diagnosisItem, global.flex, global.alignItemsCenter, global.justifyContentSpaceBetween]}
@@ -1357,9 +1673,30 @@ State
               </View>
               <DashLine len={45} width={windowWidth - 46} backgroundColor={sColor.colorEee} />
             </View>
-            <TouchableOpacity onPress={this.sendPrescriptionToUser}>
-              <Text style={[style.sendPatient, global.fontSize14]}>发送给患者</Text>
-            </TouchableOpacity>
+            <View style={global.flex}>
+              <TouchableOpacity
+                onPress={() => {
+                  this.setState({
+                    saveType: 0,
+                  }, this.sendPrescriptionToUser)
+
+                }
+                }
+                style={style.saveBox}>
+                <Text style={[style.savePrescription, global.fontSize14]}>暂存处方</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={
+                  () => {
+                    this.setState({
+                      saveType: 1,
+                    }, this.sendPrescriptionToUser)
+                  }
+                }
+                style={style.sendbox}>
+                <Text style={[style.sendPatient, global.fontSize14]}>发送给患者</Text>
+              </TouchableOpacity>
+            </View>
           </ScrollView>
           {/* 选择药房 */}
           <View style={this.state.isSelectPharmacy ? style.selectPharmacy : global.hidden}>
@@ -1372,7 +1709,7 @@ State
               isInSession
               closeChooseCategory={this.closeChooseCategory}
               prescriptionDrugCategoryList={this.state.prescriptionDrugCategoryList}
-              
+
             />
           </View>
         </KeyboardAvoidingView>
@@ -1404,6 +1741,8 @@ State
       monthAge,
       yearAge,
       gender,
+      pharmacyName,
+      saveType,
       // drugServiceMoney,
     } = this.state
 
@@ -1471,15 +1810,22 @@ State
     if (isSaveToTpl) {
       args.tplName = _.trim(tplName)
     }
-    // console.log(args)
+    args.stateId = pharmacyName.stateId
+    args.storeId = pharmacyName.id
     addPrescription(args)
       .then(json => {
         this.setState({ status: true })
         if (mode === 'phone' || mode === 'wx') {
-          return this.props.navigation.navigate('PrescriptionDetail', {
-            prescriptionId: json.data.id,
-            mode,
-          })
+          if (saveType === 0) {
+            return this.props.navigation.push('Prescription')
+          }
+          else {
+            return this.props.navigation.navigate('PrescriptionDetail', {
+              prescriptionId: json.data.id,
+              mode,
+            })
+          }
+
         }
         let prescriptionId = json.data.id
         this.props.ws.wsPost({
@@ -1491,7 +1837,7 @@ State
           },
         })
         this.props.delCurrSetPrescription()
-        // this.props.navigation.goBack()
+        this.props.navigation.goBack()
         this.props.navigation.navigate('AdvisoryChat', {
           patientUid,
           patientName,

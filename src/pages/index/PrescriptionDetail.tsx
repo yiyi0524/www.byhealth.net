@@ -58,12 +58,15 @@ interface prescriptionDetail {
   drugList: Drug[]
   cost: {
     drugCost: number
+    machiningCost: number
     doctorServiceCost: number
     expressCost: number
   }
   time: string
   status: number
   shippingNo: string
+  storeName: string
+  stateName: string
 }
 interface Props {
   navigation: StackNavigationProp<AllScreenParam, 'PrescriptionDetail'>
@@ -84,8 +87,8 @@ interface State {
   mapDispatchToProps,
 )
 export default class SquareRoot extends Component<
-  Props & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
-  State
+Props & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
+State
 > {
   constructor(props: any) {
     super(props)
@@ -115,12 +118,15 @@ export default class SquareRoot extends Component<
         drugList: [],
         cost: {
           drugCost: 0,
+          machiningCost: 0,
           doctorServiceCost: 0,
           expressCost: 0,
         },
         time: '',
         status: 0,
         shippingNo: '',
+        storeName: '',
+        stateName: '',
       },
       drugCategoryList: [],
       drugList: [],
@@ -136,15 +142,19 @@ export default class SquareRoot extends Component<
     })
     console.log(this.state.prescriptionId)
     try {
+      
       let {
         data: { detail },
-      } = await doctor.getPrescriptionDetail({ prescriptionId: this.state.prescriptionId })
+      } = await doctor.getPrescriptionDetail({ prescriptionId: this.state.prescriptionId})
+      console.log(detail)
+      
       let {
         data: { list: drugCategoryList },
       } = await hospital.getDrugCategoryList({ page: -1, limit: -1 })
       let {
         data: { list: drugList },
       } = await hospital.getDrugList({ page: -1, limit: -1 })
+      console.log(detail)
       this.setState({
         hasLoad: true,
         detail,
@@ -152,7 +162,9 @@ export default class SquareRoot extends Component<
         drugCategoryList,
         drugList,
       })
+      
     } catch (err) {
+      console.log(2)
       this.setState({
         hasLoad: true,
       })
@@ -315,7 +327,7 @@ export default class SquareRoot extends Component<
                   return (
                     <View style={style.drugCategory} key={k}>
                       <Text style={[style.drugCategoryTitle, global.fontSize14]}>
-                        {categoryName} 共{v.list.length}味
+                        {categoryName}-{detail.stateName}-{detail.storeName} 共{v.list.length}味
                       </Text>
                       <View style={[global.flex, global.alignItemsCenter, global.flexWrap]}>
                         {v.list.map((v1, k1) => {
@@ -469,6 +481,14 @@ export default class SquareRoot extends Component<
                 ¥ {(detail.cost.doctorServiceCost / 100).toFixed(2)}
               </Text>
             </View>
+            {detail.cost.machiningCost > 0 && <View
+              style={[style.diagnosisItem, global.flex, global.alignItemsCenter, global.justifyContentSpaceBetween]}
+            >
+              <Text style={[style.diagnosisItemTitle, global.fontSize14]}>药品加工费</Text>
+              <Text style={[style.diagnosisItemTitle, global.fontSize14]}>
+                ¥ {(detail.cost.machiningCost / 100).toFixed(2)}
+              </Text>
+            </View>}
             <View
               style={[style.diagnosisItem, global.flex, global.alignItemsCenter, global.justifyContentSpaceBetween]}
             >
@@ -483,7 +503,7 @@ export default class SquareRoot extends Component<
             >
               <Text style={[style.diagnosisItemTitle, global.fontSize14]}>总计</Text>
               <Text style={[style.diagnosisItemAll, global.fontSize15]}>
-                ¥ {((detail.cost.doctorServiceCost + detail.cost.drugCost + detail.cost.expressCost) / 100).toFixed(2)}
+                ¥ {((detail.cost.doctorServiceCost + detail.cost.drugCost + detail.cost.machiningCost + detail.cost.expressCost) / 100).toFixed(2)}
               </Text>
             </View>
           </View>

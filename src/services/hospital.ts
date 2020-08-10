@@ -60,6 +60,16 @@ export async function getDrugStoreList({ page = -1, limit = -1, filter = {} }: G
     },
   })
 }
+export async function getStoreDrug({ page = -1, limit = -1, filter = {} }: GetListParam) {
+  return bget({
+    url: '/hospital/getStoreDrug',
+    query: {
+      page,
+      limit,
+      filter,
+    },
+  })
+}
 export async function getDrugStateList({ page = -1, limit = -1, filter = {} }: GetListParam) {
   return bget({
     url: '/hospital/getDrugStateList',
@@ -70,6 +80,23 @@ export async function getDrugStateList({ page = -1, limit = -1, filter = {} }: G
     },
   })
 }
+export async function getStateStore(stateId: number, storeId: number) {
+  return bget<{ status: boolean, price: number }>({
+    url: '/hospital/getStateStore',
+    query: {
+      stateId,
+      storeId,
+    },
+  })
+}
+export async function getDrugStoreDetail(id: number) {
+  return bget({
+    url: '/hospital/getDrugStoreDetail',
+    query: {
+      id,
+    },
+  })
+}
 export default {
   getList,
   getDepartmentList,
@@ -77,5 +104,8 @@ export default {
   getDrugCategoryList,
   getDrugList,
   getDrugStoreList,
-  getDrugStateList
+  getDrugStateList,
+  getStoreDrug,
+  getStateStore,
+  getDrugStoreDetail,
 }

@@ -1897,6 +1897,7 @@ export default class Chat extends Component<
         page++
       }
     }
+    console.log(11)
     try {
       await this.getMsgList(page, limit)
       this.setState({ refreshing: false })
@@ -1904,6 +1905,7 @@ export default class Chat extends Component<
       this.setState({ refreshing: false })
       Toast.fail('刷新失败,错误信息: ' + err.msg)
     }
+    console.log(12)
   }
   getMoreScanUserMsgList = async () => {
     this.setState({ refreshing: true })

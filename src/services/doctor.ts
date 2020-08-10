@@ -344,21 +344,27 @@ export interface prescriptionDetail {
   drugList: DrugInfo[]
   cost: {
     drugCost: number
+    machiningCost?: number
     doctorServiceCost: number
     expressCost: number
   }
   time: string
   status: number
   shippingNo: string
+  storeId?: number
+  storeName?:string  
+  stateId?: number
+  stateName?:string 
 }
 /**
  *  获取开方详情
  */
-export async function getPrescriptionDetail({ prescriptionId }: { prescriptionId: number }) {
+export async function getPrescriptionDetail({ prescriptionId,status = true }: { prescriptionId: number,status?: boolean }) {
   return bget<{ detail: prescriptionDetail }>({
     url: 'patientApi/getPrescriptionDetail',
     query: {
       prescriptionId,
+      status
     },
   })
 }
@@ -389,6 +395,8 @@ export interface AddPrescriptionParam {
   gender?: number
   yearAge?: number
   monthAge?: number
+  stateId?: number
+  storeId?: number
 }
 /**
  * 添加处方

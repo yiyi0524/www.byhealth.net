@@ -346,6 +346,7 @@ export default class EnteringGroupChat extends Component<
     }
   }
   componentDidMount() {
+    console.log(1)
     this.init()
     this.requestReadExteralStorage()
     setTimeout(() => this.myScroll.current && this.myScroll.current.scrollToEnd(), 100)
@@ -456,6 +457,7 @@ export default class EnteringGroupChat extends Component<
     this.setState({
       hasLoad: true,
     })
+    console.log(1)
     let { patientUid } = this.state
     //当医生进入聊天页面则清除未读消息数量
     clearPatientUnreadMsgCount({ patientUid })

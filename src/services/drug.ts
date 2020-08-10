@@ -50,6 +50,7 @@ export interface Drug {
   drugInteraction: string
   //单位
   unit: string
+  ctime?: string
 }
 export async function getDetail(query: { id: number }) {
   return bget<{ detail: Drug }>({

@@ -95,7 +95,7 @@ export default class PrescriptionTplList extends Component<
         filter: {},
       })
       this.setState({
-        hasLoad: true,
+        hasLoad: true, 
         categoryList,
         prescriptionTplList,
       })
@@ -124,6 +124,7 @@ export default class PrescriptionTplList extends Component<
           currSelectDrugIds.push(drugInfo.id)
         }
         prescription.drugList = prescription.drugList.filter(v => !currSelectDrugIds.includes(v.id))
+        
         for (let drugInfo of prescription.drugList) {
           category.drugList.push(drugInfo)
         }
@@ -142,6 +143,7 @@ export default class PrescriptionTplList extends Component<
         everyDoseUseCount: prescription.everyDoseUseCount,
       })
     }
+    console.log(prescriptionDrugCategoryList[0].drugList[0].detail)
     DeviceEventEmitter.emit(pathMap.SquareRoot + 'Reload', prescriptionDrugCategoryList)
     this.props.navigation.goBack()
   }
@@ -169,11 +171,15 @@ export default class PrescriptionTplList extends Component<
               </View>
             ) : null}
             {this.state.prescriptionTplList.map((prescription, k) => {
+              
               let drugStr = ''
               for (let drugInfo of prescription.drugList) {
                 drugStr += drugInfo.detail.name + '、'
               }
               drugStr = drugStr.substr(0, drugStr.lastIndexOf('、'))
+              if(!drugStr){
+                return null
+              }
               return (
                 <SwipeAction
                   key={k}

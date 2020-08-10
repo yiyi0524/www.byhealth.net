@@ -11,7 +11,7 @@ import React, { Component } from 'react'
 import { PixelRatio, ScrollView, StyleSheet, Text, TouchableOpacity, View, Image } from 'react-native'
 import { StackNavigationProp } from '@react-navigation/stack'
 import { Picture } from '@/pages/advisory/Chat'
-import drug from '@/services/drug'
+import color from '@styles/color'
 // import value from '*.png'
 export interface CategoryItem {
   id: number
@@ -33,7 +33,9 @@ interface Props {
     id: number
     name: string
     drugType: number
+    stateId: number
     state: string
+    categoryName: string
   }) => void
 }
 interface categoryMapList extends Record<string, string> { }
@@ -46,12 +48,22 @@ interface State {
   storeList: StoreDetail[]
   categoryList: picker[]
   categoryMapList: categoryMapList
-
+  pharmacyDetails: 
+    {
+      name: string,
+      detail: string,
+      phone: string,
+      introduce: string,
+      whole: string,
+    }
+  
 }
+
 export interface StateDetail {
   id: number
   name: string
 }
+
 export interface StoreDetail {
   id: number
   name: string
@@ -82,30 +94,51 @@ export default class Pharmacy extends Component<Props, State> {
       stateIndex: 0,
       storeList: [],
       categoryList: [],
-      categoryMapList: {}
+      categoryMapList: {},
+      pharmacyDetails: 
+        {
+          name: '',
+          detail: '',
+          phone: '',
+          introduce: '',
+          whole: ''
+        }
+      
     }
   }
   componentDidMount() {
+    this.getDrugCategoryList()
+  }
+  componentWillReceiveProps(){
+    this.init()
+  }
+  getDrugCategoryList = async () => {
+    let {
+      data: { list },
+    } = await hospital.getDrugCategoryList({
+      page: -1,
+      limit: -1,
+      filter: {},
+    })
     let categoryList: picker[] = [],
       categoryMapList: categoryMapList = {};
-    for (let v of this.props.categoryList) {
+    for (let v of list) {
       categoryList.push({
         value: v.id,
         label: v.name,
       })
       categoryMapList[v.id] = v.name
     }
+    // console.log(categoryList)
     this.setState({
       categoryList,
-      drugType: this.props.categoryList.length === 0 ? 0 : this.props.categoryList[0].id,
+      drugType: categoryList.length === 0 ? 0 : categoryList[0].value,
       categoryMapList
     }, this.init)
   }
-  componentWillReceiveProps(){
-    this.init()
-  }
   init = async () => {
     let { drugType } = this.state
+    // console.log(drugType)
     let {
       data: { list: stateList },
     } = await hospital.getDrugStateList({
@@ -122,10 +155,27 @@ export default class Pharmacy extends Component<Props, State> {
       stateList
     }, this.store)
   }
+  getDrugStoreDetail = async (id: number) => {
+    let { pharmacyDetails } = this.state
+    let {
+      data: { detail },
+    } = await hospital.getDrugStoreDetail(id)
+    pharmacyDetails = {
+      name: detail.name,
+      detail: detail.detail,
+      phone: detail.phone,
+      introduce: detail.introduce,
+      whole: detail.whole
+    }
+    console.log(pharmacyDetails)
+    this.setState({
+      pharmacyDetails
+    })
+  }
   store = async () => {
     let { stateList, stateIndex } = this.state,
     drug: number[] = [];
-    if (stateList.length === 0) {
+    if (stateList.length === 0) { 
       this.setState({
         storeList: []
       })
@@ -163,13 +213,11 @@ export default class Pharmacy extends Component<Props, State> {
       categoryList,
       drugType,
       categoryMapList,
-      drugstoreDeteils,
-      visible,
       stateList,
       storeList,
       stateIndex,
+      pharmacyDetails,
     } = this.state
-    console.log(this.props.prescriptionDrugCategoryList)
     return (
       <View style={styles.main}>
         <TouchableOpacity onPress={this.props.closeChooseCategory}>
@@ -187,7 +235,7 @@ export default class Pharmacy extends Component<Props, State> {
               }, this.init)
             }}
           >
-            <TouchableOpacity style={[global.flex, global.alignItemsCenter]}>
+            <TouchableOpacity style={[global.flex, global.alignItemsCenter, styles.categoryBox]}>
               <Text>
                 {categoryMapList[drugType]}
               </Text>
@@ -233,7 +281,6 @@ export default class Pharmacy extends Component<Props, State> {
           >
             <View>
               {storeList.map((category) => {
-                console.log(category.drugList)
                 return (
                   <View
                     style={styles.itemActive}
@@ -248,11 +295,19 @@ export default class Pharmacy extends Component<Props, State> {
                           } = this.props
                           await chooseCategory(category.id)
                           await this.props.closeChooseCategory()
+                          let categoryName:string = '';
+                          for(let item of categoryList){
+                            if(item.value== drugType){
+                              categoryName = item.label
+                            }
+                          }
                           await this.props.pharmacyChange({
                             id: category.id,
                             name: category.name,
                             drugType: drugType,
-                            state: this.state.stateList[stateIndex].name
+                            stateId: this.state.stateList[stateIndex].id,
+                            state: this.state.stateList[stateIndex].name,
+                            categoryName
                           })
                         }}
                       >
@@ -266,25 +321,72 @@ export default class Pharmacy extends Component<Props, State> {
                         </Text>
                       </TouchableOpacity>
                       <TouchableOpacity
-                        onPress={() =>
+                        onPress={()=>{
+                          this.getDrugStoreDetail(category.id)
                           this.setState({
-                            visible: true
+                            visible:true
                           })
-                        }
+                          
+                        }}
                       >
                         <Icon style={global.fontSize16} color={sColor.mainRed} name='question-circle'></Icon>
                       </TouchableOpacity>
                     </View>
                     {/* 当需要类似打粉说明时显示 */}
                     {category.introduce != '' && category.introduce != null &&
-                      <View>
+                      <TouchableOpacity
+                        onPress={async () => {
+                          const {
+                            chooseCategory,
+                          } = this.props
+                          await chooseCategory(category.id)
+                          await this.props.closeChooseCategory()
+                          let categoryName:string = '';
+                          for(let item of categoryList){
+                            if(item.value== drugType){
+                              categoryName = item.label
+                            }
+                          }
+                          await this.props.pharmacyChange({
+                            id: category.id,
+                            name: category.name,
+                            drugType: drugType,
+                            stateId: this.state.stateList[stateIndex].id,
+                            state: this.state.stateList[stateIndex].name,
+                            categoryName
+                          })
+                        }}
+                      >
                         <Text style={[styles.titleTop, global.fontSize10]} key={category.id}>
                           {category.introduce}
                         </Text>
-                      </View>
+                      </TouchableOpacity>
                     }
                     {category.drugList && category.drugList.some((item)=>item.status!==true) &&
-                    <View style={styles.boilMedicine}>  
+                    <TouchableOpacity
+                      style={styles.boilMedicine}
+                      onPress={async () => {
+                        const {
+                          chooseCategory,
+                        } = this.props
+                        await chooseCategory(category.id)
+                        await this.props.closeChooseCategory()
+                        let categoryName:string = '';
+                        for(let item of categoryList){
+                          if(item.value== drugType){
+                            categoryName = item.label
+                          }
+                        }
+                        await this.props.pharmacyChange({
+                          id: category.id,
+                          name: category.name,
+                          drugType: drugType,
+                          stateId: this.state.stateList[stateIndex].id,
+                          state: this.state.stateList[stateIndex].name,
+                          categoryName
+                        })
+                      }}
+                    >  
                         <Text style={[styles.deficiency, global.fontSize10]} key={category.id}>
                           缺失药材：
                           { category.drugList && category.drugList.map((drugStatus)=>{
@@ -294,7 +396,7 @@ export default class Pharmacy extends Component<Props, State> {
                           })
                           }
                         </Text>
-                    </View>
+                    </TouchableOpacity>
                     }
                   </View>
                 )
@@ -326,43 +428,12 @@ export default class Pharmacy extends Component<Props, State> {
             style={styles.pharmacyDetailsBox}
           >
             <View style={{ paddingVertical: 20, paddingHorizontal: 20 }}>
-              <Image style={styles.image} source={gImg.home.prescribingWeChat} />
-              <Text style={{ textAlign: 'center' }}>Content...</Text>
-              <Text style={{ textAlign: 'center' }}>Content...</Text>
-              <Text style={{ textAlign: 'center' }}>Content...</Text>
-              <Text style={{ textAlign: 'center' }}>Content...</Text>
-              <Text style={{ textAlign: 'center' }}>Content...</Text>
-              <Text style={{ textAlign: 'center' }}>Content...</Text>
-              <Text style={{ textAlign: 'center' }}>Content...</Text>
-              <Text style={{ textAlign: 'center' }}>Content...</Text>
-              <Text style={{ textAlign: 'center' }}>Content...</Text>
-              <Text style={{ textAlign: 'center' }}>Content...</Text>
-              <Text style={{ textAlign: 'center' }}>Content...</Text>
-              <Text style={{ textAlign: 'center' }}>Content...</Text>
-              <Text style={{ textAlign: 'center' }}>Content...</Text>
-              <Text style={{ textAlign: 'center' }}>Content...</Text>
-              <Text style={{ textAlign: 'center' }}>Content...</Text>
-              <Text style={{ textAlign: 'center' }}>Content...</Text>
-              <Text style={{ textAlign: 'center' }}>Content...</Text>
-              <Text style={{ textAlign: 'center' }}>123</Text>
-              <Text style={{ textAlign: 'center' }}>Content...</Text>
-              <Text style={{ textAlign: 'center' }}>Content...</Text>
-              <Text style={{ textAlign: 'center' }}>Content...</Text>
-              <Text style={{ textAlign: 'center' }}>Content...</Text>
-              <Text style={{ textAlign: 'center' }}>Content...</Text>
-              <Text style={{ textAlign: 'center' }}>Content...</Text>
-              <Text style={{ textAlign: 'center' }}>Content...</Text>
-              <Text style={{ textAlign: 'center' }}>Content...</Text>
-              <Text style={{ textAlign: 'center' }}>Content...</Text>
-              <Text style={{ textAlign: 'center' }}>Content...</Text>
-              <Text style={{ textAlign: 'center' }}>Content...</Text>
-              <Text style={{ textAlign: 'center' }}>Content...</Text>
-              <Text style={{ textAlign: 'center' }}>Content...</Text>
-              <Text style={{ textAlign: 'center' }}>Content...</Text>
-              <Text style={{ textAlign: 'center' }}>Content...</Text>
-              <Text style={{ textAlign: 'center' }}>Content...</Text>
-              <Text style={{ textAlign: 'center' }}>Content...</Text>
-              <Text style={{ textAlign: 'center' }}>123</Text>
+            <Text style={[global.fontSize20, styles.lineHeight, styles.pharmacyName]}>{pharmacyDetails.name}</Text>
+              <Text style={styles.lineHeight}>联系方式：{pharmacyDetails.phone}</Text>
+              <Text style={styles.lineHeight}>地址：{pharmacyDetails.detail}</Text>
+              <Text style={styles.lineHeight}>详细地址：{pharmacyDetails.whole}</Text>
+              <Text style={styles.lineHeight}>药房介绍：{pharmacyDetails.introduce}</Text>
+              
             </View>
           </ScrollView>
         </Modal>
@@ -384,6 +455,13 @@ const styles = StyleSheet.create({
   model: {
     flex: 1,
   },
+  pharmacyName: {
+    color: "#333333",
+    fontWeight: "600",
+  },
+  lineHeight: {
+    paddingBottom: 5,
+  },
   bgc: {
     backgroundColor: sColor.mainRed
   },
@@ -401,6 +479,10 @@ const styles = StyleSheet.create({
   },
   boilMedicine: {
     marginTop: 10,
+  },
+  categoryBox: {
+    paddingBottom: 5,
+    paddingTop: 5,
   },
   listBox: {
     flex: 1,
@@ -445,7 +527,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     // borderBottomWidth: 1 / PixelRatio.get(),
     // borderBottomColor: sColor.colorEee,
-    backgroundColor: sColor.white,
   },
 
   itemActive: {

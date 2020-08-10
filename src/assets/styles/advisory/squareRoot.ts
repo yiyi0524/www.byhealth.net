@@ -167,6 +167,23 @@ export default StyleSheet.create({
   diagnosisItemDetail: {
     color: sColor.color999,
   },
+  saveBox: {
+    flex: 3,
+  },
+  sendbox: {
+    flex: 5,
+  },
+  savePrescription: {
+    marginTop: 8,
+    height: 40,
+    lineHeight: 40,
+    marginLeft: 15,
+    backgroundColor: '#ef6e4c',
+    color: sColor.white,
+    borderRadius: 5,
+    textAlign: 'center',
+    marginBottom: 8,
+  },
   sendPatient: {
     marginTop: 8,
     height: 40,
