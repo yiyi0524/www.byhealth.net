@@ -466,7 +466,7 @@ export default class Chat extends Component<
   generateBottomNavList = (): bottomNavItem[] => {
     const { mode } = this.state
     let list: bottomNavItem[] = []
-    if (mode === 'common') {
+    if (mode === 'common' || mode === 'scanUser') {
       list = [
         {
           icon: gImg.advisory.dialecticalPrescriptions,
@@ -517,25 +517,26 @@ export default class Chat extends Component<
           link: '',
         },
       ]
-    } else if (mode === 'scanUser') {
-      list = [
-        {
-          icon: gImg.advisory.dialecticalPrescriptions,
-          title: '开方',
-          link: '',
-        },
-        // {
-        //   icon: gImg.advisory.quickReply,
-        //   title: "快捷回复",
-        //   link: "",
-        // },
-        {
-          icon: gImg.advisory.picture,
-          title: '图片',
-          link: '',
-        },
-      ]
-    }
+    } 
+    // else if (mode === 'scanUser') {
+    //   list = [
+    //     {
+    //       icon: gImg.advisory.dialecticalPrescriptions,
+    //       title: '开方',
+    //       link: '',
+    //     },
+    //     // {
+    //     //   icon: gImg.advisory.quickReply,
+    //     //   title: "快捷回复",
+    //     //   link: "",
+    //     // },
+    //     {
+    //       icon: gImg.advisory.picture,
+    //       title: '图片',
+    //       link: '',
+    //     },
+    //   ]
+    // }
     return list
   }
   finishRecording = (didSucceed: boolean, filePath: string, fileSize: number) => {
@@ -2054,6 +2055,7 @@ export default class Chat extends Component<
   }
   selectBottomNav = (v: bottomNavItem) => {
     console.log('selectBottomNav: ', v)
+    const { mode } = this.state
     switch (v.title) {
       case '更多功能':
         this.setState({
@@ -2084,15 +2086,21 @@ export default class Chat extends Component<
         })
         break
       case '辨证开方':
-        this.props.navigation.push(v.link, {
-          patientUid: this.state.patientUid,
-        })
+        if (mode === 'common'){
+          this.props.navigation.push(v.link, {
+            patientUid: this.state.patientUid,
+          })
+        }else{
+          this.props.navigation.push(pathMap.SquareRoot, {
+            mode: 'wx',
+          })
+        }
         break
-      case '开方':
-        this.props.navigation.push(pathMap.SquareRoot, {
-          mode: 'wx',
-        })
-        break
+      // case '开方':
+      //   this.props.navigation.push(pathMap.SquareRoot, {
+      //     mode: 'wx',
+      //   })
+      //   break
       case '图片':
         this.setState({
           isShowBottomPicSelect: !this.state.isShowBottomPicSelect,

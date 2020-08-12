@@ -12,6 +12,14 @@ export interface CurrSetPrescription {
   advice: string
   // 药品信息
   prescriptionDrugCategoryList: PrescriptionDrugCategory[]
+  pharmacyName?: {
+    id: number
+    name: string
+    drugType: number
+    stateId: number
+    state: string
+    categoryName?: string
+  }
 }
 export interface UserState {
   isLogin: boolean

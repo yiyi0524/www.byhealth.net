@@ -34,6 +34,14 @@ export default StyleSheet.create({
     flex: 0.9,
     backgroundColor: sColor.mainBgColor,
   },
+  searchTitle: {
+    color: sColor.color888,
+    width: '100%',
+    position: 'relative',
+  },
+  searchIcon: {
+    color: sColor.color888,
+  },
   prescriptionList: {},
   prescriptionItem: {
     paddingLeft: 15,

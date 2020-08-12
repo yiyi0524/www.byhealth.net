@@ -10,7 +10,7 @@ import gStyle from '@utils/style'
 import moment from 'moment'
 import { Assign } from 'utility-types'
 import React, { Component } from 'react'
-import { Image, Text, View, Button} from 'react-native'
+import { Image, Text, View} from 'react-native'
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler'
 import { connect } from 'react-redux'
 import { Dispatch } from 'redux'
@@ -89,6 +89,7 @@ export default class Prescription extends Component<
       limit: this.state.limit,
       filter: this.state.filter,
     })
+    console.log(1)
     this.setState({
       hasLoad: true,
       prescriptionList,
@@ -184,7 +185,7 @@ export default class Prescription extends Component<
                   })
                 }}
                 >
-                 <Text>再开一单</Text> 
+                 <Text style={style.red}>再开一单</Text> 
                 </TouchableOpacity >
                 <Text style={[style.prescriptionItemDescriptionStatus, global.fontSize14]} numberOfLines={1}>
                   {PRESCRIPTION_STATUS_ZH[v.status]}
@@ -261,7 +262,11 @@ export default class Prescription extends Component<
                     let { prescriptionList } = this.state
                     if (search !== '') {
                       for (let patient of prescriptionList) {
-                        patient.hidden = patient.name.indexOf(search) < 0
+                        if(!(patient.name.indexOf(search) < 0)){
+                          patient.hidden = false
+                        }else{
+                          patient.hidden = patient.phone.indexOf(search) < 0
+                        }
                       }
                     } else {
                       prescriptionList = prescriptionList.map(v => {
@@ -269,6 +274,7 @@ export default class Prescription extends Component<
                         return v
                       })
                     }
+
                     this.setState({
                       prescriptionList,
                     })

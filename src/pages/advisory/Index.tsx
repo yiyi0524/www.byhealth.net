@@ -264,6 +264,7 @@ export default class Index extends Component<
           </View>
           <View style={style.msgList}>
             {this.state.consultationList.map((consultation, k) => {
+              console.log(consultation)
               let currMsgInfo = this.getCurrMsgInfo(consultation)
               return (
                 <TouchableOpacity
@@ -372,6 +373,7 @@ export default class Index extends Component<
               {this.state.scanUserList
                 .filter(user => !consultationOpenIdList.includes(user.openid))
                 .map(scanUser => {
+                  console.log(scanUser)
                   return (
                     <TouchableOpacity
                       key={scanUser.openid}

@@ -107,6 +107,10 @@ export default StyleSheet.create({
     marginBottom: 8,
     backgroundColor: sColor.white,
   },
+  red: {
+    textAlign: "right",
+    color: sColor.mainRed,
+  },
   theme: {},
   title: {
     color: sColor.mainBlack,
@@ -159,6 +163,9 @@ export default StyleSheet.create({
   },
   diagnosisItemImg: {
     marginLeft: 15,
+  },
+  paddRight: {
+    marginRight: 16,
   },
   /**
    * 开方

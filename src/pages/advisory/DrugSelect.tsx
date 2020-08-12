@@ -111,16 +111,16 @@ export default class DrugSelect extends Component<Props, State> {
     })
   }
   init = async () => {
-    
+
     let activeId = this.props.route.params.activeId,
-    
-    filter:any = {
-      category: {
-        condition: TYPE.eq,
-        val: activeId,
-      },
-    }
-    if(this.props.route.params.storeId){
+
+      filter: any = {
+        category: {
+          condition: TYPE.eq,
+          val: activeId,
+        },
+      }
+    if (this.props.route.params.storeId) {
       filter.stateId = {
         condition: TYPE.eq,
         val: this.props.route.params.storeId,
@@ -142,7 +142,7 @@ export default class DrugSelect extends Component<Props, State> {
       console.log(err)
     }
   }
-  
+
   getDrugList = async (page: number, limit: number, filter = {}) => {
     try {
       let {
@@ -179,7 +179,7 @@ export default class DrugSelect extends Component<Props, State> {
       blurPage = 1
     }
     try {
-      let filter = {
+      let filter: any = {
         name: {
           condition: TYPE.like,
           val,
@@ -188,6 +188,12 @@ export default class DrugSelect extends Component<Props, State> {
           condition: TYPE.eq,
           val: this.props.route.params.activeId,
         },
+      }
+      if (this.props.route.params.storeId) {
+        filter.stateId = {
+          condition: TYPE.eq,
+          val: this.props.route.params.storeId,
+        }
       }
       let matchDrugList = await this.getDrugList(blurPage, 20, filter)
       this.setState({
@@ -360,10 +366,10 @@ export default class DrugSelect extends Component<Props, State> {
                     }
                   }, 500)
                   // 中药
-                  if(!drugInfo.detail.type || drugInfo.detail.type===0){
-                    return(
+                  if (!drugInfo.detail.type || drugInfo.detail.type === 0) {
+                    return (
                       <TouchableOpacity
-                      key={k + '-' + k2}
+                        key={k + '-' + k2}
                         style={[style.item, global.flex, global.justifyContentSpaceBetween, global.alignItemsCenter]}
                         onPress={() => {
                           this.setState({
@@ -384,10 +390,10 @@ export default class DrugSelect extends Component<Props, State> {
                             })
                           }}
                         >
-                          
+
                           <Icon style={[style.itemIcon, global.fontSize22]} name='minus-circle' />
                         </TouchableOpacity>
-                        <Text style={style.numberRight}>{k2+1}.</Text>
+                        <Text style={style.numberRight}>{k2 + 1}.</Text>
                         <View style={style.itemCenter}>
                           <View
                             style={[
@@ -417,164 +423,164 @@ export default class DrugSelect extends Component<Props, State> {
                                   {drugInfo.detail.price / 1000}元/{drugInfo.detail.unit}
                                 </Text>
                                 <View style={style.littleSpot} />
-                                  <Text style={[style.itemCenterDetailTitle, global.fontSize14]}>
-                                    {drugInfo.detail.standard}
-                                  </Text>
-                                  {this.state.popularDrugList.length!==0 && 
-                                      this.state.popularDrugList.every(item=>{
-                                        return item.id !== drugInfo.detail.id
-                                      }) 
-                                      ?
-                                      <Text style={[style.deficiency, global.fontSize14]}>
-                                        (缺)
-                                      </Text> 
-                                    : null
-                                  }
+                                <Text style={[style.itemCenterDetailTitle, global.fontSize14]}>
+                                  {drugInfo.detail.standard}
+                                </Text>
+                                {this.state.popularDrugList.length !== 0 &&
+                                  this.state.popularDrugList.every(item => {
+                                    return item.id !== drugInfo.detail.id
+                                  })
+                                  ?
+                                  <Text style={[style.deficiency, global.fontSize14]}>
+                                    (缺)
+                                      </Text>
+                                  : null
+                                }
                               </View>
                             </View  >
                             <TouchableOpacity>
                               <Text
                                 style={style.itemNumber}
                               >
-                              {drugInfo.count} {drugInfo.detail.unit}
-                              </Text> 
+                                {drugInfo.count} {drugInfo.detail.unit}
+                              </Text>
                             </TouchableOpacity>
                           </View>
                         </View>
-                    </TouchableOpacity>
-                  )
+                      </TouchableOpacity>
+                    )
                   }
                   // 西药
-                  else{
-                    return(
+                  else {
+                    return (
                       <View
-                      key={k + '-' + k2}
-                      style={[style.itemWest, global.flex, global.justifyContentSpaceBetween, global.alignItemsCenter]}
+                        key={k + '-' + k2}
+                        style={[style.itemWest, global.flex, global.justifyContentSpaceBetween, global.alignItemsCenter]}
                       >
-                      <TouchableOpacity
-                        onPress={() => {
-                          let { prescriptionDrugCategoryList } = this.state
-                          prescriptionDrugCategoryList[k].drugList = prescriptionDrugCategoryList[k].drugList.filter(
-                            currDrugInfo => currDrugInfo.id !== drugInfo.id,
-                          )
-                          this.setState({
-                            prescriptionDrugCategoryList,
-                          })
-                        }}
-                      >
-                        <Icon style={[style.itemIcon, global.fontSize22]} name='minus-circle' />
-                      </TouchableOpacity>
-                      <View style={style.itemCenter}>
-                        <View
-                          style={[
-                            style.itemCenterTitleFa,
-                            global.flex,
-                            global.alignItemsCenter,
-                            global.justifyContentSpaceBetween,
-                          ]}
+                        <TouchableOpacity
+                          onPress={() => {
+                            let { prescriptionDrugCategoryList } = this.state
+                            prescriptionDrugCategoryList[k].drugList = prescriptionDrugCategoryList[k].drugList.filter(
+                              currDrugInfo => currDrugInfo.id !== drugInfo.id,
+                            )
+                            this.setState({
+                              prescriptionDrugCategoryList,
+                            })
+                          }}
                         >
-                          <TouchableOpacity
-                            style={style.itemCenterTitlePar}
-                            onPress={() => {
-                              this.props.navigation.push(pathMap.DrugDetail, {
-                                id: drugInfo.detail.id,
-                                name: drugInfo.detail.name,
-                              })
-                            }}
-                          >
-                            <Text style={[style.itemCenterTitle, global.fontSize14, style.itemNumber]} numberOfLines={1}>
-                              {drugInfo.detail.name}
-                              {drugInfo.type ? '(' + drugInfo.type + ')' : ''}
-                            </Text>
-                          </TouchableOpacity>
+                          <Icon style={[style.itemIcon, global.fontSize22]} name='minus-circle' />
+                        </TouchableOpacity>
+                        <View style={style.itemCenter}>
                           <View
                             style={[
-                              style.setCount,
+                              style.itemCenterTitleFa,
                               global.flex,
                               global.alignItemsCenter,
                               global.justifyContentSpaceBetween,
                             ]}
                           >
                             <TouchableOpacity
+                              style={style.itemCenterTitlePar}
                               onPress={() => {
-                                let { prescriptionDrugCategoryList } = this.state
-                                if (prescriptionDrugCategoryList[k].drugList[k2].count > 1) {
-                                  prescriptionDrugCategoryList[k].drugList[k2].count--
-                                }
-                                this.setState({
-                                  prescriptionDrugCategoryList,
+                                this.props.navigation.push(pathMap.DrugDetail, {
+                                  id: drugInfo.detail.id,
+                                  name: drugInfo.detail.name,
                                 })
                               }}
                             >
-                              <Text style={[style.btn, global.fontSize18]}>-</Text>
+                              <Text style={[style.itemCenterTitle, global.fontSize14, style.itemNumber]} numberOfLines={1}>
+                                {drugInfo.detail.name}
+                                {drugInfo.type ? '(' + drugInfo.type + ')' : ''}
+                              </Text>
                             </TouchableOpacity>
                             <View
-                              style={{
-                                width: 60,
-                              }}
+                              style={[
+                                style.setCount,
+                                global.flex,
+                                global.alignItemsCenter,
+                                global.justifyContentSpaceBetween,
+                              ]}
                             >
-                              <InputItem
-                                last
-                                ref={'input' + drugInfo.id}
-                                type='number'
-                                placeholder='0'
-                                style={[style.count, global.fontSize14]}
-                                value={drugInfo.count === 0 ? '' : String(drugInfo.count)}
-                                onChange={val => {
+                              <TouchableOpacity
+                                onPress={() => {
                                   let { prescriptionDrugCategoryList } = this.state
-                                  if (val) {
-                                    let count = parseInt(val)
-                                    if (!isNaN(count)) {
-                                      prescriptionDrugCategoryList[k].drugList[k2].count = count === 0 ? 1 : count
+                                  if (prescriptionDrugCategoryList[k].drugList[k2].count > 1) {
+                                    prescriptionDrugCategoryList[k].drugList[k2].count--
+                                  }
+                                  this.setState({
+                                    prescriptionDrugCategoryList,
+                                  })
+                                }}
+                              >
+                                <Text style={[style.btn, global.fontSize18]}>-</Text>
+                              </TouchableOpacity>
+                              <View
+                                style={{
+                                  width: 60,
+                                }}
+                              >
+                                <InputItem
+                                  last
+                                  ref={'input' + drugInfo.id}
+                                  type='number'
+                                  placeholder='0'
+                                  style={[style.count, global.fontSize14]}
+                                  value={drugInfo.count === 0 ? '' : String(drugInfo.count)}
+                                  onChange={val => {
+                                    let { prescriptionDrugCategoryList } = this.state
+                                    if (val) {
+                                      let count = parseInt(val)
+                                      if (!isNaN(count)) {
+                                        prescriptionDrugCategoryList[k].drugList[k2].count = count === 0 ? 1 : count
+                                      }
+                                    } else if (val === '') {
+                                      prescriptionDrugCategoryList[k].drugList[k2].count = 0
                                     }
-                                  } else if (val === '') {
-                                    prescriptionDrugCategoryList[k].drugList[k2].count = 0
-                                  }
-                                  this.setState({
-                                    prescriptionDrugCategoryList,
-                                  })
-                                }}
-                                onBlur={evt => {
-                                  this.setState({
-                                    currDrugId: 0,
-                                  })
-                                  let { prescriptionDrugCategoryList } = this.state
+                                    this.setState({
+                                      prescriptionDrugCategoryList,
+                                    })
+                                  }}
+                                  onBlur={evt => {
+                                    this.setState({
+                                      currDrugId: 0,
+                                    })
+                                    let { prescriptionDrugCategoryList } = this.state
 
-                                  if (evt === '') {
-                                    prescriptionDrugCategoryList[k].drugList[k2].count = 0
-                                  }
+                                    if (evt === '') {
+                                      prescriptionDrugCategoryList[k].drugList[k2].count = 0
+                                    }
+                                    this.setState({
+                                      prescriptionDrugCategoryList,
+                                    })
+                                  }}
+                                />
+                              </View>
+                              <TouchableOpacity
+                                onPress={() => {
+                                  let { prescriptionDrugCategoryList } = this.state
+                                  prescriptionDrugCategoryList[k].drugList[k2].count++
                                   this.setState({
                                     prescriptionDrugCategoryList,
                                   })
                                 }}
-                              />
+                              >
+                                <Text style={[style.btn, global.fontSize18]}>+</Text>
+                              </TouchableOpacity>
                             </View>
-                            <TouchableOpacity
-                              onPress={() => {
-                                let { prescriptionDrugCategoryList } = this.state
-                                prescriptionDrugCategoryList[k].drugList[k2].count++
-                                this.setState({
-                                  prescriptionDrugCategoryList,
-                                })
-                              }}
-                            >
-                              <Text style={[style.btn, global.fontSize18]}>+</Text>
-                            </TouchableOpacity>
                           </View>
-                        </View>
-                        <View style={[style.itemCenterDetail, global.flex, global.alignItemsCenter]}>
-                          <Text style={[style.itemCenterDetailTitle, global.fontSize12]}>
-                            {drugInfo.detail.price / 1000}元/{drugInfo.detail.unit}
+                          <View style={[style.itemCenterDetail, global.flex, global.alignItemsCenter]}>
+                            <Text style={[style.itemCenterDetailTitle, global.fontSize12]}>
+                              {drugInfo.detail.price / 1000}元/{drugInfo.detail.unit}
+                            </Text>
+                            <View style={style.littleSpot} />
+                            <Text style={[style.itemCenterDetailTitle, global.fontSize12]}>
+                              {drugInfo.detail.standard}
+                            </Text>
+                          </View>
+                          <Text style={[style.itemCenterDetailCompany, global.fontSize12]} numberOfLines={1}>
+                            {drugInfo.detail.manufacturer}
                           </Text>
-                          <View style={style.littleSpot} />
-                          <Text style={[style.itemCenterDetailTitle, global.fontSize12]}>
-                            {drugInfo.detail.standard}
-                          </Text>
                         </View>
-                        <Text style={[style.itemCenterDetailCompany, global.fontSize12]} numberOfLines={1}>
-                          {drugInfo.detail.manufacturer}
-                        </Text>
-                      </View>
                       </View>
                     )
                   }
@@ -716,7 +722,7 @@ export default class DrugSelect extends Component<Props, State> {
                 {
                   text: '取消',
                   onPress: () => {
-                    this.setState({ isAddDrug: false, activeValue: 0, fryFirst: '',})
+                    this.setState({ isAddDrug: false, activeValue: 0, fryFirst: '', })
                   },
                 },
                 {

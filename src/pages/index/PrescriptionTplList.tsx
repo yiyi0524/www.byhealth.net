@@ -5,11 +5,12 @@ import { AllScreenParam } from '@/routes/bottomNav'
 import pathMap from '@/routes/pathMap'
 import doctor, { PrescriptionTpl } from '@/services/doctor'
 import { TYPE } from '@/utils/constant'
-import { SwipeAction, Toast } from '@ant-design/react-native'
+import { SwipeAction, Toast, InputItem, Icon} from '@ant-design/react-native'
 import { SwipeActionProps } from '@ant-design/react-native/lib/swipe-action'
 import { RouteProp } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
 import gImg from '@utils/img'
+import { Assign } from 'utility-types'
 import gStyle from '@utils/style'
 import React, { Component } from 'react'
 import {
@@ -35,7 +36,8 @@ interface State {
   refreshing: boolean
   categoryId: number
   categoryName: string
-  prescriptionTplList: PrescriptionTpl[]
+  prescriptionTplList: Assign<PrescriptionTpl, { hidden?: boolean }>[]
+  search: string
 }
 const mapStateToProps = (state: AppState) => {
   return {
@@ -72,6 +74,7 @@ export default class PrescriptionTplList extends Component<
       categoryId: 0,
       categoryName: '',
       prescriptionTplList: [],
+      search: '',
     }
   }
   componentDidMount() {
@@ -98,6 +101,10 @@ export default class PrescriptionTplList extends Component<
             condition: TYPE.eq,
             val: categoryId,
           },
+          search: {
+            condition: TYPE.like,
+            val: this.state.search,
+          }
         },
       })
       this.setState({
@@ -145,6 +152,21 @@ export default class PrescriptionTplList extends Component<
           style={style.main}
           refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh} />}
         >
+          <InputItem
+            style={[style.searchTitle, global.fontSize14, global.fontStyle]}
+            clear
+            last
+            labelNumber={2}
+            value={this.state.search}
+            onChange={search => {
+              this.setState({
+                search,
+              },this.init)
+            }}
+            placeholder='搜索'
+          >
+            <Icon name='search' style={[style.searchIcon, global.fontSize20]} />
+          </InputItem>
           <View style={style.prescriptionList}>
             {this.state.prescriptionTplList.length === 0 ? (
               <View>
@@ -201,6 +223,7 @@ export default class PrescriptionTplList extends Component<
                     },
                   ]
               return (
+                
                 <SwipeAction
                   key={k}
                   autoClose

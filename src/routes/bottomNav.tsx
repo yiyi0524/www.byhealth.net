@@ -172,6 +172,8 @@ export type AllScreenParam = {
     prescription?: PrescriptionTplDetail | null
     getState?: () => any
     saveCurrSetPrescription?: (p: any) => any
+    saveCurrSetPrescriptionWx?: (p: any) => any
+    saveCurrSetPrescriptionPhone?: (p: any) => any
     delCurrSetPrescription?: () => any
   }
   DrugSelect: {
@@ -570,10 +572,10 @@ const stacksOverTabsConfig: { [P in keyof AllScreenParam]?: RouteConfig<AllScree
     options: ({
       route,
     }: // navigation,
-    {
-      route: RouteProp<AllScreenParam, 'AddressBookGroupDetail'>
-      navigation: StackNavigationProp<AllScreenParam, 'AddressBookGroupDetail'>
-    }) => {
+      {
+        route: RouteProp<AllScreenParam, 'AddressBookGroupDetail'>
+        navigation: StackNavigationProp<AllScreenParam, 'AddressBookGroupDetail'>
+      }) => {
       return {
         title: route.params.title,
         headerStyle: {
@@ -960,9 +962,6 @@ const stacksOverTabsConfig: { [P in keyof AllScreenParam]?: RouteConfig<AllScree
               onPress={() => {
                 let getState: () => SquareRootState = route.params.getState as any
                 let state = getState()
-                if (state.mode !== 'common') {
-                  return navigation.goBack()
-                }
                 Alert.alert('', '是否保存开方内容', [
                   {
                     text: '否',
@@ -975,23 +974,41 @@ const stacksOverTabsConfig: { [P in keyof AllScreenParam]?: RouteConfig<AllScree
                   {
                     text: '保存并返回',
                     onPress: () => {
-                      let saveCurrSetPrescription: (preload: [number, CurrSetPrescription]) => void = route.params
-                        .saveCurrSetPrescription as any
+                      let item: any = '',
+                        saveCurrSetPrescription: (preload: [string | number, CurrSetPrescription]) => void = route.params.saveCurrSetPrescription as any
+                      switch (state.mode) {
+                        case 'common':
+                          item = state.patientInfo.uid
+                          break;
+                        case 'wx':
+                          saveCurrSetPrescription = route.params.saveCurrSetPrescriptionWx as any
+                          item = 'wx'
+                          break;
+                        case 'phone':
+                          saveCurrSetPrescription = route.params.saveCurrSetPrescriptionPhone as any
+                          item = state.phone
+                          break;
+                        default:
+                          navigation.goBack()
+                          return true
+                      }
                       const {
                         advice,
                         discrimination,
                         prescriptionDrugCategoryList,
                         serviceMoney,
                         syndromeDifferentiation,
+                        pharmacyName
                       } = state
-                      let preload: [number, CurrSetPrescription] = [
-                        state.patientInfo.uid,
+                      let preload: [string | number, CurrSetPrescription] = [
+                        item,
                         {
                           advice,
                           discrimination,
                           prescriptionDrugCategoryList,
                           serviceMoney,
                           syndromeDifferentiation,
+                          pharmacyName
                         },
                       ]
                       saveCurrSetPrescription(preload)
@@ -1020,13 +1037,13 @@ const stacksOverTabsConfig: { [P in keyof AllScreenParam]?: RouteConfig<AllScree
       navigation: StackNavigationProp<AllScreenParam, 'DrugSelect'>
     }) => {
       let title = '选择药材'
-      let { categoryList, activeId, stateName, state} = route.params
+      let { categoryList, activeId, stateName, state } = route.params
       if (!categoryList) {
         return {}
       }
       for (let v of categoryList) {
         if (v.id === activeId) {
-          title = state+"-" + stateName
+          title = state + "-" + stateName
         }
       }
       return {
@@ -1071,8 +1088,8 @@ const stacksOverTabsConfig: { [P in keyof AllScreenParam]?: RouteConfig<AllScree
         headerRight: () => (
           <TouchableOpacity
             onPress={() => {
-              
-              let { prescriptionDrugCategoryList, stateName, storeId,stateId, state, activeId,categoryName } = route.params
+
+              let { prescriptionDrugCategoryList, stateName, storeId, stateId, state, activeId, categoryName } = route.params
               for (let drugCategory of prescriptionDrugCategoryList) {
                 for (let drug of drugCategory.drugList) {
                   if (drug.count <= 0) {
@@ -2029,7 +2046,7 @@ const stacksOverTabsConfig: { [P in keyof AllScreenParam]?: RouteConfig<AllScree
         headerRight: isScanUserMode
           ? () => null
           : groupId > 0
-          ? () => (
+            ? () => (
               <TouchableOpacity
                 onPress={() => {
                   navigation.push('GroupChatDetail', {
@@ -2041,7 +2058,7 @@ const stacksOverTabsConfig: { [P in keyof AllScreenParam]?: RouteConfig<AllScree
                 <Icon style={[gStyle.advisory.advisoryChat.headerRight, global.fontSize18]} name='menu' />
               </TouchableOpacity>
             )
-          : () => (
+            : () => (
               <TouchableOpacity
                 onPress={() => {
                   navigation.push('AdvisoryMedicalRecord', {
@@ -2094,18 +2111,18 @@ const stacksOverTabsConfig: { [P in keyof AllScreenParam]?: RouteConfig<AllScree
         },
         headerRight: isAdmin
           ? () => (
-              <TouchableOpacity
-                onPress={() => {
-                  let oriMode = route.params.mode
-                  navigation.setParams({
-                    mode: oriMode === 'done' ? 'delete' : 'done',
-                  })
-                  route.params.navigatePress && route.params.navigatePress()
-                }}
-              >
-                <Text style={style.icon}>{route.params.mode === 'done' ? '选择' : '删除'}</Text>
-              </TouchableOpacity>
-            )
+            <TouchableOpacity
+              onPress={() => {
+                let oriMode = route.params.mode
+                navigation.setParams({
+                  mode: oriMode === 'done' ? 'delete' : 'done',
+                })
+                route.params.navigatePress && route.params.navigatePress()
+              }}
+            >
+              <Text style={style.icon}>{route.params.mode === 'done' ? '选择' : '删除'}</Text>
+            </TouchableOpacity>
+          )
           : () => <Text />,
       }
     },

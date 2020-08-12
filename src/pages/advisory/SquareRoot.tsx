@@ -207,6 +207,12 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
     saveCurrSetPrescription: (preload: [number, CurrSetPrescription | null]) => {
       dispatch(userAction.saveCurrSetPrescription(preload))
     },
+    saveCurrSetPrescriptionWx: (preload: [number, CurrSetPrescription | null]) => {
+      dispatch(userAction.saveCurrSetPrescription(preload))
+    },
+    saveCurrSetPrescriptionPhone: (preload: [number, CurrSetPrescription | null]) => {
+      dispatch(userAction.saveCurrSetPrescription(preload))
+    },
     delCurrSetPrescription: () => {
       dispatch(userAction.delCurrSetPrescription())
     },
@@ -334,17 +340,17 @@ State
     }
   }
   async componentDidMount() {
-    const { mode } = this.state
     this.props.navigation.setParams({
       getState: () => this.state,
       saveCurrSetPrescription: this.props.saveCurrSetPrescription,
+      saveCurrSetPrescriptionWx: this.props.saveCurrSetPrescriptionWx,
+      saveCurrSetPrescriptionPhone: this.props.saveCurrSetPrescriptionPhone,
       delCurrSetPrescription: this.props.delCurrSetPrescription,
     })
     await this.init()
     this.listener = DeviceEventEmitter.addListener(
       pathMap.SquareRoot + 'Reload',
       (prescriptionDrugCategoryList: PrescriptionDrugCategory[]) => {
-        console.log(prescriptionDrugCategoryList)
         this.setState({
           prescriptionDrugCategoryList,
         }, this.store)
@@ -366,9 +372,7 @@ State
         }, this.store)
       },
     )
-    if (mode === 'common') {
-      this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.onHardwareBackPress)
-    }
+    this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.onHardwareBackPress)
   }
   componentWillUnmount() {
     const { mode } = this.state
@@ -424,22 +428,48 @@ State
       syndromeDifferentiation,
       mode,
     } = this.state
-    if (mode !== 'common') {
-      return
-    }
+    let preload: any = {}
     let {
       patientInfo: { uid },
     } = this.state
-    let preload: any = {
-      [uid]: {
-        advice,
-        discrimination,
-        prescriptionDrugCategoryList,
-        serviceMoney,
-        syndromeDifferentiation,
-      },
+    switch (mode) {
+      case 'common':
+        preload = {
+          [uid]: {
+            advice,
+            discrimination,
+            prescriptionDrugCategoryList,
+            serviceMoney,
+            syndromeDifferentiation,
+          },
+        }
+        this.props.saveCurrSetPrescription(preload)
+        break;
+      case 'wx':
+        preload = {
+          ['wx']: {
+            advice,
+            discrimination,
+            prescriptionDrugCategoryList,
+            serviceMoney,
+            syndromeDifferentiation,
+          },
+        }
+        this.props.saveCurrSetPrescriptionWx(preload)
+        break;
+      case 'phone':
+        preload = {
+          [this.state.phone]: {
+            advice,
+            discrimination,
+            prescriptionDrugCategoryList,
+            serviceMoney,
+            syndromeDifferentiation,
+          },
+        }
+        this.props.saveCurrSetPrescriptionPhone(preload)
+        break;
     }
-    this.props.saveCurrSetPrescription(preload)
   }
   initLastPrescriptionInfo = async () => {
     let patientUid = this.props.route.params.patientUid as number
@@ -460,17 +490,32 @@ State
   }
   initSavedPrescriptionInfo = () => {
     const { currSetPrescription } = this.props
-    let {
-      patientInfo: { uid },
-    } = this.state
-    if (uid in currSetPrescription && currSetPrescription[uid] !== null) {
+    let { mode, patientInfo, phone } = this.state
+    console.log(mode)
+    console.log(1)
+    let item: any = ''
+    switch (mode) {
+      case 'common':
+        item = patientInfo.uid
+        break;
+      case 'wx':
+        item = 'wx'
+        break;
+      case 'phone':
+        item = phone
+        break;
+      default:
+        return true
+    }
+    if (item in currSetPrescription && currSetPrescription[item] !== null) {
       const {
         advice,
         discrimination,
         prescriptionDrugCategoryList,
         serviceMoney,
         syndromeDifferentiation,
-      } = currSetPrescription[uid] as CurrSetPrescription
+        pharmacyName
+      } = currSetPrescription[item] as CurrSetPrescription
       this.setState({
         advice,
         discrimination,
@@ -478,6 +523,12 @@ State
         serviceMoney,
         syndromeDifferentiation,
       })
+      if (pharmacyName) {
+        this.setState({
+          pharmacyName
+        })
+        this.getStateStore(pharmacyName.stateId, pharmacyName.id)
+      }
     }
   }
   getStateStore = async (stateId: number, storeId: number) => {
@@ -505,6 +556,8 @@ State
       storeId: number = 0,
       stateId: number = 0;
 
+      console.log(mode)
+      console.log(this.props.route.params)
     let drugList: DrugTwo[] = [],
       prescriptionDrugCategoryList = this.state.prescriptionDrugCategoryList;
     if (this.props.route.params.patientUid) {
@@ -547,7 +600,7 @@ State
           gender: detail.patient.gender,
           yearAge: detail.patient.yearAge,
         }
-
+        console.log(detail)
         this.setState({
           patientName: detail.patient.name,
           phone: detail.patient.phone,
@@ -556,6 +609,36 @@ State
           patientInfo,
         })
       } catch (err) {
+
+      }
+    } else if (mode === 'phone') {
+      try {
+        let {
+          data: { detail },
+        } = await doctor.getPrescriptionDetail({ phone: this.props.route.params.phone as string })
+        console.log(2)
+        if (detail.drugList[0]) {
+          categoryId = detail.drugList[0].categoryId
+          drugList = detail.drugList
+        }
+        storeId = detail.storeId || 0;
+        stateId = detail.stateId || 0;
+        patientInfo = {
+          uid: detail.patient.uid || 0,
+          monthAge: detail.patient.monthAge,
+          name: detail.patient.name,
+          gender: detail.patient.gender,
+          yearAge: detail.patient.yearAge,
+        }
+
+        this.setState({
+          patientName: detail.patient.name,
+        })
+        this.setState({
+          patientInfo,
+        })
+      } catch (err) {
+        console.log(err)
 
       }
     }
@@ -737,13 +820,18 @@ State
       status: true,
       pharmacy,
     })
+    console.log(mode)
     if (mode === 'phone') {
+      console.log("true")
       let phone = this.props.route.params.phone as string
-      this.setState({
-        phone,
-      })
+      if(!this.state.phone){
+        this.setState({
+          phone,
+        })
+      }
     }
-
+    console.log(this.state.phone)
+    console.log(3)
     let patientUid = this.props.route.params.patientUid as number
     if (patientUid > 0) {
       try {
@@ -786,7 +874,6 @@ State
         })
         if (patientUid in this.props.currSetPrescription) {
           console.log('正在初始化redux处方信息')
-          this.initSavedPrescriptionInfo()
         } else if (patientUid) {
           console.log('正在初始化上次处方信息')
           this.initLastPrescriptionInfo()
@@ -795,6 +882,7 @@ State
         console.log('发生了错误, ', err)
       }
     }
+    this.initSavedPrescriptionInfo()
   }
   onRefresh = () => {
     this.setState({ refreshing: true })
@@ -917,12 +1005,13 @@ State
           gram += item.count
         }
       }
+      if (!category.doseCount) {
+        category.doseCount = 0
+      }
       if (stateType.status) {
-        if (category.doseCount) {
-          processingPrice += gram * category.doseCount * stateType.price
-        }
+        processingPrice += gram * category.doseCount * stateType.price
       } else {
-        processingPrice += gram * stateType.price
+        processingPrice += category.doseCount * stateType.price
       }
     })
     let
@@ -936,7 +1025,6 @@ State
         patientName = '手机用户'
       }
     }
-    console.log(prescriptionDrugCategoryList)
     return (
       <>
         <KeyboardAvoidingView

@@ -41,6 +41,9 @@ export default StyleSheet.create({
   paddRight: {
     marginRight: 16,
   },
+  red: {
+    color: sColor.mainRed,
+  },
   searchIcon: {
     color: sColor.color888,
   },

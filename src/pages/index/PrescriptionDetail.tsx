@@ -16,9 +16,11 @@ import { StackNavigationProp } from '@react-navigation/stack'
 import sColor from '@styles/color'
 import gImg from '@utils/img'
 import gStyle from '@utils/style'
+import pathMap from '@/routes/pathMap'
 import React, { Component } from 'react'
 import { Image, RefreshControl, ScrollView, Text, View } from 'react-native'
 import { connect } from 'react-redux'
+import { TouchableOpacity } from 'react-native-gesture-handler'
 import { Dispatch } from 'redux'
 const style = gStyle.index.PrescriptionDetail
 const mapStateToProps = (state: AppState) => {
@@ -69,7 +71,7 @@ interface prescriptionDetail {
   stateName: string
 }
 interface Props {
-  navigation: StackNavigationProp<AllScreenParam, 'PrescriptionDetail'>
+  navigation: StackNavigationProp<any>
   route: RouteProp<AllScreenParam, 'PrescriptionDetail'>
 }
 
@@ -140,13 +142,11 @@ State
     this.setState({
       hasLoad: false,
     })
-    console.log(this.state.prescriptionId)
     try {
       
       let {
         data: { detail },
       } = await doctor.getPrescriptionDetail({ prescriptionId: this.state.prescriptionId})
-      console.log(detail)
       
       let {
         data: { list: drugCategoryList },
@@ -154,7 +154,7 @@ State
       let {
         data: { list: drugList },
       } = await hospital.getDrugList({ page: -1, limit: -1 })
-      console.log(detail)
+      
       this.setState({
         hasLoad: true,
         detail,
@@ -164,7 +164,6 @@ State
       })
       
     } catch (err) {
-      console.log(2)
       this.setState({
         hasLoad: true,
       })
@@ -207,6 +206,7 @@ State
         patientName = '未命名手机用户'
       }
     }
+    console.log(detail)
     return (
       <>
         <ScrollView
@@ -445,7 +445,20 @@ State
             <View style={[style.diagnosisItem, global.flex, global.alignItemsCenter]}>
               <Text style={[style.diagnosisItemTitle, global.fontSize14]}>[ 医嘱提醒 ]</Text>
               <Text style={[style.diagnosisItemTitle, global.fontSize14]}>{detail.advice}</Text>
+              
             </View>
+            <TouchableOpacity  
+                style={style.paddRight}
+                onPress={()=>{
+                  this.props.navigation.navigate(pathMap.SquareRoot, {
+                    mode: detail.type,
+                    prescriptionId: this.state.prescriptionId,
+                    status: true,
+                  })
+                }}
+                >
+                 <Text style={style.red}>再开一单</Text> 
+                </TouchableOpacity >
           </View>
           {/* 明细 */}
           <View style={style.diagnosis}>

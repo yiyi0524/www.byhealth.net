@@ -359,12 +359,18 @@ export interface prescriptionDetail {
 /**
  *  获取开方详情
  */
-export async function getPrescriptionDetail({ prescriptionId,status = true }: { prescriptionId: number,status?: boolean }) {
+export async function getPrescriptionDetail({ prescriptionId = 0,status = true,phone = '' }: { prescriptionId?: number,status?: boolean,phone?: string }) {
+  console.log({
+    prescriptionId,
+    status,
+    phone
+  })
   return bget<{ detail: prescriptionDetail }>({
     url: 'patientApi/getPrescriptionDetail',
     query: {
       prescriptionId,
-      status
+      status,
+      phone
     },
   })
 }
