@@ -19,7 +19,12 @@ export interface CurrSetPrescription {
     stateId: number
     state: string
     categoryName?: string
-  }
+  },
+  patientName?: string,
+  phone?: string,
+  gender?: number
+  yearAge?: string
+  monthAge?: string
 }
 export interface UserState {
   isLogin: boolean

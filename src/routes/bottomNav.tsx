@@ -976,21 +976,25 @@ const stacksOverTabsConfig: { [P in keyof AllScreenParam]?: RouteConfig<AllScree
                     onPress: () => {
                       let item: any = '',
                         saveCurrSetPrescription: (preload: [string | number, CurrSetPrescription]) => void = route.params.saveCurrSetPrescription as any
-                      switch (state.mode) {
-                        case 'common':
-                          item = state.patientInfo.uid
-                          break;
-                        case 'wx':
-                          saveCurrSetPrescription = route.params.saveCurrSetPrescriptionWx as any
-                          item = 'wx'
-                          break;
-                        case 'phone':
-                          saveCurrSetPrescription = route.params.saveCurrSetPrescriptionPhone as any
-                          item = state.phone
-                          break;
-                        default:
-                          navigation.goBack()
-                          return true
+                      if (route.params.prescriptionId && route.params.prescriptionId > 0) {
+                        item = route.params.prescriptionId + 'id'
+                      } else {
+                        switch (state.mode) {
+                          case 'common':
+                            item = state.patientInfo.uid
+                            break;
+                          case 'wx':
+                            saveCurrSetPrescription = route.params.saveCurrSetPrescriptionWx as any
+                            item = 'wx'
+                            break;
+                          case 'phone':
+                            saveCurrSetPrescription = route.params.saveCurrSetPrescriptionPhone as any
+                            item = state.phone
+                            break;
+                          default:
+                            navigation.goBack()
+                            return true
+                        }
                       }
                       const {
                         advice,
@@ -998,7 +1002,12 @@ const stacksOverTabsConfig: { [P in keyof AllScreenParam]?: RouteConfig<AllScree
                         prescriptionDrugCategoryList,
                         serviceMoney,
                         syndromeDifferentiation,
-                        pharmacyName
+                        pharmacyName,
+                        patientName,
+                        phone,
+                        gender,
+                        yearAge,
+                        monthAge,
                       } = state
                       let preload: [string | number, CurrSetPrescription] = [
                         item,
@@ -1008,9 +1017,15 @@ const stacksOverTabsConfig: { [P in keyof AllScreenParam]?: RouteConfig<AllScree
                           prescriptionDrugCategoryList,
                           serviceMoney,
                           syndromeDifferentiation,
-                          pharmacyName
+                          pharmacyName,
+                          patientName,
+                          phone,
+                          gender: gender || 0,
+                          yearAge: yearAge || '',
+                          monthAge: monthAge || '',
                         },
                       ]
+                      console.log(preload)
                       saveCurrSetPrescription(preload)
                       navigation.goBack()
                     },

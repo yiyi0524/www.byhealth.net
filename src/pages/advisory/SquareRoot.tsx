@@ -416,7 +416,6 @@ State
       NoMedicine: storeList
     })
 
-    // 加工费
 
   }
   onHardwareBackPress = () => {
@@ -491,21 +490,23 @@ State
   initSavedPrescriptionInfo = () => {
     const { currSetPrescription } = this.props
     let { mode, patientInfo, phone } = this.state
-    console.log(mode)
-    console.log(1)
     let item: any = ''
-    switch (mode) {
-      case 'common':
-        item = patientInfo.uid
-        break;
-      case 'wx':
-        item = 'wx'
-        break;
-      case 'phone':
-        item = phone
-        break;
-      default:
-        return true
+    if (this.props.route.params.prescriptionId) {
+      item = this.props.route.params.prescriptionId + 'id'
+    }else{
+      switch (mode) {
+        case 'common':
+          item = patientInfo.uid
+          break;
+        case 'wx':
+          item = 'wx'
+          break;
+        case 'phone':
+          item = phone
+          break;
+        default:
+          return true
+      }
     }
     if (item in currSetPrescription && currSetPrescription[item] !== null) {
       const {
@@ -514,7 +515,12 @@ State
         prescriptionDrugCategoryList,
         serviceMoney,
         syndromeDifferentiation,
-        pharmacyName
+        pharmacyName,
+        patientName,
+        phone,
+        gender,
+        yearAge,
+        monthAge,
       } = currSetPrescription[item] as CurrSetPrescription
       this.setState({
         advice,
@@ -523,6 +529,36 @@ State
         serviceMoney,
         syndromeDifferentiation,
       })
+      if(mode != 'common'){
+        this.setState({
+          patientName: patientName || '' ,
+          phone: this.state.phone ? this.state.phone : (phone || ''),
+          gender: gender || this.state.gender,
+        })
+      }
+      console.log({
+        advice,
+        discrimination,
+        prescriptionDrugCategoryList,
+        serviceMoney,
+        syndromeDifferentiation,
+        pharmacyName,
+        patientName,
+        phone,
+        gender,
+        yearAge,
+        monthAge,
+      })
+      if (yearAge) {
+        this.setState({
+          yearAge
+        })
+      }
+      if (monthAge) {
+        this.setState({
+          monthAge
+        })
+      }
       if (pharmacyName) {
         this.setState({
           pharmacyName
@@ -555,9 +591,6 @@ State
     let categoryId: number = 0,
       storeId: number = 0,
       stateId: number = 0;
-
-      console.log(mode)
-      console.log(this.props.route.params)
     let drugList: DrugTwo[] = [],
       prescriptionDrugCategoryList = this.state.prescriptionDrugCategoryList;
     if (this.props.route.params.patientUid) {
@@ -583,6 +616,7 @@ State
 
       }
     } else if (this.props.route.params.prescriptionId) {
+      // console.log(this.props.route.params.OfficialAccounts)
       try {
         let {
           data: { detail },
@@ -604,9 +638,13 @@ State
         this.setState({
           patientName: detail.patient.name,
           phone: detail.patient.phone,
+          mode: detail.type
         })
         this.setState({
           patientInfo,
+          monthAge: String(detail.patient.monthAge),
+          yearAge: String(detail.patient.yearAge),
+          gender: detail.patient.gender,
         })
       } catch (err) {
 
@@ -616,7 +654,6 @@ State
         let {
           data: { detail },
         } = await doctor.getPrescriptionDetail({ phone: this.props.route.params.phone as string })
-        console.log(2)
         if (detail.drugList[0]) {
           categoryId = detail.drugList[0].categoryId
           drugList = detail.drugList
@@ -820,9 +857,7 @@ State
       status: true,
       pharmacy,
     })
-    console.log(mode)
     if (mode === 'phone') {
-      console.log("true")
       let phone = this.props.route.params.phone as string
       if(!this.state.phone){
         this.setState({
@@ -830,8 +865,6 @@ State
         })
       }
     }
-    console.log(this.state.phone)
-    console.log(3)
     let patientUid = this.props.route.params.patientUid as number
     if (patientUid > 0) {
       try {
@@ -858,6 +891,7 @@ State
               hospitalMedicalRecordPicList[k].url = getPicCdnUrl(hospitalMedicalRecordPicList[k].url, 'avatar')
             }
           }
+          console.log(patientInfo)
           this.setState({
             patientInfo,
             medicalRecordPicList: hospitalMedicalRecordPicList,
@@ -1900,6 +1934,7 @@ State
     }
     args.stateId = pharmacyName.stateId
     args.storeId = pharmacyName.id
+    console.log(args)
     addPrescription(args)
       .then(json => {
         this.setState({ status: true })
@@ -1908,12 +1943,12 @@ State
             return this.props.navigation.push('Prescription')
           }
           else {
+            
             return this.props.navigation.navigate('PrescriptionDetail', {
               prescriptionId: json.data.id,
               mode,
             })
           }
-
         }
         let prescriptionId = json.data.id
         this.props.ws.wsPost({

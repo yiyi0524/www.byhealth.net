@@ -147,7 +147,7 @@ State
       let {
         data: { detail },
       } = await doctor.getPrescriptionDetail({ prescriptionId: this.state.prescriptionId})
-      
+      console.log(detail)
       let {
         data: { list: drugCategoryList },
       } = await hospital.getDrugCategoryList({ page: -1, limit: -1 })

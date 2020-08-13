@@ -173,11 +173,11 @@ export default class Prescription extends Component<
             <Text style={[style.prescriptionItemDescriptionTime, global.fontSize14]} numberOfLines={1}>
               {moment(v.ctime).format('YYYY年MM月DD日 HH:mm')}
             </Text>
-            {showPayStatus ? (
               <View style={global.flex}>
                 <TouchableOpacity  
                 style={style.paddRight}
                 onPress={()=>{
+                  console.log(v)
                   this.props.navigation.navigate(pathMap.SquareRoot, {
                     mode: v.type,
                     prescriptionId: v.id,
@@ -187,11 +187,12 @@ export default class Prescription extends Component<
                 >
                  <Text style={style.red}>再开一单</Text> 
                 </TouchableOpacity >
-                <Text style={[style.prescriptionItemDescriptionStatus, global.fontSize14]} numberOfLines={1}>
-                  {PRESCRIPTION_STATUS_ZH[v.status]}
-                </Text>
+                {showPayStatus ? (
+                  <Text style={[style.prescriptionItemDescriptionStatus, global.fontSize14]} numberOfLines={1}>
+                    {PRESCRIPTION_STATUS_ZH[v.status]}
+                  </Text>
+                ) : null}
               </View>
-              ) : null}
               
           </View>
         </View>
